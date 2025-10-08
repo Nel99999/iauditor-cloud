@@ -271,13 +271,14 @@ async def list_users(request: Request, db: AsyncIOMotorDatabase = Depends(get_db
         {"organization_id": user["organization_id"], "status": {"$ne": "deleted"}}
     ).to_list(length=None)
     
-    # Remove sensitive data and add last_login placeholder
+    # Remove sensitive data and format last_login
     for u in users:
         u.pop("password", None)
         u.pop("password_hash", None)
         u.pop("_id", None)
-        if "last_login" not in u:
-            u["last_login"] = "Recently"
+        # Keep actual last_login timestamp from database
+        if "last_login" not in u or not u["last_login"]:
+            u["last_login"] = None
     
     return users
 
