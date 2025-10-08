@@ -36,8 +36,10 @@ const UserManagementPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [inviteData, setInviteData] = useState({ email: '', role: 'viewer' });
   const [editUserData, setEditUserData] = useState(null);
+  const [deleteUserData, setDeleteUserData] = useState(null);
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
 
