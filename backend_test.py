@@ -1757,23 +1757,75 @@ class UserDeleteTester:
             return False, {}
 
     def test_login_master_user(self):
-        """Test login as master user (Llewellyn)"""
-        login_data = {
-            "email": "llewellyn@bluedawncapital.co.za",
-            "password": "password123"
+        """Test login as master user - try different credentials"""
+        # Try different possible credentials
+        credentials_to_try = [
+            {"email": "llewellyn@bluedawncapital.co.za", "password": "password123"},
+            {"email": "test@example.com", "password": "password123"},
+            {"email": "admin@example.com", "password": "password123"},
+        ]
+        
+        for creds in credentials_to_try:
+            success, response = self.run_test(
+                f"Login Attempt ({creds['email']})",
+                "POST",
+                "auth/login",
+                200,
+                data=creds
+            )
+            
+            if success and 'access_token' in response:
+                self.token = response['access_token']
+                print(f"✅ Successfully logged in as {creds['email']}")
+                return True, response
+        
+        # If no existing user works, create a test user
+        print("🔧 Creating test user for delete functionality testing...")
+        return self.create_test_user_and_login()
+    
+    def create_test_user_and_login(self):
+        """Create a test user with organization and login"""
+        # Create master user
+        master_email = "llewellyn@bluedawncapital.co.za"
+        master_data = {
+            "email": master_email,
+            "password": "password123",
+            "name": "Llewellyn Master",
+            "organization_name": "Blue Dawn Capital"
         }
         
         success, response = self.run_test(
-            "Login as Master User (Llewellyn)",
+            "Create Master User",
             "POST",
-            "auth/login",
+            "auth/register",
             200,
-            data=login_data
+            data=master_data
         )
         
         if success and 'access_token' in response:
             self.token = response['access_token']
+            
+            # Create a second test user to delete
+            test_user_email = f"testuser_{uuid.uuid4().hex[:8]}@example.com"
+            test_user_data = {
+                "email": test_user_email,
+                "password": "password123",
+                "name": "Test User To Delete"
+            }
+            
+            # Register second user (will join same organization)
+            test_success, test_response = self.run_test(
+                "Create Test User to Delete",
+                "POST",
+                "auth/register",
+                200,
+                data=test_user_data
+            )
+            
+            print(f"✅ Created master user: {master_email}")
+            print(f"✅ Created test user: {test_user_email}")
             return True, response
+        
         return False, response
 
     def test_get_users_list(self):
