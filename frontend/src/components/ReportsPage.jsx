@@ -3,7 +3,25 @@ import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ClipboardCheck, CheckSquare, ListTodo, TrendingUp, BarChart3 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  ClipboardCheck, 
+  CheckSquare, 
+  ListTodo, 
+  TrendingUp, 
+  BarChart3, 
+  Download, 
+  Plus, 
+  Settings,
+  AlertTriangle,
+  Target,
+  Clock,
+  FileText
+} from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
