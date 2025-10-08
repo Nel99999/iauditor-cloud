@@ -59,7 +59,47 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature="Inspections" />
+                    <InspectionsPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspections/templates/new"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <TemplateBuilderPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspections/templates/:templateId/edit"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <TemplateBuilderPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspections/execute/:templateId"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <InspectionExecutionPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inspections/executions/:executionId"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <InspectionExecutionPage />
                   </Layout>
                 </ProtectedRoute>
               }
