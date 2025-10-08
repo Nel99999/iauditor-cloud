@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from auth_routes import router as auth_router
 from org_routes import router as org_router
 from inspection_routes import router as inspection_router
+from checklist_routes import router as checklist_router
 
 
 ROOT_DIR = Path(__file__).parent
@@ -33,34 +34,40 @@ app.state.db = db
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Enable CORS
+allowed_origins = os.environ.get("CORS_ORIGINS", "*").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Define Models
+
 class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+    model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
+    status: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
 
-# Add your routes to the router instead of directly to app
 @api_router.get("/")
-async def root():
+async def health_check():
     return {"message": "Hello World"}
 
+
 @api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
+async def create_status_check(status_check: StatusCheck):
+    # Convert datetime to ISO string for MongoDB storage
+    status_check_dict = status_check.model_dump()
+    status_check_dict['timestamp'] = status_check_dict['timestamp'].isoformat()
     
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
+    # Insert into MongoDB
+    await db.status_checks.insert_one(status_check_dict)
     
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
+    return status_check
+
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
@@ -83,24 +90,13 @@ api_router.include_router(org_router)
 # Include inspection router
 api_router.include_router(inspection_router)
 
+# Include checklist router
+api_router.include_router(checklist_router)
+
 # Include the router in the main app
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
