@@ -267,6 +267,80 @@ const UserManagementPage = () => {
         </CardContent>
       </Card>
 
+      {/* Edit User Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>
+              Update user role and status
+            </DialogDescription>
+          </DialogHeader>
+          {editUserData && (
+            <div className="space-y-4">
+              <div>
+                <Label>User</Label>
+                <Input value={`${editUserData.name} (${editUserData.email})`} disabled />
+              </div>
+              <div>
+                <Label htmlFor="edit-role">Role</Label>
+                <Select
+                  value={editUserData.role}
+                  onValueChange={(value) => setEditUserData({ ...editUserData, role: value })}
+                >
+                  <SelectTrigger id="edit-role">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin - Full access</SelectItem>
+                    <SelectItem value="manager">Manager - Manage teams</SelectItem>
+                    <SelectItem value="inspector">Inspector - Execute operations</SelectItem>
+                    <SelectItem value="viewer">Viewer - Read only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="edit-status">Status</Label>
+                <Select
+                  value={editUserData.status}
+                  onValueChange={(value) => setEditUserData({ ...editUserData, status: value })}
+                >
+                  <SelectTrigger id="edit-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  await axios.put(`${API}/users/${editUserData.id}`, {
+                    role: editUserData.role,
+                    status: editUserData.status,
+                  });
+                  alert('User updated successfully!');
+                  setShowEditDialog(false);
+                  loadUsers();
+                } catch (err) {
+                  alert(err.response?.data?.detail || 'Failed to update user');
+                }
+              }}
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Invite Dialog */}
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
         <DialogContent>
