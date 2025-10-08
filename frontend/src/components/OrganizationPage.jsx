@@ -282,22 +282,21 @@ const OrganizationPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white" data-testid="org-title">
-              Organization Structure
-            </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              Manage your organizational hierarchy and teams
-            </p>
-          </div>
-          <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Root Unit
-          </Button>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white" data-testid="org-title">
+            Organization Structure
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Manage your organizational hierarchy and teams
+          </p>
         </div>
+        <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Root Unit
+        </Button>
+      </div>
 
         {error && (
           <Alert variant="destructive" className="mb-6">
