@@ -1863,10 +1863,21 @@ class UserDeleteTester:
         if success and isinstance(response, list):
             # Find master user ID and a test user ID
             for user in response:
-                if user.get('email') == 'llewellyn@bluedawncapital.co.za':
+                if 'master_' in user.get('email', '') or user.get('role') == 'admin':
                     self.master_user_id = user.get('id')
-                elif user.get('email') != 'llewellyn@bluedawncapital.co.za' and not self.test_user_id:
+                elif 'testuser_' in user.get('email', '') or (user.get('role') != 'admin' and not self.test_user_id):
                     self.test_user_id = user.get('id')
+            
+            print(f"🔍 Found master user ID: {self.master_user_id}")
+            print(f"🔍 Found test user ID: {self.test_user_id}")
+            print(f"🔍 Total users in organization: {len(response)}")
+            
+            # If we only have one user, we need to create another one in the same organization
+            if len(response) == 1:
+                print("🔧 Only one user found, creating additional test user in same organization...")
+                self.create_additional_test_user()
+                # Re-fetch users list
+                return self.test_get_users_list()
             
             # Verify no deleted users in list
             deleted_users = [u for u in response if u.get('status') == 'deleted']
@@ -1888,6 +1899,29 @@ class UserDeleteTester:
                 self.log_test("Verify Last Login Timestamps", True, "All users have last_login field")
         
         return success, response
+    
+    def create_additional_test_user(self):
+        """Create an additional test user in the same organization"""
+        # Create a test user via invitation (this will put them in the same org)
+        invite_data = {
+            "email": f"deletetest_{uuid.uuid4().hex[:8]}@example.com",
+            "role": "viewer"
+        }
+        
+        success, response = self.run_test(
+            "Create Additional Test User via Invitation",
+            "POST",
+            "users/invite",
+            200,
+            data=invite_data
+        )
+        
+        if success:
+            print(f"✅ Created invitation for additional test user: {invite_data['email']}")
+            # For testing purposes, we'll simulate that this user accepted the invitation
+            # In a real scenario, they would need to complete the registration process
+        
+        return success
 
     def test_delete_self_should_fail(self):
         """Test trying to delete own account (should fail)"""
