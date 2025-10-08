@@ -30,6 +30,40 @@ const ReportsPage = () => {
   const [overview, setOverview] = useState(null);
   const [trends, setTrends] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedDays, setSelectedDays] = useState(30);
+  const [showCustomReportDialog, setShowCustomReportDialog] = useState(false);
+  const [customReport, setCustomReport] = useState({
+    name: '',
+    collections: [],
+    fields: [],
+    filters: [],
+    groupBy: '',
+    sortBy: ''
+  });
+  
+  // Available collections and their fields for custom reports
+  const availableCollections = {
+    'inspection_executions': {
+      name: 'Inspections',
+      fields: ['status', 'score', 'passed', 'completed_at', 'template_name', 'location', 'inspector_name']
+    },
+    'checklist_executions': {
+      name: 'Checklists', 
+      fields: ['status', 'date', 'completion_percentage', 'template_name', 'assigned_to_name']
+    },
+    'tasks': {
+      name: 'Tasks',
+      fields: ['status', 'priority', 'title', 'assigned_to_name', 'due_date', 'completed_at', 'created_at']
+    },
+    'organizations': {
+      name: 'Organizations',
+      fields: ['name', 'type', 'created_at', 'status']
+    },
+    'users': {
+      name: 'Users', 
+      fields: ['name', 'email', 'role', 'created_at', 'last_login']
+    }
+  };
 
   useEffect(() => {
     loadData();
