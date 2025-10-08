@@ -1963,26 +1963,44 @@ def main():
     org_tester = OrganizationAPITester()
     org_report = org_tester.run_all_tests()
     
+    # Test Task System
+    print("\n📋 PHASE 3: Task Management System Testing")
+    task_tester = TaskAPITester()
+    task_report = task_tester.run_all_tests()
+    
+    # Test Reports System
+    print("\n📊 PHASE 4: Reports & Analytics System Testing")
+    reports_tester = ReportsAPITester()
+    reports_report = reports_tester.run_all_tests()
+    
     # Test Inspection System
-    print("\n🔍 PHASE 3: Inspection System Testing")
+    print("\n🔍 PHASE 5: Inspection System Testing")
     inspection_tester = InspectionAPITester()
     inspection_report = inspection_tester.run_all_tests()
     
     # Test Checklist System
-    print("\n📝 PHASE 4: Checklist System Testing")
+    print("\n📝 PHASE 6: Checklist System Testing")
     checklist_tester = ChecklistAPITester()
     checklist_report = checklist_tester.run_all_tests()
     
     # Combined results
-    total_tests = auth_report["total_tests"] + org_report["total_tests"] + inspection_report["total_tests"] + checklist_report["total_tests"]
-    total_passed = auth_report["passed_tests"] + org_report["passed_tests"] + inspection_report["passed_tests"] + checklist_report["passed_tests"]
-    total_failed = auth_report["failed_tests"] + org_report["failed_tests"] + inspection_report["failed_tests"] + checklist_report["failed_tests"]
+    total_tests = (auth_report["total_tests"] + org_report["total_tests"] + 
+                  task_report["total_tests"] + reports_report["total_tests"] +
+                  inspection_report["total_tests"] + checklist_report["total_tests"])
+    total_passed = (auth_report["passed_tests"] + org_report["passed_tests"] + 
+                   task_report["passed_tests"] + reports_report["passed_tests"] +
+                   inspection_report["passed_tests"] + checklist_report["passed_tests"])
+    total_failed = (auth_report["failed_tests"] + org_report["failed_tests"] + 
+                   task_report["failed_tests"] + reports_report["failed_tests"] +
+                   inspection_report["failed_tests"] + checklist_report["failed_tests"])
     
     print("\n" + "=" * 80)
     print("🎯 OVERALL TEST SUMMARY")
     print("=" * 80)
     print(f"Authentication Tests: {auth_report['passed_tests']}/{auth_report['total_tests']} ({auth_report['success_rate']:.1f}%)")
     print(f"Organization Tests: {org_report['passed_tests']}/{org_report['total_tests']} ({org_report['success_rate']:.1f}%)")
+    print(f"Task Tests: {task_report['passed_tests']}/{task_report['total_tests']} ({task_report['success_rate']:.1f}%)")
+    print(f"Reports Tests: {reports_report['passed_tests']}/{reports_report['total_tests']} ({reports_report['success_rate']:.1f}%)")
     print(f"Inspection Tests: {inspection_report['passed_tests']}/{inspection_report['total_tests']} ({inspection_report['success_rate']:.1f}%)")
     print(f"Checklist Tests: {checklist_report['passed_tests']}/{checklist_report['total_tests']} ({checklist_report['success_rate']:.1f}%)")
     print(f"Overall: {total_passed}/{total_tests} ({(total_passed/total_tests)*100:.1f}%)")
