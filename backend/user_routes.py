@@ -83,7 +83,7 @@ async def get_my_profile(request: Request, current_user: dict = Depends(get_curr
 async def update_profile(
     request: Request,
     profile: UserProfileUpdate,
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user profile information"""
     update_data = {k: v for k, v in profile.dict(exclude_unset=True).items() if v is not None}
