@@ -294,7 +294,7 @@ async def invite_user(
 
 
 # Get pending invitations
-@router.get("/invitations/pending", response_model=List[InvitationResponse])
+@router.get("/invitations/pending")
 async def get_pending_invitations(request: Request, current_user: dict = Depends(get_current_user)):
     """Get all pending invitations for the organization"""
     invitations = await request.app.state.db.invitations.find({
