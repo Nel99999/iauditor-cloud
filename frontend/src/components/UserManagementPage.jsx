@@ -219,7 +219,7 @@ const UserManagementPage = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={getRoleBadgeVariant(u.role)} className="capitalize">
+                      <Badge style={getRoleBadgeStyle(u.role)} className="capitalize">
                         {u.role}
                       </Badge>
                     </TableCell>
