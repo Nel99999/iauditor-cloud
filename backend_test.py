@@ -3304,21 +3304,21 @@ class OrganizationHierarchyTester:
 
 
 if __name__ == "__main__":
-    # Run the specific organizational hierarchy test as requested
-    print("🚀 Starting Organizational Hierarchy Creation Test")
+    # Run the user delete functionality test as requested
+    print("🚀 Starting User Delete Functionality Test")
     print("=" * 80)
     
-    hierarchy_tester = OrganizationHierarchyTester()
-    hierarchy_results = hierarchy_tester.run_complete_hierarchy_test()
+    delete_tester = UserDeleteTester()
+    delete_results = delete_tester.run_delete_tests()
     
     print("\n" + "=" * 80)
-    print("🎯 ORGANIZATIONAL HIERARCHY TEST COMPLETE")
+    print("🎯 USER DELETE FUNCTIONALITY TEST COMPLETE")
     print("=" * 80)
-    print(f"Success Rate: {hierarchy_results['success_rate']:.1f}% ({hierarchy_results['passed_tests']}/{hierarchy_results['total_tests']})")
+    print(f"Success Rate: {delete_results['success_rate']:.1f}% ({delete_results['passed_tests']}/{delete_results['total_tests']})")
     
-    if hierarchy_results['passed_tests'] == hierarchy_results['total_tests']:
-        print("\n🎉 ALL HIERARCHY TESTS PASSED! Complete 5-level organizational structure creation is working perfectly.")
+    if delete_results['passed_tests'] == delete_results['total_tests']:
+        print("\n🎉 ALL USER DELETE TESTS PASSED! User delete functionality is working perfectly.")
     else:
-        print(f"\n⚠️  {hierarchy_results['failed_tests']} tests failed. Review failed tests above.")
+        print(f"\n⚠️  {delete_results['failed_tests']} tests failed. Review failed tests above.")
     
     print("=" * 80)
