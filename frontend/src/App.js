@@ -184,7 +184,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature="Reports" />
+                    <ReportsPage />
                   </Layout>
                 </ProtectedRoute>
               }
