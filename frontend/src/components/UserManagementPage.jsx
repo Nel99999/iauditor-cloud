@@ -38,6 +38,8 @@ const UserManagementPage = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [inviteData, setInviteData] = useState({ email: '', role: 'viewer' });
   const [editUserData, setEditUserData] = useState(null);
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
     loadUsers();
