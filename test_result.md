@@ -297,13 +297,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Reports API endpoints (/api/reports/overview, /api/reports/trends)"
-    - "Tasks API endpoints (CRUD operations)"
-    - "ReportsPage component with custom report builder"
-    - "TasksPage component integration"
-    - "App.js routing for Tasks and Reports"
+    - "Layout navigation menu items activation (Tasks and Reports active: false)"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
