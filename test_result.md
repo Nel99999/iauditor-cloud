@@ -253,7 +253,7 @@ frontend:
     file: "frontend/src/components/LoginPage.jsx, RegisterPage.jsx, AuthContext.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: true
         -agent: "testing"
