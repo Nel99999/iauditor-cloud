@@ -372,6 +372,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "✅ COMPREHENSIVE TESTING COMPLETED - User Management page now fully connected to backend with real database integration. REAL USER DATA: Loads actual users from database via GET /api/users (not mock data), displays user names, emails, roles, and status correctly. STATISTICS CARDS: Shows real counts for Total Users, Active Users, Pending Invites, and Admin Users. INVITE FUNCTIONALITY: Invite User button opens dialog, email and role selection working, sends invitations via POST /api/users/invite with success notifications. EDIT/DELETE FUNCTIONALITY: Edit buttons (pencil icons) present for role changes via PUT /api/users/{id}, Delete buttons (trash icons) present for user deletion via DELETE /api/users/{id}. SEARCH FUNCTIONALITY: User search filter working correctly. All backend integrations operational and ready for production use."
+        -working: false
+        -agent: "testing"
+        -comment: "❌ CRITICAL DELETE FUNCTIONALITY FAILURE - Comprehensive browser testing reveals delete function is broken. ISSUE DETAILS: Frontend UI appears correct (delete buttons present, confirmation dialog shows), but after clicking 'OK' in confirmation dialog, no DELETE request is sent to backend API. Backend logs show no DELETE /api/users/{id} requests. User count remains unchanged. ROOT CAUSE: Frontend JavaScript issue in UserManagementPage.jsx - the window.confirm() dialog acceptance is not properly triggering the axios.delete() call. The backend endpoint is correctly implemented with soft delete logic, but frontend is failing to call it. IMPACT: Critical functionality failure - users cannot delete other users despite UI appearing to work."
 
 metadata:
   created_by: "main_agent"
