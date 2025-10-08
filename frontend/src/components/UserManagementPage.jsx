@@ -44,21 +44,8 @@ const UserManagementPage = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      // This would need a new endpoint - for now showing mock data
-      // const response = await axios.get(`${API}/users`);
-      // setUsers(response.data);
-      
-      // Mock data for demonstration
-      setUsers([
-        {
-          id: '1',
-          name: user?.name || 'Current User',
-          email: user?.email || 'user@example.com',
-          role: user?.role || 'admin',
-          status: 'active',
-          last_login: '2 hours ago',
-        },
-      ]);
+      const response = await axios.get(`${API}/users`);
+      setUsers(response.data);
     } catch (err) {
       console.error('Failed to load users:', err);
     } finally {
@@ -69,12 +56,16 @@ const UserManagementPage = () => {
   const handleInvite = async (e) => {
     e.preventDefault();
     try {
-      // Would call invitation endpoint
+      await axios.post(`${API}/users/invite`, {
+        email: inviteData.email,
+        role: inviteData.role,
+      });
       alert(`Invitation sent to ${inviteData.email}!`);
       setShowInviteDialog(false);
       setInviteData({ email: '', role: 'viewer' });
+      loadUsers();
     } catch (err) {
-      alert('Failed to send invitation');
+      alert(err.response?.data?.detail || 'Failed to send invitation');
     }
   };
 
