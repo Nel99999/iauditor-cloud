@@ -22,6 +22,13 @@ def get_db(request: Request) -> AsyncIOMotorDatabase:
 @router.post("/register", response_model=Token)
 async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Register a new user with email and password"""
+    # Validate password length
+    if len(user_data.password) < 6:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 6 characters long",
+        )
+    
     # Check if user already exists
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
