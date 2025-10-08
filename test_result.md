@@ -388,7 +388,8 @@ test_plan:
     - "Settings page backend integration complete"
     - "User management backend integration complete"
     - "Mobile navigation confirmed working"
-  stuck_tasks: []
+  stuck_tasks: 
+    - "User Management Page - Backend Integration"
   test_all: true
   test_priority: "high_first"
 
