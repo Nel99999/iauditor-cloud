@@ -65,8 +65,8 @@ class InvitationResponse(BaseModel):
 
 
 # Get current user profile
-@router.get("/me", response_model=UserResponse)
-async def get_my_profile(request: Request, current_user=Depends(get_current_user)):
+@router.get("/me")
+async def get_my_profile(request: Request, current_user: dict = Depends(get_current_user)):
     """Get current user's profile"""
     user = await request.app.state.db.users.find_one({"id": current_user["id"]})
     if not user:
