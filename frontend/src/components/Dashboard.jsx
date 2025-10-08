@@ -41,12 +41,20 @@ const Dashboard = () => {
 
   const quickActions = [
     {
+      title: 'Organization',
+      description: 'Manage organizational structure and teams',
+      icon: Users,
+      color: 'text-slate-600',
+      bgColor: 'bg-slate-50',
+      onClick: () => navigate('/organization'),
+    },
+    {
       title: 'Inspections',
       description: 'Manage inspection templates and executions',
       icon: ClipboardCheck,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      onClick: () => alert('Inspections - Coming in next milestone!'),
+      onClick: () => alert('Inspections - Coming in Milestone 3!'),
     },
     {
       title: 'Checklists',
@@ -54,7 +62,7 @@ const Dashboard = () => {
       icon: CheckSquare,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
-      onClick: () => alert('Checklists - Coming in next milestone!'),
+      onClick: () => alert('Checklists - Coming in Milestone 4!'),
     },
     {
       title: 'Tasks',
@@ -62,15 +70,7 @@ const Dashboard = () => {
       icon: ListTodo,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
-      onClick: () => alert('Tasks - Coming in next milestone!'),
-    },
-    {
-      title: 'Reports',
-      description: 'View analytics and reports',
-      icon: FileText,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      onClick: () => alert('Reports - Coming in next milestone!'),
+      onClick: () => alert('Tasks - Coming in Milestone 5!'),
     },
   ];
 
