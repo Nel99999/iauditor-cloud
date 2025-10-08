@@ -146,7 +146,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature="Settings" />
+                    <SettingsPage />
                   </Layout>
                 </ProtectedRoute>
               }
