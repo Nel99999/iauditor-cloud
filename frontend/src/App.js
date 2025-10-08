@@ -54,7 +54,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Inspections\" />
+                    <ComingSoon feature="Inspections" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -64,7 +64,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Team Management\" />
+                    <ComingSoon feature="Team Management" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -74,7 +74,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Checklists\" />
+                    <ComingSoon feature="Checklists" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -84,7 +84,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Tasks\" />
+                    <ComingSoon feature="Tasks" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -94,7 +94,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Schedule\" />
+                    <ComingSoon feature="Schedule" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -104,7 +104,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Reports\" />
+                    <ComingSoon feature="Reports" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -114,7 +114,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Analytics\" />
+                    <ComingSoon feature="Analytics" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -124,7 +124,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Documents\" />
+                    <ComingSoon feature="Documents" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -134,7 +134,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Profile\" />
+                    <ComingSoon feature="Profile" />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -144,7 +144,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature=\"Settings\" />
+                    <ComingSoon feature="Settings" />
                   </Layout>
                 </ProtectedRoute>
               }
