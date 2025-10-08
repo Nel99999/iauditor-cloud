@@ -251,11 +251,14 @@ const SettingsPage = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input 
-                    id="phone" 
+                  <PhoneInput
+                    id="phone"
+                    international
+                    defaultCountry="ZA"
                     value={profileData.phone}
-                    onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                    placeholder="Optional"
+                    onChange={(value) => setProfileData({...profileData, phone: value || ''})}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                    placeholder="+27 XX XXX XXXX"
                   />
                 </div>
 
