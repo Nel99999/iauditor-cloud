@@ -145,6 +145,22 @@ const UserManagementPage = () => {
       .toUpperCase();
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString || dateString === 'Recently') return 'Never';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-ZA', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
