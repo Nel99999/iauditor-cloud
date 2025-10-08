@@ -3,6 +3,8 @@ import sys
 import json
 from datetime import datetime
 import uuid
+import io
+import os
 
 class AuthAPITester:
     def __init__(self, base_url="https://deploy-prep-check.preview.emergentagent.com"):
