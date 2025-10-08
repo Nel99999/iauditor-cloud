@@ -308,7 +308,7 @@ const UserManagementPage = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {u.last_login}
+                      {formatDate(u.last_login)}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
