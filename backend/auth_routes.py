@@ -109,11 +109,18 @@ async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_d
             detail="Account is disabled",
         )
     
+    # Update last login timestamp
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+    )
+    
     # Create access token
     access_token = create_access_token(data={"sub": user["id"]})
     
     # Return token and user data (without password hash)
     user.pop("password_hash", None)
+    user["last_login"] = datetime.now(timezone.utc).isoformat()
     
     return Token(access_token=access_token, user=user)
 
