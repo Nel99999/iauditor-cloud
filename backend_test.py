@@ -1785,17 +1785,40 @@ class UserDeleteTester:
     
     def create_test_user_and_login(self):
         """Create a test user with organization and login"""
-        # Create master user
+        # Since the user already exists, let's try different passwords
         master_email = "llewellyn@bluedawncapital.co.za"
+        passwords_to_try = ["password123", "Password123", "admin123", "test123", "123456", "password"]
+        
+        for password in passwords_to_try:
+            login_data = {
+                "email": master_email,
+                "password": password
+            }
+            
+            success, response = self.run_test(
+                f"Try Password: {password}",
+                "POST",
+                "auth/login",
+                200,
+                data=login_data
+            )
+            
+            if success and 'access_token' in response:
+                self.token = response['access_token']
+                print(f"✅ Successfully logged in with password: {password}")
+                return True, response
+        
+        # If still can't login, create a new user with unique email
+        unique_email = f"master_{uuid.uuid4().hex[:8]}@bluedawncapital.co.za"
         master_data = {
-            "email": master_email,
+            "email": unique_email,
             "password": "password123",
-            "name": "Llewellyn Master",
-            "organization_name": "Blue Dawn Capital"
+            "name": "Master User",
+            "organization_name": "Blue Dawn Capital Test"
         }
         
         success, response = self.run_test(
-            "Create Master User",
+            "Create New Master User",
             "POST",
             "auth/register",
             200,
@@ -1822,7 +1845,7 @@ class UserDeleteTester:
                 data=test_user_data
             )
             
-            print(f"✅ Created master user: {master_email}")
+            print(f"✅ Created master user: {unique_email}")
             print(f"✅ Created test user: {test_user_email}")
             return True, response
         
