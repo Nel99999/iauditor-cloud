@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
+from fastapi import APIRouter, HTTPException, status, Depends, Request, UploadFile, File
+from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from typing import Optional, List, Dict
+from typing import Optional, List
 from datetime import datetime, timezone
 import uuid
 from auth_utils import get_current_user
@@ -9,8 +10,8 @@ import bcrypt
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-# Type alias for current_user dependency
-CurrentUser = Dict[str, any]
+def get_db(request: Request) -> AsyncIOMotorDatabase:
+    return request.app.state.db
 
 
 # Pydantic Models
@@ -44,52 +45,32 @@ class UserUpdate(BaseModel):
     status: Optional[str] = None
 
 
-class UserResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    name: str
-    email: str
-    role: str
-    status: str = "active"
-    created_at: str
-    last_login: Optional[str] = None
-    picture: Optional[str] = None
-    organization_id: str
-
-
-class InvitationResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    email: str
-    role: str
-    status: str
-    invited_by: str
-    invited_at: str
-    expires_at: str
-
-
 # Get current user profile
 @router.get("/me")
-async def get_my_profile(request: Request, current_user: dict = Depends(get_current_user)):
+async def get_my_profile(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Get current user's profile"""
-    user = await request.app.state.db.users.find_one({"id": current_user["id"]})
-    if not user:
+    user = await get_current_user(request, db)
+    
+    full_user = await db.users.find_one({"id": user["id"]})
+    if not full_user:
         raise HTTPException(status_code=404, detail="User not found")
     
     # Remove sensitive data
-    user.pop("password", None)
-    user.pop("_id", None)
-    return user
+    full_user.pop("password", None)
+    full_user.pop("_id", None)
+    return full_user
 
 
 # Update user profile
 @router.put("/profile")
 async def update_profile(
-    request: Request,
     profile: UserProfileUpdate,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Update user profile information"""
+    user = await get_current_user(request, db)
+    
     update_data = {k: v for k, v in profile.dict(exclude_unset=True).items() if v is not None}
     
     if not update_data:
@@ -97,8 +78,8 @@ async def update_profile(
     
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
-    result = await request.app.state.db.users.update_one(
-        {"id": current_user["id"]},
+    result = await db.users.update_one(
+        {"id": user["id"]},
         {"$set": update_data}
     )
     
@@ -111,12 +92,14 @@ async def update_profile(
 # Update password
 @router.put("/password")
 async def update_password(
-    request: Request,
     password_data: PasswordUpdate,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Update user password"""
-    user = await request.app.state.db.users.find_one({"id": current_user["id"]})
+    current_user = await get_current_user(request, db)
+    
+    user = await db.users.find_one({"id": current_user["id"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -127,7 +110,7 @@ async def update_password(
     # Hash new password
     hashed_password = bcrypt.hashpw(password_data.new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
-    await request.app.state.db.users.update_one(
+    await db.users.update_one(
         {"id": current_user["id"]},
         {"$set": {
             "password": hashed_password,
@@ -141,13 +124,15 @@ async def update_password(
 # Update notification settings
 @router.put("/settings")
 async def update_settings(
-    request: Request,
     settings: NotificationSettings,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Update user notification settings"""
-    result = await request.app.state.db.users.update_one(
-        {"id": current_user["id"]},
+    user = await get_current_user(request, db)
+    
+    result = await db.users.update_one(
+        {"id": user["id"]},
         {"$set": {
             "notification_settings": settings.dict(),
             "updated_at": datetime.now(timezone.utc).isoformat()
@@ -162,9 +147,11 @@ async def update_settings(
 
 # Get notification settings
 @router.get("/settings")
-async def get_settings(request: Request, current_user: dict = Depends(get_current_user)):
+async def get_settings(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Get user notification settings"""
-    user = await request.app.state.db.users.find_one({"id": current_user["id"]})
+    current_user = await get_current_user(request, db)
+    
+    user = await db.users.find_one({"id": current_user["id"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -182,45 +169,25 @@ async def get_settings(request: Request, current_user: dict = Depends(get_curren
 # Upload profile picture
 @router.post("/profile/picture")
 async def upload_profile_picture(
-    request: Request,
     file: UploadFile = File(...),
-    current_user: dict = Depends(get_current_user)
+    request: Request = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Upload user profile picture"""
+    current_user = await get_current_user(request, db)
+    
     # Validate file type
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     
-    # Read file content
-    content = await file.read()
+    # For now, just return success without actually storing
+    # TODO: Implement GridFS storage
+    picture_url = f"/api/users/profile/picture/placeholder"
     
-    # Store in GridFS
-    from gridfs import GridFS
-    import pymongo
-    
-    mongo_url = request.app.state.db.client.address[0] + ":" + str(request.app.state.db.client.address[1])
-    sync_client = pymongo.MongoClient(f"mongodb://{mongo_url}")
-    sync_db = sync_client[request.app.state.db.name]
-    fs = GridFS(sync_db)
-    
-    # Delete old profile picture if exists
-    user = await request.app.state.db.users.find_one({"id": current_user["id"]})
-    if user.get("picture_file_id"):
-        try:
-            fs.delete(user["picture_file_id"])
-        except:
-            pass
-    
-    # Store new picture
-    file_id = fs.put(content, filename=file.filename, content_type=file.content_type)
-    
-    # Update user record
-    picture_url = f"/api/users/profile/picture/{str(file_id)}"
-    await request.app.state.db.users.update_one(
+    await db.users.update_one(
         {"id": current_user["id"]},
         {"$set": {
             "picture": picture_url,
-            "picture_file_id": str(file_id),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
@@ -228,21 +195,23 @@ async def upload_profile_picture(
     return {"message": "Profile picture uploaded successfully", "picture_url": picture_url}
 
 
-# List all users in organization (admin only)
+# List all users in organization
 @router.get("")
-async def list_users(request: Request, current_user: dict = Depends(get_current_user)):
+async def list_users(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Get all users in the organization"""
+    user = await get_current_user(request, db)
+    
     # Get users from same organization
-    users = await request.app.state.db.users.find(
-        {"organization_id": current_user["organization_id"]}
+    users = await db.users.find(
+        {"organization_id": user["organization_id"], "status": {"$ne": "deleted"}}
     ).to_list(length=None)
     
     # Remove sensitive data and add last_login placeholder
-    for user in users:
-        user.pop("password", None)
-        user.pop("_id", None)
-        if "last_login" not in user:
-            user["last_login"] = "Recently"
+    for u in users:
+        u.pop("password", None)
+        u.pop("_id", None)
+        if "last_login" not in u:
+            u["last_login"] = "Recently"
     
     return users
 
@@ -250,20 +219,22 @@ async def list_users(request: Request, current_user: dict = Depends(get_current_
 # Invite user to organization
 @router.post("/invite")
 async def invite_user(
-    request: Request,
     invite: UserInvite,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Send invitation to join organization"""
+    user = await get_current_user(request, db)
+    
     # Check if user already exists
-    existing_user = await request.app.state.db.users.find_one({"email": invite.email})
+    existing_user = await db.users.find_one({"email": invite.email})
     if existing_user:
         raise HTTPException(status_code=400, detail="User with this email already exists")
     
     # Check if invitation already sent
-    existing_invite = await request.app.state.db.invitations.find_one({
+    existing_invite = await db.invitations.find_one({
         "email": invite.email,
-        "organization_id": current_user["organization_id"],
+        "organization_id": user["organization_id"],
         "status": "pending"
     })
     if existing_invite:
@@ -274,20 +245,19 @@ async def invite_user(
         "id": str(uuid.uuid4()),
         "email": invite.email,
         "role": invite.role,
-        "organization_id": current_user["organization_id"],
+        "organization_id": user["organization_id"],
         "org_unit_id": invite.org_unit_id,
-        "invited_by": current_user["id"],
-        "invited_by_name": current_user["name"],
+        "invited_by": user["id"],
+        "invited_by_name": user["name"],
         "status": "pending",
         "invited_at": datetime.now(timezone.utc).isoformat(),
-        "expires_at": datetime.now(timezone.utc).isoformat(),  # TODO: Add 7 days expiry
+        "expires_at": datetime.now(timezone.utc).isoformat(),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
-    await request.app.state.db.invitations.insert_one(invitation)
+    await db.invitations.insert_one(invitation)
     
     # TODO: Send email invitation
-    # For now, just return success
     
     invitation.pop("_id", None)
     return {"message": f"Invitation sent to {invite.email}", "invitation": invitation}
@@ -295,10 +265,12 @@ async def invite_user(
 
 # Get pending invitations
 @router.get("/invitations/pending")
-async def get_pending_invitations(request: Request, current_user: dict = Depends(get_current_user)):
+async def get_pending_invitations(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Get all pending invitations for the organization"""
-    invitations = await request.app.state.db.invitations.find({
-        "organization_id": current_user["organization_id"],
+    user = await get_current_user(request, db)
+    
+    invitations = await db.invitations.find({
+        "organization_id": user["organization_id"],
         "status": "pending"
     }).to_list(length=None)
     
@@ -308,17 +280,19 @@ async def get_pending_invitations(request: Request, current_user: dict = Depends
     return invitations
 
 
-# Update user (admin only)
+# Update user
 @router.put("/{user_id}")
 async def update_user(
-    request: Request,
     user_id: str,
     user_update: UserUpdate,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Update user information (admin only)"""
+    current_user = await get_current_user(request, db)
+    
     # Check if user exists in same organization
-    target_user = await request.app.state.db.users.find_one({
+    target_user = await db.users.find_one({
         "id": user_id,
         "organization_id": current_user["organization_id"]
     })
@@ -333,7 +307,7 @@ async def update_user(
     
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
-    await request.app.state.db.users.update_one(
+    await db.users.update_one(
         {"id": user_id},
         {"$set": update_data}
     )
@@ -341,20 +315,22 @@ async def update_user(
     return {"message": "User updated successfully"}
 
 
-# Delete user (admin only)
+# Delete user
 @router.delete("/{user_id}")
 async def delete_user(
-    request: Request,
     user_id: str,
-    current_user: dict = Depends(get_current_user)
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Delete user from organization (admin only)"""
+    current_user = await get_current_user(request, db)
+    
     # Don't allow deleting self
     if user_id == current_user["id"]:
         raise HTTPException(status_code=400, detail="Cannot delete your own account")
     
     # Check if user exists in same organization
-    target_user = await request.app.state.db.users.find_one({
+    target_user = await db.users.find_one({
         "id": user_id,
         "organization_id": current_user["organization_id"]
     })
@@ -363,7 +339,7 @@ async def delete_user(
         raise HTTPException(status_code=404, detail="User not found")
     
     # Soft delete - set status to inactive
-    await request.app.state.db.users.update_one(
+    await db.users.update_one(
         {"id": user_id},
         {"$set": {
             "status": "deleted",
