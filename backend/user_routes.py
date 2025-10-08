@@ -113,7 +113,7 @@ async def update_profile(
 async def update_password(
     request: Request,
     password_data: PasswordUpdate,
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user password"""
     user = await request.app.state.db.users.find_one({"id": current_user["id"]})
@@ -143,7 +143,7 @@ async def update_password(
 async def update_settings(
     request: Request,
     settings: NotificationSettings,
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user notification settings"""
     result = await request.app.state.db.users.update_one(
@@ -162,7 +162,7 @@ async def update_settings(
 
 # Get notification settings
 @router.get("/settings")
-async def get_settings(request: Request, current_user=Depends(get_current_user)):
+async def get_settings(request: Request, current_user: dict = Depends(get_current_user)):
     """Get user notification settings"""
     user = await request.app.state.db.users.find_one({"id": current_user["id"]})
     if not user:
@@ -184,7 +184,7 @@ async def get_settings(request: Request, current_user=Depends(get_current_user))
 async def upload_profile_picture(
     request: Request,
     file: UploadFile = File(...),
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Upload user profile picture"""
     # Validate file type
@@ -230,7 +230,7 @@ async def upload_profile_picture(
 
 # List all users in organization (admin only)
 @router.get("", response_model=List[UserResponse])
-async def list_users(request: Request, current_user=Depends(get_current_user)):
+async def list_users(request: Request, current_user: dict = Depends(get_current_user)):
     """Get all users in the organization"""
     # Get users from same organization
     users = await request.app.state.db.users.find(
@@ -252,7 +252,7 @@ async def list_users(request: Request, current_user=Depends(get_current_user)):
 async def invite_user(
     request: Request,
     invite: UserInvite,
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Send invitation to join organization"""
     # Check if user already exists
@@ -295,7 +295,7 @@ async def invite_user(
 
 # Get pending invitations
 @router.get("/invitations/pending", response_model=List[InvitationResponse])
-async def get_pending_invitations(request: Request, current_user=Depends(get_current_user)):
+async def get_pending_invitations(request: Request, current_user: dict = Depends(get_current_user)):
     """Get all pending invitations for the organization"""
     invitations = await request.app.state.db.invitations.find({
         "organization_id": current_user["organization_id"],
@@ -314,7 +314,7 @@ async def update_user(
     request: Request,
     user_id: str,
     user_update: UserUpdate,
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user information (admin only)"""
     # Check if user exists in same organization
@@ -346,7 +346,7 @@ async def update_user(
 async def delete_user(
     request: Request,
     user_id: str,
-    current_user=Depends(get_current_user)
+    current_user: dict = Depends(get_current_user)
 ):
     """Delete user from organization (admin only)"""
     # Don't allow deleting self
