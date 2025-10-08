@@ -109,9 +109,33 @@ const ReportsPage = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Reports & Analytics</h1>
-        <p className="text-slate-600 dark:text-slate-400">Performance insights and trends (Last {overview?.period_days} days)</p>
+      {/* Enhanced Header with Controls */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Reports & Analytics</h1>
+          <p className="text-slate-600 dark:text-slate-400">Comprehensive insights and custom reporting (Last {overview?.period_days || selectedDays} days)</p>
+        </div>
+        <div className="flex gap-2">
+          <Select value={selectedDays.toString()} onValueChange={(val) => setSelectedDays(parseInt(val))}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">7 Days</SelectItem>
+              <SelectItem value="30">30 Days</SelectItem>
+              <SelectItem value="90">90 Days</SelectItem>
+              <SelectItem value="365">1 Year</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" onClick={() => exportData('pdf')}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <Button onClick={() => setShowCustomReportDialog(true)} data-testid="create-custom-report-btn">
+            <Plus className="h-4 w-4 mr-2" />
+            Custom Report
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
