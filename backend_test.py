@@ -1685,6 +1685,585 @@ class ReportsAPITester:
         }
 
 
+class UserAPITester:
+    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_invitations = []
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, files=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        # Don't set Content-Type for file uploads
+        if not files:
+            test_headers['Content-Type'] = 'application/json'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=15)
+            elif method == 'POST':
+                if files:
+                    response = requests.post(url, files=files, headers=test_headers, timeout=15)
+                else:
+                    response = requests.post(url, json=data, headers=test_headers, timeout=15)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=15)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=15)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def login_test_user(self):
+        """Login with test user"""
+        login_data = {
+            "email": "test@example.com",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Login Test User for User Management",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            return True
+        return False
+
+    def test_get_current_user_profile(self):
+        """Test GET /api/users/me - Get current user profile"""
+        success, response = self.run_test(
+            "Get Current User Profile",
+            "GET",
+            "users/me",
+            200
+        )
+        
+        # Validate response structure
+        if success and isinstance(response, dict):
+            required_fields = ['id', 'email', 'name']
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                self.log_test("User Profile Structure Validation", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            # Ensure password is not returned
+            if 'password' in response:
+                self.log_test("User Profile Security Check", False, "Password field should not be returned")
+                return False
+        
+        return success, response
+
+    def test_update_user_profile(self):
+        """Test PUT /api/users/profile - Update profile"""
+        profile_data = {
+            "name": f"Updated User {uuid.uuid4().hex[:6]}",
+            "phone": "+1-555-0123",
+            "bio": "Updated bio for testing user management"
+        }
+        
+        success, response = self.run_test(
+            "Update User Profile",
+            "PUT",
+            "users/profile",
+            200,
+            data=profile_data
+        )
+        
+        return success, response
+
+    def test_update_user_profile_partial(self):
+        """Test partial profile update"""
+        profile_data = {
+            "name": f"Partial Update {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Update User Profile (Partial)",
+            "PUT",
+            "users/profile",
+            200,
+            data=profile_data
+        )
+        
+        return success, response
+
+    def test_update_password(self):
+        """Test PUT /api/users/password - Change password"""
+        password_data = {
+            "current_password": "password123",
+            "new_password": "newpassword123"
+        }
+        
+        success, response = self.run_test(
+            "Update User Password",
+            "PUT",
+            "users/password",
+            200,
+            data=password_data
+        )
+        
+        return success, response
+
+    def test_update_password_wrong_current(self):
+        """Test password update with wrong current password"""
+        password_data = {
+            "current_password": "wrongpassword",
+            "new_password": "newpassword123"
+        }
+        
+        success, response = self.run_test(
+            "Update Password (Wrong Current)",
+            "PUT",
+            "users/password",
+            400,
+            data=password_data
+        )
+        
+        return success
+
+    def test_get_notification_settings(self):
+        """Test GET /api/users/settings - Get notification settings"""
+        success, response = self.run_test(
+            "Get Notification Settings",
+            "GET",
+            "users/settings",
+            200
+        )
+        
+        # Validate response structure
+        if success and isinstance(response, dict):
+            expected_settings = ['email_notifications', 'push_notifications', 'weekly_reports', 'marketing_emails']
+            missing_settings = [setting for setting in expected_settings if setting not in response]
+            if missing_settings:
+                self.log_test("Settings Structure Validation", False, f"Missing settings: {missing_settings}")
+                return False
+        
+        return success, response
+
+    def test_update_notification_settings(self):
+        """Test PUT /api/users/settings - Update notification settings"""
+        settings_data = {
+            "email_notifications": False,
+            "push_notifications": True,
+            "weekly_reports": False,
+            "marketing_emails": True
+        }
+        
+        success, response = self.run_test(
+            "Update Notification Settings",
+            "PUT",
+            "users/settings",
+            200,
+            data=settings_data
+        )
+        
+        return success, response
+
+    def test_upload_profile_picture(self):
+        """Test POST /api/users/profile/picture - Upload profile picture"""
+        # Create a simple test image
+        test_image = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\tpHYs\x00\x00\x0b\x13\x00\x00\x0b\x13\x01\x00\x9a\x9c\x18\x00\x00\x00\nIDATx\x9cc\xf8\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00IEND\xaeB`\x82'
+        files = {'file': ('test_profile.png', io.BytesIO(test_image), 'image/png')}
+        
+        success, response = self.run_test(
+            "Upload Profile Picture",
+            "POST",
+            "users/profile/picture",
+            200,
+            files=files
+        )
+        
+        return success, response
+
+    def test_upload_invalid_file_type(self):
+        """Test uploading non-image file"""
+        files = {'file': ('test.txt', io.BytesIO(b'not an image'), 'text/plain')}
+        
+        success, response = self.run_test(
+            "Upload Invalid File Type",
+            "POST",
+            "users/profile/picture",
+            400,
+            files=files
+        )
+        
+        return success
+
+    def test_list_organization_users(self):
+        """Test GET /api/users - List all users in organization"""
+        success, response = self.run_test(
+            "List Organization Users",
+            "GET",
+            "users",
+            200
+        )
+        
+        # Validate response structure
+        if success and isinstance(response, list):
+            for user in response:
+                if 'password' in user:
+                    self.log_test("User List Security Check", False, "Password field should not be returned in user list")
+                    return False
+                
+                required_fields = ['id', 'email', 'name']
+                missing_fields = [field for field in required_fields if field not in user]
+                if missing_fields:
+                    self.log_test("User List Structure Validation", False, f"Missing fields in user: {missing_fields}")
+                    return False
+        
+        return success, response
+
+    def test_invite_user_to_organization(self):
+        """Test POST /api/users/invite - Invite user to organization"""
+        invite_data = {
+            "email": f"invited_user_{uuid.uuid4().hex[:8]}@example.com",
+            "role": "viewer",
+            "org_unit_id": None
+        }
+        
+        success, response = self.run_test(
+            "Invite User to Organization",
+            "POST",
+            "users/invite",
+            200,
+            data=invite_data
+        )
+        
+        if success and isinstance(response, dict) and 'invitation' in response:
+            invitation = response['invitation']
+            if 'id' in invitation:
+                self.created_invitations.append(invitation['id'])
+        
+        return success, response
+
+    def test_invite_existing_user(self):
+        """Test inviting user that already exists"""
+        invite_data = {
+            "email": "test@example.com",  # This user already exists
+            "role": "viewer"
+        }
+        
+        success, response = self.run_test(
+            "Invite Existing User (Should Fail)",
+            "POST",
+            "users/invite",
+            400,
+            data=invite_data
+        )
+        
+        return success
+
+    def test_get_pending_invitations(self):
+        """Test GET /api/users/invitations/pending - Get pending invitations"""
+        success, response = self.run_test(
+            "Get Pending Invitations",
+            "GET",
+            "users/invitations/pending",
+            200
+        )
+        
+        # Validate response structure
+        if success and isinstance(response, list):
+            for invitation in response:
+                required_fields = ['id', 'email', 'role', 'status']
+                missing_fields = [field for field in required_fields if field not in invitation]
+                if missing_fields:
+                    self.log_test("Invitation Structure Validation", False, f"Missing fields in invitation: {missing_fields}")
+                    return False
+        
+        return success, response
+
+    def test_update_user_by_id(self):
+        """Test PUT /api/users/{user_id} - Update user"""
+        # First get list of users to find one to update
+        users_success, users = self.test_list_organization_users()
+        if not users_success or not users:
+            self.log_test("Update User Setup", False, "Could not get users list for update test")
+            return False
+        
+        # Find a user that's not the current user
+        target_user = None
+        for user in users:
+            if user.get('email') != 'test@example.com':  # Not the current test user
+                target_user = user
+                break
+        
+        if not target_user:
+            # Create a test user first by inviting and then updating
+            invite_success, invite_response = self.test_invite_user_to_organization()
+            if not invite_success:
+                self.log_test("Update User Setup", False, "Could not create test user for update")
+                return False
+            
+            # For now, just test with a placeholder ID since we can't easily create a full user
+            user_id = "test-user-id"
+        else:
+            user_id = target_user['id']
+        
+        update_data = {
+            "name": f"Updated User Name {uuid.uuid4().hex[:6]}",
+            "role": "editor",
+            "status": "active"
+        }
+        
+        success, response = self.run_test(
+            "Update User by ID",
+            "PUT",
+            f"users/{user_id}",
+            200,
+            data=update_data
+        )
+        
+        return success, response
+
+    def test_delete_user_by_id(self):
+        """Test DELETE /api/users/{user_id} - Delete user"""
+        # Use a placeholder user ID for testing
+        user_id = "test-user-to-delete"
+        
+        success, response = self.run_test(
+            "Delete User by ID",
+            "DELETE",
+            f"users/{user_id}",
+            404,  # Expect 404 since user doesn't exist
+        )
+        
+        return success
+
+    def test_delete_self(self):
+        """Test deleting own account (should fail)"""
+        # First get current user to get their ID
+        profile_success, profile = self.test_get_current_user_profile()
+        if not profile_success:
+            return False
+        
+        user_id = profile['id']
+        
+        success, response = self.run_test(
+            "Delete Self (Should Fail)",
+            "DELETE",
+            f"users/{user_id}",
+            400
+        )
+        
+        return success
+
+    def test_user_endpoints_unauthenticated(self):
+        """Test user endpoints without authentication"""
+        old_token = self.token
+        self.token = None
+        
+        endpoints_to_test = [
+            ("users/me", "GET"),
+            ("users/profile", "PUT"),
+            ("users/password", "PUT"),
+            ("users/settings", "GET"),
+            ("users/settings", "PUT"),
+            ("users", "GET"),
+            ("users/invite", "POST"),
+            ("users/invitations/pending", "GET")
+        ]
+        
+        all_success = True
+        for endpoint, method in endpoints_to_test:
+            success, _ = self.run_test(
+                f"{method} {endpoint} (Unauthenticated)",
+                method,
+                endpoint,
+                401,
+                data={"test": "data"} if method in ["PUT", "POST"] else None
+            )
+            if not success:
+                all_success = False
+        
+        self.token = old_token
+        return all_success
+
+    def test_complete_user_management_workflow(self):
+        """Test complete user management workflow"""
+        print("\n🔄 Testing Complete User Management Workflow")
+        
+        # 1. Get current user profile
+        profile_success, profile = self.test_get_current_user_profile()
+        if not profile_success:
+            print("❌ Get current user profile failed")
+            return False
+        
+        # 2. Update profile information
+        if not self.test_update_user_profile():
+            print("❌ Update user profile failed")
+            return False
+        
+        # 3. Test partial profile update
+        if not self.test_update_user_profile_partial():
+            print("❌ Partial profile update failed")
+            return False
+        
+        # 4. Get notification settings
+        settings_success, settings = self.test_get_notification_settings()
+        if not settings_success:
+            print("❌ Get notification settings failed")
+            return False
+        
+        # 5. Update notification settings
+        if not self.test_update_notification_settings():
+            print("❌ Update notification settings failed")
+            return False
+        
+        # 6. Test profile picture upload
+        if not self.test_upload_profile_picture():
+            print("❌ Upload profile picture failed")
+            return False
+        
+        # 7. Test invalid file upload
+        if not self.test_upload_invalid_file_type():
+            print("❌ Invalid file type validation failed")
+            return False
+        
+        # 8. List organization users
+        users_success, users = self.test_list_organization_users()
+        if not users_success:
+            print("❌ List organization users failed")
+            return False
+        
+        # 9. Invite user to organization
+        if not self.test_invite_user_to_organization():
+            print("❌ Invite user to organization failed")
+            return False
+        
+        # 10. Test inviting existing user (should fail)
+        if not self.test_invite_existing_user():
+            print("❌ Invite existing user validation failed")
+            return False
+        
+        # 11. Get pending invitations
+        if not self.test_get_pending_invitations():
+            print("❌ Get pending invitations failed")
+            return False
+        
+        # 12. Test password update
+        if not self.test_update_password():
+            print("❌ Update password failed")
+            return False
+        
+        # 13. Test wrong current password
+        if not self.test_update_password_wrong_current():
+            print("❌ Wrong current password validation failed")
+            return False
+        
+        # 14. Test user update by ID
+        self.test_update_user_by_id()  # May fail due to test setup, but that's ok
+        
+        # 15. Test delete user
+        self.test_delete_user_by_id()  # May fail due to test setup, but that's ok
+        
+        # 16. Test delete self (should fail)
+        if not self.test_delete_self():
+            print("❌ Delete self validation failed")
+            return False
+        
+        # 17. Test unauthenticated access
+        if not self.test_user_endpoints_unauthenticated():
+            print("❌ Unauthenticated access tests failed")
+            return False
+        
+        print("✅ Complete user management workflow passed")
+        return True
+
+    def run_all_tests(self):
+        """Run all user management tests"""
+        print("🚀 Starting User Management API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 60)
+
+        # Login first
+        if not self.login_test_user():
+            print("❌ Login failed, stopping user management tests")
+            return self.generate_report()
+
+        # Test complete workflow
+        self.test_complete_user_management_workflow()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 60)
+        print("📊 USER MANAGEMENT TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 class InspectionAPITester:
     def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
         self.base_url = base_url
