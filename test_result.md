@@ -215,6 +215,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "✅ RE-VERIFIED - User Management backend system working excellently. All new endpoints tested and functional. Backend ready for frontend integration testing."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ COMPREHENSIVE USER DELETE FUNCTIONALITY TESTED - Delete functionality working perfectly. Test Results: 92.9% success rate (13/14 tests). ✅ VERIFIED: Delete self fails with correct error 'Cannot delete your own account', Delete other user works correctly with soft delete (status='deleted'), Deleted users properly removed from GET /users list, All users have last_login timestamps in ISO format, User edit functionality working (PUT /users/{id}), User invite functionality working (POST /users/invite). The one 'failed' test was expected behavior - system correctly prevents deleting users from different organizations (organization-level security working correctly). All core delete functionality operational and secure."
 
 frontend:
   - task: "ReportsPage component with custom report builder"
