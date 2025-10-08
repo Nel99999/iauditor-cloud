@@ -236,18 +236,19 @@ async def upload_profile_picture(
 
 # Get profile picture
 @router.get("/profile/picture/{file_id}")
-async def get_profile_picture(file_id: str, request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
+async def get_profile_picture(file_id: str):
     """Retrieve user profile picture"""
     import gridfs
     import pymongo
     from bson import ObjectId
     from fastapi.responses import Response
+    import os
     
     try:
         # Get GridFS file
-        mongo_client = db.client
-        sync_client = pymongo.MongoClient(str(mongo_client.address[0]))
-        sync_db = sync_client[db.name]
+        mongo_url = os.environ.get('MONGO_URL')
+        sync_client = pymongo.MongoClient(mongo_url)
+        sync_db = sync_client[os.environ.get('DB_NAME')]
         fs = gridfs.GridFS(sync_db)
         
         grid_out = fs.get(ObjectId(file_id))
