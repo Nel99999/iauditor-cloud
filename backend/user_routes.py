@@ -57,6 +57,7 @@ async def get_my_profile(request: Request, db: AsyncIOMotorDatabase = Depends(ge
     
     # Remove sensitive data
     full_user.pop("password", None)
+    full_user.pop("password_hash", None)
     full_user.pop("_id", None)
     return full_user
 
