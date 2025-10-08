@@ -16,11 +16,11 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const LEVEL_NAMES = {
-  1: 'Company',
-  2: 'Region',
-  3: 'Location',
-  4: 'Department',
-  5: 'Team'
+  1: 'Profile',
+  2: 'Organisation',
+  3: 'Company',
+  4: 'Branch',
+  5: 'Brand'
 };
 
 const LEVEL_COLORS = {
