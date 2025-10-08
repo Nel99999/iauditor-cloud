@@ -2528,70 +2528,490 @@ class InspectionAPITester:
             "test_results": self.test_results
         }
 
-def main():
-    print("🧪 COMPREHENSIVE API TESTING - ALL SYSTEMS INCLUDING NEW USER MANAGEMENT")
-    print("=" * 80)
-    
-    # Test Authentication System
-    print("\n📋 PHASE 1: Authentication System Testing")
-    auth_tester = AuthAPITester()
-    auth_report = auth_tester.run_all_tests()
-    
-    # Test NEW User Management System
-    print("\n👤 PHASE 2: User Management System Testing (NEW)")
-    user_tester = UserAPITester()
-    user_report = user_tester.run_all_tests()
-    
-    # Test Organization System
-    print("\n🏢 PHASE 3: Organization System Testing")
-    org_tester = OrganizationAPITester()
-    org_report = org_tester.run_all_tests()
-    
-    # Test Task System
-    print("\n📋 PHASE 4: Task Management System Testing")
-    task_tester = TaskAPITester()
-    task_report = task_tester.run_all_tests()
-    
-    # Test Reports System
-    print("\n📊 PHASE 5: Reports & Analytics System Testing")
-    reports_tester = ReportsAPITester()
-    reports_report = reports_tester.run_all_tests()
-    
-    # Test Inspection System
-    print("\n🔍 PHASE 6: Inspection System Testing")
-    inspection_tester = InspectionAPITester()
-    inspection_report = inspection_tester.run_all_tests()
-    
-    # Test Checklist System
-    print("\n📝 PHASE 7: Checklist System Testing")
-    checklist_tester = ChecklistAPITester()
-    checklist_report = checklist_tester.run_all_tests()
-    
-    # Combined results
-    total_tests = (auth_report["total_tests"] + user_report["total_tests"] + org_report["total_tests"] + 
-                  task_report["total_tests"] + reports_report["total_tests"] +
-                  inspection_report["total_tests"] + checklist_report["total_tests"])
-    total_passed = (auth_report["passed_tests"] + user_report["passed_tests"] + org_report["passed_tests"] + 
-                   task_report["passed_tests"] + reports_report["passed_tests"] +
-                   inspection_report["passed_tests"] + checklist_report["passed_tests"])
-    total_failed = (auth_report["failed_tests"] + user_report["failed_tests"] + org_report["failed_tests"] + 
-                   task_report["failed_tests"] + reports_report["failed_tests"] +
-                   inspection_report["failed_tests"] + checklist_report["failed_tests"])
-    
-    print("\n" + "=" * 80)
-    print("🎯 OVERALL TEST SUMMARY - ALL SYSTEMS")
-    print("=" * 80)
-    print(f"Authentication Tests: {auth_report['passed_tests']}/{auth_report['total_tests']} ({auth_report['success_rate']:.1f}%)")
-    print(f"User Management Tests: {user_report['passed_tests']}/{user_report['total_tests']} ({user_report['success_rate']:.1f}%) [NEW]")
-    print(f"Organization Tests: {org_report['passed_tests']}/{org_report['total_tests']} ({org_report['success_rate']:.1f}%)")
-    print(f"Task Tests: {task_report['passed_tests']}/{task_report['total_tests']} ({task_report['success_rate']:.1f}%)")
-    print(f"Reports Tests: {reports_report['passed_tests']}/{reports_report['total_tests']} ({reports_report['success_rate']:.1f}%)")
-    print(f"Inspection Tests: {inspection_report['passed_tests']}/{inspection_report['total_tests']} ({inspection_report['success_rate']:.1f}%)")
-    print(f"Checklist Tests: {checklist_report['passed_tests']}/{checklist_report['total_tests']} ({checklist_report['success_rate']:.1f}%)")
-    print(f"Overall: {total_passed}/{total_tests} ({(total_passed/total_tests)*100:.1f}%)")
-    
-    # Return appropriate exit code
-    return 0 if total_failed == 0 else 1
+class OrganizationHierarchyTester:
+    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_units = []  # Track created units for cleanup
+        self.level_names = {1: "Profile", 2: "Organisation", 3: "Company", 4: "Branch", 5: "Brand"}
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, files=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        # Don't set Content-Type for file uploads
+        if not files:
+            test_headers['Content-Type'] = 'application/json'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=15)
+            elif method == 'POST':
+                if files:
+                    response = requests.post(url, files=files, headers=test_headers, timeout=15)
+                else:
+                    response = requests.post(url, json=data, headers=test_headers, timeout=15)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=15)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=15)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def setup_test_user(self):
+        """Create and login test user with organization"""
+        test_email = f"hierarchy_test_{uuid.uuid4().hex[:8]}@company.com"
+        test_data = {
+            "email": test_email,
+            "password": "TestPass123!",
+            "name": "Hierarchy Test User",
+            "organization_name": f"Test Holdings {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Setup Test User with Organization",
+            "POST",
+            "auth/register",
+            200,
+            data=test_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            return True, test_email
+        return False, test_email
+
+    def test_create_profile_level1(self):
+        """Test creating Profile (Level 1)"""
+        unit_data = {
+            "name": "Test Holdings",
+            "description": "Test profile",
+            "level": 1,
+            "parent_id": None
+        }
+        
+        success, response = self.run_test(
+            "Create Profile (Level 1)",
+            "POST",
+            "organizations/units",
+            201,
+            data=unit_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_units.append({"id": response['id'], "level": 1, "name": response.get('name', 'Profile')})
+            # Verify response structure
+            if response.get('level') != 1:
+                self.log_test("Profile Level Validation", False, f"Expected level 1, got {response.get('level')}")
+                return False, response
+            return success, response
+        return success, response
+
+    def test_create_organisation_level2(self, parent_id):
+        """Test creating Organisation (Level 2) under Profile"""
+        unit_data = {
+            "name": "Test Organisation",
+            "description": "Test org",
+            "level": 2,
+            "parent_id": parent_id
+        }
+        
+        success, response = self.run_test(
+            "Create Organisation (Level 2)",
+            "POST",
+            "organizations/units",
+            201,
+            data=unit_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_units.append({"id": response['id'], "level": 2, "name": response.get('name', 'Organisation')})
+            # Verify parent_id is correct
+            if response.get('parent_id') != parent_id:
+                self.log_test("Organisation Parent ID Validation", False, f"Expected parent_id {parent_id}, got {response.get('parent_id')}")
+                return False, response
+            return success, response
+        return success, response
+
+    def test_create_company_level3(self, parent_id):
+        """Test creating Company (Level 3) under Organisation"""
+        unit_data = {
+            "name": "Test Company",
+            "description": "Test company",
+            "level": 3,
+            "parent_id": parent_id
+        }
+        
+        success, response = self.run_test(
+            "Create Company (Level 3)",
+            "POST",
+            "organizations/units",
+            201,
+            data=unit_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_units.append({"id": response['id'], "level": 3, "name": response.get('name', 'Company')})
+            # Verify parent_id is correct
+            if response.get('parent_id') != parent_id:
+                self.log_test("Company Parent ID Validation", False, f"Expected parent_id {parent_id}, got {response.get('parent_id')}")
+                return False, response
+            return success, response
+        return success, response
+
+    def test_create_branch_level4(self, parent_id):
+        """Test creating Branch (Level 4) under Company"""
+        unit_data = {
+            "name": "Test Branch",
+            "description": "Test branch",
+            "level": 4,
+            "parent_id": parent_id
+        }
+        
+        success, response = self.run_test(
+            "Create Branch (Level 4)",
+            "POST",
+            "organizations/units",
+            201,
+            data=unit_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_units.append({"id": response['id'], "level": 4, "name": response.get('name', 'Branch')})
+            # Verify parent_id is correct
+            if response.get('parent_id') != parent_id:
+                self.log_test("Branch Parent ID Validation", False, f"Expected parent_id {parent_id}, got {response.get('parent_id')}")
+                return False, response
+            return success, response
+        return success, response
+
+    def test_create_brand_level5(self, parent_id):
+        """Test creating Brand (Level 5) under Branch"""
+        unit_data = {
+            "name": "Test Brand",
+            "description": "Test brand",
+            "level": 5,
+            "parent_id": parent_id
+        }
+        
+        success, response = self.run_test(
+            "Create Brand (Level 5)",
+            "POST",
+            "organizations/units",
+            201,
+            data=unit_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_units.append({"id": response['id'], "level": 5, "name": response.get('name', 'Brand')})
+            # Verify parent_id is correct
+            if response.get('parent_id') != parent_id:
+                self.log_test("Brand Parent ID Validation", False, f"Expected parent_id {parent_id}, got {response.get('parent_id')}")
+                return False, response
+            return success, response
+        return success, response
+
+    def test_get_hierarchy(self):
+        """Test getting complete hierarchy"""
+        success, response = self.run_test(
+            "Get Complete Hierarchy",
+            "GET",
+            "organizations/hierarchy",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Verify all 5 levels are present in hierarchical structure
+            def count_levels(units, level=1):
+                count = 0
+                for unit in units:
+                    if unit.get('level') == level:
+                        count += 1
+                    if 'children' in unit:
+                        count += count_levels(unit['children'], level)
+                return count
+            
+            # Check that we have units at each level
+            levels_found = {}
+            def collect_levels(units):
+                for unit in units:
+                    level = unit.get('level')
+                    if level:
+                        levels_found[level] = levels_found.get(level, 0) + 1
+                    if 'children' in unit:
+                        collect_levels(unit['children'])
+            
+            collect_levels(response)
+            
+            # Verify we have all 5 levels
+            missing_levels = [i for i in range(1, 6) if i not in levels_found]
+            if missing_levels:
+                self.log_test("Hierarchy Completeness Check", False, f"Missing levels: {missing_levels}")
+                return False, response
+            
+            self.log_test("Hierarchy Structure Validation", True, f"Found all 5 levels: {levels_found}")
+            return success, response
+        
+        return success, response
+
+    def test_get_specific_unit(self, unit_id):
+        """Test getting specific unit details"""
+        success, response = self.run_test(
+            "Get Specific Unit Details",
+            "GET",
+            f"organizations/units/{unit_id}",
+            200
+        )
+        
+        return success, response
+
+    def test_update_unit(self, unit_id):
+        """Test updating unit"""
+        update_data = {
+            "name": "Updated Holdings"
+        }
+        
+        success, response = self.run_test(
+            "Update Unit Name",
+            "PUT",
+            f"organizations/units/{unit_id}",
+            200,
+            data=update_data
+        )
+        
+        if success and isinstance(response, dict):
+            if response.get('name') != "Updated Holdings":
+                self.log_test("Update Verification", False, f"Expected name 'Updated Holdings', got {response.get('name')}")
+                return False, response
+        
+        return success, response
+
+    def test_delete_leaf_node(self, unit_id):
+        """Test deleting leaf node (Brand)"""
+        success, response = self.run_test(
+            "Delete Leaf Node (Brand)",
+            "DELETE",
+            f"organizations/units/{unit_id}",
+            200
+        )
+        
+        return success, response
+
+    def test_delete_parent_with_children(self, unit_id):
+        """Test deleting parent with children (should fail)"""
+        success, response = self.run_test(
+            "Delete Parent with Children (Should Fail)",
+            "DELETE",
+            f"organizations/units/{unit_id}",
+            400
+        )
+        
+        return success, response
+
+    def test_upload_profile_picture(self):
+        """Test uploading profile picture"""
+        # Create a simple test image
+        test_image = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\tpHYs\x00\x00\x0b\x13\x00\x00\x0b\x13\x01\x00\x9a\x9c\x18\x00\x00\x00\nIDATx\x9cc\xf8\x00\x00\x00\x01\x00\x01IEND\xaeB`\x82'
+        files = {'file': ('test_profile.png', io.BytesIO(test_image), 'image/png')}
+        
+        success, response = self.run_test(
+            "Upload Profile Picture",
+            "POST",
+            "users/profile/picture",
+            200,
+            files=files
+        )
+        
+        if success and isinstance(response, dict) and 'picture_url' in response:
+            return success, response
+        return success, response
+
+    def test_retrieve_profile_picture(self, file_id):
+        """Test retrieving profile picture"""
+        success, response = self.run_test(
+            "Retrieve Profile Picture",
+            "GET",
+            f"users/profile/picture/{file_id}",
+            200
+        )
+        
+        return success, response
+
+    def run_complete_hierarchy_test(self):
+        """Run the complete organizational hierarchy creation workflow"""
+        print("🚀 Starting Complete Organizational Hierarchy Test")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # Setup test user
+        setup_success, test_email = self.setup_test_user()
+        if not setup_success:
+            print("❌ Test user setup failed, stopping tests")
+            return self.generate_report()
+
+        # 1. Create Profile (Level 1)
+        profile_success, profile_unit = self.test_create_profile_level1()
+        if not profile_success or not isinstance(profile_unit, dict) or 'id' not in profile_unit:
+            print("❌ Profile creation failed, stopping hierarchy tests")
+            return self.generate_report()
+
+        profile_id = profile_unit['id']
+
+        # 2. Create Organisation (Level 2) under Profile
+        org_success, org_unit = self.test_create_organisation_level2(profile_id)
+        if not org_success or not isinstance(org_unit, dict) or 'id' not in org_unit:
+            print("❌ Organisation creation failed, stopping hierarchy tests")
+            return self.generate_report()
+
+        org_id = org_unit['id']
+
+        # 3. Create Company (Level 3) under Organisation
+        company_success, company_unit = self.test_create_company_level3(org_id)
+        if not company_success or not isinstance(company_unit, dict) or 'id' not in company_unit:
+            print("❌ Company creation failed, stopping hierarchy tests")
+            return self.generate_report()
+
+        company_id = company_unit['id']
+
+        # 4. Create Branch (Level 4) under Company
+        branch_success, branch_unit = self.test_create_branch_level4(company_id)
+        if not branch_success or not isinstance(branch_unit, dict) or 'id' not in branch_unit:
+            print("❌ Branch creation failed, stopping hierarchy tests")
+            return self.generate_report()
+
+        branch_id = branch_unit['id']
+
+        # 5. Create Brand (Level 5) under Branch
+        brand_success, brand_unit = self.test_create_brand_level5(branch_id)
+        if not brand_success or not isinstance(brand_unit, dict) or 'id' not in brand_unit:
+            print("❌ Brand creation failed, stopping hierarchy tests")
+            return self.generate_report()
+
+        brand_id = brand_unit['id']
+
+        # 6. Get Hierarchy
+        self.test_get_hierarchy()
+
+        # 7. Get Specific Unit
+        self.test_get_specific_unit(profile_id)
+
+        # 8. Update Unit
+        self.test_update_unit(profile_id)
+
+        # 9. Delete Leaf Node (Brand)
+        self.test_delete_leaf_node(brand_id)
+
+        # 10. Try Delete Parent with Children (Should Fail)
+        self.test_delete_parent_with_children(branch_id)
+
+        # 11. Upload Profile Picture
+        upload_success, upload_response = self.test_upload_profile_picture()
+        
+        # 12. Retrieve Profile Picture
+        if upload_success and isinstance(upload_response, dict) and 'picture_url' in upload_response:
+            # Extract file_id from picture_url
+            picture_url = upload_response['picture_url']
+            if '/picture/' in picture_url:
+                file_id = picture_url.split('/picture/')[-1]
+                self.test_retrieve_profile_picture(file_id)
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 80)
+        print("📊 ORGANIZATIONAL HIERARCHY TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        if self.created_units:
+            print(f"\n📋 Created Units Hierarchy:")
+            for unit in self.created_units:
+                level_name = self.level_names.get(unit['level'], f"Level {unit['level']}")
+                print(f"  Level {unit['level']} ({level_name}): {unit['name']} - ID: {unit['id']}")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # Run the specific organizational hierarchy test as requested
+    print("🚀 Starting Organizational Hierarchy Creation Test")
+    print("=" * 80)
+    
+    hierarchy_tester = OrganizationHierarchyTester()
+    hierarchy_results = hierarchy_tester.run_complete_hierarchy_test()
+    
+    print("\n" + "=" * 80)
+    print("🎯 ORGANIZATIONAL HIERARCHY TEST COMPLETE")
+    print("=" * 80)
+    print(f"Success Rate: {hierarchy_results['success_rate']:.1f}% ({hierarchy_results['passed_tests']}/{hierarchy_results['total_tests']})")
+    
+    if hierarchy_results['passed_tests'] == hierarchy_results['total_tests']:
+        print("\n🎉 ALL HIERARCHY TESTS PASSED! Complete 5-level organizational structure creation is working perfectly.")
+    else:
+        print(f"\n⚠️  {hierarchy_results['failed_tests']} tests failed. Review failed tests above.")
+    
+    print("=" * 80)
