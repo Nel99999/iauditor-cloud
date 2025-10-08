@@ -296,6 +296,7 @@ const UserManagementPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="master">Master - System Administrator</SelectItem>
                     <SelectItem value="admin">Admin - Full access</SelectItem>
                     <SelectItem value="manager">Manager - Manage teams</SelectItem>
                     <SelectItem value="inspector">Inspector - Execute operations</SelectItem>
