@@ -1,0 +1,136 @@
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, List, Dict, Any
+from datetime import datetime, timezone
+import uuid
+
+
+class InspectionQuestion(BaseModel):
+    """Individual question in an inspection template"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    question_text: str
+    question_type: str  # text, number, yes_no, multiple_choice, photo, signature
+    required: bool = True
+    options: Optional[List[str]] = None  # For multiple_choice
+    scoring_enabled: bool = False
+    pass_score: Optional[float] = None  # If scoring enabled
+    order: int = 0
+
+
+class InspectionQuestionCreate(BaseModel):
+    """Create inspection question"""
+    question_text: str
+    question_type: str
+    required: bool = True
+    options: Optional[List[str]] = None
+    scoring_enabled: bool = False
+    pass_score: Optional[float] = None
+    order: int = 0
+
+
+class InspectionTemplate(BaseModel):
+    """Inspection template model"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    name: str
+    description: Optional[str] = None
+    category: Optional[str] = None  # safety, quality, maintenance, etc.
+    questions: List[InspectionQuestion] = []
+    scoring_enabled: bool = False
+    pass_percentage: Optional[float] = None  # Minimum to pass (e.g., 80.0)
+    require_gps: bool = False
+    require_photos: bool = False
+    version: int = 1
+    is_active: bool = True
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class InspectionTemplateCreate(BaseModel):
+    """Create inspection template"""
+    name: str
+    description: Optional[str] = None
+    category: Optional[str] = None
+    questions: List[InspectionQuestionCreate] = []
+    scoring_enabled: bool = False
+    pass_percentage: Optional[float] = None
+    require_gps: bool = False
+    require_photos: bool = False
+
+
+class InspectionTemplateUpdate(BaseModel):
+    """Update inspection template"""
+    name: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    questions: Optional[List[InspectionQuestionCreate]] = None
+    scoring_enabled: Optional[bool] = None
+    pass_percentage: Optional[float] = None
+    require_gps: Optional[bool] = None
+    require_photos: Optional[bool] = None
+    is_active: Optional[bool] = None
+
+
+class InspectionAnswer(BaseModel):
+    """Answer to an inspection question"""
+    question_id: str
+    answer: Any  # Can be string, number, boolean, list
+    photo_ids: Optional[List[str]] = []  # GridFS file IDs
+    notes: Optional[str] = None
+    score: Optional[float] = None
+
+
+class InspectionExecution(BaseModel):
+    """Inspection execution/instance model"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    template_id: str
+    template_name: str  # Denormalized for reporting
+    template_version: int
+    unit_id: Optional[str] = None  # Which org unit was inspected
+    inspector_id: str  # User who performed inspection
+    inspector_name: str  # Denormalized
+    status: str = "in_progress"  # in_progress, completed, failed
+    answers: List[InspectionAnswer] = []
+    location: Optional[Dict[str, float]] = None  # {"lat": 0.0, "lng": 0.0}
+    score: Optional[float] = None  # Overall score if scoring enabled
+    passed: Optional[bool] = None  # Pass/fail status
+    findings: List[str] = []  # List of issues found
+    notes: Optional[str] = None
+    started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    completed_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class InspectionExecutionCreate(BaseModel):
+    """Start an inspection"""
+    template_id: str
+    unit_id: Optional[str] = None
+    location: Optional[Dict[str, float]] = None
+
+
+class InspectionExecutionUpdate(BaseModel):
+    """Update inspection execution"""
+    answers: Optional[List[InspectionAnswer]] = None
+    location: Optional[Dict[str, float]] = None
+    notes: Optional[str] = None
+
+
+class InspectionExecutionComplete(BaseModel):
+    """Complete an inspection"""
+    answers: List[InspectionAnswer]
+    findings: Optional[List[str]] = []
+    notes: Optional[str] = None
+
+
+class InspectionStats(BaseModel):
+    """Inspection statistics"""
+    total_inspections: int
+    completed_today: int
+    pending: int
+    pass_rate: float
+    average_score: Optional[float] = None
