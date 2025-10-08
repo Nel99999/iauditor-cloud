@@ -266,9 +266,15 @@ async def list_users(request: Request, db: AsyncIOMotorDatabase = Depends(get_db
     """Get all users in the organization"""
     user = await get_current_user(request, db)
     
-    # Get users from same organization
+    # Get users from same organization (exclude deleted users)
     users = await db.users.find(
-        {"organization_id": user["organization_id"], "status": {"$ne": "deleted"}}
+        {
+            "organization_id": user["organization_id"],
+            "$or": [
+                {"status": {"$exists": False}},
+                {"status": {"$ne": "deleted"}}
+            ]
+        }
     ).to_list(length=None)
     
     # Remove sensitive data and format last_login
