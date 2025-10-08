@@ -230,14 +230,35 @@ const UserManagementPage = () => {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => alert('Edit user - Coming soon!')}
+                          onClick={async () => {
+                            const newRole = prompt(`Change role for ${u.name}? (admin/manager/inspector/viewer)`, u.role);
+                            if (newRole && ['admin', 'manager', 'inspector', 'viewer'].includes(newRole)) {
+                              try {
+                                await axios.put(`${API}/users/${u.id}`, { role: newRole });
+                                alert('User role updated!');
+                                loadUsers();
+                              } catch (err) {
+                                alert('Failed to update user');
+                              }
+                            }
+                          }}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => alert('Delete user - Coming soon!')}
+                          onClick={async () => {
+                            if (window.confirm(`Delete user ${u.name}?`)) {
+                              try {
+                                await axios.delete(`${API}/users/${u.id}`);
+                                alert('User deleted successfully');
+                                loadUsers();
+                              } catch (err) {
+                                alert(err.response?.data?.detail || 'Failed to delete user');
+                              }
+                            }
+                          }}
                           className="text-red-600"
                         >
                           <Trash2 className="h-4 w-4" />
