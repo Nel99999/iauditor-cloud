@@ -114,7 +114,7 @@ const Layout = ({ children }) => {
           name: 'Tasks',
           icon: ListTodo,
           path: '/tasks',
-          badge: 'M5',
+          badge: '✓',
           active: true,
           description: 'Task management',
         },
