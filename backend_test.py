@@ -701,6 +701,373 @@ class OrganizationAPITester:
             "test_results": self.test_results
         }
 
+class ChecklistAPITester:
+    def __init__(self, base_url="https://deploy-prep-check.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_templates = []
+        self.created_executions = []
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else response_data}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def login_test_user(self):
+        """Login with test user"""
+        login_data = {
+            "email": "test@example.com",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Login Test User for Checklists",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            return True
+        return False
+
+    def test_get_checklist_templates(self):
+        """Test getting all checklist templates"""
+        success, response = self.run_test(
+            "Get Checklist Templates",
+            "GET",
+            "checklists/templates",
+            200
+        )
+        return success, response
+
+    def test_create_checklist_template(self):
+        """Test creating a new checklist template"""
+        template_data = {
+            "name": f"Test Opening Checklist {uuid.uuid4().hex[:6]}",
+            "description": "Daily opening checklist for testing",
+            "category": "opening",
+            "frequency": "daily",
+            "scheduled_time": "08:00",
+            "items": [
+                {"text": "Check all lights are working", "required": True, "order": 0},
+                {"text": "Verify security system is armed", "required": True, "order": 1},
+                {"text": "Count cash register", "required": True, "order": 2},
+                {"text": "Check temperature settings", "required": False, "order": 3}
+            ]
+        }
+        
+        success, response = self.run_test(
+            "Create Checklist Template",
+            "POST",
+            "checklists/templates",
+            201,
+            data=template_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_templates.append(response['id'])
+            return success, response
+        return success, response
+
+    def test_get_checklist_template(self, template_id):
+        """Test getting a specific checklist template"""
+        success, response = self.run_test(
+            "Get Specific Checklist Template",
+            "GET",
+            f"checklists/templates/{template_id}",
+            200
+        )
+        return success, response
+
+    def test_update_checklist_template(self, template_id):
+        """Test updating a checklist template"""
+        update_data = {
+            "name": f"Updated Test Checklist {uuid.uuid4().hex[:6]}",
+            "description": "Updated description for testing",
+            "items": [
+                {"text": "Updated item 1", "required": True, "order": 0},
+                {"text": "New item 2", "required": True, "order": 1}
+            ]
+        }
+        
+        success, response = self.run_test(
+            "Update Checklist Template",
+            "PUT",
+            f"checklists/templates/{template_id}",
+            200,
+            data=update_data
+        )
+        return success, response
+
+    def test_delete_checklist_template(self, template_id):
+        """Test deleting a checklist template"""
+        success, response = self.run_test(
+            "Delete Checklist Template",
+            "DELETE",
+            f"checklists/templates/{template_id}",
+            200
+        )
+        return success, response
+
+    def test_start_checklist_execution(self, template_id):
+        """Test starting a checklist execution"""
+        success, response = self.run_test(
+            "Start Checklist Execution",
+            "POST",
+            f"checklists/executions?template_id={template_id}",
+            201
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_executions.append(response['id'])
+            return success, response
+        return success, response
+
+    def test_get_checklist_executions(self):
+        """Test getting all checklist executions"""
+        success, response = self.run_test(
+            "Get Checklist Executions",
+            "GET",
+            "checklists/executions",
+            200
+        )
+        return success, response
+
+    def test_get_todays_checklists(self):
+        """Test getting today's checklists"""
+        success, response = self.run_test(
+            "Get Today's Checklists",
+            "GET",
+            "checklists/executions/today",
+            200
+        )
+        return success, response
+
+    def test_get_checklist_execution(self, execution_id):
+        """Test getting a specific checklist execution"""
+        success, response = self.run_test(
+            "Get Specific Checklist Execution",
+            "GET",
+            f"checklists/executions/{execution_id}",
+            200
+        )
+        return success, response
+
+    def test_update_checklist_execution(self, execution_id, template_items):
+        """Test updating a checklist execution"""
+        # Create items with some completed
+        items = []
+        for i, item in enumerate(template_items):
+            items.append({
+                "item_id": item["id"],
+                "completed": i % 2 == 0,  # Alternate completion
+                "notes": f"Test note for item {i}",
+                "completed_at": datetime.now().isoformat() if i % 2 == 0 else None
+            })
+        
+        update_data = {
+            "items": items,
+            "notes": "Test execution update"
+        }
+        
+        success, response = self.run_test(
+            "Update Checklist Execution",
+            "PUT",
+            f"checklists/executions/{execution_id}",
+            200,
+            data=update_data
+        )
+        return success, response
+
+    def test_complete_checklist_execution(self, execution_id, template_items):
+        """Test completing a checklist execution"""
+        # Create items all completed
+        items = []
+        for item in template_items:
+            items.append({
+                "item_id": item["id"],
+                "completed": True,
+                "notes": f"Completed: {item['text']}",
+                "completed_at": datetime.now().isoformat()
+            })
+        
+        completion_data = {
+            "items": items,
+            "notes": "Test checklist completion"
+        }
+        
+        success, response = self.run_test(
+            "Complete Checklist Execution",
+            "POST",
+            f"checklists/executions/{execution_id}/complete",
+            200,
+            data=completion_data
+        )
+        return success, response
+
+    def test_get_checklist_stats(self):
+        """Test getting checklist statistics"""
+        success, response = self.run_test(
+            "Get Checklist Stats",
+            "GET",
+            "checklists/stats",
+            200
+        )
+        return success, response
+
+    def test_complete_checklist_workflow(self):
+        """Test complete checklist workflow"""
+        print("\n🔄 Testing Complete Checklist Workflow")
+        
+        # 1. Get initial templates and stats
+        self.test_get_checklist_templates()
+        self.test_get_checklist_stats()
+        self.test_get_todays_checklists()
+        
+        # 2. Create a new template
+        template_success, template = self.test_create_checklist_template()
+        if not template_success or not isinstance(template, dict) or 'id' not in template:
+            print("❌ Template creation failed, stopping workflow test")
+            return False
+        
+        template_id = template['id']
+        
+        # 3. Get the created template
+        self.test_get_checklist_template(template_id)
+        
+        # 4. Update the template
+        self.test_update_checklist_template(template_id)
+        
+        # 5. Start a checklist execution
+        execution_success, execution = self.test_start_checklist_execution(template_id)
+        if not execution_success or not isinstance(execution, dict) or 'id' not in execution:
+            print("❌ Execution start failed, stopping workflow test")
+            return False
+        
+        execution_id = execution['id']
+        
+        # 6. Get executions
+        self.test_get_checklist_executions()
+        self.test_get_checklist_execution(execution_id)
+        
+        # 7. Update execution (partial completion)
+        template_items = template.get('items', [])
+        self.test_update_checklist_execution(execution_id, template_items)
+        
+        # 8. Complete the execution
+        self.test_complete_checklist_execution(execution_id, template_items)
+        
+        # 9. Get updated stats
+        self.test_get_checklist_stats()
+        self.test_get_todays_checklists()
+        
+        # 10. Clean up - delete template
+        self.test_delete_checklist_template(template_id)
+        
+        return True
+
+    def run_all_tests(self):
+        """Run all checklist tests"""
+        print("🚀 Starting Checklist API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 60)
+
+        # Login first
+        if not self.login_test_user():
+            print("❌ Login failed, stopping checklist tests")
+            return self.generate_report()
+
+        # Test complete workflow
+        self.test_complete_checklist_workflow()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 60)
+        print("📊 CHECKLIST TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
 class InspectionAPITester:
     def __init__(self, base_url="https://deploy-prep-check.preview.emergentagent.com"):
         self.base_url = base_url
