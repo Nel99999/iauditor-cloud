@@ -185,19 +185,78 @@ async def upload_profile_picture(
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     
-    # For now, just return success without actually storing
-    # TODO: Implement GridFS storage
-    picture_url = f"/api/users/profile/picture/placeholder"
+    # Read file content
+    content = await file.read()
+    
+    # Validate file size (max 2MB)
+    if len(content) > 2 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File size must be less than 2MB")
+    
+    # Store in GridFS
+    import gridfs
+    import pymongo
+    from urllib.parse import urlparse
+    
+    # Get MongoDB connection details
+    mongo_client = db.client
+    sync_client = pymongo.MongoClient(str(mongo_client.address[0]))
+    sync_db = sync_client[db.name]
+    fs = gridfs.GridFS(sync_db)
+    
+    # Delete old profile picture if exists
+    user = await db.users.find_one({"id": current_user["id"]})
+    if user and user.get("picture_file_id"):
+        try:
+            from bson import ObjectId
+            fs.delete(ObjectId(user["picture_file_id"]))
+        except Exception as e:
+            print(f"Failed to delete old picture: {e}")
+    
+    # Store new picture
+    file_id = fs.put(
+        content,
+        filename=file.filename,
+        content_type=file.content_type,
+        user_id=current_user["id"]
+    )
+    
+    picture_url = f"/api/users/profile/picture/{str(file_id)}"
     
     await db.users.update_one(
         {"id": current_user["id"]},
         {"$set": {
             "picture": picture_url,
+            "picture_file_id": str(file_id),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
     
     return {"message": "Profile picture uploaded successfully", "picture_url": picture_url}
+
+
+# Get profile picture
+@router.get("/profile/picture/{file_id}")
+async def get_profile_picture(file_id: str, request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Retrieve user profile picture"""
+    import gridfs
+    import pymongo
+    from bson import ObjectId
+    from fastapi.responses import Response
+    
+    try:
+        # Get GridFS file
+        mongo_client = db.client
+        sync_client = pymongo.MongoClient(str(mongo_client.address[0]))
+        sync_db = sync_client[db.name]
+        fs = gridfs.GridFS(sync_db)
+        
+        grid_out = fs.get(ObjectId(file_id))
+        content = grid_out.read()
+        content_type = grid_out.content_type or "image/jpeg"
+        
+        return Response(content=content, media_type=content_type)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Picture not found")
 
 
 # List all users in organization
