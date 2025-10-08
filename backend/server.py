@@ -10,11 +10,13 @@ from typing import List
 import uuid
 from datetime import datetime, timezone
 
-# Import auth routes
+# Import all routes
 from auth_routes import router as auth_router
 from org_routes import router as org_router
 from inspection_routes import router as inspection_router
 from checklist_routes import router as checklist_router
+from task_routes import router as task_router
+from reports_routes import router as reports_router
 
 
 ROOT_DIR = Path(__file__).parent
@@ -25,13 +27,11 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI(title="Operational Management Platform API")
-
-# Store db in app state for dependency injection
 app.state.db = db
 
-# Create a router with the /api prefix
+# Create API router
 api_router = APIRouter(prefix="/api")
 
 # Enable CORS
@@ -59,41 +59,28 @@ async def health_check():
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(status_check: StatusCheck):
-    # Convert datetime to ISO string for MongoDB storage
     status_check_dict = status_check.model_dump()
     status_check_dict['timestamp'] = status_check_dict['timestamp'].isoformat()
-    
-    # Insert into MongoDB
     await db.status_checks.insert_one(status_check_dict)
-    
     return status_check
 
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
     status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
     for check in status_checks:
         if isinstance(check['timestamp'], str):
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
     return status_checks
 
-# Include auth router
+# Include all routers
 api_router.include_router(auth_router)
-
-# Include organization router
 api_router.include_router(org_router)
-
-# Include inspection router
 api_router.include_router(inspection_router)
-
-# Include checklist router
 api_router.include_router(checklist_router)
+api_router.include_router(task_router)
+api_router.include_router(reports_router)
 
-# Include the router in the main app
 app.include_router(api_router)
 
 
