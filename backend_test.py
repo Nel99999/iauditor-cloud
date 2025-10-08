@@ -701,6 +701,270 @@ class OrganizationAPITester:
             "test_results": self.test_results
         }
 
+class InspectionAPITester:
+    def __init__(self, base_url="https://deploy-prep-check.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_templates = []
+        self.created_executions = []
+        self.uploaded_photos = []
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, files=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        # Don't set Content-Type for file uploads
+        if not files:
+            test_headers['Content-Type'] = 'application/json'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=15)
+            elif method == 'POST':
+                if files:
+                    response = requests.post(url, files=files, headers=test_headers, timeout=15)
+                else:
+                    response = requests.post(url, json=data, headers=test_headers, timeout=15)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=15)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=15)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def login_test_user(self):
+        """Login with test user"""
+        login_data = {
+            "email": "test@example.com",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Login Test User for Inspections",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            return True
+        return False
+
+    def test_create_inspection_template(self):
+        """Test creating a new inspection template"""
+        template_data = {
+            "name": f"Test Safety Inspection {uuid.uuid4().hex[:6]}",
+            "description": "Comprehensive safety inspection template for testing",
+            "category": "safety",
+            "scoring_enabled": True,
+            "pass_percentage": 80.0,
+            "require_gps": True,
+            "require_photos": True,
+            "questions": [
+                {
+                    "question_text": "Are all safety equipment properly maintained?",
+                    "question_type": "yes_no",
+                    "required": True,
+                    "scoring_enabled": True,
+                    "order": 0
+                },
+                {
+                    "question_text": "What is the temperature reading?",
+                    "question_type": "number",
+                    "required": True,
+                    "scoring_enabled": True,
+                    "pass_score": 20.0,
+                    "order": 1
+                },
+                {
+                    "question_text": "Describe any safety concerns",
+                    "question_type": "text",
+                    "required": False,
+                    "scoring_enabled": False,
+                    "order": 2
+                },
+                {
+                    "question_text": "What is the overall condition?",
+                    "question_type": "multiple_choice",
+                    "required": True,
+                    "options": ["Excellent", "Good", "Fair", "Poor"],
+                    "scoring_enabled": True,
+                    "order": 3
+                },
+                {
+                    "question_text": "Take a photo of the area",
+                    "question_type": "photo",
+                    "required": True,
+                    "scoring_enabled": False,
+                    "order": 4
+                }
+            ]
+        }
+        
+        success, response = self.run_test(
+            "Create Inspection Template",
+            "POST",
+            "inspections/templates",
+            201,
+            data=template_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_templates.append(response['id'])
+            return success, response
+        return success, response
+
+    def test_complete_inspection_workflow(self):
+        """Test complete inspection workflow"""
+        # Get templates
+        success, templates = self.run_test("Get Templates", "GET", "inspections/templates", 200)
+        if not success:
+            return False
+            
+        # Get stats
+        success, stats = self.run_test("Get Stats", "GET", "inspections/stats", 200)
+        if not success:
+            return False
+            
+        # Create template
+        template_success, template = self.test_create_inspection_template()
+        if not template_success:
+            return False
+            
+        template_id = template['id']
+        
+        # Start inspection
+        execution_data = {"template_id": template_id, "unit_id": None}
+        success, execution = self.run_test("Start Inspection", "POST", "inspections/executions", 201, data=execution_data)
+        if not success:
+            return False
+            
+        execution_id = execution['id']
+        
+        # Upload photo
+        test_image = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x00IEND\xaeB`\x82'
+        files = {'file': ('test.png', io.BytesIO(test_image), 'image/png')}
+        success, photo = self.run_test("Upload Photo", "POST", "inspections/upload-photo", 200, files=files)
+        photo_id = photo.get('file_id') if success else None
+        
+        # Complete inspection with answers
+        answers = []
+        for q in template['questions']:
+            answer = {"question_id": q['id'], "photo_ids": [], "notes": "Test note"}
+            if q['question_type'] == 'yes_no':
+                answer['answer'] = True
+            elif q['question_type'] == 'number':
+                answer['answer'] = 25.0
+            elif q['question_type'] == 'text':
+                answer['answer'] = "Test answer"
+            elif q['question_type'] == 'multiple_choice':
+                answer['answer'] = "Good"
+            elif q['question_type'] == 'photo':
+                answer['answer'] = "Photo taken"
+                if photo_id:
+                    answer['photo_ids'] = [photo_id]
+            answers.append(answer)
+        
+        completion_data = {
+            "answers": answers,
+            "findings": ["Test finding"],
+            "notes": "Test completion"
+        }
+        
+        success, completed = self.run_test("Complete Inspection", "POST", f"inspections/executions/{execution_id}/complete", 200, data=completion_data)
+        
+        return success
+
+    def run_all_tests(self):
+        """Run all inspection tests"""
+        print("🚀 Starting Inspection API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 60)
+
+        # Login first
+        if not self.login_test_user():
+            print("❌ Login failed, stopping inspection tests")
+            return self.generate_report()
+
+        # Test complete workflow
+        self.test_complete_inspection_workflow()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 60)
+        print("📊 INSPECTION TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
 def main():
     print("🧪 COMPREHENSIVE API TESTING")
     print("=" * 80)
@@ -715,16 +979,22 @@ def main():
     org_tester = OrganizationAPITester()
     org_report = org_tester.run_all_tests()
     
+    # Test Inspection System
+    print("\n🔍 PHASE 3: Inspection System Testing")
+    inspection_tester = InspectionAPITester()
+    inspection_report = inspection_tester.run_all_tests()
+    
     # Combined results
-    total_tests = auth_report["total_tests"] + org_report["total_tests"]
-    total_passed = auth_report["passed_tests"] + org_report["passed_tests"]
-    total_failed = auth_report["failed_tests"] + org_report["failed_tests"]
+    total_tests = auth_report["total_tests"] + org_report["total_tests"] + inspection_report["total_tests"]
+    total_passed = auth_report["passed_tests"] + org_report["passed_tests"] + inspection_report["passed_tests"]
+    total_failed = auth_report["failed_tests"] + org_report["failed_tests"] + inspection_report["failed_tests"]
     
     print("\n" + "=" * 80)
     print("🎯 OVERALL TEST SUMMARY")
     print("=" * 80)
     print(f"Authentication Tests: {auth_report['passed_tests']}/{auth_report['total_tests']} ({auth_report['success_rate']:.1f}%)")
     print(f"Organization Tests: {org_report['passed_tests']}/{org_report['total_tests']} ({org_report['success_rate']:.1f}%)")
+    print(f"Inspection Tests: {inspection_report['passed_tests']}/{inspection_report['total_tests']} ({inspection_report['success_rate']:.1f}%)")
     print(f"Overall: {total_passed}/{total_tests} ({(total_passed/total_tests)*100:.1f}%)")
     
     # Return appropriate exit code
