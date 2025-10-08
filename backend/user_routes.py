@@ -195,12 +195,12 @@ async def upload_profile_picture(
     # Store in GridFS
     import gridfs
     import pymongo
-    from urllib.parse import urlparse
+    import os
     
-    # Get MongoDB connection details
-    mongo_client = db.client
-    sync_client = pymongo.MongoClient(str(mongo_client.address[0]))
-    sync_db = sync_client[db.name]
+    # Get MongoDB connection using environment variable
+    mongo_url = os.environ.get('MONGO_URL')
+    sync_client = pymongo.MongoClient(mongo_url)
+    sync_db = sync_client[os.environ.get('DB_NAME')]
     fs = gridfs.GridFS(sync_db)
     
     # Delete old profile picture if exists
