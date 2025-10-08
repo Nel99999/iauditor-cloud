@@ -35,7 +35,9 @@ const UserManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [inviteData, setInviteData] = useState({ email: '', role: 'viewer' });
+  const [editUserData, setEditUserData] = useState(null);
 
   useEffect(() => {
     loadUsers();
