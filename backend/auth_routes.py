@@ -131,6 +131,13 @@ async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_d
 async def get_me(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Get current user information"""
     user = await get_current_user(request, db)
+    
+    # Get fresh user data including last_login
+    fresh_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    if fresh_user:
+        fresh_user.pop("password_hash", None)
+        return fresh_user
+    
     user.pop("password_hash", None)
     return user
 
