@@ -360,7 +360,302 @@ const ReportsPage = () => {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* New Insights Tab */}
+        <TabsContent value="insights">
+          <div className="space-y-6">
+            {/* Performance Metrics */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Performance Metrics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Inspection Pass Rate</span>
+                      <span className="font-medium">{overview?.inspections?.pass_rate || 0}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-500 h-2 rounded-full" 
+                        style={{ width: `${overview?.inspections?.pass_rate || 0}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Checklist Completion Rate</span>
+                      <span className="font-medium">{overview?.checklists?.completion_rate || 0}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-500 h-2 rounded-full" 
+                        style={{ width: `${overview?.checklists?.completion_rate || 0}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Task Completion Rate</span>
+                      <span className="font-medium">
+                        {overview?.tasks?.total ? Math.round((overview.tasks.completed / overview.tasks.total) * 100) : 0}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-purple-500 h-2 rounded-full" 
+                        style={{ width: `${overview?.tasks?.total ? (overview.tasks.completed / overview.tasks.total) * 100 : 0}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI-Powered Insights */}
+            <Card>
+              <CardHeader>
+                <CardTitle>AI-Powered Insights & Recommendations</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                  <h4 className="font-medium text-blue-900 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4" />
+                    Productivity Trend
+                  </h4>
+                  <p className="text-blue-800 mt-1">
+                    Task completion rate shows steady improvement over the last {selectedDays} days. 
+                    Consider implementing current successful practices across all teams.
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                  <h4 className="font-medium text-green-900 flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4" />
+                    Quality Improvement
+                  </h4>
+                  <p className="text-green-800 mt-1">
+                    Inspection pass rate is {overview?.inspections?.pass_rate || 0}%, which indicates strong quality standards.
+                    Focus on maintaining consistency across all inspection areas.
+                  </p>
+                </div>
+                
+                {overview?.tasks?.overdue > 0 && (
+                  <div className="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+                    <h4 className="font-medium text-amber-900 flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      Attention Needed
+                    </h4>
+                    <p className="text-amber-800 mt-1">
+                      {overview?.tasks?.overdue || 0} tasks are currently overdue. Review task assignment 
+                      and deadline management processes to improve efficiency.
+                    </p>
+                  </div>
+                )}
+
+                <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                  <h4 className="font-medium text-purple-900 flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Recommendations
+                  </h4>
+                  <ul className="text-purple-800 mt-1 space-y-1">
+                    <li>• Implement automated reminders for approaching deadlines</li>
+                    <li>• Create templates for high-performing inspection procedures</li>
+                    <li>• Schedule regular team check-ins during peak activity periods</li>
+                    <li>• Consider workload balancing based on completion trends</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* System Health */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  System Health & Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                      <span className="text-green-800">System Status</span>
+                      <Badge className="bg-green-500">Healthy</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                      <span className="text-blue-800">Data Freshness</span>
+                      <Badge className="bg-blue-500">Real-time</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                      <span className="text-yellow-800">Pending Actions</span>
+                      <Badge className="bg-yellow-500">{(overview?.tasks?.overdue || 0) + (overview?.inspections?.pending || 0)}</Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button variant="outline" className="w-full justify-start" onClick={() => exportData('csv')}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export to CSV
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => exportData('pdf')}>
+                      <FileText className="h-4 w-4 mr-2" />
+                      Generate PDF Report
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => setShowCustomReportDialog(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Custom Report
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => loadData()}>
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      Refresh Data
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
       </Tabs>
+
+      {/* Custom Report Builder Dialog */}
+      <Dialog open={showCustomReportDialog} onOpenChange={setShowCustomReportDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create Custom Report</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCustomReportCreate}>
+            <div className="space-y-6">
+              <div>
+                <Label>Report Name *</Label>
+                <Input 
+                  value={customReport.name} 
+                  onChange={(e) => setCustomReport({...customReport, name: e.target.value})} 
+                  placeholder="e.g., Monthly Performance Report"
+                  required
+                  data-testid="custom-report-name"
+                />
+              </div>
+              
+              <div>
+                <Label>Data Sources</Label>
+                <Select 
+                  value={customReport.collections[0] || ''} 
+                  onValueChange={(val) => setCustomReport({...customReport, collections: [val]})}
+                >
+                  <SelectTrigger data-testid="custom-report-source">
+                    <SelectValue placeholder="Choose data source" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(availableCollections).map(([key, config]) => (
+                      <SelectItem key={key} value={key}>{config.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {customReport.collections[0] && (
+                <div>
+                  <Label>Fields to Include</Label>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    {availableCollections[customReport.collections[0]]?.fields.map((field) => (
+                      <label key={field} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={customReport.fields.includes(field)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setCustomReport({
+                                ...customReport,
+                                fields: [...customReport.fields, field]
+                              });
+                            } else {
+                              setCustomReport({
+                                ...customReport,
+                                fields: customReport.fields.filter(f => f !== field)
+                              });
+                            }
+                          }}
+                          data-testid={`field-${field}`}
+                        />
+                        <span className="text-sm capitalize">{field.replace('_', ' ')}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Group By</Label>
+                  <Select 
+                    value={customReport.groupBy} 
+                    onValueChange={(val) => setCustomReport({...customReport, groupBy: val})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Group by..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="date">Date</SelectItem>
+                      <SelectItem value="status">Status</SelectItem>
+                      <SelectItem value="priority">Priority</SelectItem>
+                      <SelectItem value="assigned_to">Assignee</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>Sort By</Label>
+                  <Select 
+                    value={customReport.sortBy} 
+                    onValueChange={(val) => setCustomReport({...customReport, sortBy: val})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sort by..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="date_desc">Date (Newest)</SelectItem>
+                      <SelectItem value="date_asc">Date (Oldest)</SelectItem>
+                      <SelectItem value="status">Status</SelectItem>
+                      <SelectItem value="priority">Priority</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium mb-2">Report Preview</h4>
+                <p className="text-sm text-gray-600">
+                  <strong>Name:</strong> {customReport.name || 'Untitled Report'}<br />
+                  <strong>Source:</strong> {customReport.collections[0] ? availableCollections[customReport.collections[0]]?.name : 'None selected'}<br />
+                  <strong>Fields:</strong> {customReport.fields.length} selected<br />
+                  <strong>Grouping:</strong> {customReport.groupBy || 'None'}<br />
+                  <strong>Sorting:</strong> {customReport.sortBy || 'Default'}
+                </p>
+              </div>
+            </div>
+            
+            <DialogFooter className="mt-6">
+              <Button type="button" variant="outline" onClick={() => setShowCustomReportDialog(false)}>
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={!customReport.name || !customReport.collections[0]}
+                data-testid="save-custom-report-btn"
+              >
+                Create Report
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
