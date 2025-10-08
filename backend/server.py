@@ -17,6 +17,7 @@ from inspection_routes import router as inspection_router
 from checklist_routes import router as checklist_router
 from task_routes import router as task_router
 from reports_routes import router as reports_router
+from user_routes import router as user_router
 
 
 ROOT_DIR = Path(__file__).parent
