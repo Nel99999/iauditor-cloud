@@ -239,10 +239,30 @@ const UserManagementPage = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Last Login</TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-slate-50"
+                    onClick={() => handleSort('name')}
+                  >
+                    User {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-slate-50"
+                    onClick={() => handleSort('role')}
+                  >
+                    Role {sortBy === 'role' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-slate-50"
+                    onClick={() => handleSort('status')}
+                  >
+                    Status {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:bg-slate-50"
+                    onClick={() => handleSort('last_login')}
+                  >
+                    Last Login {sortBy === 'last_login' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  </TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
