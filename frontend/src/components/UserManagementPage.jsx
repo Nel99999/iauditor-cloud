@@ -345,6 +345,67 @@ const UserManagementPage = () => {
         </CardContent>
       </Card>
 
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete User</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this user? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          {deleteUserData && (
+            <div className="space-y-4">
+              <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm font-medium text-red-900">
+                  {deleteUserData.name}
+                </p>
+                <p className="text-sm text-red-600">
+                  {deleteUserData.email}
+                </p>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                This user will be removed from the system and will no longer have access.
+              </p>
+            </div>
+          )}
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => {
+                setShowDeleteDialog(false);
+                setDeleteUserData(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                if (!deleteUserData) return;
+                
+                try {
+                  setLoading(true);
+                  await axios.delete(`${API}/users/${deleteUserData.id}`);
+                  alert('User deleted successfully!');
+                  setShowDeleteDialog(false);
+                  setDeleteUserData(null);
+                  loadUsers();
+                } catch (err) {
+                  alert(err.response?.data?.detail || 'Failed to delete user');
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+            >
+              {loading ? 'Deleting...' : 'Delete User'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Edit User Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent>
