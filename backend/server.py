@@ -10,6 +10,9 @@ from typing import List
 import uuid
 from datetime import datetime, timezone
 
+# Import auth routes
+from auth_routes import router as auth_router
+
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -20,7 +23,10 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
-app = FastAPI()
+app = FastAPI(title="Operational Management Platform API")
+
+# Store db in app state for dependency injection
+app.state.db = db
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
