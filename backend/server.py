@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 # Import auth routes
 from auth_routes import router as auth_router
 from org_routes import router as org_router
+from inspection_routes import router as inspection_router
 
 
 ROOT_DIR = Path(__file__).parent
