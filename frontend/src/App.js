@@ -122,7 +122,37 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature="Checklists" />
+                    <ChecklistsPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checklists/templates/new"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ChecklistTemplateBuilder />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checklists/templates/:templateId/edit"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ChecklistTemplateBuilder />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checklists/execute/:executionId"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ChecklistExecutionPage />
                   </Layout>
                 </ProtectedRoute>
               }
