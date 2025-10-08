@@ -1351,10 +1351,15 @@ def main():
     inspection_tester = InspectionAPITester()
     inspection_report = inspection_tester.run_all_tests()
     
+    # Test Checklist System
+    print("\n📝 PHASE 4: Checklist System Testing")
+    checklist_tester = ChecklistAPITester()
+    checklist_report = checklist_tester.run_all_tests()
+    
     # Combined results
-    total_tests = auth_report["total_tests"] + org_report["total_tests"] + inspection_report["total_tests"]
-    total_passed = auth_report["passed_tests"] + org_report["passed_tests"] + inspection_report["passed_tests"]
-    total_failed = auth_report["failed_tests"] + org_report["failed_tests"] + inspection_report["failed_tests"]
+    total_tests = auth_report["total_tests"] + org_report["total_tests"] + inspection_report["total_tests"] + checklist_report["total_tests"]
+    total_passed = auth_report["passed_tests"] + org_report["passed_tests"] + inspection_report["passed_tests"] + checklist_report["passed_tests"]
+    total_failed = auth_report["failed_tests"] + org_report["failed_tests"] + inspection_report["failed_tests"] + checklist_report["failed_tests"]
     
     print("\n" + "=" * 80)
     print("🎯 OVERALL TEST SUMMARY")
@@ -1362,6 +1367,7 @@ def main():
     print(f"Authentication Tests: {auth_report['passed_tests']}/{auth_report['total_tests']} ({auth_report['success_rate']:.1f}%)")
     print(f"Organization Tests: {org_report['passed_tests']}/{org_report['total_tests']} ({org_report['success_rate']:.1f}%)")
     print(f"Inspection Tests: {inspection_report['passed_tests']}/{inspection_report['total_tests']} ({inspection_report['success_rate']:.1f}%)")
+    print(f"Checklist Tests: {checklist_report['passed_tests']}/{checklist_report['total_tests']} ({checklist_report['success_rate']:.1f}%)")
     print(f"Overall: {total_passed}/{total_tests} ({(total_passed/total_tests)*100:.1f}%)")
     
     # Return appropriate exit code
