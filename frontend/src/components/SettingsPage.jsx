@@ -141,10 +141,16 @@ const SettingsPage = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       
-      setUser({ ...user, picture: response.data.picture_url });
+      // Update user context with new picture URL and add timestamp to force refresh
+      const newPictureUrl = `${BACKEND_URL}${response.data.picture_url}?t=${Date.now()}`;
+      setUser({ ...user, picture: newPictureUrl });
       showMessage('success', 'Profile picture updated!');
+      
+      // Force re-render by updating state
+      window.location.reload();
     } catch (err) {
-      showMessage('error', 'Failed to upload photo');
+      showMessage('error', err.response?.data?.detail || 'Failed to upload photo');
+      console.error('Upload error:', err);
     } finally {
       setLoading(false);
     }
