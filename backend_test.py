@@ -1685,6 +1685,313 @@ class ReportsAPITester:
         }
 
 
+class UserDeleteTester:
+    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.master_user_id = None
+        self.test_user_id = None
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def test_login_master_user(self):
+        """Test login as master user (Llewellyn)"""
+        login_data = {
+            "email": "llewellyn@bluedawncapital.co.za",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Login as Master User (Llewellyn)",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            return True, response
+        return False, response
+
+    def test_get_users_list(self):
+        """Test getting list of users"""
+        success, response = self.run_test(
+            "Get Users List",
+            "GET",
+            "users",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Find master user ID and a test user ID
+            for user in response:
+                if user.get('email') == 'llewellyn@bluedawncapital.co.za':
+                    self.master_user_id = user.get('id')
+                elif user.get('email') != 'llewellyn@bluedawncapital.co.za' and not self.test_user_id:
+                    self.test_user_id = user.get('id')
+            
+            # Verify no deleted users in list
+            deleted_users = [u for u in response if u.get('status') == 'deleted']
+            if deleted_users:
+                self.log_test("Verify No Deleted Users in List", False, f"Found {len(deleted_users)} deleted users in list")
+                return False, response
+            else:
+                self.log_test("Verify No Deleted Users in List", True, "No deleted users found in list")
+            
+            # Verify all users have last_login timestamps
+            users_without_timestamp = []
+            for user in response:
+                if 'last_login' not in user:
+                    users_without_timestamp.append(user.get('email', user.get('id')))
+            
+            if users_without_timestamp:
+                self.log_test("Verify Last Login Timestamps", False, f"Users without last_login: {users_without_timestamp}")
+            else:
+                self.log_test("Verify Last Login Timestamps", True, "All users have last_login field")
+        
+        return success, response
+
+    def test_delete_self_should_fail(self):
+        """Test trying to delete own account (should fail)"""
+        if not self.master_user_id:
+            self.log_test("Delete Self Test", False, "Master user ID not found")
+            return False
+        
+        success, response = self.run_test(
+            "Try to Delete Self (Should Fail)",
+            "DELETE",
+            f"users/{self.master_user_id}",
+            400
+        )
+        
+        # Verify error message
+        if success and isinstance(response, dict):
+            expected_message = "Cannot delete your own account"
+            if response.get('detail') == expected_message:
+                self.log_test("Verify Self-Delete Error Message", True, f"Correct error message: {expected_message}")
+            else:
+                self.log_test("Verify Self-Delete Error Message", False, f"Expected: {expected_message}, Got: {response.get('detail')}")
+        
+        return success
+
+    def test_delete_other_user(self):
+        """Test deleting another user (should succeed)"""
+        if not self.test_user_id:
+            self.log_test("Delete Other User Test", False, "Test user ID not found")
+            return False
+        
+        success, response = self.run_test(
+            "Delete Another User",
+            "DELETE",
+            f"users/{self.test_user_id}",
+            200
+        )
+        
+        # Verify success message
+        if success and isinstance(response, dict):
+            expected_message = "User deleted successfully"
+            if response.get('message') == expected_message:
+                self.log_test("Verify Delete Success Message", True, f"Correct success message: {expected_message}")
+            else:
+                self.log_test("Verify Delete Success Message", False, f"Expected: {expected_message}, Got: {response.get('message')}")
+        
+        return success
+
+    def test_verify_user_soft_deleted(self):
+        """Test that deleted user no longer appears in users list"""
+        success, response = self.run_test(
+            "Verify Deleted User Not in List",
+            "GET",
+            "users",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Check if deleted user is still in the list
+            deleted_user_found = False
+            for user in response:
+                if user.get('id') == self.test_user_id:
+                    deleted_user_found = True
+                    break
+            
+            if deleted_user_found:
+                self.log_test("Verify Soft Delete", False, f"Deleted user {self.test_user_id} still appears in users list")
+                return False
+            else:
+                self.log_test("Verify Soft Delete", True, f"Deleted user {self.test_user_id} correctly removed from users list")
+                return True
+        
+        return False
+
+    def test_user_edit_functionality(self):
+        """Test user edit functionality"""
+        if not self.master_user_id:
+            self.log_test("User Edit Test", False, "Master user ID not found")
+            return False
+        
+        edit_data = {
+            "role": "manager"
+        }
+        
+        success, response = self.run_test(
+            "Test User Edit (Role Update)",
+            "PUT",
+            f"users/{self.master_user_id}",
+            200,
+            data=edit_data
+        )
+        
+        return success
+
+    def test_user_invite_functionality(self):
+        """Test user invite functionality"""
+        invite_data = {
+            "email": "test-delete-check@example.com",
+            "role": "viewer"
+        }
+        
+        success, response = self.run_test(
+            "Test User Invite",
+            "POST",
+            "users/invite",
+            200,
+            data=invite_data
+        )
+        
+        return success
+
+    def run_delete_tests(self):
+        """Run comprehensive user delete functionality tests"""
+        print("🚀 Starting User Delete Functionality Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 60)
+
+        # Step 1: Login as Master User
+        print("\n📋 Step 1: Login as Master User")
+        login_success, login_response = self.test_login_master_user()
+        if not login_success:
+            print("❌ Login failed, stopping delete tests")
+            return self.generate_report()
+
+        # Step 2: Get List of Users
+        print("\n📋 Step 2: Get List of Users")
+        users_success, users_response = self.test_get_users_list()
+        if not users_success:
+            print("❌ Failed to get users list")
+            return self.generate_report()
+
+        # Step 3: Try to Delete Self (Should Fail)
+        print("\n📋 Step 3: Try to Delete Self (Should Fail)")
+        self.test_delete_self_should_fail()
+
+        # Step 4: Delete Another User
+        print("\n📋 Step 4: Delete Another User")
+        delete_success = self.test_delete_other_user()
+        if not delete_success:
+            print("❌ Failed to delete other user")
+
+        # Step 5: Verify User is Soft Deleted
+        print("\n📋 Step 5: Verify User is Soft Deleted")
+        self.test_verify_user_soft_deleted()
+
+        # Step 6: Test User Edit
+        print("\n📋 Step 6: Test User Edit")
+        self.test_user_edit_functionality()
+
+        # Step 7: Test User Invite
+        print("\n📋 Step 7: Test User Invite")
+        self.test_user_invite_functionality()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 60)
+        print("📊 USER DELETE TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 class UserAPITester:
     def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
         self.base_url = base_url
