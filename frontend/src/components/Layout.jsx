@@ -66,12 +66,12 @@ const Layout = ({ children }) => {
       section: 'Organization',
       items: [
         {
-          name: 'Structure',
+          name: 'Organization Structure',
           icon: Building2,
           path: '/organization',
           badge: null,
           active: true,
-          description: 'Profile → Org → Company',
+          description: 'Manage hierarchy',
         },
         {
           name: 'User Management',
