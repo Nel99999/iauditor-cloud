@@ -327,16 +327,9 @@ const UserManagementPage = () => {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={async () => {
-                            if (window.confirm(`Are you sure you want to delete ${u.name}? This action cannot be undone.`)) {
-                              try {
-                                await axios.delete(`${API}/users/${u.id}`);
-                                alert('User deleted successfully!');
-                                loadUsers();
-                              } catch (err) {
-                                alert(err.response?.data?.detail || 'Failed to delete user');
-                              }
-                            }
+                          onClick={() => {
+                            setDeleteUserData(u);
+                            setShowDeleteDialog(true);
                           }}
                           className="text-red-600"
                         >
