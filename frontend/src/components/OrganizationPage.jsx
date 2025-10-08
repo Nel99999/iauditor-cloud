@@ -342,7 +342,7 @@ const OrganizationPage = () => {
           <DialogContent data-testid="create-unit-dialog">
             <DialogHeader>
               <DialogTitle>
-                {selectedNode ? `Add ${LEVEL_NAMES[formData.level]} under ${selectedNode.name}` : 'Create Root Unit'}
+                {selectedNode ? `Add ${LEVEL_NAMES[formData.level]} under ${selectedNode.name}` : 'Create Profile'}
               </DialogTitle>
               <DialogDescription>
                 Create a new {LEVEL_NAMES[formData.level]} level unit
