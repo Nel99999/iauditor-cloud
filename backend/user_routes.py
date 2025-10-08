@@ -214,6 +214,7 @@ async def list_users(request: Request, db: AsyncIOMotorDatabase = Depends(get_db
     # Remove sensitive data and add last_login placeholder
     for u in users:
         u.pop("password", None)
+        u.pop("password_hash", None)
         u.pop("_id", None)
         if "last_login" not in u:
             u["last_login"] = "Recently"
