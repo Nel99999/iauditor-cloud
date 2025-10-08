@@ -104,7 +104,11 @@ async def update_password(
         raise HTTPException(status_code=404, detail="User not found")
     
     # Verify current password
-    if not bcrypt.checkpw(password_data.current_password.encode('utf-8'), user["password"].encode('utf-8')):
+    password_field = user.get("password_hash") or user.get("password")
+    if not password_field:
+        raise HTTPException(status_code=400, detail="Password not found")
+    
+    if not bcrypt.checkpw(password_data.current_password.encode('utf-8'), password_field.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Current password is incorrect")
     
     # Hash new password
@@ -113,7 +117,7 @@ async def update_password(
     await db.users.update_one(
         {"id": current_user["id"]},
         {"$set": {
-            "password": hashed_password,
+            "password_hash": hashed_password,
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
