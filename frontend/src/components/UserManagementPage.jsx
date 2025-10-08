@@ -232,17 +232,9 @@ const UserManagementPage = () => {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={async () => {
-                            const newRole = prompt(`Change role for ${u.name}? (admin/manager/inspector/viewer)`, u.role);
-                            if (newRole && ['admin', 'manager', 'inspector', 'viewer'].includes(newRole)) {
-                              try {
-                                await axios.put(`${API}/users/${u.id}`, { role: newRole });
-                                alert('User role updated!');
-                                loadUsers();
-                              } catch (err) {
-                                alert('Failed to update user');
-                              }
-                            }
+                          onClick={() => {
+                            setEditUserData(u);
+                            setShowEditDialog(true);
                           }}
                         >
                           <Edit className="h-4 w-4" />
@@ -251,10 +243,10 @@ const UserManagementPage = () => {
                           size="sm"
                           variant="ghost"
                           onClick={async () => {
-                            if (window.confirm(`Delete user ${u.name}?`)) {
+                            if (window.confirm(`Are you sure you want to delete ${u.name}? This action cannot be undone.`)) {
                               try {
                                 await axios.delete(`${API}/users/${u.id}`);
-                                alert('User deleted successfully');
+                                alert('User deleted successfully!');
                                 loadUsers();
                               } catch (err) {
                                 alert(err.response?.data?.detail || 'Failed to delete user');
