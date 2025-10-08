@@ -62,11 +62,11 @@ function App() {
               }
             />
             <Route
-              path="/team"
+              path="/users"
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <ComingSoon feature="Team Management" />
+                    <UserManagementPage />
                   </Layout>
                 </ProtectedRoute>
               }
