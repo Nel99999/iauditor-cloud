@@ -73,8 +73,8 @@ const ReportsPage = () => {
     try {
       setLoading(true);
       const [overviewRes, trendsRes] = await Promise.all([
-        axios.get(`${API}/reports/overview?days=30`),
-        axios.get(`${API}/reports/trends?days=30`),
+        axios.get(`${API}/reports/overview?days=${selectedDays}`),
+        axios.get(`${API}/reports/trends?days=${selectedDays}`)
       ]);
       setOverview(overviewRes.data);
       setTrends(trendsRes.data);
@@ -83,6 +83,24 @@ const ReportsPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCustomReportCreate = async (e) => {
+    e.preventDefault();
+    try {
+      // This would typically send to backend for report generation
+      console.log('Creating custom report:', customReport);
+      alert('Custom report created successfully! (This is a demo - would integrate with backend)');
+      setShowCustomReportDialog(false);
+      setCustomReport({ name: '', collections: [], fields: [], filters: [], groupBy: '', sortBy: '' });
+    } catch (err) {
+      alert('Failed to create custom report');
+    }
+  };
+
+  const exportData = (format) => {
+    // Demo export functionality
+    alert(`Exporting data as ${format.toUpperCase()}... (This would integrate with backend)`);
   };
 
   if (loading) {
