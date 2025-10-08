@@ -81,6 +81,7 @@ api_router.include_router(inspection_router)
 api_router.include_router(checklist_router)
 api_router.include_router(task_router)
 api_router.include_router(reports_router)
+api_router.include_router(user_router)
 
 app.include_router(api_router)
 
