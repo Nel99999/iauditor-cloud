@@ -310,11 +310,14 @@ const Layout = ({ children }) => {
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
           <div className="text-xs text-center text-slate-500 dark:text-slate-400">
             <p className="font-semibold">Phase 1 MVP</p>
-            <p className="mt-1">Milestones 1-3 Complete</p>
+            <p className="mt-1">All Milestones Complete</p>
             <div className="mt-2 flex gap-1 justify-center">
               <Badge variant="outline" className="text-xs">M1 ✓</Badge>
               <Badge variant="outline" className="text-xs">M2 ✓</Badge>
               <Badge variant="outline" className="text-xs">M3 ✓</Badge>
+              <Badge variant="outline" className="text-xs">M4 ✓</Badge>
+              <Badge variant="outline" className="text-xs">M5 ✓</Badge>
+              <Badge variant="outline" className="text-xs">M6 ✓</Badge>
             </div>
           </div>
         </div>
