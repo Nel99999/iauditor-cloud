@@ -16,6 +16,8 @@ import InspectionExecutionPage from "@/components/InspectionExecutionPage";
 import ChecklistsPage from "@/components/ChecklistsPage";
 import ChecklistTemplateBuilder from "@/components/ChecklistTemplateBuilder";
 import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
+import TasksPage from "@/components/TasksPage";
+import ReportsPage from "@/components/ReportsPage";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
