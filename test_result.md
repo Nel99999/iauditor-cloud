@@ -167,6 +167,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "✅ PASSED - Organization management system working perfectly. Hierarchy validation, CRUD operations, user invitations, and deletion constraints all functional. 20/20 tests passed (100% success rate)."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ RE-VERIFIED - Organization management system working perfectly. Full hierarchy testing (Company->Region->Location->Department->Team), CRUD operations, level validation, user invitations, deletion constraints all functional. 20/20 tests passed (100% success rate)."
 
   - task: "Inspection System (/api/inspections)"
     implemented: true
