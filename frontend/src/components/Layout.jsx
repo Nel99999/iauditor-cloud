@@ -106,8 +106,8 @@ const Layout = ({ children }) => {
           name: 'Checklists',
           icon: CheckSquare,
           path: '/checklists',
-          badge: 'M4',
-          active: false,
+          badge: 'New',
+          active: true,
           description: 'Daily operations',
         },
         {
