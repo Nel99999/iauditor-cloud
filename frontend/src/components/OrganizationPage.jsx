@@ -294,7 +294,7 @@ const OrganizationPage = () => {
         </div>
         <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
           <Plus className="h-4 w-4 mr-2" />
-          Add Root Unit
+          Create Profile
         </Button>
       </div>
 
