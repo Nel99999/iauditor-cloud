@@ -330,7 +330,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Layout navigation menu items activation (Tasks and Reports active: false)"
+    - "Mobile responsiveness improvements for Layout component"
+    - "Task creation form input selector refinement"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
