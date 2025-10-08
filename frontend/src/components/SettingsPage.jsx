@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,29 +10,142 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Settings, User, Shield, Bell, Building2, Save } from 'lucide-react';
+import { Settings, User, Shield, Bell, Building2, Save, Upload } from 'lucide-react';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const SettingsPage = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+  const [profileData, setProfileData] = useState({ name: '', phone: '', bio: '' });
+  const [passwordData, setPasswordData] = useState({ current_password: '', new_password: '', confirm_password: '' });
   const [settings, setSettings] = useState({
     emailNotifications: true,
     pushNotifications: false,
     weeklyReports: true,
     marketingEmails: false,
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
-  const handleSaveProfile = (e) => {
-    e.preventDefault();
-    alert('Profile updated successfully!');
+  useEffect(() => {
+    loadSettings();
+    if (user) {
+      setProfileData({ name: user.name || '', phone: user.phone || '', bio: user.bio || '' });
+    }
+  }, [user]);
+
+  const loadSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/users/settings`);
+      const data = response.data;
+      setSettings({
+        emailNotifications: data.email_notifications,
+        pushNotifications: data.push_notifications,
+        weeklyReports: data.weekly_reports,
+        marketingEmails: data.marketing_emails,
+      });
+    } catch (err) {
+      console.error('Failed to load settings:', err);
+    }
   };
 
-  const handleSavePassword = (e) => {
-    e.preventDefault();
-    alert('Password updated successfully!');
+  const showMessage = (type, text) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3000);
   };
 
-  const handleSaveNotifications = () => {
-    alert('Notification preferences saved!');
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/profile`, {
+        name: profileData.name,
+        phone: profileData.phone,
+        bio: profileData.bio,
+      });
+      // Update user context
+      setUser({ ...user, name: profileData.name, phone: profileData.phone, bio: profileData.bio });
+      showMessage('success', 'Profile updated successfully!');
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSavePassword = async (e) => {
+    e.preventDefault();
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      showMessage('error', 'New passwords do not match');
+      return;
+    }
+    if (passwordData.new_password.length < 6) {
+      showMessage('error', 'Password must be at least 6 characters');
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/password`, {
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password,
+      });
+      setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
+      showMessage('success', 'Password updated successfully!');
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to update password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/settings`, {
+        email_notifications: settings.emailNotifications,
+        push_notifications: settings.pushNotifications,
+        weekly_reports: settings.weeklyReports,
+        marketing_emails: settings.marketingEmails,
+      });
+      showMessage('success', 'Notification preferences saved!');
+    } catch (err) {
+      showMessage('error', 'Failed to save preferences');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      showMessage('error', 'Please upload an image file');
+      return;
+    }
+    
+    if (file.size > 2 * 1024 * 1024) {
+      showMessage('error', 'File size must be less than 2MB');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await axios.post(`${API}/users/profile/picture`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      setUser({ ...user, picture: response.data.picture_url });
+      showMessage('success', 'Profile picture updated!');
+    } catch (err) {
+      showMessage('error', 'Failed to upload photo');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getInitials = (name) => {
@@ -44,6 +158,12 @@ const SettingsPage = () => {
 
   return (
     <div className="space-y-6">
+      {message.text && (
+        <div className={`p-4 rounded-md ${message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+          {message.text}
+        </div>
+      )}
+
       <div>
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
           Settings
@@ -87,7 +207,20 @@ const SettingsPage = () => {
                   <AvatarFallback>{getInitials(user?.name || 'U')}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <Button variant="outline" size="sm">
+                  <input
+                    type="file"
+                    id="photo-upload"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => document.getElementById('photo-upload').click()}
+                    disabled={loading}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
                     Change Photo
                   </Button>
                   <p className="text-sm text-muted-foreground mt-2">
@@ -102,27 +235,51 @@ const SettingsPage = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" defaultValue={user?.name} />
+                    <Input 
+                      id="name" 
+                      value={profileData.name}
+                      onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" defaultValue={user?.email} disabled />
+                    <Input id="email" type="email" value={user?.email} disabled />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input 
+                    id="phone" 
+                    value={profileData.phone}
+                    onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                    placeholder="Optional"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bio</Label>
+                  <Input 
+                    id="bio" 
+                    value={profileData.bio}
+                    onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                    placeholder="Optional"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="role">Role</Label>
                   <div className="flex items-center gap-2">
-                    <Input id="role" defaultValue={user?.role} disabled className="max-w-xs" />
+                    <Input id="role" value={user?.role} disabled className="max-w-xs" />
                     <Badge variant="outline" className="capitalize">
                       {user?.role}
                     </Badge>
                   </div>
                 </div>
 
-                <Button type="submit" className="gap-2">
+                <Button type="submit" className="gap-2" disabled={loading}>
                   <Save className="h-4 w-4" />
-                  Save Changes
+                  {loading ? 'Saving...' : 'Save Changes'}
                 </Button>
               </form>
             </CardContent>
@@ -142,19 +299,34 @@ const SettingsPage = () => {
                 <form onSubmit={handleSavePassword} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="current-password">Current Password</Label>
-                    <Input id="current-password" type="password" />
+                    <Input 
+                      id="current-password" 
+                      type="password"
+                      value={passwordData.current_password}
+                      onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="new-password">New Password</Label>
-                    <Input id="new-password" type="password" />
+                    <Input 
+                      id="new-password" 
+                      type="password"
+                      value={passwordData.new_password}
+                      onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirm-password">Confirm New Password</Label>
-                    <Input id="confirm-password" type="password" />
+                    <Input 
+                      id="confirm-password" 
+                      type="password"
+                      value={passwordData.confirm_password}
+                      onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})}
+                    />
                   </div>
-                  <Button type="submit" className="gap-2">
+                  <Button type="submit" className="gap-2" disabled={loading}>
                     <Save className="h-4 w-4" />
-                    Update Password
+                    {loading ? 'Updating...' : 'Update Password'}
                   </Button>
                 </form>
               </div>
@@ -268,9 +440,9 @@ const SettingsPage = () => {
                 </div>
               </div>
 
-              <Button onClick={handleSaveNotifications} className="gap-2">
+              <Button onClick={handleSaveNotifications} className="gap-2" disabled={loading}>
                 <Save className="h-4 w-4" />
-                Save Preferences
+                {loading ? 'Saving...' : 'Save Preferences'}
               </Button>
             </CardContent>
           </Card>
@@ -286,17 +458,18 @@ const SettingsPage = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Organization Name</Label>
-                <Input defaultValue="Test Organization" />
+                <Input defaultValue="Test Organization" disabled />
+                <p className="text-xs text-muted-foreground">Contact admin to change organization details</p>
               </div>
 
               <div className="space-y-2">
                 <Label>Industry</Label>
-                <Input defaultValue="Manufacturing" />
+                <Input defaultValue="Manufacturing" disabled />
               </div>
 
               <div className="space-y-2">
                 <Label>Company Size</Label>
-                <Input defaultValue="50-200 employees" />
+                <Input defaultValue="50-200 employees" disabled />
               </div>
 
               <Separator />
@@ -309,7 +482,7 @@ const SettingsPage = () => {
                     This action cannot be undone. This will permanently delete your organization
                     and all associated data.
                   </p>
-                  <Button variant="destructive" size="sm">
+                  <Button variant="destructive" size="sm" disabled>
                     Delete Organization
                   </Button>
                 </div>
