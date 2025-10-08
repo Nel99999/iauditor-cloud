@@ -2529,7 +2529,7 @@ class InspectionAPITester:
         }
 
 def main():
-    print("🧪 COMPREHENSIVE API TESTING")
+    print("🧪 COMPREHENSIVE API TESTING - ALL SYSTEMS INCLUDING NEW USER MANAGEMENT")
     print("=" * 80)
     
     # Test Authentication System
@@ -2537,46 +2537,52 @@ def main():
     auth_tester = AuthAPITester()
     auth_report = auth_tester.run_all_tests()
     
+    # Test NEW User Management System
+    print("\n👤 PHASE 2: User Management System Testing (NEW)")
+    user_tester = UserAPITester()
+    user_report = user_tester.run_all_tests()
+    
     # Test Organization System
-    print("\n🏢 PHASE 2: Organization System Testing")
+    print("\n🏢 PHASE 3: Organization System Testing")
     org_tester = OrganizationAPITester()
     org_report = org_tester.run_all_tests()
     
     # Test Task System
-    print("\n📋 PHASE 3: Task Management System Testing")
+    print("\n📋 PHASE 4: Task Management System Testing")
     task_tester = TaskAPITester()
     task_report = task_tester.run_all_tests()
     
     # Test Reports System
-    print("\n📊 PHASE 4: Reports & Analytics System Testing")
+    print("\n📊 PHASE 5: Reports & Analytics System Testing")
     reports_tester = ReportsAPITester()
     reports_report = reports_tester.run_all_tests()
     
     # Test Inspection System
-    print("\n🔍 PHASE 5: Inspection System Testing")
+    print("\n🔍 PHASE 6: Inspection System Testing")
     inspection_tester = InspectionAPITester()
     inspection_report = inspection_tester.run_all_tests()
     
     # Test Checklist System
-    print("\n📝 PHASE 6: Checklist System Testing")
+    print("\n📝 PHASE 7: Checklist System Testing")
     checklist_tester = ChecklistAPITester()
     checklist_report = checklist_tester.run_all_tests()
     
     # Combined results
-    total_tests = (auth_report["total_tests"] + org_report["total_tests"] + 
+    total_tests = (auth_report["total_tests"] + user_report["total_tests"] + org_report["total_tests"] + 
                   task_report["total_tests"] + reports_report["total_tests"] +
                   inspection_report["total_tests"] + checklist_report["total_tests"])
-    total_passed = (auth_report["passed_tests"] + org_report["passed_tests"] + 
+    total_passed = (auth_report["passed_tests"] + user_report["passed_tests"] + org_report["passed_tests"] + 
                    task_report["passed_tests"] + reports_report["passed_tests"] +
                    inspection_report["passed_tests"] + checklist_report["passed_tests"])
-    total_failed = (auth_report["failed_tests"] + org_report["failed_tests"] + 
+    total_failed = (auth_report["failed_tests"] + user_report["failed_tests"] + org_report["failed_tests"] + 
                    task_report["failed_tests"] + reports_report["failed_tests"] +
                    inspection_report["failed_tests"] + checklist_report["failed_tests"])
     
     print("\n" + "=" * 80)
-    print("🎯 OVERALL TEST SUMMARY")
+    print("🎯 OVERALL TEST SUMMARY - ALL SYSTEMS")
     print("=" * 80)
     print(f"Authentication Tests: {auth_report['passed_tests']}/{auth_report['total_tests']} ({auth_report['success_rate']:.1f}%)")
+    print(f"User Management Tests: {user_report['passed_tests']}/{user_report['total_tests']} ({user_report['success_rate']:.1f}%) [NEW]")
     print(f"Organization Tests: {org_report['passed_tests']}/{org_report['total_tests']} ({org_report['success_rate']:.1f}%)")
     print(f"Task Tests: {task_report['passed_tests']}/{task_report['total_tests']} ({task_report['success_rate']:.1f}%)")
     print(f"Reports Tests: {reports_report['passed_tests']}/{reports_report['total_tests']} ({reports_report['success_rate']:.1f}%)")
