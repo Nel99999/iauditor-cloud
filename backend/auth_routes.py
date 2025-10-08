@@ -63,6 +63,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     user_dict = user.model_dump()
     user_dict["created_at"] = user_dict["created_at"].isoformat()
     user_dict["updated_at"] = user_dict["updated_at"].isoformat()
+    user_dict["last_login"] = datetime.now(timezone.utc).isoformat()
     await db.users.insert_one(user_dict)
     
     # Update organization owner if created
@@ -78,6 +79,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     # Return token and user data (without password hash)
     user_response = user.model_dump()
     user_response.pop("password_hash", None)
+    user_response["last_login"] = user_dict["last_login"]
     
     return Token(access_token=access_token, user=user_response)
 
