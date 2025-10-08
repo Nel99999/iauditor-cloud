@@ -77,16 +77,20 @@ const UserManagementPage = () => {
       u.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getRoleBadgeVariant = (role) => {
+  const getRoleBadgeStyle = (role) => {
     switch (role) {
+      case 'master':
+        return { backgroundColor: '#9333ea', color: 'white', borderColor: '#9333ea' }; // Purple
       case 'admin':
-        return 'destructive';
+        return { backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' }; // Red
       case 'manager':
-        return 'default';
+        return { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' }; // Blue
       case 'inspector':
-        return 'secondary';
+        return { backgroundColor: '#eab308', color: 'white', borderColor: '#eab308' }; // Yellow
+      case 'viewer':
+        return { backgroundColor: '#22c55e', color: 'white', borderColor: '#22c55e' }; // Green
       default:
-        return 'outline';
+        return { backgroundColor: '#94a3b8', color: 'white', borderColor: '#94a3b8' }; // Gray
     }
   };
 
