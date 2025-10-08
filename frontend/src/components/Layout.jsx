@@ -135,7 +135,7 @@ const Layout = ({ children }) => {
           name: 'Reports',
           icon: FileText,
           path: '/reports',
-          badge: 'M6',
+          badge: '✓',
           active: true,
           description: 'Analytics & reports',
         },
