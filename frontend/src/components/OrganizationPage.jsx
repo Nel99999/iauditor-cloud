@@ -309,7 +309,7 @@ const OrganizationPage = () => {
           <CardHeader>
             <CardTitle>Hierarchy Tree</CardTitle>
             <CardDescription>
-              5-level organizational structure: Company → Region → Location → Department → Team
+              5-level organizational structure: Profile → Organisation → Company → Branch → Brand
             </CardDescription>
           </CardHeader>
           <CardContent>
