@@ -80,6 +80,9 @@ api_router.include_router(auth_router)
 # Include organization router
 api_router.include_router(org_router)
 
+# Include inspection router
+api_router.include_router(inspection_router)
+
 # Include the router in the main app
 app.include_router(api_router)
 
