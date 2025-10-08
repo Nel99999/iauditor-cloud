@@ -152,6 +152,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "✅ PASSED - Authentication system working correctly. JWT tokens, user registration, login, and protected endpoints all functional. Minor: Password validation test expected 422 but got 400 (still validates correctly). 11/12 tests passed (91.7% success rate)."
+        -working: true
+        -agent: "testing"
+        -comment: "✅ RE-VERIFIED - Authentication system working correctly. User registration (with/without org), login, JWT token validation, protected endpoints all functional. Minor: Password validation returns 400 instead of expected 422 but validation works correctly. 11/12 tests passed (91.7% success rate)."
 
   - task: "Organization Management (/api/organizations, /api/org_units)"
     implemented: true
