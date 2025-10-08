@@ -67,7 +67,7 @@ const ReportsPage = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [selectedDays]);
 
   const loadData = async () => {
     try {
