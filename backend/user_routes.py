@@ -229,7 +229,7 @@ async def upload_profile_picture(
 
 
 # List all users in organization (admin only)
-@router.get("", response_model=List[UserResponse])
+@router.get("")
 async def list_users(request: Request, current_user: dict = Depends(get_current_user)):
     """Get all users in the organization"""
     # Get users from same organization
