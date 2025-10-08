@@ -10,6 +10,9 @@ import DashboardHome from "@/components/DashboardHome";
 import OrganizationPage from "@/components/OrganizationPage";
 import UserManagementPage from "@/components/UserManagementPage";
 import SettingsPage from "@/components/SettingsPage";
+import InspectionsPage from "@/components/InspectionsPage";
+import TemplateBuilderPage from "@/components/TemplateBuilderPage";
+import InspectionExecutionPage from "@/components/InspectionExecutionPage";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
