@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime, timezone
 import uuid
 from auth_utils import get_current_user
 import bcrypt
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+# Type alias for current_user dependency
+CurrentUser = Dict[str, any]
 
 
 # Pydantic Models
