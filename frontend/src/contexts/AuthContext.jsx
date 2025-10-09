@@ -8,6 +8,8 @@ const API = `${BACKEND_URL}/api`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userPermissions, setUserPermissions] = useState([]);
+  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('access_token'));
 
@@ -19,6 +21,37 @@ export const AuthProvider = ({ children }) => {
       delete axios.defaults.headers.common['Authorization'];
     }
   }, [token]);
+
+  // Fetch user permissions based on their role
+  const loadUserPermissions = async (userRole, userId) => {
+    try {
+      // Get all roles to find the user's role ID
+      const rolesResponse = await axios.get(`${API}/roles`);
+      const userRoleData = rolesResponse.data.find(r => r.code === userRole);
+      
+      if (userRoleData) {
+        // Get permissions for this role
+        const permResponse = await axios.get(`${API}/roles/${userRoleData.id}/permissions`);
+        
+        // Get permission details
+        const permissionsResponse = await axios.get(`${API}/permissions`);
+        const allPermissions = permissionsResponse.data;
+        
+        // Map role_permissions to actual permission objects
+        const userPerms = permResponse.data.map(rp => {
+          return allPermissions.find(p => p.id === rp.permission_id);
+        }).filter(Boolean);
+        
+        setUserPermissions(userPerms);
+        setUserRole(userRoleData);
+        
+        console.log(`✅ Loaded ${userPerms.length} permissions for role: ${userRole}`);
+      }
+    } catch (error) {
+      console.error('Failed to load permissions:', error);
+      setUserPermissions([]);
+    }
+  };
 
   // Check for existing session on mount
   useEffect(() => {
@@ -39,7 +72,13 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const response = await axios.get(`${API}/auth/me`);
-          setUser(response.data);
+          const userData = response.data;
+          setUser(userData);
+          
+          // Load permissions for user's role
+          if (userData.role) {
+            await loadUserPermissions(userData.role, userData.id);
+          }
         } catch (error) {
           console.error('Failed to fetch user:', error);
           localStorage.removeItem('access_token');
@@ -61,8 +100,14 @@ export const AuthProvider = ({ children }) => {
         withCredentials: true,
       });
       
-      setUser(response.data.user);
-      // For Google OAuth, session is managed via cookie
+      const userData = response.data.user;
+      setUser(userData);
+      
+      // Load permissions
+      if (userData.role) {
+        await loadUserPermissions(userData.role, userData.id);
+      }
+      
       setLoading(false);
     } catch (error) {
       console.error('Google OAuth error:', error);
@@ -83,6 +128,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('access_token', access_token);
       setToken(access_token);
       setUser(userData);
+      
+      // Load permissions
+      if (userData.role) {
+        await loadUserPermissions(userData.role, userData.id);
+      }
+      
       return { success: true };
     } catch (error) {
       return {
@@ -103,6 +154,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('access_token', access_token);
       setToken(access_token);
       setUser(userData);
+      
+      // Load permissions
+      if (userData.role) {
+        await loadUserPermissions(userData.role, userData.id);
+      }
+      
       return { success: true };
     } catch (error) {
       return {
@@ -126,11 +183,15 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('access_token');
       setToken(null);
       setUser(null);
+      setUserPermissions([]);
+      setUserRole(null);
     }
   };
 
   const value = {
     user,
+    userPermissions,
+    userRole,
     loading,
     register,
     login,
