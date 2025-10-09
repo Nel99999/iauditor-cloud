@@ -89,7 +89,7 @@ SYSTEM_ROLES = {
     "viewer": {
         "name": "Viewer",
         "code": "viewer",
-        "color": "#84cc16",  # Lime Green
+        "color": "#bef264",  # Bright Neon Lime
         "level": 10,
         "description": "Read-only access to assigned data",
         "is_system_role": True
