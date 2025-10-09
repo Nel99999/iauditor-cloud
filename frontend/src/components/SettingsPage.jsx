@@ -557,6 +557,261 @@ const SettingsPage = () => {
           </Card>
         </TabsContent>
 
+        {/* Appearance Tab */}
+        <TabsContent value="appearance">
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance Settings</CardTitle>
+              <CardDescription>Customize how the application looks and feels</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="theme">Theme</Label>
+                  <Select value={appearanceSettings.theme} onValueChange={(value) => setAppearanceSettings({...appearanceSettings, theme: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="light">Light</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="auto">Auto (System)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="accent-color">Accent Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="accent-color"
+                      type="color"
+                      value={appearanceSettings.accent_color}
+                      onChange={(e) => setAppearanceSettings({...appearanceSettings, accent_color: e.target.value})}
+                      className="w-20 h-10"
+                    />
+                    <Input
+                      type="text"
+                      value={appearanceSettings.accent_color}
+                      onChange={(e) => setAppearanceSettings({...appearanceSettings, accent_color: e.target.value})}
+                      className="font-mono"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Choose your primary accent color</p>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="font-size">Font Size</Label>
+                  <Select value={appearanceSettings.font_size} onValueChange={(value) => setAppearanceSettings({...appearanceSettings, font_size: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Small (14px) - Compact view</SelectItem>
+                      <SelectItem value="medium">Medium (16px) - Default</SelectItem>
+                      <SelectItem value="large">Large (18px) - Better readability</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">Current: {appearanceSettings.font_size === 'small' ? '14px (-2)' : appearanceSettings.font_size === 'large' ? '18px (+2)' : '16px (default)'}</p>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="density">View Density</Label>
+                  <Select value={appearanceSettings.view_density} onValueChange={(value) => setAppearanceSettings({...appearanceSettings, view_density: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="compact">Compact - More content, less spacing</SelectItem>
+                      <SelectItem value="comfortable">Comfortable - Balanced (Default)</SelectItem>
+                      <SelectItem value="spacious">Spacious - More breathing room</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">Controls spacing between elements</p>
+                </div>
+              </div>
+
+              <Button onClick={handleSaveAppearance} className="gap-2" disabled={loading}>
+                <Save className="h-4 w-4" />
+                {loading ? 'Saving...' : 'Save Appearance'}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Regional Tab */}
+        <TabsContent value="regional">
+          <Card>
+            <CardHeader>
+              <CardTitle>Regional Settings</CardTitle>
+              <CardDescription>Set your language, timezone, and formatting preferences</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="language">Language</Label>
+                  <Select value={regionalSettings.language} onValueChange={(value) => setRegionalSettings({...regionalSettings, language: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="es">Español</SelectItem>
+                      <SelectItem value="fr">Français</SelectItem>
+                      <SelectItem value="de">Deutsch</SelectItem>
+                      <SelectItem value="zh">中文</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="timezone">Timezone</Label>
+                  <Select value={regionalSettings.timezone} onValueChange={(value) => setRegionalSettings({...regionalSettings, timezone: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="UTC">UTC</SelectItem>
+                      <SelectItem value="America/New_York">Eastern Time (US)</SelectItem>
+                      <SelectItem value="America/Chicago">Central Time (US)</SelectItem>
+                      <SelectItem value="America/Denver">Mountain Time (US)</SelectItem>
+                      <SelectItem value="America/Los_Angeles">Pacific Time (US)</SelectItem>
+                      <SelectItem value="Europe/London">London</SelectItem>
+                      <SelectItem value="Europe/Paris">Paris</SelectItem>
+                      <SelectItem value="Asia/Dubai">Dubai</SelectItem>
+                      <SelectItem value="Asia/Tokyo">Tokyo</SelectItem>
+                      <SelectItem value="Africa/Johannesburg">Johannesburg</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date-format">Date Format</Label>
+                    <Select value={regionalSettings.date_format} onValueChange={(value) => setRegionalSettings({...regionalSettings, date_format: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
+                        <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
+                        <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="time-format">Time Format</Label>
+                    <Select value={regionalSettings.time_format} onValueChange={(value) => setRegionalSettings({...regionalSettings, time_format: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="12h">12 Hour</SelectItem>
+                        <SelectItem value="24h">24 Hour</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="currency">Currency</Label>
+                  <Select value={regionalSettings.currency} onValueChange={(value) => setRegionalSettings({...regionalSettings, currency: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="USD">USD ($)</SelectItem>
+                      <SelectItem value="EUR">EUR (€)</SelectItem>
+                      <SelectItem value="GBP">GBP (£)</SelectItem>
+                      <SelectItem value="ZAR">ZAR (R)</SelectItem>
+                      <SelectItem value="JPY">JPY (¥)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <Button onClick={handleSaveRegional} className="gap-2" disabled={loading}>
+                <Save className="h-4 w-4" />
+                {loading ? 'Saving...' : 'Save Regional Settings'}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Privacy Tab */}
+        <TabsContent value="privacy">
+          <Card>
+            <CardHeader>
+              <CardTitle>Privacy Settings</CardTitle>
+              <CardDescription>Control your privacy and visibility preferences</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="profile-visibility">Profile Visibility</Label>
+                  <Select value={privacySettings.profile_visibility} onValueChange={(value) => setPrivacySettings({...privacySettings, profile_visibility: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="organization">Organization Only</SelectItem>
+                      <SelectItem value="team">My Team Only</SelectItem>
+                      <SelectItem value="private">Private</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">Who can see your profile</p>
+                </div>
+
+                <Separator />
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>Show Activity Status</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Let others see when you're active
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.show_activity_status}
+                    onCheckedChange={(checked) =>
+                      setPrivacySettings({ ...privacySettings, show_activity_status: checked })
+                    }
+                  />
+                </div>
+
+                <Separator />
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>Show Last Seen</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display your last seen time
+                    </p>
+                  </div>
+                  <Switch
+                    checked={privacySettings.show_last_seen}
+                    onCheckedChange={(checked) =>
+                      setPrivacySettings({ ...privacySettings, show_last_seen: checked })
+                    }
+                  />
+                </div>
+              </div>
+
+              <Button onClick={handleSavePrivacy} className="gap-2" disabled={loading}>
+                <Save className="h-4 w-4" />
+                {loading ? 'Saving...' : 'Save Privacy Settings'}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* Notifications Tab */}
         <TabsContent value="notifications">
           <Card>
