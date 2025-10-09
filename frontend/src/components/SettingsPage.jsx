@@ -38,10 +38,20 @@ const SettingsPage = () => {
 
   useEffect(() => {
     loadSettings();
+    loadApiSettings();
     if (user) {
       setProfileData({ name: user.name || '', phone: user.phone || '', bio: user.bio || '' });
     }
   }, [user]);
+
+  const loadApiSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/settings/email`);
+      setApiSettings(response.data);
+    } catch (err) {
+      console.error('Failed to load API settings:', err);
+    }
+  };
 
   const loadSettings = async () => {
     try {
