@@ -2256,6 +2256,7 @@ class Phase1APITester:
             current_user_id = user_data['id']
             
             deactivation_data = {
+                "user_id": current_user_id,  # Add required user_id field
                 "reason": "Testing self-deactivation prevention",
                 "reassign_to": None
             }
