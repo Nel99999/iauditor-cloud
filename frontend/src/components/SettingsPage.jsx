@@ -27,6 +27,12 @@ const SettingsPage = () => {
     weeklyReports: true,
     marketingEmails: false,
   });
+  const [apiSettings, setApiSettings] = useState({
+    sendgrid_api_key: '',
+    sendgrid_configured: false
+  });
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
