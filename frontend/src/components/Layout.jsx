@@ -22,6 +22,8 @@ import {
   BarChart3,
   Settings,
   Users,
+  Shield,
+  Mail,
   LogOut,
   Menu,
   X,
