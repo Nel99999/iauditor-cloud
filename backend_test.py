@@ -7,7 +7,7 @@ import io
 import os
 
 class AuthAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -341,7 +341,7 @@ class AuthAPITester:
         }
 
 class OrganizationAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -702,7 +702,7 @@ class OrganizationAPITester:
         }
 
 class ChecklistAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -1069,7 +1069,7 @@ class ChecklistAPITester:
         }
 
 class TaskAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -1383,7 +1383,7 @@ class TaskAPITester:
 
 
 class ReportsAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -1686,7 +1686,7 @@ class ReportsAPITester:
 
 
 class Phase1APITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -2500,7 +2500,7 @@ class Phase1APITester:
 
 
 class UserDeleteTester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -2960,7 +2960,7 @@ class UserDeleteTester:
 
 
 class UserAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -3539,7 +3539,7 @@ class UserAPITester:
 
 
 class InspectionAPITester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -3803,7 +3803,7 @@ class InspectionAPITester:
         }
 
 class OrganizationHierarchyTester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None

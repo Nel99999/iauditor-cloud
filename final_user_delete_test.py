@@ -4,7 +4,7 @@ from datetime import datetime
 import uuid
 
 class FinalUserDeleteTester:
-    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.master_token = None
