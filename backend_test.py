@@ -2814,7 +2814,7 @@ class RoleHierarchyTester:
         if custom_role_success and custom_role.get('id'):
             self.test_get_role_details(custom_role['id'])
             self.test_update_role(custom_role['id'])
-            self.test_delete_role(custom_role['id'])
+            self.test_delete_custom_role(custom_role['id'])
 
         # 3. User Management System Testing
         print("\n👥 PHASE 3: USER MANAGEMENT SYSTEM TESTING")
