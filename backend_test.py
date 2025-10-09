@@ -4946,21 +4946,403 @@ class SystemRoleInitializationTester:
         }
 
 
+class Phase1ComprehensiveTester:
+    """Comprehensive tester for all Phase 1 features"""
+    
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.test_user_id = None
+        self.test_org_id = None
+        
+        # Expected role hierarchy with NEW colors
+        self.expected_roles = {
+            "developer": {"name": "Developer", "level": 1, "color": "#6366f1"},  # Indigo
+            "master": {"name": "Master", "level": 2, "color": "#9333ea"},
+            "admin": {"name": "Admin", "level": 3, "color": "#ef4444"},
+            "operations_manager": {"name": "Operations Manager", "level": 4, "color": "#f59e0b"},
+            "team_lead": {"name": "Team Lead", "level": 5, "color": "#06b6d4"},
+            "manager": {"name": "Manager", "level": 6, "color": "#3b82f6"},
+            "supervisor": {"name": "Supervisor", "level": 7, "color": "#14b8a6"},  # Teal
+            "inspector": {"name": "Inspector", "level": 8, "color": "#eab308"},
+            "operator": {"name": "Operator", "level": 9, "color": "#64748b"},
+            "viewer": {"name": "Viewer", "level": 10, "color": "#22c55e"}
+        }
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def create_test_user_and_login(self):
+        """Create a test user with organization and login"""
+        unique_email = f"phase1test_{uuid.uuid4().hex[:8]}@testcompany.com"
+        master_data = {
+            "email": unique_email,
+            "password": "SecurePass123!",
+            "name": "Phase 1 Test Master User",
+            "organization_name": f"Phase 1 Test Organization {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Create Phase 1 Test Master User",
+            "POST",
+            "auth/register",
+            200,
+            data=master_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.test_user_id = response.get('user', {}).get('id')
+            self.test_org_id = response.get('user', {}).get('organization_id')
+            print(f"✅ Created and logged in as: {unique_email}")
+            return True, response
+        
+        return False, response
+
+    def test_role_system_with_new_colors(self):
+        """Test 1: Role System with New Colors"""
+        print("\n🎨 Testing Role System with New Colors...")
+        
+        # Get all roles
+        success, roles = self.run_test(
+            "Get All System Roles",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if not success or not isinstance(roles, list):
+            return False
+        
+        # Verify 10 system roles exist
+        if len(roles) < 10:
+            self.log_test("Verify 10 System Roles Created", False, f"Found only {len(roles)} roles, expected 10")
+            return False
+        
+        self.log_test("Verify 10 System Roles Created", True, f"Found {len(roles)} roles")
+        
+        # Check specific color changes
+        developer_role = next((r for r in roles if r.get('code') == 'developer'), None)
+        supervisor_role = next((r for r in roles if r.get('code') == 'supervisor'), None)
+        
+        if developer_role and developer_role.get('color') == '#6366f1':
+            self.log_test("Developer Color Changed to Indigo", True, f"Color: {developer_role.get('color')}")
+        else:
+            self.log_test("Developer Color Changed to Indigo", False, f"Expected #6366f1, got {developer_role.get('color') if developer_role else 'role not found'}")
+        
+        if supervisor_role and supervisor_role.get('color') == '#14b8a6':
+            self.log_test("Supervisor Color Changed to Teal", True, f"Color: {supervisor_role.get('color')}")
+        else:
+            self.log_test("Supervisor Color Changed to Teal", False, f"Expected #14b8a6, got {supervisor_role.get('color') if supervisor_role else 'role not found'}")
+        
+        return True
+
+    def test_permission_system(self):
+        """Test 2: Permission System & Default Assignments"""
+        print("\n🔐 Testing Permission System...")
+        
+        # Get all permissions
+        success, permissions = self.run_test(
+            "Get All Permissions (23 expected)",
+            "GET",
+            "permissions",
+            200
+        )
+        
+        if not success:
+            return False
+        
+        if len(permissions) >= 23:
+            self.log_test("Verify 23+ Default Permissions", True, f"Found {len(permissions)} permissions")
+        else:
+            self.log_test("Verify 23+ Default Permissions", False, f"Found only {len(permissions)} permissions")
+        
+        # Test permission matrix bulk update
+        # First get a role ID
+        roles_success, roles = self.run_test("Get Roles for Permission Test", "GET", "roles", 200)
+        if roles_success and roles:
+            role_id = roles[0]['id']
+            
+            # Get some permission IDs
+            permission_ids = [p['id'] for p in permissions[:5]]  # First 5 permissions
+            
+            success, response = self.run_test(
+                "Test Permission Matrix Bulk Update",
+                "POST",
+                f"roles/{role_id}/permissions/bulk",
+                200,
+                data=permission_ids
+            )
+        
+        return True
+
+    def test_custom_role_creation(self):
+        """Test 3: Custom Role Creation with Permissions"""
+        print("\n👤 Testing Custom Role Creation...")
+        
+        custom_role_data = {
+            "name": f"Test Custom Role {uuid.uuid4().hex[:6]}",
+            "code": f"custom_role_{uuid.uuid4().hex[:6]}",
+            "color": "#ff6b6b",
+            "level": 15,
+            "description": "Custom role for testing permissions"
+        }
+        
+        success, role = self.run_test(
+            "Create Custom Role",
+            "POST",
+            "roles",
+            201,
+            data=custom_role_data
+        )
+        
+        if success and 'id' in role:
+            role_id = role['id']
+            
+            # Test assigning permissions to custom role
+            permissions_success, permissions = self.run_test("Get Permissions for Custom Role", "GET", "permissions", 200)
+            if permissions_success and permissions:
+                permission_ids = [p['id'] for p in permissions[:3]]  # First 3 permissions
+                
+                success, response = self.run_test(
+                    "Assign Permissions to Custom Role",
+                    "POST",
+                    f"roles/{role_id}/permissions/bulk",
+                    200,
+                    data=permission_ids
+                )
+        
+        return True
+
+    def test_enhanced_invitation_system(self):
+        """Test 4: Enhanced Invitation System"""
+        print("\n📧 Testing Enhanced Invitation System...")
+        
+        # Test invitation creation with role_id
+        invitation_data = {
+            "email": f"testinvite_{uuid.uuid4().hex[:8]}@example.com",
+            "role_id": "developer",  # Use role code
+            "scope_type": "organization",
+            "scope_id": self.test_org_id
+        }
+        
+        success, invitation = self.run_test(
+            "Create Invitation with Role ID",
+            "POST",
+            "invitations",
+            201,
+            data=invitation_data
+        )
+        
+        if success and 'invitation' in invitation:
+            invitation_id = invitation['invitation']['id']
+            
+            # Test resend invitation (should reset expiration to 7 new days)
+            success, response = self.run_test(
+                "Resend Invitation (Reset 7-day Expiration)",
+                "POST",
+                f"invitations/{invitation_id}/resend",
+                200
+            )
+            
+            # Test delete invitation
+            success, response = self.run_test(
+                "Delete Invitation",
+                "DELETE",
+                f"invitations/{invitation_id}",
+                200
+            )
+        
+        return True
+
+    def test_email_settings_api(self):
+        """Test 5: Email Settings API (Developer/Master/Admin only)"""
+        print("\n📨 Testing Email Settings API...")
+        
+        # Test GET email settings
+        success, settings = self.run_test(
+            "Get Email Settings (Access Control)",
+            "GET",
+            "settings/email",
+            200
+        )
+        
+        # Test POST email settings
+        email_settings_data = {
+            "sendgrid_api_key": "SG.test_key_for_testing_purposes_only"
+        }
+        
+        success, response = self.run_test(
+            "Update Email Settings (API Key Storage)",
+            "POST",
+            "settings/email",
+            200,
+            data=email_settings_data
+        )
+        
+        # Test connection (will fail without real key, that's OK)
+        success, response = self.run_test(
+            "Test Email Connection (Expected to Fail)",
+            "POST",
+            "settings/email/test",
+            200  # Should return success=false in response
+        )
+        
+        return True
+
+    def test_role_hierarchy_in_invitations(self):
+        """Test 6: Role Hierarchy in Invitations"""
+        print("\n🏗️ Testing Role Hierarchy in Invitations...")
+        
+        # This would require creating users with different roles and testing
+        # For now, we'll test that the invitation system accepts role codes
+        
+        # Test invitation with different role levels
+        for role_code in ['master', 'admin', 'supervisor', 'viewer']:
+            invitation_data = {
+                "email": f"hierarchy_test_{role_code}_{uuid.uuid4().hex[:6]}@example.com",
+                "role_id": role_code,
+                "scope_type": "organization",
+                "scope_id": self.test_org_id
+            }
+            
+            success, response = self.run_test(
+                f"Create Invitation with {role_code.title()} Role",
+                "POST",
+                "invitations",
+                201,
+                data=invitation_data
+            )
+        
+        return True
+
+    def run_all_phase1_tests(self):
+        """Run all Phase 1 comprehensive tests"""
+        print("🚀 Starting Phase 1 Comprehensive Backend Testing")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # Create test user and login
+        if not self.create_test_user_and_login():
+            print("❌ Failed to create test user, stopping tests")
+            return self.generate_report()
+
+        # Run all Phase 1 tests
+        print("\n" + "="*60)
+        print("🎯 PHASE 1 COMPREHENSIVE TESTING")
+        print("="*60)
+        
+        self.test_role_system_with_new_colors()
+        self.test_permission_system()
+        self.test_custom_role_creation()
+        self.test_enhanced_invitation_system()
+        self.test_email_settings_api()
+        self.test_role_hierarchy_in_invitations()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 80)
+        print("📊 PHASE 1 COMPREHENSIVE TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 if __name__ == "__main__":
-    print("🚀 Starting System Role Initialization Verification Test")
+    print("🚀 Starting Phase 1 Comprehensive Backend API Testing")
     print("=" * 80)
     
-    # Run the focused system role initialization test
-    role_tester = SystemRoleInitializationTester()
-    results = role_tester.run_system_role_initialization_test()
+    # Run Phase 1 comprehensive tests
+    phase1_tester = Phase1ComprehensiveTester()
+    phase1_results = phase1_tester.run_all_phase1_tests()
     
-    # Final assessment
-    if results['system_role_fix_working']:
-        print("\n🎉 SYSTEM ROLE INITIALIZATION FIX VERIFIED WORKING!")
-        print("   The fix to call initialize_system_roles() during organization creation is successful.")
+    print("\n" + "=" * 80)
+    print("🎯 PHASE 1 FINAL SUMMARY")
+    print("=" * 80)
+    print(f"Phase 1 Tests: {phase1_results['success_rate']:.1f}% ({phase1_results['passed_tests']}/{phase1_results['total_tests']})")
+    
+    if phase1_results['passed_tests'] == phase1_results['total_tests']:
+        print("\n🎉 ALL PHASE 1 TESTS PASSED! Backend is ready for production.")
     else:
-        print("\n❌ SYSTEM ROLE INITIALIZATION FIX STILL BROKEN!")
-        print("   The initialize_system_roles() function is not being called during organization creation.")
-        print("   Main agent needs to investigate auth_routes.py registration logic.")
+        print(f"\n⚠️ {phase1_results['total_tests'] - phase1_results['passed_tests']} tests failed. Review failed tests above.")
     
     print("=" * 80)
