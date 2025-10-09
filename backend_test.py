@@ -2051,18 +2051,12 @@ class Phase1APITester:
 
     def test_check_permission(self):
         """Test POST /api/permissions/check - Check user permission"""
-        check_data = {
-            "resource_type": "task",
-            "action": "create",
-            "scope": "own"
-        }
-        
+        # Use query parameters instead of body data
         success, response = self.run_test(
             "Check User Permission",
             "POST",
-            "permissions/check",
-            200,
-            data=check_data
+            "permissions/check?resource_type=task&action=create&scope=own",
+            200
         )
         
         if success and isinstance(response, dict):
