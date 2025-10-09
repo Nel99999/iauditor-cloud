@@ -5738,18 +5738,410 @@ class RBACSystemTester:
         }
 
 
+class ReviewRequestTester:
+    """Test the specific APIs mentioned in the review request"""
+    def __init__(self, base_url="https://orgflow-1.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.test_user_id = None
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def create_test_user_and_login(self):
+        """Create a test user with organization and login"""
+        unique_email = f"reviewtest_{uuid.uuid4().hex[:8]}@testcompany.com"
+        user_data = {
+            "email": unique_email,
+            "password": "SecurePass123!",
+            "name": "Review Test User",
+            "organization_name": f"Review Test Organization {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Create Review Test User",
+            "POST",
+            "auth/register",
+            200,
+            data=user_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.test_user_id = response.get('user', {}).get('id')
+            print(f"✅ Created and logged in as: {unique_email}")
+            return True, response
+        
+        return False, response
+
+    def test_settings_appearance_apis(self):
+        """Test Settings/Appearance/Regional/Privacy APIs"""
+        print("\n🎨 Testing Settings/Appearance/Regional/Privacy APIs...")
+        
+        # Test GET /api/users/theme
+        theme_get_success, theme_data = self.run_test(
+            "GET /api/users/theme - Get theme preferences",
+            "GET",
+            "users/theme",
+            200
+        )
+        
+        # Test PUT /api/users/theme
+        theme_update_data = {
+            "theme": "dark",
+            "accent_color": "#3b82f6",
+            "font_size": "large",
+            "view_density": "compact"
+        }
+        
+        theme_put_success, _ = self.run_test(
+            "PUT /api/users/theme - Save theme preferences",
+            "PUT",
+            "users/theme",
+            200,
+            data=theme_update_data
+        )
+        
+        # Test GET /api/users/regional
+        regional_get_success, regional_data = self.run_test(
+            "GET /api/users/regional - Get regional preferences",
+            "GET",
+            "users/regional",
+            200
+        )
+        
+        # Test PUT /api/users/regional
+        regional_update_data = {
+            "language": "en-US",
+            "timezone": "America/New_York",
+            "date_format": "DD/MM/YYYY",
+            "time_format": "24h",
+            "currency": "EUR"
+        }
+        
+        regional_put_success, _ = self.run_test(
+            "PUT /api/users/regional - Save regional preferences",
+            "PUT",
+            "users/regional",
+            200,
+            data=regional_update_data
+        )
+        
+        # Test GET /api/users/privacy
+        privacy_get_success, privacy_data = self.run_test(
+            "GET /api/users/privacy - Get privacy preferences",
+            "GET",
+            "users/privacy",
+            200
+        )
+        
+        # Test PUT /api/users/privacy
+        privacy_update_data = {
+            "profile_visibility": "private",
+            "show_activity_status": False,
+            "show_last_seen": False
+        }
+        
+        privacy_put_success, _ = self.run_test(
+            "PUT /api/users/privacy - Save privacy preferences",
+            "PUT",
+            "users/privacy",
+            200,
+            data=privacy_update_data
+        )
+        
+        return all([theme_get_success, theme_put_success, regional_get_success, 
+                   regional_put_success, privacy_get_success, privacy_put_success])
+
+    def test_user_management_apis(self):
+        """Test User Management APIs"""
+        print("\n👥 Testing User Management APIs...")
+        
+        # Test GET /api/users - should return all users with password fields
+        users_get_success, users_data = self.run_test(
+            "GET /api/users - Get all users",
+            "GET",
+            "users",
+            200
+        )
+        
+        # Verify users have password fields (for developer panel)
+        if users_get_success and isinstance(users_data, list) and len(users_data) > 0:
+            user = users_data[0]
+            has_password_field = 'password' in user or 'password_hash' in user
+            self.log_test(
+                "Verify users have password fields",
+                has_password_field,
+                f"User has password field: {has_password_field}"
+            )
+        
+        # Test PUT /api/users/{id} - should update user role and status
+        if users_get_success and isinstance(users_data, list) and len(users_data) > 0:
+            # Find a user that's not the current user
+            target_user = None
+            for user in users_data:
+                if user.get('id') != self.test_user_id:
+                    target_user = user
+                    break
+            
+            if target_user:
+                user_update_data = {
+                    "role": "viewer",
+                    "status": "active"
+                }
+                
+                user_update_success, _ = self.run_test(
+                    f"PUT /api/users/{target_user['id']} - Update user role and status",
+                    "PUT",
+                    f"users/{target_user['id']}",
+                    200,
+                    data=user_update_data
+                )
+            else:
+                self.log_test("PUT /api/users/{id} - Update user", False, "No other users found to update")
+        
+        return users_get_success
+
+    def test_invitation_system_apis(self):
+        """Test Invitation System APIs"""
+        print("\n📧 Testing Invitation System APIs...")
+        
+        # First create an invitation to test resend
+        invitation_data = {
+            "email": f"testinvite_{uuid.uuid4().hex[:8]}@example.com",
+            "role_id": "viewer"
+        }
+        
+        create_success, create_response = self.run_test(
+            "POST /api/invitations - Create invitation",
+            "POST",
+            "invitations",
+            201,
+            data=invitation_data
+        )
+        
+        if create_success and isinstance(create_response, dict):
+            invitation_id = create_response.get('invitation', {}).get('id')
+            
+            if invitation_id:
+                # Test POST /api/invitations/{id}/resend - should resend invitation with authentication
+                resend_success, _ = self.run_test(
+                    f"POST /api/invitations/{invitation_id}/resend - Resend invitation",
+                    "POST",
+                    f"invitations/{invitation_id}/resend",
+                    200
+                )
+                
+                # Verify authentication is required by testing without token
+                old_token = self.token
+                self.token = None
+                
+                auth_required_success, _ = self.run_test(
+                    "POST /api/invitations/{id}/resend - Verify authentication required",
+                    "POST",
+                    f"invitations/{invitation_id}/resend",
+                    401
+                )
+                
+                self.token = old_token
+                
+                return resend_success and auth_required_success
+        
+        return False
+
+    def test_role_management_apis(self):
+        """Test Role Management APIs"""
+        print("\n🛡️ Testing Role Management APIs...")
+        
+        # Get list of roles first
+        roles_success, roles_data = self.run_test(
+            "GET /api/roles - Get all roles",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if roles_success and isinstance(roles_data, list) and len(roles_data) > 0:
+            # Find a role to test bulk permissions
+            test_role = roles_data[0]
+            role_id = test_role.get('id')
+            
+            if role_id:
+                # Get all permissions first
+                perms_success, perms_data = self.run_test(
+                    "GET /api/permissions - Get all permissions",
+                    "GET",
+                    "permissions",
+                    200
+                )
+                
+                if perms_success and isinstance(perms_data, list) and len(perms_data) > 0:
+                    # Test POST /api/roles/{id}/permissions/bulk - should save custom role permissions
+                    permission_ids = [perm['id'] for perm in perms_data[:5]]  # Use first 5 permissions
+                    
+                    bulk_success, _ = self.run_test(
+                        f"POST /api/roles/{role_id}/permissions/bulk - Save custom role permissions",
+                        "POST",
+                        f"roles/{role_id}/permissions/bulk",
+                        200,
+                        data=permission_ids
+                    )
+                    
+                    # Verify permission matrix updates work correctly
+                    verify_success, verify_data = self.run_test(
+                        f"GET /api/roles/{role_id}/permissions - Verify permission matrix update",
+                        "GET",
+                        f"roles/{role_id}/permissions",
+                        200
+                    )
+                    
+                    if verify_success and isinstance(verify_data, list):
+                        updated_count = len(verify_data)
+                        expected_count = len(permission_ids)
+                        matrix_success = updated_count == expected_count
+                        
+                        self.log_test(
+                            "Verify permission matrix updates work correctly",
+                            matrix_success,
+                            f"Expected {expected_count} permissions, got {updated_count}"
+                        )
+                        
+                        return bulk_success and matrix_success
+        
+        return False
+
+    def run_all_tests(self):
+        """Run all review request tests"""
+        print("🚀 Starting Review Request Backend API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 60)
+
+        # Create test user and login
+        if not self.create_test_user_and_login():
+            print("❌ Failed to create test user, stopping tests")
+            return self.generate_report()
+
+        # Test all the specific APIs mentioned in the review request
+        print("\n🎯 Testing Review Request APIs...")
+        
+        # 1. Settings/Appearance/Regional/Privacy APIs
+        self.test_settings_appearance_apis()
+        
+        # 2. User Management APIs
+        self.test_user_management_apis()
+        
+        # 3. Invitation System APIs
+        self.test_invitation_system_apis()
+        
+        # 4. Role Management APIs
+        self.test_role_management_apis()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 60)
+        print("📊 REVIEW REQUEST TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 if __name__ == "__main__":
-    # Run RBAC System Tests as per review request
-    print("🚀 Starting RBAC System Testing Suite")
+    # Run the specific review request tests
+    print("🚀 Starting Review Request Backend API Tests")
     print("=" * 80)
     
-    rbac_tester = RBACSystemTester()
-    rbac_results = rbac_tester.run_comprehensive_rbac_tests()
+    # Test the specific APIs mentioned in the review request
+    review_tester = ReviewRequestTester()
+    review_results = review_tester.run_all_tests()
     
+    # Generate overall summary
     print("\n" + "=" * 80)
-    print("🎯 RBAC TESTING COMPLETE")
+    print("🎯 REVIEW REQUEST TEST SUMMARY")
     print("=" * 80)
-    print(f"Success Rate: {rbac_results['success_rate']:.1f}%")
-    print(f"Permissions Found: {rbac_results['permissions_found']}")
-    print(f"Roles Found: {rbac_results['roles_found']}")
+    
+    print(f"Total Tests: {review_results['total_tests']}")
+    print(f"Total Passed: {review_results['passed_tests']}")
+    print(f"Total Failed: {review_results['failed_tests']}")
+    print(f"Overall Success Rate: {review_results['success_rate']:.1f}%")
+    
+    print("\n🎉 Review Request Backend API Testing Complete!")
     print("=" * 80)
