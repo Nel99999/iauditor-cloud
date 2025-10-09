@@ -2645,6 +2645,250 @@ class RoleHierarchyTester:
             "test_results": self.test_results
         }
 
+    def test_user_management_system(self):
+        """Test user management operations"""
+        print("\n👥 Testing User Management System...")
+        
+        # Test getting user list
+        users_success, users_response = self.run_test(
+            "Get Users List",
+            "GET",
+            "users",
+            200
+        )
+        
+        if not users_success:
+            return False
+        
+        # Test user profile operations
+        profile_success, profile_response = self.run_test(
+            "Get User Profile (/users/me)",
+            "GET",
+            "users/me",
+            200
+        )
+        
+        if not profile_success:
+            return False
+        
+        # Test user invitation
+        invite_data = {
+            "email": f"invited_{uuid.uuid4().hex[:8]}@company.com",
+            "role": "inspector",
+            "message": "Welcome to our role testing organization!"
+        }
+        
+        invite_success, invite_response = self.run_test(
+            "Send User Invitation",
+            "POST",
+            "users/invite",
+            201,
+            data=invite_data
+        )
+        
+        return invite_success
+
+    def test_invitation_system(self):
+        """Test comprehensive invitation system"""
+        print("\n📧 Testing Invitation System...")
+        
+        # Test creating invitation with role assignment
+        invitation_data = {
+            "email": f"role_invite_{uuid.uuid4().hex[:8]}@testcompany.com",
+            "role": "team_lead",
+            "message": "You're invited to join as Team Lead!"
+        }
+        
+        create_success, create_response = self.run_test(
+            "Create Invitation with Role",
+            "POST",
+            "invitations",
+            201,
+            data=invitation_data
+        )
+        
+        if not create_success:
+            return False
+        
+        invitation_id = create_response.get('id')
+        if invitation_id:
+            self.created_invitations.append(invitation_id)
+        
+        # Test listing pending invitations
+        list_success, list_response = self.run_test(
+            "List Pending Invitations",
+            "GET",
+            "invitations/pending",
+            200
+        )
+        
+        if not list_success:
+            return False
+        
+        # Test getting all invitations
+        all_success, all_response = self.run_test(
+            "List All Invitations",
+            "GET",
+            "invitations",
+            200
+        )
+        
+        return all_success
+
+    def test_role_assignment_workflow(self):
+        """Test complete role assignment workflow"""
+        print("\n🎭 Testing Role Assignment Workflow...")
+        
+        # First get available roles
+        roles_success, roles_response = self.run_test(
+            "Get Available Roles for Assignment",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if not roles_success or not isinstance(roles_response, list):
+            return False
+        
+        # Find a system role to test with
+        system_roles = [r for r in roles_response if r.get('is_system_role', False)]
+        if not system_roles:
+            self.log_test("Role Assignment Test", False, "No system roles found for testing")
+            return False
+        
+        # Test invitation with different role levels
+        test_roles = ['developer', 'master', 'admin', 'manager', 'viewer']
+        assignment_success = True
+        
+        for role_code in test_roles:
+            role_obj = next((r for r in system_roles if r.get('code') == role_code), None)
+            if role_obj:
+                invite_data = {
+                    "email": f"{role_code}_test_{uuid.uuid4().hex[:6]}@company.com",
+                    "role": role_code,
+                    "message": f"Invitation for {role_obj.get('name')} role testing"
+                }
+                
+                success, response = self.run_test(
+                    f"Invite User as {role_obj.get('name')} (Lv{role_obj.get('level')})",
+                    "POST",
+                    "invitations",
+                    201,
+                    data=invite_data
+                )
+                
+                if success and response.get('id'):
+                    self.created_invitations.append(response['id'])
+                else:
+                    assignment_success = False
+        
+        return assignment_success
+
+    def run_comprehensive_role_hierarchy_tests(self):
+        """Run comprehensive role hierarchy testing as requested"""
+        print("🚀 Starting COMPREHENSIVE BACKEND TESTING FOR PHASE 1 ROLE HIERARCHY UPDATE")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # 1. Authentication System Testing
+        print("\n🔐 PHASE 1: AUTHENTICATION SYSTEM TESTING")
+        if not self.login_test_user()[0]:
+            print("❌ Authentication failed, stopping tests")
+            return self.generate_report()
+
+        auth_success = self.test_authentication_system()
+        if not auth_success:
+            print("⚠️ Authentication system has issues, continuing with other tests...")
+
+        # 2. Role Management System Testing (PRIORITY FOCUS)
+        print("\n🎭 PHASE 2: ROLE MANAGEMENT SYSTEM TESTING (PRIORITY FOCUS)")
+        
+        # Test role hierarchy order (Developer Lv1 → Master Lv2 → Admin Lv3 → ... → Viewer Lv10)
+        hierarchy_success, roles_data = self.test_role_hierarchy_order()
+        
+        # Test role colors consistency
+        colors_success, _ = self.test_role_colors_consistency()
+        
+        # Test custom role CRUD operations
+        custom_role_success, custom_role = self.test_create_custom_role()
+        if custom_role_success and custom_role.get('id'):
+            self.test_get_role_details(custom_role['id'])
+            self.test_update_role(custom_role['id'])
+            self.test_delete_role(custom_role['id'])
+
+        # 3. User Management System Testing
+        print("\n👥 PHASE 3: USER MANAGEMENT SYSTEM TESTING")
+        user_mgmt_success = self.test_user_management_system()
+
+        # 4. Invitation System Testing
+        print("\n📧 PHASE 4: INVITATION SYSTEM TESTING")
+        invitation_success = self.test_invitation_system()
+        
+        # 5. Role Assignment Workflow Testing
+        print("\n🎯 PHASE 5: ROLE ASSIGNMENT WORKFLOW TESTING")
+        assignment_success = self.test_role_assignment_workflow()
+
+        # 6. Organization Management Testing (if needed)
+        print("\n🏢 PHASE 6: ORGANIZATION MANAGEMENT TESTING")
+        org_success, _ = self.run_test(
+            "Organization Units List",
+            "GET",
+            "organizations/units",
+            200
+        )
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate comprehensive test report"""
+        print("\n" + "=" * 80)
+        print("📊 COMPREHENSIVE ROLE HIERARCHY TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        # Categorize results
+        critical_failures = []
+        minor_issues = []
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        for test in failed_tests:
+            if any(keyword in test['test'].lower() for keyword in ['hierarchy', 'role', 'color', 'level']):
+                critical_failures.append(test)
+            else:
+                minor_issues.append(test)
+        
+        if critical_failures:
+            print("\n❌ CRITICAL ROLE HIERARCHY FAILURES:")
+            for test in critical_failures:
+                print(f"  - {test['test']}: {test['details'][:200]}...")
+        
+        if minor_issues:
+            print(f"\n⚠️ MINOR ISSUES ({len(minor_issues)} tests):")
+            for test in minor_issues[:3]:  # Show only first 3
+                print(f"  - {test['test']}")
+            if len(minor_issues) > 3:
+                print(f"  ... and {len(minor_issues) - 3} more minor issues")
+        
+        # Summary of key findings
+        print(f"\n🎯 KEY FINDINGS:")
+        print(f"  • Role Hierarchy: {'✅ VERIFIED' if not critical_failures else '❌ ISSUES FOUND'}")
+        print(f"  • Authentication: {'✅ WORKING' if self.token else '❌ FAILED'}")
+        print(f"  • User Management: {'✅ OPERATIONAL' if any('User' in t['test'] and t['success'] for t in self.test_results) else '❌ ISSUES'}")
+        print(f"  • Invitation System: {'✅ FUNCTIONAL' if any('Invitation' in t['test'] and t['success'] for t in self.test_results) else '❌ ISSUES'}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "critical_failures": len(critical_failures),
+            "minor_issues": len(minor_issues),
+            "test_results": self.test_results
+        }
+
 
 class UserDeleteTester:
     def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
