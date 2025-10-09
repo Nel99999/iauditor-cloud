@@ -213,13 +213,14 @@ const DeveloperAdminPanel = () => {
                           <TableCell>{u.email}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <code className="bg-slate-100 px-2 py-1 rounded text-sm">
-                                {showPasswords[u.id] ? (u.password || '••••••••') : '••••••••'}
+                              <code className="bg-slate-100 px-2 py-1 rounded text-sm font-mono">
+                                {(showAllPasswords || showPasswords[u.id]) ? (u.password || 'No password stored') : '••••••••'}
                               </code>
                               <Button
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => togglePasswordVisibility(u.id)}
+                                title="Toggle password visibility"
                               >
                                 {showPasswords[u.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </Button>
