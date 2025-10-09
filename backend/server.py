@@ -86,6 +86,10 @@ api_router.include_router(checklist_router)
 api_router.include_router(task_router)
 api_router.include_router(reports_router)
 api_router.include_router(user_router)
+api_router.include_router(permission_router)
+api_router.include_router(invitation_router)
+api_router.include_router(deactivation_router)
+api_router.include_router(role_router)
 
 app.include_router(api_router)
 
