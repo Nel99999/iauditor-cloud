@@ -519,7 +519,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All Phase 1 MVP features verified and working"
+    - "Phase 1 Role Hierarchy & Color Consistency"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
