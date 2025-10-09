@@ -520,7 +520,7 @@ const UserManagementPage = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="invite-role">Role</Label>
+                <Label htmlFor="invite-role">Role (you can only invite lower/equal roles)</Label>
                 <Select
                   value={inviteData.role}
                   onValueChange={(value) => setInviteData({ ...inviteData, role: value })}
@@ -529,16 +529,32 @@ const UserManagementPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="developer">🔵 Developer - Software Owner (Lv1)</SelectItem>
-                    <SelectItem value="master">🟣 Master - Business Owner (Lv2)</SelectItem>
-                    <SelectItem value="admin">🔴 Admin - Organization Admin (Lv3)</SelectItem>
-                    <SelectItem value="operations_manager">🟠 Operations Manager - Strategic (Lv4)</SelectItem>
-                    <SelectItem value="team_lead">🔵 Team Lead - Lead teams (Lv5)</SelectItem>
-                    <SelectItem value="manager">🔵 Manager - Branch/Dept management (Lv6)</SelectItem>
-                    <SelectItem value="supervisor">🩵 Supervisor - Supervise shifts (Lv7)</SelectItem>
-                    <SelectItem value="inspector">🟡 Inspector - Execute operations (Lv8)</SelectItem>
-                    <SelectItem value="operator">⚫ Operator - Basic tasks (Lv9)</SelectItem>
-                    <SelectItem value="viewer">🟢 Viewer - Read only (Lv10)</SelectItem>
+                    {[
+                      { value: 'developer', label: '🔵 Developer - Software Owner (Lv1)', emoji: '🔵' },
+                      { value: 'master', label: '🟣 Master - Business Owner (Lv2)', emoji: '🟣' },
+                      { value: 'admin', label: '🔴 Admin - Organization Admin (Lv3)', emoji: '🔴' },
+                      { value: 'operations_manager', label: '🟠 Operations Manager - Strategic (Lv4)', emoji: '🟠' },
+                      { value: 'team_lead', label: '🔵 Team Lead - Lead teams (Lv5)', emoji: '🔵' },
+                      { value: 'manager', label: '🔵 Manager - Branch/Dept management (Lv6)', emoji: '🔵' },
+                      { value: 'supervisor', label: '🩵 Supervisor - Supervise shifts (Lv7)', emoji: '🩵' },
+                      { value: 'inspector', label: '🟡 Inspector - Execute operations (Lv8)', emoji: '🟡' },
+                      { value: 'operator', label: '⚫ Operator - Basic tasks (Lv9)', emoji: '⚫' },
+                      { value: 'viewer', label: '🟢 Viewer - Read only (Lv10)', emoji: '🟢' },
+                    ].map(role => {
+                      const canInvite = canInviteRole(user?.role || 'viewer', role.value);
+                      return (
+                        <SelectItem 
+                          key={role.value} 
+                          value={role.value}
+                          disabled={!canInvite}
+                        >
+                          <div className="flex items-center gap-2">
+                            {role.label}
+                            {!canInvite && <Lock className="h-3 w-3" />}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
