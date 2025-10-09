@@ -252,6 +252,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/developer-admin"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <DeveloperAdminPanel />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
