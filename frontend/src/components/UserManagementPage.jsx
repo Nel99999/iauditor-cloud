@@ -24,7 +24,8 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Search, Mail, Shield, Eye, Trash2, Edit } from 'lucide-react';
+import { UserPlus, Search, Mail, Shield, Eye, Trash2, Edit, Lock } from 'lucide-react';
+import { getInvitableRoles, canInviteRole } from '../utils/permissions';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
