@@ -178,6 +178,13 @@ const DeveloperAdminPanel = () => {
                     className="pl-10"
                   />
                 </div>
+                <Button 
+                  onClick={() => setShowAllPasswords(!showAllPasswords)} 
+                  variant={showAllPasswords ? "default" : "outline"}
+                >
+                  {showAllPasswords ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
+                  {showAllPasswords ? 'Hide All' : 'Show All'}
+                </Button>
                 <Button onClick={loadData} variant="outline">
                   Refresh
                 </Button>
