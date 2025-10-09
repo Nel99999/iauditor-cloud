@@ -1685,6 +1685,822 @@ class ReportsAPITester:
         }
 
 
+class Phase1APITester:
+    def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_permissions = []
+        self.created_roles = []
+        self.created_invitations = []
+        self.test_user_id = None
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def login_test_user(self):
+        """Login with test user"""
+        # Try different possible credentials
+        credentials_to_try = [
+            {"email": "llewellyn@bluedawncapital.co.za", "password": "password123"},
+            {"email": "test@example.com", "password": "password123"},
+            {"email": "admin@example.com", "password": "password123"},
+        ]
+        
+        for creds in credentials_to_try:
+            success, response = self.run_test(
+                f"Login Attempt ({creds['email']})",
+                "POST",
+                "auth/login",
+                200,
+                data=creds
+            )
+            
+            if success and 'access_token' in response:
+                self.token = response['access_token']
+                print(f"✅ Successfully logged in as {creds['email']}")
+                return True, response
+        
+        # If no existing user works, create a test user
+        print("🔧 Creating test user for Phase 1 API testing...")
+        return self.create_test_user_and_login()
+    
+    def create_test_user_and_login(self):
+        """Create a test user with organization and login"""
+        unique_email = f"phase1_test_{uuid.uuid4().hex[:8]}@example.com"
+        master_data = {
+            "email": unique_email,
+            "password": "password123",
+            "name": "Phase 1 Test User",
+            "organization_name": "Phase 1 Test Organization"
+        }
+        
+        success, response = self.run_test(
+            "Create Phase 1 Test User",
+            "POST",
+            "auth/register",
+            200,
+            data=master_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            print(f"✅ Created and logged in as: {unique_email}")
+            return True, response
+        
+        return False, response
+
+    # =====================================
+    # PERMISSIONS API TESTS
+    # =====================================
+
+    def test_list_permissions(self):
+        """Test GET /api/permissions - List all permissions"""
+        success, response = self.run_test(
+            "List All Permissions",
+            "GET",
+            "permissions",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            print(f"   Found {len(response)} permissions")
+            # Verify we have the expected 23 default permissions
+            if len(response) >= 23:
+                self.log_test("Verify Default Permissions Count", True, f"Found {len(response)} permissions (expected >= 23)")
+            else:
+                self.log_test("Verify Default Permissions Count", False, f"Found only {len(response)} permissions (expected >= 23)")
+        
+        return success, response
+
+    def test_create_permission(self):
+        """Test POST /api/permissions - Create custom permission"""
+        permission_data = {
+            "resource_type": "custom_resource",
+            "action": "custom_action",
+            "scope": "team",
+            "description": f"Custom permission for testing {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Create Custom Permission",
+            "POST",
+            "permissions",
+            201,
+            data=permission_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_permissions.append(response['id'])
+            return success, response
+        return success, response
+
+    def test_delete_permission(self, permission_id):
+        """Test DELETE /api/permissions/{id} - Delete permission"""
+        success, response = self.run_test(
+            "Delete Permission",
+            "DELETE",
+            f"permissions/{permission_id}",
+            200
+        )
+        return success, response
+
+    # =====================================
+    # ROLES API TESTS
+    # =====================================
+
+    def test_list_roles(self):
+        """Test GET /api/roles - List all roles"""
+        success, response = self.run_test(
+            "List All Roles",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            print(f"   Found {len(response)} roles")
+            # Verify we have the expected 10 system roles
+            system_roles = [r for r in response if r.get('is_system_role')]
+            if len(system_roles) >= 10:
+                self.log_test("Verify System Roles Count", True, f"Found {len(system_roles)} system roles (expected >= 10)")
+            else:
+                self.log_test("Verify System Roles Count", False, f"Found only {len(system_roles)} system roles (expected >= 10)")
+        
+        return success, response
+
+    def test_create_custom_role(self):
+        """Test POST /api/roles - Create custom role"""
+        role_data = {
+            "name": f"Custom Test Role {uuid.uuid4().hex[:6]}",
+            "code": f"custom_test_{uuid.uuid4().hex[:6]}",
+            "color": "#ff6b6b",
+            "level": 11,
+            "description": "Custom role for testing purposes"
+        }
+        
+        success, response = self.run_test(
+            "Create Custom Role",
+            "POST",
+            "roles",
+            201,
+            data=role_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_roles.append(response['id'])
+            return success, response
+        return success, response
+
+    def test_get_role_details(self, role_id):
+        """Test GET /api/roles/{id} - Get role details"""
+        success, response = self.run_test(
+            "Get Role Details",
+            "GET",
+            f"roles/{role_id}",
+            200
+        )
+        return success, response
+
+    def test_update_role(self, role_id):
+        """Test PUT /api/roles/{id} - Update role"""
+        update_data = {
+            "name": f"Updated Test Role {uuid.uuid4().hex[:6]}",
+            "description": "Updated description for testing"
+        }
+        
+        success, response = self.run_test(
+            "Update Custom Role",
+            "PUT",
+            f"roles/{role_id}",
+            200,
+            data=update_data
+        )
+        return success, response
+
+    def test_delete_custom_role(self, role_id):
+        """Test DELETE /api/roles/{id} - Delete custom role"""
+        success, response = self.run_test(
+            "Delete Custom Role",
+            "DELETE",
+            f"roles/{role_id}",
+            200
+        )
+        return success, response
+
+    def test_delete_system_role_should_fail(self):
+        """Test that system roles cannot be deleted"""
+        # First get a system role ID
+        success, roles = self.test_list_roles()
+        if success and isinstance(roles, list):
+            system_role = next((r for r in roles if r.get('is_system_role')), None)
+            if system_role:
+                success, response = self.run_test(
+                    "Try Delete System Role (Should Fail)",
+                    "DELETE",
+                    f"roles/{system_role['id']}",
+                    400
+                )
+                return success
+        return False
+
+    # =====================================
+    # ROLE PERMISSIONS TESTS
+    # =====================================
+
+    def test_get_role_permissions(self, role_id):
+        """Test GET /api/permissions/roles/{role_id} - Get role permissions"""
+        success, response = self.run_test(
+            "Get Role Permissions",
+            "GET",
+            f"permissions/roles/{role_id}",
+            200
+        )
+        return success, response
+
+    def test_assign_permission_to_role(self, role_id, permission_id):
+        """Test POST /api/permissions/roles/{role_id} - Assign permission to role"""
+        role_perm_data = {
+            "permission_id": permission_id,
+            "granted": True
+        }
+        
+        success, response = self.run_test(
+            "Assign Permission to Role",
+            "POST",
+            f"permissions/roles/{role_id}",
+            200,
+            data=role_perm_data
+        )
+        return success, response
+
+    def test_remove_permission_from_role(self, role_id, permission_id):
+        """Test DELETE /api/permissions/roles/{role_id}/permissions/{permission_id}"""
+        success, response = self.run_test(
+            "Remove Permission from Role",
+            "DELETE",
+            f"permissions/roles/{role_id}/permissions/{permission_id}",
+            200
+        )
+        return success, response
+
+    # =====================================
+    # USER FUNCTION OVERRIDES TESTS
+    # =====================================
+
+    def test_get_user_overrides(self, user_id):
+        """Test GET /api/permissions/users/{user_id}/overrides"""
+        success, response = self.run_test(
+            "Get User Function Overrides",
+            "GET",
+            f"permissions/users/{user_id}/overrides",
+            200
+        )
+        return success, response
+
+    def test_create_user_override(self, user_id, permission_id):
+        """Test POST /api/permissions/users/{user_id}/overrides"""
+        override_data = {
+            "permission_id": permission_id,
+            "granted": True,
+            "reason": "Testing user function override"
+        }
+        
+        success, response = self.run_test(
+            "Create User Function Override",
+            "POST",
+            f"permissions/users/{user_id}/overrides",
+            200,
+            data=override_data
+        )
+        return success, response
+
+    def test_delete_user_override(self, user_id, override_id):
+        """Test DELETE /api/permissions/users/{user_id}/overrides/{override_id}"""
+        success, response = self.run_test(
+            "Delete User Function Override",
+            "DELETE",
+            f"permissions/users/{user_id}/overrides/{override_id}",
+            200
+        )
+        return success, response
+
+    # =====================================
+    # PERMISSION CHECK TESTS
+    # =====================================
+
+    def test_check_permission(self):
+        """Test POST /api/permissions/check - Check user permission"""
+        check_data = {
+            "resource_type": "task",
+            "action": "create",
+            "scope": "own"
+        }
+        
+        success, response = self.run_test(
+            "Check User Permission",
+            "POST",
+            "permissions/check",
+            200,
+            data=check_data
+        )
+        
+        if success and isinstance(response, dict):
+            required_keys = ['has_permission', 'user_id', 'resource_type', 'action', 'scope']
+            missing_keys = [key for key in required_keys if key not in response]
+            if missing_keys:
+                self.log_test("Permission Check Response Structure", False, f"Missing keys: {missing_keys}")
+            else:
+                self.log_test("Permission Check Response Structure", True, "All required keys present")
+        
+        return success, response
+
+    # =====================================
+    # INVITATIONS API TESTS
+    # =====================================
+
+    def test_send_invitation(self):
+        """Test POST /api/invitations - Send invitation"""
+        invitation_data = {
+            "email": f"invited_user_{uuid.uuid4().hex[:8]}@example.com",
+            "role_id": "viewer",  # Use a system role
+            "scope_type": "organization",
+            "scope_id": None,
+            "function_overrides": []
+        }
+        
+        success, response = self.run_test(
+            "Send User Invitation",
+            "POST",
+            "invitations",
+            201,
+            data=invitation_data
+        )
+        
+        if success and isinstance(response, dict) and 'invitation' in response:
+            invitation = response['invitation']
+            if 'id' in invitation:
+                self.created_invitations.append(invitation['id'])
+            return success, response
+        return success, response
+
+    def test_get_pending_invitations(self):
+        """Test GET /api/invitations/pending - Get pending invitations"""
+        success, response = self.run_test(
+            "Get Pending Invitations",
+            "GET",
+            "invitations/pending",
+            200
+        )
+        return success, response
+
+    def test_validate_invitation_token(self, token):
+        """Test GET /api/invitations/token/{token} - Validate token"""
+        success, response = self.run_test(
+            "Validate Invitation Token",
+            "GET",
+            f"invitations/token/{token}",
+            200
+        )
+        return success, response
+
+    def test_accept_invitation(self, token):
+        """Test POST /api/invitations/accept - Accept invitation"""
+        accept_data = {
+            "token": token,
+            "name": "Test Invited User",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Accept Invitation",
+            "POST",
+            "invitations/accept",
+            200,
+            data=accept_data
+        )
+        return success, response
+
+    def test_resend_invitation(self, invitation_id):
+        """Test POST /api/invitations/{id}/resend - Resend invitation"""
+        success, response = self.run_test(
+            "Resend Invitation",
+            "POST",
+            f"invitations/{invitation_id}/resend",
+            200
+        )
+        return success, response
+
+    def test_cancel_invitation(self, invitation_id):
+        """Test DELETE /api/invitations/{id} - Cancel invitation"""
+        success, response = self.run_test(
+            "Cancel Invitation",
+            "DELETE",
+            f"invitations/{invitation_id}",
+            200
+        )
+        return success, response
+
+    def test_list_all_invitations(self):
+        """Test GET /api/invitations - List all invitations"""
+        success, response = self.run_test(
+            "List All Invitations",
+            "GET",
+            "invitations",
+            200
+        )
+        return success, response
+
+    def test_duplicate_invitation_should_fail(self, email):
+        """Test that duplicate invitations should fail"""
+        invitation_data = {
+            "email": email,
+            "role_id": "viewer",
+            "scope_type": "organization",
+            "scope_id": None,
+            "function_overrides": []
+        }
+        
+        success, response = self.run_test(
+            "Duplicate Invitation (Should Fail)",
+            "POST",
+            "invitations",
+            400,
+            data=invitation_data
+        )
+        return success, response
+
+    # =====================================
+    # USER LIFECYCLE TESTS
+    # =====================================
+
+    def test_get_user_assignments(self, user_id):
+        """Test GET /api/users/{id}/assignments - Get user assignments"""
+        success, response = self.run_test(
+            "Get User Assignments",
+            "GET",
+            f"users/{user_id}/assignments",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            required_keys = ['user_id', 'summary', 'assignments']
+            missing_keys = [key for key in required_keys if key not in response]
+            if missing_keys:
+                self.log_test("User Assignments Response Structure", False, f"Missing keys: {missing_keys}")
+            else:
+                self.log_test("User Assignments Response Structure", True, "All required keys present")
+        
+        return success, response
+
+    def test_deactivate_user_without_reassignment(self, user_id):
+        """Test POST /api/users/{id}/deactivate - Deactivate without reassignment"""
+        deactivation_data = {
+            "reason": "Testing deactivation functionality",
+            "reassign_to": None
+        }
+        
+        success, response = self.run_test(
+            "Deactivate User (No Reassignment)",
+            "POST",
+            f"users/{user_id}/deactivate",
+            200,
+            data=deactivation_data
+        )
+        return success, response
+
+    def test_deactivate_user_with_reassignment(self, user_id, reassign_to_id):
+        """Test POST /api/users/{id}/deactivate - Deactivate with reassignment"""
+        deactivation_data = {
+            "reason": "Testing deactivation with reassignment",
+            "reassign_to": reassign_to_id
+        }
+        
+        success, response = self.run_test(
+            "Deactivate User (With Reassignment)",
+            "POST",
+            f"users/{user_id}/deactivate",
+            200,
+            data=deactivation_data
+        )
+        return success, response
+
+    def test_deactivate_self_should_fail(self):
+        """Test that users cannot deactivate themselves"""
+        # Get current user ID from token
+        success, user_data = self.run_test(
+            "Get Current User for Self-Deactivation Test",
+            "GET",
+            "auth/me",
+            200
+        )
+        
+        if success and isinstance(user_data, dict) and 'id' in user_data:
+            current_user_id = user_data['id']
+            
+            deactivation_data = {
+                "reason": "Testing self-deactivation prevention",
+                "reassign_to": None
+            }
+            
+            success, response = self.run_test(
+                "Try Deactivate Self (Should Fail)",
+                "POST",
+                f"users/{current_user_id}/deactivate",
+                400,
+                data=deactivation_data
+            )
+            return success
+        
+        return False
+
+    def test_reactivate_user(self, user_id):
+        """Test POST /api/users/{id}/reactivate - Reactivate user"""
+        reactivation_data = {
+            "reason": "Testing reactivation functionality"
+        }
+        
+        success, response = self.run_test(
+            "Reactivate User",
+            "POST",
+            f"users/{user_id}/reactivate",
+            200,
+            data=reactivation_data
+        )
+        return success, response
+
+    def test_suspend_user(self, user_id):
+        """Test POST /api/users/{id}/suspend - Suspend user"""
+        success, response = self.run_test(
+            "Suspend User",
+            "POST",
+            f"users/{user_id}/suspend?reason=Testing suspension functionality",
+            200
+        )
+        return success, response
+
+    def test_unsuspend_user(self, user_id):
+        """Test POST /api/users/{id}/unsuspend - Unsuspend user"""
+        success, response = self.run_test(
+            "Unsuspend User",
+            "POST",
+            f"users/{user_id}/unsuspend",
+            200
+        )
+        return success, response
+
+    def test_bulk_reassign(self, user_id, reassign_to_id):
+        """Test POST /api/users/{id}/reassign - Bulk reassign"""
+        success, response = self.run_test(
+            "Bulk Reassign Assignments",
+            "POST",
+            f"users/{user_id}/reassign?reassign_to={reassign_to_id}",
+            200
+        )
+        return success, response
+
+    def test_get_deactivation_history(self, user_id):
+        """Test GET /api/users/{id}/deactivation-history - Get history"""
+        success, response = self.run_test(
+            "Get Deactivation History",
+            "GET",
+            f"users/{user_id}/deactivation-history",
+            200
+        )
+        return success, response
+
+    # =====================================
+    # COMPREHENSIVE WORKFLOW TESTS
+    # =====================================
+
+    def test_permissions_workflow(self):
+        """Test complete permissions workflow"""
+        print("\n🔄 Testing Complete Permissions Workflow")
+        
+        # 1. List permissions
+        perm_success, permissions = self.test_list_permissions()
+        if not perm_success:
+            return False
+        
+        # 2. Create custom permission
+        create_success, new_permission = self.test_create_permission()
+        if not create_success:
+            return False
+        
+        permission_id = new_permission.get('id') if isinstance(new_permission, dict) else None
+        
+        # 3. Test permission check
+        self.test_check_permission()
+        
+        # 4. Clean up - delete custom permission
+        if permission_id:
+            self.test_delete_permission(permission_id)
+        
+        return True
+
+    def test_roles_workflow(self):
+        """Test complete roles workflow"""
+        print("\n🔄 Testing Complete Roles Workflow")
+        
+        # 1. List roles
+        roles_success, roles = self.test_list_roles()
+        if not roles_success:
+            return False
+        
+        # 2. Create custom role
+        create_success, new_role = self.test_create_custom_role()
+        if not create_success:
+            return False
+        
+        role_id = new_role.get('id') if isinstance(new_role, dict) else None
+        
+        if role_id:
+            # 3. Get role details
+            self.test_get_role_details(role_id)
+            
+            # 4. Update role
+            self.test_update_role(role_id)
+            
+            # 5. Test role permissions
+            self.test_get_role_permissions(role_id)
+            
+            # 6. Clean up - delete custom role
+            self.test_delete_custom_role(role_id)
+        
+        # 7. Test system role protection
+        self.test_delete_system_role_should_fail()
+        
+        return True
+
+    def test_invitations_workflow(self):
+        """Test complete invitations workflow"""
+        print("\n🔄 Testing Complete Invitations Workflow")
+        
+        # 1. Send invitation
+        invite_success, invite_response = self.test_send_invitation()
+        if not invite_success:
+            return False
+        
+        invitation = invite_response.get('invitation', {}) if isinstance(invite_response, dict) else {}
+        invitation_id = invitation.get('id')
+        token = invitation.get('token')
+        email = invitation.get('email')
+        
+        # 2. Get pending invitations
+        self.test_get_pending_invitations()
+        
+        # 3. List all invitations
+        self.test_list_all_invitations()
+        
+        if token:
+            # 4. Validate token
+            self.test_validate_invitation_token(token)
+        
+        if email:
+            # 5. Test duplicate invitation (should fail)
+            self.test_duplicate_invitation_should_fail(email)
+        
+        if invitation_id:
+            # 6. Resend invitation
+            self.test_resend_invitation(invitation_id)
+            
+            # 7. Cancel invitation
+            self.test_cancel_invitation(invitation_id)
+        
+        return True
+
+    def run_all_tests(self):
+        """Run all Phase 1 API tests"""
+        print("🚀 Starting Phase 1 Comprehensive Backend API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # Login first
+        if not self.login_test_user()[0]:
+            print("❌ Login failed, stopping Phase 1 tests")
+            return self.generate_report()
+
+        # Test all workflows
+        print("\n" + "="*50)
+        print("TESTING PERMISSIONS SYSTEM")
+        print("="*50)
+        self.test_permissions_workflow()
+
+        print("\n" + "="*50)
+        print("TESTING ROLES SYSTEM")
+        print("="*50)
+        self.test_roles_workflow()
+
+        print("\n" + "="*50)
+        print("TESTING INVITATIONS SYSTEM")
+        print("="*50)
+        self.test_invitations_workflow()
+
+        print("\n" + "="*50)
+        print("TESTING USER LIFECYCLE SYSTEM")
+        print("="*50)
+        
+        # Get current user for lifecycle tests
+        success, user_data = self.run_test("Get Current User", "GET", "auth/me", 200)
+        if success and isinstance(user_data, dict) and 'id' in user_data:
+            current_user_id = user_data['id']
+            
+            # Test user assignments
+            self.test_get_user_assignments(current_user_id)
+            
+            # Test self-deactivation prevention
+            self.test_deactivate_self_should_fail()
+            
+            # Test deactivation history
+            self.test_get_deactivation_history(current_user_id)
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 80)
+        print("📊 PHASE 1 COMPREHENSIVE API TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 class UserDeleteTester:
     def __init__(self, base_url="https://opsmvp-platform.preview.emergentagent.com"):
         self.base_url = base_url
