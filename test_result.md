@@ -522,7 +522,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 1 Complete System - Roles, Permissions, Invitations, UI Control"
+    - "Complete Role-Based Access Control System (RBAC)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
