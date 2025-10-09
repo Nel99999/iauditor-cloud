@@ -1,0 +1,58 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "search": "Suchen",
+    "loading": "Laden...",
+    "success": "Erfolg",
+    "error": "Fehler",
+    "confirm": "Bestätigen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Verwalten Sie Ihre Kontoeinstellungen und Präferenzen",
+    "profile": "Profil",
+    "security": "Sicherheit",
+    "notifications": "Benachrichtigungen",
+    "appearance": "Erscheinungsbild",
+    "regional": "Regional",
+    "privacy": "Datenschutz",
+    "api": "API-Einstellungen",
+    "organization": "Organisation",
+    "advanced": "Erweitert"
+  },
+  "appearance": {
+    "title": "Erscheinungseinstellungen",
+    "subtitle": "Passen Sie das Aussehen der Anwendung an",
+    "theme": "Thema",
+    "light": "Heller Modus",
+    "dark": "Dunkler Modus",
+    "accentColor": "Akzentfarbe",
+    "viewDensity": "Ansichtsdichte",
+    "compact": "Kompakt",
+    "comfortable": "Komfortabel",
+    "spacious": "Geräumig",
+    "fontSize": "Schriftgröße",
+    "small": "Klein",
+    "medium": "Mittel",
+    "large": "Groß"
+  },
+  "regional": {
+    "title": "Regionale Einstellungen",
+    "subtitle": "Legen Sie Ihren Standort und Formateinstellungen fest",
+    "language": "Sprache",
+    "timezone": "Zeitzone",
+    "dateFormat": "Datumsformat",
+    "timeFormat": "Zeitformat",
+    "12hour": "12-Stunden",
+    "24hour": "24-Stunden",
+    "currency": "Währung"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Willkommen zurück"
+  }
+}
