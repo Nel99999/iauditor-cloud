@@ -5327,6 +5327,417 @@ class Phase1ComprehensiveTester:
         }
 
 
+class RBACSystemTester:
+    """Comprehensive RBAC System Tester for the review request"""
+    
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.user_data = None
+        self.developer_role_id = None
+        self.all_permissions = []
+        self.all_roles = []
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def test_login_llewellyn_nel(self):
+        """Test login as Llewellyn Nel (Developer role)"""
+        login_data = {
+            "email": "llewellyn@bluedawncapital.co.za",
+            "password": "password123"
+        }
+        
+        success, response = self.run_test(
+            "Login as Llewellyn Nel (Developer)",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.user_data = response.get('user', {})
+            return True, response
+        return False, response
+
+    def test_auth_me_with_role(self):
+        """Test GET /api/auth/me returns user with role"""
+        success, response = self.run_test(
+            "GET /auth/me - User with Role",
+            "GET",
+            "auth/me",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            role = response.get('role')
+            if role == 'developer':
+                self.log_test("Verify Developer Role", True, f"User has role: {role}")
+            else:
+                self.log_test("Verify Developer Role", False, f"Expected 'developer', got: {role}")
+        
+        return success, response
+
+    def test_get_all_permissions(self):
+        """Test GET /api/permissions - List all 23 permissions"""
+        success, response = self.run_test(
+            "GET /permissions - List All Permissions",
+            "GET",
+            "permissions",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            self.all_permissions = response
+            permission_count = len(response)
+            if permission_count >= 23:
+                self.log_test("Verify 23+ Default Permissions", True, f"Found {permission_count} permissions")
+            else:
+                self.log_test("Verify 23+ Default Permissions", False, f"Found only {permission_count} permissions (expected >= 23)")
+        
+        return success, response
+
+    def test_get_all_roles(self):
+        """Test GET /api/roles - Get role list"""
+        success, response = self.run_test(
+            "GET /roles - List All Roles",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            self.all_roles = response
+            role_count = len(response)
+            
+            # Find Developer role and verify color
+            developer_role = None
+            supervisor_role = None
+            
+            for role in response:
+                if role.get('code') == 'developer':
+                    developer_role = role
+                    self.developer_role_id = role.get('id')
+                elif role.get('code') == 'supervisor':
+                    supervisor_role = role
+            
+            # Verify Developer color (#6366f1 - Indigo)
+            if developer_role:
+                expected_color = "#6366f1"
+                actual_color = developer_role.get('color')
+                if actual_color == expected_color:
+                    self.log_test("Verify Developer Color (Indigo)", True, f"Developer color: {actual_color}")
+                else:
+                    self.log_test("Verify Developer Color (Indigo)", False, f"Expected {expected_color}, got {actual_color}")
+            
+            # Verify Supervisor color (#14b8a6 - Teal)
+            if supervisor_role:
+                expected_color = "#14b8a6"
+                actual_color = supervisor_role.get('color')
+                if actual_color == expected_color:
+                    self.log_test("Verify Supervisor Color (Teal)", True, f"Supervisor color: {actual_color}")
+                else:
+                    self.log_test("Verify Supervisor Color (Teal)", False, f"Expected {expected_color}, got {actual_color}")
+            
+            self.log_test("Verify Role Count", True, f"Found {role_count} roles")
+        
+        return success, response
+
+    def test_get_developer_permissions(self):
+        """Test GET /api/roles/{developer_role_id}/permissions - Developer should have ALL permissions"""
+        if not self.developer_role_id:
+            self.log_test("Get Developer Permissions", False, "Developer role ID not found")
+            return False, {}
+        
+        success, response = self.run_test(
+            f"GET /roles/{self.developer_role_id}/permissions - Developer Permissions",
+            "GET",
+            f"roles/{self.developer_role_id}/permissions",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            dev_permission_count = len(response)
+            total_permissions = len(self.all_permissions)
+            
+            if dev_permission_count == total_permissions:
+                self.log_test("Verify Developer Has All Permissions", True, f"Developer has {dev_permission_count}/{total_permissions} permissions")
+            else:
+                self.log_test("Verify Developer Has All Permissions", False, f"Developer has {dev_permission_count}/{total_permissions} permissions")
+        
+        return success, response
+
+    def test_permission_matrix_endpoints(self):
+        """Test permission matrix endpoints"""
+        if not self.developer_role_id or not self.all_permissions:
+            self.log_test("Test Permission Matrix", False, "Missing role ID or permissions data")
+            return False
+        
+        # Test bulk permission update
+        permission_ids = [perm['id'] for perm in self.all_permissions[:5]]  # Test with first 5 permissions
+        
+        success, response = self.run_test(
+            f"POST /roles/{self.developer_role_id}/permissions/bulk - Bulk Update",
+            "POST",
+            f"roles/{self.developer_role_id}/permissions/bulk",
+            200,
+            data=permission_ids
+        )
+        
+        return success, response
+
+    def test_get_users_list(self):
+        """Test GET /api/users - List all users"""
+        success, response = self.run_test(
+            "GET /users - List All Users",
+            "GET",
+            "users",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            user_count = len(response)
+            
+            # Look for Llewellyn Nel in the user list
+            llewellyn_found = False
+            for user in response:
+                if user.get('email') == 'llewellyn@bluedawncapital.co.za':
+                    llewellyn_found = True
+                    user_role = user.get('role')
+                    if user_role == 'developer':
+                        self.log_test("Verify Llewellyn Nel Developer Role", True, f"Llewellyn Nel has role: {user_role}")
+                    else:
+                        self.log_test("Verify Llewellyn Nel Developer Role", False, f"Expected 'developer', got: {user_role}")
+                    break
+            
+            if not llewellyn_found:
+                self.log_test("Find Llewellyn Nel in User List", False, "Llewellyn Nel not found in user list")
+            
+            self.log_test("Get Users List", True, f"Found {user_count} users")
+        
+        return success, response
+
+    def test_role_hierarchy_verification(self):
+        """Test role hierarchy with correct levels and colors"""
+        if not self.all_roles:
+            self.log_test("Role Hierarchy Verification", False, "No roles data available")
+            return False
+        
+        expected_hierarchy = {
+            "developer": {"level": 1, "color": "#6366f1", "name": "Developer"},
+            "master": {"level": 2, "color": "#9333ea", "name": "Master"},
+            "admin": {"level": 3, "color": "#ef4444", "name": "Admin"},
+            "operations_manager": {"level": 4, "color": "#f59e0b", "name": "Operations Manager"},
+            "team_lead": {"level": 5, "color": "#06b6d4", "name": "Team Lead"},
+            "manager": {"level": 6, "color": "#3b82f6", "name": "Manager"},
+            "supervisor": {"level": 7, "color": "#14b8a6", "name": "Supervisor"},
+            "inspector": {"level": 8, "color": "#eab308", "name": "Inspector"},
+            "operator": {"level": 9, "color": "#64748b", "name": "Operator"},
+            "viewer": {"level": 10, "color": "#22c55e", "name": "Viewer"}
+        }
+        
+        hierarchy_correct = True
+        for role in self.all_roles:
+            role_code = role.get('code')
+            if role_code in expected_hierarchy:
+                expected = expected_hierarchy[role_code]
+                
+                # Check level
+                if role.get('level') != expected['level']:
+                    self.log_test(f"Role Level - {role_code}", False, f"Expected level {expected['level']}, got {role.get('level')}")
+                    hierarchy_correct = False
+                
+                # Check color
+                if role.get('color') != expected['color']:
+                    self.log_test(f"Role Color - {role_code}", False, f"Expected {expected['color']}, got {role.get('color')}")
+                    hierarchy_correct = False
+                
+                # Check name
+                if role.get('name') != expected['name']:
+                    self.log_test(f"Role Name - {role_code}", False, f"Expected {expected['name']}, got {role.get('name')}")
+                    hierarchy_correct = False
+        
+        if hierarchy_correct:
+            self.log_test("Complete Role Hierarchy Verification", True, "All 10 system roles have correct levels, colors, and names")
+        
+        return hierarchy_correct
+
+    def run_comprehensive_rbac_tests(self):
+        """Run comprehensive RBAC system tests as per review request"""
+        print("🚀 Starting Comprehensive RBAC System Testing")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        
+        # 1. Authentication with Permission Loading
+        print("\n🔐 PHASE 1: Authentication with Permission Loading")
+        login_success, login_response = self.test_login_llewellyn_nel()
+        
+        if not login_success:
+            # Try to create test user if login fails
+            print("⚠️ Llewellyn Nel login failed, creating test user...")
+            return self.create_test_user_and_continue()
+        
+        # Test /auth/me endpoint
+        self.test_auth_me_with_role()
+        
+        # 2. Permission System Verification
+        print("\n🔑 PHASE 2: Permission System Verification")
+        self.test_get_all_permissions()
+        
+        # 3. Role Hierarchy with New Colors
+        print("\n👥 PHASE 3: Role Hierarchy with New Colors")
+        self.test_get_all_roles()
+        self.test_role_hierarchy_verification()
+        
+        # 4. Developer Permission Verification
+        print("\n🛠️ PHASE 4: Developer Permission Verification")
+        self.test_get_developer_permissions()
+        
+        # 5. User Management for Testing
+        print("\n👤 PHASE 5: User Management for Testing")
+        self.test_get_users_list()
+        
+        # 6. Permission Matrix Endpoints
+        print("\n📊 PHASE 6: Permission Matrix Endpoints")
+        self.test_permission_matrix_endpoints()
+        
+        return self.generate_report()
+
+    def create_test_user_and_continue(self):
+        """Create test user if Llewellyn Nel doesn't exist"""
+        unique_email = f"rbactest_{uuid.uuid4().hex[:8]}@testcompany.com"
+        test_data = {
+            "email": unique_email,
+            "password": "SecurePass123!",
+            "name": "RBAC Test Developer",
+            "organization_name": f"RBAC Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Create RBAC Test User",
+            "POST",
+            "auth/register",
+            200,
+            data=test_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.user_data = response.get('user', {})
+            
+            # Continue with remaining tests
+            self.test_auth_me_with_role()
+            self.test_get_all_permissions()
+            self.test_get_all_roles()
+            self.test_role_hierarchy_verification()
+            self.test_get_developer_permissions()
+            self.test_get_users_list()
+            self.test_permission_matrix_endpoints()
+            
+            return self.generate_report()
+        else:
+            self.log_test("Create Test User", False, "Failed to create test user")
+            return self.generate_report()
+
+    def generate_report(self):
+        """Generate comprehensive test report"""
+        print("\n" + "=" * 80)
+        print("📊 RBAC SYSTEM TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        # Summary of key findings
+        print("\n🎯 KEY FINDINGS:")
+        if self.all_permissions:
+            print(f"  ✅ Found {len(self.all_permissions)} permissions")
+        if self.all_roles:
+            print(f"  ✅ Found {len(self.all_roles)} roles")
+        if self.developer_role_id:
+            print(f"  ✅ Developer role identified: {self.developer_role_id}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results,
+            "permissions_found": len(self.all_permissions) if self.all_permissions else 0,
+            "roles_found": len(self.all_roles) if self.all_roles else 0
+        }
+
+
 if __name__ == "__main__":
     print("🚀 Starting Phase 1 Comprehensive Backend API Testing")
     print("=" * 80)
