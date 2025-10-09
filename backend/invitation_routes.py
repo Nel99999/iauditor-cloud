@@ -75,9 +75,36 @@ async def create_invitation(
     
     await db.invitations.insert_one(invite.dict())
     
-    # TODO: Send email with invitation link
-    # invitation_link = f"{FRONTEND_URL}/accept-invitation?token={invite.token}"
-    # send_invitation_email(invitation.email, invitation_link, current_user["name"])
+    # Send email with invitation link
+    try:
+        # Get SendGrid API key from organization settings
+        org_settings = await db.organization_settings.find_one({
+            "organization_id": current_user["organization_id"]
+        })
+        sendgrid_key = org_settings.get("sendgrid_api_key") if org_settings else None
+        
+        if sendgrid_key:
+            email_service = EmailService(sendgrid_key)
+            frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+            
+            # Get organization name
+            org = await db.organizations.find_one({"id": current_user["organization_id"]})
+            org_name = org.get("name") if org else "Your Organization"
+            
+            email_sent = email_service.send_invitation_email(
+                to_email=invitation.email,
+                inviter_name=current_user.get("name", "A team member"),
+                organization_name=org_name,
+                invitation_token=invite.token,
+                frontend_url=frontend_url
+            )
+            
+            if email_sent:
+                print(f"✅ Invitation email sent to {invitation.email}")
+        else:
+            print(f"⚠️ SendGrid not configured. Email not sent to {invitation.email}")
+    except Exception as e:
+        print(f"❌ Failed to send invitation email: {str(e)}")
     
     invite_dict = invite.dict()
     invite_dict.pop("_id", None)
