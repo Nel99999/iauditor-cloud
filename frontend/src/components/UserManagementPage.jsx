@@ -144,7 +144,7 @@ const UserManagementPage = () => {
       case 'operator':
         return { backgroundColor: '#64748b', color: 'white', borderColor: '#64748b' }; // Slate
       case 'viewer':
-        return { backgroundColor: '#22c55e', color: 'white', borderColor: '#22c55e' }; // Green
+        return { backgroundColor: '#84cc16', color: 'white', borderColor: '#84cc16' }; // Lime Green
       default:
         return { backgroundColor: '#64748b', color: 'white', borderColor: '#64748b' }; // Slate
     }
