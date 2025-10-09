@@ -110,6 +110,14 @@ const Layout = ({ children }) => {
           active: true,
           description: 'Account & preferences',
         },
+        ...(user?.role === 'developer' ? [{
+          name: 'Developer Admin',
+          icon: Shield,
+          path: '/developer-admin',
+          badge: 'DEV',
+          active: true,
+          description: 'System admin panel',
+        }] : []),
       ],
     },
     {
