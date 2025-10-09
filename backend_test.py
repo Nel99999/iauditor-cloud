@@ -5739,21 +5739,17 @@ class RBACSystemTester:
 
 
 if __name__ == "__main__":
-    print("🚀 Starting Phase 1 Comprehensive Backend API Testing")
+    # Run RBAC System Tests as per review request
+    print("🚀 Starting RBAC System Testing Suite")
     print("=" * 80)
     
-    # Run Phase 1 comprehensive tests
-    phase1_tester = Phase1ComprehensiveTester()
-    phase1_results = phase1_tester.run_all_phase1_tests()
+    rbac_tester = RBACSystemTester()
+    rbac_results = rbac_tester.run_comprehensive_rbac_tests()
     
     print("\n" + "=" * 80)
-    print("🎯 PHASE 1 FINAL SUMMARY")
+    print("🎯 RBAC TESTING COMPLETE")
     print("=" * 80)
-    print(f"Phase 1 Tests: {phase1_results['success_rate']:.1f}% ({phase1_results['passed_tests']}/{phase1_results['total_tests']})")
-    
-    if phase1_results['passed_tests'] == phase1_results['total_tests']:
-        print("\n🎉 ALL PHASE 1 TESTS PASSED! Backend is ready for production.")
-    else:
-        print(f"\n⚠️ {phase1_results['total_tests'] - phase1_results['passed_tests']} tests failed. Review failed tests above.")
-    
+    print(f"Success Rate: {rbac_results['success_rate']:.1f}%")
+    print(f"Permissions Found: {rbac_results['permissions_found']}")
+    print(f"Roles Found: {rbac_results['roles_found']}")
     print("=" * 80)
