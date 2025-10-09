@@ -235,7 +235,7 @@ const InvitationManagementPage = () => {
                                 disabled={!canDelete}
                                 title={canDelete ? "Cancel invitation" : "Insufficient permissions to delete"}
                               >
-                                {canDelete ? <XCircle className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                                {canDelete ? <Trash2 className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
                               </Button>
                             </div>
                           </TableCell>
