@@ -1,0 +1,58 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "search": "搜索",
+    "loading": "加载中...",
+    "success": "成功",
+    "error": "错误",
+    "confirm": "确认"
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "管理您的账户设置和偏好",
+    "profile": "个人资料",
+    "security": "安全",
+    "notifications": "通知",
+    "appearance": "外观",
+    "regional": "区域",
+    "privacy": "隐私",
+    "api": "API设置",
+    "organization": "组织",
+    "advanced": "高级"
+  },
+  "appearance": {
+    "title": "外观设置",
+    "subtitle": "自定义应用程序的外观",
+    "theme": "主题",
+    "light": "浅色模式",
+    "dark": "深色模式",
+    "accentColor": "强调色",
+    "viewDensity": "视图密度",
+    "compact": "紧凑",
+    "comfortable": "舒适",
+    "spacious": "宽松",
+    "fontSize": "字体大小",
+    "small": "小",
+    "medium": "中",
+    "large": "大"
+  },
+  "regional": {
+    "title": "区域设置",
+    "subtitle": "设置您的位置和格式偏好",
+    "language": "语言",
+    "timezone": "时区",
+    "dateFormat": "日期格式",
+    "timeFormat": "时间格式",
+    "12hour": "12小时制",
+    "24hour": "24小时制",
+    "currency": "货币"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "welcome": "欢迎回来"
+  }
+}
