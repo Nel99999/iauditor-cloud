@@ -9,6 +9,7 @@ from auth_utils import (
     create_access_token,
     get_current_user,
 )
+from role_routes import initialize_system_roles
 import uuid
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
