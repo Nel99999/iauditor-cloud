@@ -239,17 +239,20 @@ const DeveloperAdminPanel = () => {
                             )}
                           </TableCell>
                           <TableCell>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => copyToClipboard(`Email: ${u.email}\nPassword: ${u.password || 'N/A'}`, u.id)}
-                            >
-                              {copiedId === u.id ? (
-                                <CheckCircle className="h-4 w-4 text-green-600" />
-                              ) : (
-                                <Copy className="h-4 w-4" />
-                              )}
-                            </Button>
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => copyToClipboard(`Email: ${u.email}\nPassword: ${u.password || 'N/A'}`, u.id)}
+                                title="Copy credentials to clipboard"
+                              >
+                                {copiedId === u.id ? (
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <Copy className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
