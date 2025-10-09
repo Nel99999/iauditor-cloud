@@ -65,7 +65,7 @@ SYSTEM_ROLES = {
     "supervisor": {
         "name": "Supervisor",
         "code": "supervisor",
-        "color": "#10b981",  # Emerald
+        "color": "#14b8a6",  # Teal
         "level": 7,
         "description": "Supervises field teams and shift assignments",
         "is_system_role": True
