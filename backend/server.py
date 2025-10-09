@@ -78,6 +78,9 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     return status_checks
 
+# Import settings router
+from settings_routes import router as settings_router
+
 # Include all routers
 api_router.include_router(auth_router)
 api_router.include_router(org_router)
@@ -90,6 +93,7 @@ api_router.include_router(permission_router)
 api_router.include_router(invitation_router)
 api_router.include_router(deactivation_router)
 api_router.include_router(role_router)
+api_router.include_router(settings_router)
 
 app.include_router(api_router)
 
