@@ -254,6 +254,67 @@ async def delete_role(
     return {"message": "Role deleted successfully"}
 
 
+@router.get("/{role_id}/permissions")
+async def get_role_permissions(
+    role_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get all permissions for a specific role"""
+    current_user = await get_current_user(request, db)
+    
+    role = await db.roles.find_one({
+        "id": role_id,
+        "organization_id": current_user["organization_id"]
+    })
+    
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
+    
+    # Get role permissions
+    role_perms = await db.role_permissions.find(
+        {"role_id": role_id},
+        {"_id": 0}
+    ).to_list(length=None)
+    
+    return role_perms
+
+
+@router.post("/{role_id}/permissions/bulk")
+async def update_role_permissions_bulk(
+    role_id: str,
+    permission_ids: list[str],
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Bulk update permissions for a role"""
+    current_user = await get_current_user(request, db)
+    
+    role = await db.roles.find_one({
+        "id": role_id,
+        "organization_id": current_user["organization_id"]
+    })
+    
+    if not role:
+        raise HTTPException(status_code=404, detail="Role not found")
+    
+    # Remove existing permissions for this role
+    await db.role_permissions.delete_many({"role_id": role_id})
+    
+    # Add new permissions
+    for perm_id in permission_ids:
+        role_perm = {
+            "id": str(uuid.uuid4()),
+            "role_id": role_id,
+            "permission_id": perm_id,
+            "granted": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.role_permissions.insert_one(role_perm)
+    
+    return {"message": f"Updated permissions for role", "count": len(permission_ids)}
+
+
 async def initialize_system_roles(db: AsyncIOMotorDatabase, organization_id: str):
     """Initialize system roles for an organization"""
     
