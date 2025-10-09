@@ -39,6 +39,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <AuthProvider>
+          <ThemeProvider>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
