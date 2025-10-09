@@ -5,6 +5,7 @@ from permission_models import (
 )
 from auth_utils import get_current_user
 from datetime import datetime, timezone, timedelta
+from typing import Optional
 import uuid
 import secrets
 
