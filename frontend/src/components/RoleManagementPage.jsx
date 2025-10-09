@@ -278,72 +278,78 @@ const RoleManagementPage = () => {
             <CardHeader>
               <CardTitle>Permission Matrix</CardTitle>
               <CardDescription>
-                Manage permissions for each role. Check/uncheck boxes and click Save to apply changes.
+                System roles (locked) are pre-configured. Custom roles can be modified. Check/uncheck boxes and click Save.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {Object.entries(groupPermissionsByResource()).map(([resourceType, perms]) => (
-                  <div key={resourceType} className="border rounded-lg p-4">
-                    <h3 className="font-semibold text-lg mb-4 capitalize">{resourceType} Permissions</h3>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="border-b">
-                            <th className="text-left p-2 font-medium">Permission</th>
-                            {roles.filter(r => r.is_system_role).sort((a, b) => a.level - b.level).map(role => (
-                              <th key={role.id} className="p-2 text-center min-w-[80px]">
-                                <Badge 
-                                  style={{ backgroundColor: role.color, color: 'white' }}
-                                  className="text-xs"
-                                >
-                                  {role.code}
-                                </Badge>
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {perms.map(perm => (
-                            <tr key={perm.id} className="border-b hover:bg-slate-50">
-                              <td className="p-2">
-                                <div>
-                                  <span className="font-medium">{perm.action}.{perm.scope}</span>
-                                  <p className="text-xs text-slate-500">{perm.description}</p>
-                                </div>
-                              </td>
-                              {roles.filter(r => r.is_system_role).sort((a, b) => a.level - b.level).map(role => (
-                                <td key={role.id} className="p-2 text-center">
-                                  <Checkbox
-                                    checked={isPermissionChecked(role.id, perm.id)}
-                                    onCheckedChange={() => togglePermission(role.id, perm.id)}
-                                  />
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ))}
-                
-                {/* Save buttons for each role */}
-                <div className="flex gap-2 flex-wrap">
-                  {roles.filter(r => r.is_system_role).sort((a, b) => a.level - b.level).map(role => (
-                    hasChanges(role.id) && (
-                      <Button
-                        key={role.id}
-                        onClick={() => saveRolePermissions(role.id)}
-                        style={{ backgroundColor: role.color, color: 'white' }}
-                      >
-                        <Save className="h-4 w-4 mr-2" />
-                        Save {role.name}
-                      </Button>
-                    )
-                  ))}
-                </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border">
+                  <thead>
+                    <tr className="bg-slate-100 border-b">
+                      <th className="text-left p-3 font-semibold sticky left-0 bg-slate-100">Permission</th>
+                      {roles.sort((a, b) => a.level - b.level).map(role => (
+                        <th key={role.id} className="p-2 text-center min-w-[100px]">
+                          <div className="flex flex-col items-center gap-1">
+                            <Badge 
+                              style={{ backgroundColor: role.color, color: 'white' }}
+                              className="text-xs"
+                            >
+                              {role.name}
+                            </Badge>
+                            {role.is_system_role && (
+                              <Lock className="h-3 w-3 text-slate-400" />
+                            )}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {permissions.map(perm => (
+                      <tr key={perm.id} className="border-b hover:bg-slate-50">
+                        <td className="p-3 sticky left-0 bg-white">
+                          <div>
+                            <span className="font-medium">{perm.resource_type}.{perm.action}.{perm.scope}</span>
+                            <p className="text-xs text-slate-500">{perm.description}</p>
+                          </div>
+                        </td>
+                        {roles.sort((a, b) => a.level - b.level).map(role => (
+                          <td key={role.id} className="p-2 text-center">
+                            <Checkbox
+                              checked={isPermissionChecked(role.id, perm.id)}
+                              onCheckedChange={() => !role.is_system_role && togglePermission(role.id, perm.id)}
+                              disabled={role.is_system_role}
+                              className={role.is_system_role ? 'opacity-50 cursor-not-allowed' : ''}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+              
+              {/* Save buttons for custom roles only */}
+              <div className="flex gap-2 flex-wrap mt-4">
+                {roles.filter(r => !r.is_system_role).map(role => (
+                  hasChanges(role.id) && (
+                    <Button
+                      key={role.id}
+                      onClick={() => saveRolePermissions(role.id)}
+                      style={{ backgroundColor: role.color, color: 'white' }}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Save {role.name}
+                    </Button>
+                  )
+                ))}
+              </div>
+
+              {roles.filter(r => !r.is_system_role).length === 0 && (
+                <p className="text-center text-slate-500 mt-4">
+                  No custom roles to modify. System roles are locked and pre-configured.
+                </p>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
