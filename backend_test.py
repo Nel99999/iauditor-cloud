@@ -4273,21 +4273,25 @@ class OrganizationHierarchyTester:
 
 
 if __name__ == "__main__":
-    # Run the user delete functionality test as requested
-    print("🚀 Starting User Delete Functionality Test")
+    print("🚀 Starting Phase 1 Comprehensive Backend API Testing Suite")
     print("=" * 80)
     
-    delete_tester = UserDeleteTester()
-    delete_results = delete_tester.run_delete_tests()
+    # Test Phase 1 New APIs - PRIORITY TESTING
+    phase1_tester = Phase1APITester()
+    phase1_results = phase1_tester.run_all_tests()
     
-    print("\n" + "=" * 80)
-    print("🎯 USER DELETE FUNCTIONALITY TEST COMPLETE")
-    print("=" * 80)
-    print(f"Success Rate: {delete_results['success_rate']:.1f}% ({delete_results['passed_tests']}/{delete_results['total_tests']})")
+    print("\n" + "="*80)
+    print("🎯 PHASE 1 API TEST SUMMARY")
+    print("="*80)
+    print(f"Success Rate: {phase1_results['success_rate']:.1f}% ({phase1_results['passed_tests']}/{phase1_results['total_tests']})")
     
-    if delete_results['passed_tests'] == delete_results['total_tests']:
-        print("\n🎉 ALL USER DELETE TESTS PASSED! User delete functionality is working perfectly.")
+    if phase1_results['success_rate'] >= 90:
+        print("🎉 EXCELLENT! Phase 1 APIs are working very well.")
+    elif phase1_results['success_rate'] >= 80:
+        print("✅ GOOD! Phase 1 APIs are mostly working with minor issues.")
+    elif phase1_results['success_rate'] >= 70:
+        print("⚠️  FAIR! Phase 1 APIs have some issues that need attention.")
     else:
-        print(f"\n⚠️  {delete_results['failed_tests']} tests failed. Review failed tests above.")
+        print("❌ POOR! Phase 1 APIs have significant issues requiring immediate attention.")
     
-    print("=" * 80)
+    print("="*80)
