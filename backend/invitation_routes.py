@@ -4,10 +4,12 @@ from permission_models import (
     UserInvitation, UserInvitationCreate, UserInvitationAccept
 )
 from auth_utils import get_current_user
+from email_service import EmailService
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 import uuid
 import secrets
+import os
 
 router = APIRouter(prefix="/invitations", tags=["invitations"])
 
