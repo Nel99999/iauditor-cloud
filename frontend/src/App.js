@@ -9,6 +9,8 @@ import RegisterPage from "@/components/RegisterPage";
 import DashboardHome from "@/components/DashboardHome";
 import OrganizationPage from "@/components/OrganizationPage";
 import UserManagementPage from "@/components/UserManagementPage";
+import RoleManagementPage from "@/components/RoleManagementPage";
+import InvitationManagementPage from "@/components/InvitationManagementPage";
 import SettingsPage from "@/components/SettingsPage";
 import InspectionsPage from "@/components/InspectionsPage";
 import TemplateBuilderPage from "@/components/TemplateBuilderPage";
