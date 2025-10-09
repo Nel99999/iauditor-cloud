@@ -501,15 +501,18 @@ frontend:
 
   - task: "Phase 1 Role Hierarchy & Color Consistency"
     implemented: true
-    working: "NA"
-    file: "frontend/src/components/UserManagementPage.jsx, InvitationManagementPage.jsx"
-    stuck_count: 0
+    working: false
+    file: "backend/role_routes.py, frontend/src/components/UserManagementPage.jsx, InvitationManagementPage.jsx"
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
         -comment: "Updated all frontend components to match backend role hierarchy (Developer Lv1 → Master Lv2 → Admin Lv3 → ... → Viewer Lv10) with CONSISTENT color coding. BACKEND COLORS (Authoritative): Developer:#8b5cf6(Violet), Master:#9333ea(Purple), Admin:#ef4444(Red), Operations Manager:#f59e0b(Amber), Team Lead:#06b6d4(Cyan), Manager:#3b82f6(Blue), Supervisor:#10b981(Emerald), Inspector:#eab308(Yellow), Operator:#64748b(Slate), Viewer:#22c55e(Green). FRONTEND CHANGES: 1) UserManagementPage.jsx - Updated getRoleBadgeStyle() to match backend colors exactly, updated role dropdowns in Edit and Invite dialogs with proper order, level indicators (Lv1-Lv10), and matching emoji colors (🟣 for violet/purple, 🔴 red, 🟠 amber, 🔵 cyan/blue, 🟢 green/emerald, 🟡 yellow, ⚫ slate). 2) InvitationManagementPage.jsx - Added dynamic role color badges to Pending and All Invitations tables using backend role data. 3) RoleManagementPage.jsx - Already displays roles correctly with dynamic colors from backend. All role colors now CONSISTENT across entire application with each role having a DISTINCT color."
+        -working: false
+        -agent: "testing"
+        -comment: "❌ CRITICAL ROLE HIERARCHY ISSUES FOUND - Comprehensive backend testing reveals major problems: 1) SYSTEM ROLES MISSING: GET /api/roles returns empty array (expected 10 system roles: Developer Lv1 → Master Lv2 → Admin Lv3 → ... → Viewer Lv10). System roles are not being initialized for new organizations. 2) INVITATION API MISMATCH: POST /api/invitations expects 'role_id' field but frontend sends 'role' field, causing 422 validation errors. 3) ROLE ASSIGNMENT BROKEN: Cannot test role assignment workflow because no system roles exist. ROOT CAUSE: System roles initialization not working - new organizations don't get the 10 default system roles created. SUCCESS RATE: 68.2% (15/22 tests passed). WORKING: Authentication (✅), User Management (✅), Custom Role CRUD (✅). BROKEN: System role initialization, invitation system, role assignment workflow. URGENT FIX NEEDED: System roles must be initialized when organizations are created."
 
 metadata:
   created_by: "main_agent"
