@@ -19,7 +19,7 @@ SYSTEM_ROLES = {
         "code": "master",
         "color": "#9333ea",  # Purple
         "level": 1,
-        "description": "System administrator with full access",
+        "description": "System administrator with FULL access including APIs and integrations",
         "is_system_role": True
     },
     "admin": {
@@ -27,22 +27,14 @@ SYSTEM_ROLES = {
         "code": "admin",
         "color": "#ef4444",  # Red
         "level": 2,
-        "description": "Administrator with full organization access",
-        "is_system_role": True
-    },
-    "developer": {
-        "name": "Developer",
-        "code": "developer",
-        "color": "#8b5cf6",  # Violet
-        "level": 3,
-        "description": "Developer with API and integration access",
+        "description": "Administrator with full organization access including API management",
         "is_system_role": True
     },
     "operations_manager": {
         "name": "Operations Manager",
         "code": "operations_manager",
         "color": "#f59e0b",  # Amber
-        "level": 4,
+        "level": 3,
         "description": "Manages operational programs and strategic initiatives",
         "is_system_role": True
     },
@@ -50,7 +42,7 @@ SYSTEM_ROLES = {
         "name": "Team Lead",
         "code": "team_lead",
         "color": "#06b6d4",  # Cyan
-        "level": 5,
+        "level": 4,
         "description": "Leads teams and manages task assignments",
         "is_system_role": True
     },
@@ -58,8 +50,16 @@ SYSTEM_ROLES = {
         "name": "Manager",
         "code": "manager",
         "color": "#3b82f6",  # Blue
+        "level": 5,
+        "description": "Manages branches/departments and approves work",
+        "is_system_role": True
+    },
+    "developer": {
+        "name": "Developer",
+        "code": "developer",
+        "color": "#8b5cf6",  # Violet
         "level": 6,
-        "description": "Manages teams and approves work",
+        "description": "Technical specialist for API development and integrations (no management authority)",
         "is_system_role": True
     },
     "supervisor": {
