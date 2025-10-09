@@ -187,10 +187,28 @@ const Layout = ({ children }) => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Define permission requirements for each menu item
+  const getPagePermissions = (pageName) => {
+    const permissionMap = {
+      'organization-structure': { permissions: ['user.read.organization'], minLevel: 3 },
+      'users': { permissions: ['user.read.organization'], minLevel: 3 },
+      'roles': { permissions: ['user.read.organization'], minLevel: 2 },
+      'invitations': { permissions: ['user.create.organization'], minLevel: 3 },
+      'inspections': { permissions: ['inspection.read.own'] },
+      'tasks': { permissions: ['task.read.own'] },
+      'reports': { permissions: ['report.read.own'] },
+      'dashboard': {},
+      'settings': {},
+      'checklists': {},
+    };
+    return permissionMap[pageName] || {};
+  };
+
   const handleMenuClick = (item) => {
     // Check if item requires permissions
     const pageName = item.path.replace('/', '');
-    const hasAccess = canAccessPage(pageName, user?.role || 'viewer', []);
+    const pageConfig = getPagePermissions(pageName);
+    const hasAccess = canAccessPage(pageName, pageConfig);
     
     if (!hasAccess) {
       alert(`Access Denied: You need higher permissions to access ${item.name}`);
@@ -206,7 +224,8 @@ const Layout = ({ children }) => {
 
   const checkItemAccess = (item) => {
     const pageName = item.path.replace('/', '');
-    return canAccessPage(pageName, user?.role || 'viewer', []);
+    const pageConfig = getPagePermissions(pageName);
+    return canAccessPage(pageName, pageConfig);
   };
 
   return (
