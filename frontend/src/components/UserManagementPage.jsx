@@ -128,10 +128,20 @@ const UserManagementPage = () => {
         return { backgroundColor: '#9333ea', color: 'white', borderColor: '#9333ea' }; // Purple
       case 'admin':
         return { backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' }; // Red
+      case 'developer':
+        return { backgroundColor: '#9333ea', color: 'white', borderColor: '#9333ea' }; // Purple
+      case 'operations_manager':
+        return { backgroundColor: '#f97316', color: 'white', borderColor: '#f97316' }; // Orange
+      case 'team_lead':
+        return { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' }; // Blue
       case 'manager':
         return { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' }; // Blue
+      case 'supervisor':
+        return { backgroundColor: '#22c55e', color: 'white', borderColor: '#22c55e' }; // Green
       case 'inspector':
         return { backgroundColor: '#eab308', color: 'white', borderColor: '#eab308' }; // Yellow
+      case 'operator':
+        return { backgroundColor: '#94a3b8', color: 'white', borderColor: '#94a3b8' }; // Gray/White
       case 'viewer':
         return { backgroundColor: '#22c55e', color: 'white', borderColor: '#22c55e' }; // Green
       default:
