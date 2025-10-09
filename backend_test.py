@@ -1883,10 +1883,10 @@ class RoleHierarchyTester:
     # ROLES API TESTS
     # =====================================
 
-    def test_list_roles(self):
-        """Test GET /api/roles - List all roles"""
+    def test_role_hierarchy_order(self):
+        """Test that roles are returned in correct hierarchy order (Developer Lv1 → Viewer Lv10)"""
         success, response = self.run_test(
-            "List All Roles",
+            "Verify Role Hierarchy Order",
             "GET",
             "roles",
             200
@@ -1894,14 +1894,91 @@ class RoleHierarchyTester:
         
         if success and isinstance(response, list):
             print(f"   Found {len(response)} roles")
-            # Verify we have the expected 10 system roles
-            system_roles = [r for r in response if r.get('is_system_role')]
-            if len(system_roles) >= 10:
-                self.log_test("Verify System Roles Count", True, f"Found {len(system_roles)} system roles (expected >= 10)")
+            
+            # Filter system roles and sort by level
+            system_roles = [r for r in response if r.get('is_system_role', False)]
+            system_roles.sort(key=lambda x: x.get('level', 999))
+            
+            # Verify we have exactly 10 system roles
+            if len(system_roles) == 10:
+                self.log_test("System Roles Count", True, f"Found exactly 10 system roles")
             else:
-                self.log_test("Verify System Roles Count", False, f"Found only {len(system_roles)} system roles (expected >= 10)")
+                self.log_test("System Roles Count", False, f"Found {len(system_roles)} system roles (expected 10)")
+                return False, response
+            
+            # Verify correct hierarchy order and details
+            hierarchy_correct = True
+            hierarchy_details = []
+            
+            for i, role in enumerate(system_roles):
+                expected_level = i + 1
+                role_code = role.get('code', '')
+                role_name = role.get('name', '')
+                role_level = role.get('level', 0)
+                role_color = role.get('color', '')
+                
+                hierarchy_details.append(f"Lv{role_level}: {role_name} ({role_code}) - {role_color}")
+                
+                # Check if this role matches expected hierarchy
+                if role_code in self.expected_roles:
+                    expected = self.expected_roles[role_code]
+                    if (role_level != expected['level'] or 
+                        role_name != expected['name'] or 
+                        role_color != expected['color']):
+                        hierarchy_correct = False
+                        self.log_test(f"Role {role_name} Details", False, 
+                                    f"Expected: Lv{expected['level']} {expected['name']} {expected['color']}, "
+                                    f"Got: Lv{role_level} {role_name} {role_color}")
+                else:
+                    hierarchy_correct = False
+                    self.log_test(f"Unknown Role", False, f"Unexpected role code: {role_code}")
+            
+            if hierarchy_correct:
+                self.log_test("Role Hierarchy Verification", True, 
+                            f"All 10 system roles in correct order:\n" + "\n".join(hierarchy_details))
+            else:
+                self.log_test("Role Hierarchy Verification", False, "Role hierarchy has issues")
+            
+            return hierarchy_correct, response
         
-        return success, response
+        return False, response
+
+    def test_role_colors_consistency(self):
+        """Test that role colors match backend definitions exactly"""
+        success, response = self.run_test(
+            "Verify Role Colors Consistency",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            system_roles = [r for r in response if r.get('is_system_role', False)]
+            colors_correct = True
+            color_details = []
+            
+            for role in system_roles:
+                role_code = role.get('code', '')
+                role_color = role.get('color', '')
+                
+                if role_code in self.expected_roles:
+                    expected_color = self.expected_roles[role_code]['color']
+                    if role_color == expected_color:
+                        color_details.append(f"✅ {role.get('name')}: {role_color}")
+                    else:
+                        colors_correct = False
+                        color_details.append(f"❌ {role.get('name')}: Expected {expected_color}, Got {role_color}")
+            
+            if colors_correct:
+                self.log_test("Role Colors Verification", True, 
+                            f"All role colors match backend definitions:\n" + "\n".join(color_details))
+            else:
+                self.log_test("Role Colors Verification", False, 
+                            f"Role color mismatches found:\n" + "\n".join(color_details))
+            
+            return colors_correct, response
+        
+        return False, response
 
     def test_create_custom_role(self):
         """Test POST /api/roles - Create custom role"""
