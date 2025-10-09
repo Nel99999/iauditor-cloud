@@ -23,6 +23,7 @@ const DeveloperAdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showPasswords, setShowPasswords] = useState({});
+  const [showAllPasswords, setShowAllPasswords] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
 
   useEffect(() => {
