@@ -346,7 +346,7 @@ const SettingsPage = () => {
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
           <TabsTrigger value="profile" className="gap-2">
             <User className="h-4 w-4" />
             Profile
@@ -355,6 +355,18 @@ const SettingsPage = () => {
             <Shield className="h-4 w-4" />
             Security
           </TabsTrigger>
+          <TabsTrigger value="appearance" className="gap-2">
+            <Palette className="h-4 w-4" />
+            Appearance
+          </TabsTrigger>
+          <TabsTrigger value="regional" className="gap-2">
+            <Globe className="h-4 w-4" />
+            Regional
+          </TabsTrigger>
+          <TabsTrigger value="privacy" className="gap-2">
+            <LockIcon className="h-4 w-4" />
+            Privacy
+          </TabsTrigger>
           <TabsTrigger value="notifications" className="gap-2">
             <Bell className="h-4 w-4" />
             Notifications
@@ -362,12 +374,12 @@ const SettingsPage = () => {
           {(user?.role === 'developer' || user?.role === 'master' || user?.role === 'admin') && (
             <TabsTrigger value="api" className="gap-2">
               <Key className="h-4 w-4" />
-              API Settings
+              API
             </TabsTrigger>
           )}
           <TabsTrigger value="organization" className="gap-2">
             <Building2 className="h-4 w-4" />
-            Organization
+            Org
           </TabsTrigger>
         </TabsList>
 
