@@ -315,8 +315,75 @@ async def update_role_permissions_bulk(
     return {"message": f"Updated permissions for role", "count": len(permission_ids)}
 
 
+async def assign_default_permissions_to_role(db: AsyncIOMotorDatabase, role_id: str, role_code: str):
+    """Assign default permissions to a system role based on hierarchy"""
+    
+    # Define default permission sets by role
+    permission_sets = {
+        "developer": "all",  # All permissions
+        "master": "all",     # All permissions
+        "admin": ["inspection.create.team", "inspection.read.all", "inspection.update.own", "inspection.approve.team",
+                  "task.create.own", "task.read.team", "task.update.own", "task.assign.team", "task.delete.own",
+                  "user.create.organization", "user.read.organization", "user.update.organization", "user.delete.organization",
+                  "report.read.all", "report.export.all"],
+        "operations_manager": ["inspection.read.all", "inspection.approve.team",
+                               "task.read.team", "task.assign.team",
+                               "report.read.all", "report.export.all"],
+        "team_lead": ["inspection.create.team", "inspection.read.team", "inspection.update.own",
+                      "task.create.own", "task.read.team", "task.update.own", "task.assign.team",
+                      "report.read.own", "user.read.organization"],
+        "manager": ["inspection.read.team", "inspection.approve.team",
+                    "task.read.team", "task.assign.team",
+                    "report.read.all"],
+        "supervisor": ["inspection.read.team", "inspection.update.own",
+                       "task.create.own", "task.read.team", "task.update.own",
+                       "report.read.own"],
+        "inspector": ["inspection.create.own", "inspection.read.own", "inspection.update.own",
+                      "task.read.own", "task.update.own"],
+        "operator": ["task.read.own", "task.update.own"],
+        "viewer": ["inspection.read.own", "task.read.own", "report.read.own"]
+    }
+    
+    perm_set = permission_sets.get(role_code, [])
+    
+    if perm_set == "all":
+        # Get all permissions
+        permissions = await db.permissions.find({}, {"_id": 0}).to_list(length=None)
+    else:
+        # Get specific permissions
+        permissions = []
+        for perm_key in perm_set:
+            parts = perm_key.split(".")
+            if len(parts) == 3:
+                resource_type, action, scope = parts
+                perm = await db.permissions.find_one({
+                    "resource_type": resource_type,
+                    "action": action,
+                    "scope": scope
+                })
+                if perm:
+                    permissions.append(perm)
+    
+    # Assign permissions to role
+    for perm in permissions:
+        existing = await db.role_permissions.find_one({
+            "role_id": role_id,
+            "permission_id": perm["id"]
+        })
+        
+        if not existing:
+            role_perm = {
+                "id": str(uuid.uuid4()),
+                "role_id": role_id,
+                "permission_id": perm["id"],
+                "granted": True,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.role_permissions.insert_one(role_perm)
+
+
 async def initialize_system_roles(db: AsyncIOMotorDatabase, organization_id: str):
-    """Initialize system roles for an organization"""
+    """Initialize system roles for an organization with default permissions"""
     
     for code, role_data in SYSTEM_ROLES.items():
         existing = await db.roles.find_one({
@@ -332,3 +399,7 @@ async def initialize_system_roles(db: AsyncIOMotorDatabase, organization_id: str
             )
             await db.roles.insert_one(role.dict())
             print(f"✅ Created system role: {role_data['name']}")
+            
+            # Assign default permissions
+            await assign_default_permissions_to_role(db, role.id, code)
+            print(f"✅ Assigned default permissions to: {role_data['name']}")
