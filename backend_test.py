@@ -1801,16 +1801,16 @@ class RoleHierarchyTester:
     
     def create_test_user_and_login(self):
         """Create a test user with organization and login"""
-        unique_email = f"phase1_test_{uuid.uuid4().hex[:8]}@example.com"
+        unique_email = f"roletest_{uuid.uuid4().hex[:8]}@testcompany.com"
         master_data = {
             "email": unique_email,
-            "password": "password123",
-            "name": "Phase 1 Test User",
-            "organization_name": "Phase 1 Test Organization"
+            "password": "SecurePass123!",
+            "name": "Role Test Master User",
+            "organization_name": f"Role Test Organization {uuid.uuid4().hex[:6]}"
         }
         
         success, response = self.run_test(
-            "Create Phase 1 Test User",
+            "Create Role Test Master User",
             "POST",
             "auth/register",
             200,
@@ -1819,10 +1819,66 @@ class RoleHierarchyTester:
         
         if success and 'access_token' in response:
             self.token = response['access_token']
+            self.test_user_id = response.get('user', {}).get('id')
             print(f"✅ Created and logged in as: {unique_email}")
             return True, response
         
         return False, response
+
+    def test_authentication_system(self):
+        """Test complete authentication workflow"""
+        print("\n🔐 Testing Authentication System...")
+        
+        # Test user registration with organization
+        unique_email = f"authtest_{uuid.uuid4().hex[:8]}@company.com"
+        reg_data = {
+            "email": unique_email,
+            "password": "TestAuth123!",
+            "name": "Auth Test User",
+            "organization_name": f"Auth Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        reg_success, reg_response = self.run_test(
+            "User Registration with Organization",
+            "POST",
+            "auth/register",
+            200,
+            data=reg_data
+        )
+        
+        if not reg_success:
+            return False
+        
+        # Test login with created user
+        login_data = {
+            "email": unique_email,
+            "password": "TestAuth123!"
+        }
+        
+        login_success, login_response = self.run_test(
+            "User Login",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if login_success and 'access_token' in login_response:
+            # Test protected endpoint access
+            temp_token = self.token
+            self.token = login_response['access_token']
+            
+            me_success, me_response = self.run_test(
+                "Protected Endpoint Access (/auth/me)",
+                "GET",
+                "auth/me",
+                200
+            )
+            
+            self.token = temp_token
+            return me_success
+        
+        return False
 
     # =====================================
     # PERMISSIONS API TESTS
