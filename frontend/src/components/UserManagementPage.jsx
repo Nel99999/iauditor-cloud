@@ -125,7 +125,7 @@ const UserManagementPage = () => {
   const getRoleBadgeStyle = (role) => {
     switch (role) {
       case 'developer':
-        return { backgroundColor: '#8b5cf6', color: 'white', borderColor: '#8b5cf6' }; // Violet
+        return { backgroundColor: '#6366f1', color: 'white', borderColor: '#6366f1' }; // Indigo
       case 'master':
         return { backgroundColor: '#9333ea', color: 'white', borderColor: '#9333ea' }; // Purple
       case 'admin':
@@ -137,7 +137,7 @@ const UserManagementPage = () => {
       case 'manager':
         return { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' }; // Blue
       case 'supervisor':
-        return { backgroundColor: '#10b981', color: 'white', borderColor: '#10b981' }; // Emerald
+        return { backgroundColor: '#14b8a6', color: 'white', borderColor: '#14b8a6' }; // Teal
       case 'inspector':
         return { backgroundColor: '#eab308', color: 'white', borderColor: '#eab308' }; // Yellow
       case 'operator':
