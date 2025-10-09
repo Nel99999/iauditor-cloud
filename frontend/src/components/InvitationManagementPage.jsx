@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Mail, Send, XCircle, RotateCw, Clock, AlertCircle, Lock } from 'lucide-react';
+import { Mail, Send, Trash2, RotateCw, Clock, AlertCircle, Lock } from 'lucide-react';
 import { getInvitableRoles, canInviteRole, canDeleteInvitation } from '../utils/permissions';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
