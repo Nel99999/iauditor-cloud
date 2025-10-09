@@ -147,12 +147,19 @@ const DeveloperAdminPanel = () => {
   };
 
   const getPasswordStatus = (u) => {
-    if (u.password && u.password.length < 50) {
-      return { status: 'known', color: 'green', text: 'Known Password' };
-    } else if (u.password && u.password.length >= 50) {
-      return { status: 'hashed', color: 'amber', text: 'Hashed (Unknown)' };
-    } else {
+    // Check both password and password_hash fields
+    const passwordField = u.password || u.password_hash;
+    
+    if (!passwordField) {
       return { status: 'none', color: 'red', text: 'No Password' };
+    }
+    
+    // Plain text passwords are typically < 50 chars
+    // Hashed passwords (bcrypt) are typically 60 chars
+    if (passwordField.length < 50) {
+      return { status: 'known', color: 'green', text: 'Known Password' };
+    } else {
+      return { status: 'hashed', color: 'amber', text: 'Hashed (Unknown)' };
     }
   };
 
