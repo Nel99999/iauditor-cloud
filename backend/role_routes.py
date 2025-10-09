@@ -17,7 +17,7 @@ SYSTEM_ROLES = {
     "developer": {
         "name": "Developer",
         "code": "developer",
-        "color": "#8b5cf6",  # Violet
+        "color": "#6366f1",  # Indigo
         "level": 1,
         "description": "Software/Platform OWNER with code access and system control",
         "is_system_role": True
