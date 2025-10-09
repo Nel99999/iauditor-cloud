@@ -183,6 +183,74 @@ const SettingsPage = () => {
     }
   };
 
+  const handleSaveAppearance = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/theme`, appearanceSettings);
+      showMessage('success', 'Appearance settings saved!');
+      // Apply font size immediately
+      applyFontSize(appearanceSettings.font_size);
+      applyDensity(appearanceSettings.view_density);
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to save appearance settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveRegional = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/regional`, regionalSettings);
+      showMessage('success', 'Regional settings saved!');
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to save regional settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSavePrivacy = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/privacy`, privacySettings);
+      showMessage('success', 'Privacy settings saved!');
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to save privacy settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const applyFontSize = (size) => {
+    const root = document.documentElement;
+    switch(size) {
+      case 'small':
+        root.style.fontSize = '14px'; // -2px from default 16px
+        break;
+      case 'large':
+        root.style.fontSize = '18px'; // +2px from default 16px
+        break;
+      default:
+        root.style.fontSize = '16px'; // medium
+    }
+  };
+
+  const applyDensity = (density) => {
+    const root = document.documentElement;
+    root.classList.remove('density-compact', 'density-comfortable', 'density-spacious');
+    root.classList.add(`density-${density}`);
+  };
+
+  useEffect(() => {
+    if (appearanceSettings.font_size) {
+      applyFontSize(appearanceSettings.font_size);
+    }
+    if (appearanceSettings.view_density) {
+      applyDensity(appearanceSettings.view_density);
+    }
+  }, [appearanceSettings.font_size, appearanceSettings.view_density]);
+
   const handleSaveApiSettings = async () => {
     setLoading(true);
     try {
