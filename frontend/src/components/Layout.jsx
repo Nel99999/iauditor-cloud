@@ -84,6 +84,22 @@ const Layout = ({ children }) => {
           description: 'Manage team members',
         },
         {
+          name: 'Roles',
+          icon: Shield,
+          path: '/roles',
+          badge: null,
+          active: true,
+          description: '10 system roles',
+        },
+        {
+          name: 'Invitations',
+          icon: Mail,
+          path: '/invitations',
+          badge: null,
+          active: true,
+          description: 'Track invites',
+        },
+        {
           name: 'Settings',
           icon: Settings,
           path: '/settings',
