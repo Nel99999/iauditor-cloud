@@ -1926,6 +1926,9 @@ class Phase1APITester:
         """Test PUT /api/roles/{id} - Update role"""
         update_data = {
             "name": f"Updated Test Role {uuid.uuid4().hex[:6]}",
+            "code": f"updated_test_{uuid.uuid4().hex[:6]}",
+            "color": "#00ff00",
+            "level": 12,
             "description": "Updated description for testing"
         }
         
