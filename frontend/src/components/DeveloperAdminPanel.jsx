@@ -335,7 +335,7 @@ const DeveloperAdminPanel = () => {
                             <div className="flex items-center gap-2">
                               <code className="bg-slate-100 px-2 py-1 rounded text-sm font-mono max-w-[150px] truncate">
                                 {(showAllPasswords || showPasswords[u.id]) 
-                                  ? (pwStatus.status === 'known' ? u.password : (pwStatus.status === 'hashed' ? '••••••••(hashed)' : 'No password'))
+                                  ? (pwStatus.status === 'known' ? (u.password || u.password_hash) : (pwStatus.status === 'hashed' ? '••••••••(hashed)' : 'No password'))
                                   : '••••••••'}
                               </code>
                               <Button
