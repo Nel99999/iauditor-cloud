@@ -1685,7 +1685,7 @@ class ReportsAPITester:
         }
 
 
-class Phase1APITester:
+class RoleHierarchyTester:
     def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
@@ -1693,10 +1693,24 @@ class Phase1APITester:
         self.tests_run = 0
         self.tests_passed = 0
         self.test_results = []
-        self.created_permissions = []
         self.created_roles = []
         self.created_invitations = []
+        self.created_users = []
         self.test_user_id = None
+        
+        # Expected role hierarchy (Developer Lv1 → Master Lv2 → Admin Lv3 → ... → Viewer Lv10)
+        self.expected_roles = {
+            "developer": {"name": "Developer", "level": 1, "color": "#8b5cf6"},
+            "master": {"name": "Master", "level": 2, "color": "#9333ea"},
+            "admin": {"name": "Admin", "level": 3, "color": "#ef4444"},
+            "operations_manager": {"name": "Operations Manager", "level": 4, "color": "#f59e0b"},
+            "team_lead": {"name": "Team Lead", "level": 5, "color": "#06b6d4"},
+            "manager": {"name": "Manager", "level": 6, "color": "#3b82f6"},
+            "supervisor": {"name": "Supervisor", "level": 7, "color": "#10b981"},
+            "inspector": {"name": "Inspector", "level": 8, "color": "#eab308"},
+            "operator": {"name": "Operator", "level": 9, "color": "#64748b"},
+            "viewer": {"name": "Viewer", "level": 10, "color": "#22c55e"}
+        }
 
     def log_test(self, name, success, details=""):
         """Log test result"""
