@@ -522,7 +522,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 1 Role Hierarchy & Color Consistency"
+    - "Phase 1 Complete System - Roles, Permissions, Invitations, UI Control"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
