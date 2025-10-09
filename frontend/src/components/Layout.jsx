@@ -187,11 +187,25 @@ const Layout = ({ children }) => {
   const isActive = (path) => location.pathname === path;
 
   const handleMenuClick = (item) => {
+    // Check if item requires permissions
+    const pageName = item.path.replace('/', '');
+    const hasAccess = canAccessPage(pageName, user?.role || 'viewer', []);
+    
+    if (!hasAccess) {
+      alert(`Access Denied: You need higher permissions to access ${item.name}`);
+      return;
+    }
+    
     if (item.active) {
       navigate(item.path);
     } else {
       alert(`${item.name} - Coming in ${item.badge || 'future milestone'}!`);
     }
+  };
+
+  const checkItemAccess = (item) => {
+    const pageName = item.path.replace('/', '');
+    return canAccessPage(pageName, user?.role || 'viewer', []);
   };
 
   return (
