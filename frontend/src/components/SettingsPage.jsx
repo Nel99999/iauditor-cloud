@@ -128,9 +128,40 @@ const SettingsPage = () => {
       });
       showMessage('success', 'Notification preferences saved!');
     } catch (err) {
-      showMessage('error', 'Failed to save preferences');
+      showMessage('error', err.response?.data?.detail || 'Failed to save preferences');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveApiSettings = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/settings/email`, {
+        sendgrid_api_key: apiSettings.sendgrid_api_key
+      });
+      showMessage('success', 'SendGrid API key saved successfully!');
+      loadApiSettings();
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to save API key');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    setTestingEmail(true);
+    setEmailTestResult(null);
+    try {
+      const response = await axios.post(`${API}/settings/email/test`);
+      setEmailTestResult({ success: true, message: response.data.message });
+    } catch (err) {
+      setEmailTestResult({ 
+        success: false, 
+        message: err.response?.data?.detail || 'Test failed' 
+      });
+    } finally {
+      setTestingEmail(false);
     }
   };
 
