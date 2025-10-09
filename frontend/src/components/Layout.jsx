@@ -30,7 +30,9 @@ import {
   Calendar,
   FolderOpen,
   Bell,
+  Lock,
 } from 'lucide-react';
+import { canAccessPage, hasRequiredLevel } from '../utils/permissions';
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
