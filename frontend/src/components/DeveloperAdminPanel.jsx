@@ -264,23 +264,40 @@ const DeveloperAdminPanel = () => {
           </Card>
 
           {/* Quick Login Instructions */}
-          <Card className="mt-6">
+          <Card className="mt-6 border-blue-200 bg-blue-50">
             <CardHeader>
-              <CardTitle>Testing Instructions</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5 text-blue-600" />
+                Testing Instructions - How to Test Different Roles
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm">
-                <p><strong>To test different roles:</strong></p>
-                <ol className="list-decimal list-inside space-y-1 ml-2">
-                  <li>Copy email and password from the table above</li>
-                  <li>Open an incognito/private window</li>
-                  <li>Login with the copied credentials</li>
-                  <li>Verify that menu items and features match the role's permissions</li>
-                  <li>Test CRUD operations available to that role</li>
-                </ol>
-                <p className="mt-4 text-amber-600">
-                  <strong>Note:</strong> Passwords shown here are test credentials. In production, passwords are hashed and cannot be viewed.
-                </p>
+              <div className="space-y-3 text-sm">
+                <div className="bg-white p-3 rounded border">
+                  <p className="font-semibold mb-2">To test different roles:</p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>Click "Show All" button above to reveal all passwords</li>
+                    <li>Select and copy email + password manually (or use Copy button)</li>
+                    <li>Open an <strong>incognito/private window</strong></li>
+                    <li>Login with the copied credentials</li>
+                    <li>Verify menu items and features match the role's permissions</li>
+                    <li>Test CRUD operations available to that role</li>
+                  </ol>
+                </div>
+                
+                <div className="bg-amber-50 border border-amber-200 p-3 rounded">
+                  <p className="text-amber-800">
+                    <strong>⚠️ Important:</strong> Most test users have passwords stored as "Test123!" or similar. 
+                    Some users created via API might show "No password stored" - these were created without passwords.
+                  </p>
+                </div>
+
+                <div className="bg-green-50 border border-green-200 p-3 rounded">
+                  <p className="text-green-800">
+                    <strong>✓ Security Note:</strong> Passwords shown here are for testing only. In production environments, 
+                    passwords are hashed with bcrypt and cannot be viewed in plaintext.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
