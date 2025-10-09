@@ -18,6 +18,10 @@ from checklist_routes import router as checklist_router
 from task_routes import router as task_router
 from reports_routes import router as reports_router
 from user_routes import router as user_router
+from permission_routes import router as permission_router
+from invitation_routes import router as invitation_router
+from deactivation_routes import router as deactivation_router
+from role_routes import router as role_router
 
 
 ROOT_DIR = Path(__file__).parent
