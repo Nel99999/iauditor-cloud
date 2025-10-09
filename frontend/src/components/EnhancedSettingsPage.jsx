@@ -1,0 +1,770 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { usePermissions } from '../hooks/usePermissions';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Settings, User, Shield, Bell, Building2, Save, Upload, Eye, EyeOff, Key, CheckCircle, XCircle, Moon, Sun, Globe, Lock, Clock, AlertTriangle } from 'lucide-react';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const EnhancedSettingsPage = () => {
+  const { user, setUser } = useAuth();
+  const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
+  const { t, i18n } = useTranslation();
+  const { isAdmin, isDeveloper } = usePermissions();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+  
+  // Profile
+  const [profileData, setProfileData] = useState({ name: '', phone: '', bio: '' });
+  
+  // Security
+  const [passwordData, setPasswordData] = useState({ current_password: '', new_password: '', confirm_password: '' });
+  
+  // Regional
+  const [regionalPrefs, setRegionalPrefs] = useState({
+    language: 'en',
+    timezone: 'UTC',
+    date_format: 'MM/DD/YYYY',
+    time_format: '12h',
+    currency: 'USD'
+  });
+  
+  // Privacy
+  const [privacyPrefs, setPrivacyPrefs] = useState({
+    profile_visibility: 'organization',
+    show_activity_status: true,
+    show_last_seen: true
+  });
+  
+  // Security Prefs
+  const [securityPrefs, setSecurityPrefs] = useState({
+    two_factor_enabled: false,
+    session_timeout: 3600
+  });
+  
+  // Notifications
+  const [notificationPrefs, setNotificationPrefs] = useState({
+    emailNotifications: true,
+    pushNotifications: false,
+    weeklyReports: true,
+    marketingEmails: false
+  });
+  
+  // API Settings
+  const [apiSettings, setApiSettings] = useState({
+    sendgrid_api_key: '',
+    sendgrid_configured: false
+  });
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      setProfileData({ name: user.name || '', phone: user.phone || '', bio: user.bio || '' });
+      loadAllPreferences();
+    }
+  }, [user]);
+
+  const loadAllPreferences = async () => {
+    try {
+      const [regional, privacy, security, api] = await Promise.all([
+        axios.get(`${API}/users/regional`),
+        axios.get(`${API}/users/privacy`),
+        axios.get(`${API}/users/security-prefs`),
+        isAdmin() || isDeveloper() ? axios.get(`${API}/settings/email`) : Promise.resolve({ data: {} })
+      ]);
+      
+      setRegionalPrefs(regional.data);
+      setPrivacyPrefs(privacy.data);
+      setSecurityPrefs(security.data);
+      if (api.data) setApiSettings(api.data);
+    } catch (err) {
+      console.error('Failed to load preferences:', err);
+    }
+  };
+
+  const showMessage = (type, text) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage({ type: '', text: '' }), 5000);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/${user.id}`, profileData);
+      setUser({ ...user, ...profileData });
+      showMessage('success', 'Profile updated successfully!');
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      showMessage('error', 'Passwords do not match');
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/${user.id}/password`, {
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password
+      });
+      showMessage('success', 'Password updated successfully!');
+      setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to update password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API}/users/${user.id}/photo`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setUser({ ...user, photo_url: response.data.photo_url });
+      showMessage('success', 'Photo uploaded successfully!');
+      window.location.reload();
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to upload photo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveRegional = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/regional`, regionalPrefs);
+      i18n.changeLanguage(regionalPrefs.language);
+      showMessage('success', 'Regional settings saved!');
+    } catch (err) {
+      showMessage('error', 'Failed to save regional settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSavePrivacy = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/privacy`, privacyPrefs);
+      showMessage('success', 'Privacy settings saved!');
+    } catch (err) {
+      showMessage('error', 'Failed to save privacy settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveSecurity = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/security-prefs`, securityPrefs);
+      showMessage('success', 'Security settings saved!');
+    } catch (err) {
+      showMessage('error', 'Failed to save security settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/settings`, notificationPrefs);
+      showMessage('success', 'Notification preferences saved!');
+    } catch (err) {
+      showMessage('error', 'Failed to save preferences');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveApiSettings = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
+      showMessage('success', 'SendGrid API key saved!');
+      loadAllPreferences();
+    } catch (err) {
+      showMessage('error', 'Failed to save API key');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    setTestingEmail(true);
+    setEmailTestResult(null);
+    try {
+      const response = await axios.post(`${API}/settings/email/test`);
+      setEmailTestResult({ success: true, message: response.data.message });
+    } catch (err) {
+      setEmailTestResult({ success: false, message: err.response?.data?.detail || 'Test failed' });
+    } finally {
+      setTestingEmail(false);
+    }
+  };
+
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' }
+  ];
+
+  const timezones = ['UTC', 'America/New_York', 'America/Los_Angeles', 'Europe/London', 'Europe/Paris', 'Asia/Tokyo', 'Asia/Shanghai', 'Australia/Sydney', 'Africa/Johannesburg'];
+  const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'ZAR'];
+
+  return (
+    <div className="container mx-auto py-8 px-4">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <Settings className="h-8 w-8" />
+          Settings
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400 mt-2">Manage your account settings and preferences</p>
+      </div>
+
+      {message.text && (
+        <Alert className={`mb-6 ${message.type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+          <AlertDescription className={message.type === 'success' ? 'text-green-800' : 'text-red-800'}>
+            {message.text}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <Tabs defaultValue="profile" className="space-y-6">
+        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${(isAdmin() || isDeveloper()) ? 8 : 7}, 1fr)` }}>
+          <TabsTrigger value="profile">
+            <User className="h-4 w-4 mr-2" />
+            Profile
+          </TabsTrigger>
+          <TabsTrigger value="appearance">
+            <Moon className="h-4 w-4 mr-2" />
+            Appearance
+          </TabsTrigger>
+          <TabsTrigger value="regional">
+            <Globe className="h-4 w-4 mr-2" />
+            Regional
+          </TabsTrigger>
+          <TabsTrigger value="security">
+            <Shield className="h-4 w-4 mr-2" />
+            Security
+          </TabsTrigger>
+          <TabsTrigger value="privacy">
+            <Lock className="h-4 w-4 mr-2" />
+            Privacy
+          </TabsTrigger>
+          <TabsTrigger value="notifications">
+            <Bell className="h-4 w-4 mr-2" />
+            Notifications
+          </TabsTrigger>
+          {(isAdmin() || isDeveloper()) && (
+            <TabsTrigger value="api">
+              <Key className="h-4 w-4 mr-2" />
+              API
+            </TabsTrigger>
+          )}
+          {(isAdmin() || isDeveloper()) && (
+            <TabsTrigger value="organization">
+              <Building2 className="h-4 w-4 mr-2" />
+              Organization
+            </TabsTrigger>
+          )}
+        </TabsList>
+
+        {/* Profile Tab */}
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Information</CardTitle>
+              <CardDescription>Update your personal information</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleUpdateProfile} className="space-y-6">
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
+                      {user?.photo_url ? (
+                        <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        user?.name?.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="photo" className="cursor-pointer">
+                      <div className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-slate-50">
+                        <Upload className="h-4 w-4" />
+                        Upload Photo
+                      </div>
+                    </Label>
+                    <Input id="photo" type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                    <p className="text-xs text-slate-500 mt-1">JPG, PNG or GIF (max 5MB)</p>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" value={profileData.name} onChange={(e) => setProfileData({...profileData, name: e.target.value})} required />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <PhoneInput value={profileData.phone} onChange={(value) => setProfileData({...profileData, phone: value})} defaultCountry="US" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="bio">Bio</Label>
+                  <textarea id="bio" value={profileData.bio} onChange={(e) => setProfileData({...profileData, bio: e.target.value})} className="w-full h-24 px-3 py-2 border rounded-md" placeholder="Tell us about yourself..." />
+                </div>
+
+                <Button type="submit" disabled={loading}>
+                  <Save className="h-4 w-4 mr-2" />
+                  {loading ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Appearance Tab */}
+        <TabsContent value="appearance">
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance Settings</CardTitle>
+              <CardDescription>Customize how the application looks</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Theme</Label>
+                  <p className="text-sm text-muted-foreground">Switch between light and dark mode</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Sun className="h-4 w-4" />
+                  <Switch checked={theme === 'dark'} onCheckedChange={toggleTheme} />
+                  <Moon className="h-4 w-4" />
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <Label>Accent Color</Label>
+                <p className="text-sm text-muted-foreground mb-2">Choose your preferred accent color</p>
+                <div className="flex gap-2">
+                  {['#6366f1', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'].map(color => (
+                    <button key={color} onClick={() => updateAccentColor(color)} className={`w-10 h-10 rounded-full border-2 ${accentColor === color ? 'border-slate-900 dark:border-white' : 'border-transparent'}`} style={{ backgroundColor: color }} />
+                  ))}
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <Label>View Density</Label>
+                <p className="text-sm text-muted-foreground mb-2">Adjust spacing and layout density</p>
+                <div className="flex gap-2">
+                  {['compact', 'comfortable', 'spacious'].map(density => (
+                    <Button key={density} variant={viewDensity === density ? 'default' : 'outline'} onClick={() => updateViewDensity(density)} className="flex-1">
+                      {density.charAt(0).toUpperCase() + density.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <Label>Font Size</Label>
+                <p className="text-sm text-muted-foreground mb-2">Adjust text size throughout the app</p>
+                <div className="flex gap-2">
+                  {['small', 'medium', 'large'].map(size => (
+                    <Button key={size} variant={fontSize === size ? 'default' : 'outline'} onClick={() => updateFontSize(size)} className="flex-1">
+                      {size.charAt(0).toUpperCase() + size.slice(1)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Regional Tab */}
+        <TabsContent value="regional">
+          <Card>
+            <CardHeader>
+              <CardTitle>Regional Settings</CardTitle>
+              <CardDescription>Set your location and format preferences</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label>Language</Label>
+                <Select value={regionalPrefs.language} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, language: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {languages.map(lang => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        {lang.flag} {lang.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Timezone</Label>
+                <Select value={regionalPrefs.timezone} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, timezone: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timezones.map(tz => (
+                      <SelectItem key={tz} value={tz}>{tz}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Date Format</Label>
+                  <Select value={regionalPrefs.date_format} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, date_format: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
+                      <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
+                      <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Time Format</Label>
+                  <Select value={regionalPrefs.time_format} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, time_format: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="12h">12-hour</SelectItem>
+                      <SelectItem value="24h">24-hour</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label>Currency</Label>
+                <Select value={regionalPrefs.currency} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, currency: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencies.map(curr => (
+                      <SelectItem key={curr} value={curr}>{curr}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button onClick={handleSaveRegional} disabled={loading}>
+                <Save className="h-4 w-4 mr-2" />
+                {loading ? 'Saving...' : 'Save Regional Settings'}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Security Tab */}
+        <TabsContent value="security">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Change Password</CardTitle>
+                <CardDescription>Update your password regularly for security</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handlePasswordChange} className="space-y-4">
+                  <div>
+                    <Label htmlFor="current">Current Password</Label>
+                    <Input id="current" type="password" value={passwordData.current_password} onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})} required />
+                  </div>
+                  <div>
+                    <Label htmlFor="new">New Password</Label>
+                    <Input id="new" type="password" value={passwordData.new_password} onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})} required />
+                  </div>
+                  <div>
+                    <Label htmlFor="confirm">Confirm New Password</Label>
+                    <Input id="confirm" type="password" value={passwordData.confirm_password} onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})} required />
+                  </div>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? 'Updating...' : 'Update Password'}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Preferences</CardTitle>
+                <CardDescription>Advanced security settings</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-base">Two-Factor Authentication (2FA)</Label>
+                    <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
+                  </div>
+                  <Switch checked={securityPrefs.two_factor_enabled} onCheckedChange={(checked) => setSecurityPrefs({...securityPrefs, two_factor_enabled: checked})} />
+                </div>
+
+                <Separator />
+
+                <div>
+                  <Label>Session Timeout</Label>
+                  <p className="text-sm text-muted-foreground mb-2">Automatically log out after inactivity</p>
+                  <Select value={securityPrefs.session_timeout.toString()} onValueChange={(value) => setSecurityPrefs({...securityPrefs, session_timeout: parseInt(value)})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="900">15 minutes</SelectItem>
+                      <SelectItem value="1800">30 minutes</SelectItem>
+                      <SelectItem value="3600">1 hour</SelectItem>
+                      <SelectItem value="14400">4 hours</SelectItem>
+                      <SelectItem value="0">Never</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button onClick={handleSaveSecurity} disabled={loading}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Security Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Privacy Tab */}
+        <TabsContent value="privacy">
+          <Card>
+            <CardHeader>
+              <CardTitle>Privacy Settings</CardTitle>
+              <CardDescription>Control who can see your information</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label>Profile Visibility</Label>
+                <p className="text-sm text-muted-foreground mb-2">Who can see your profile</p>
+                <Select value={privacyPrefs.profile_visibility} onValueChange={(value) => setPrivacyPrefs({...privacyPrefs, profile_visibility: value})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">Public - Everyone</SelectItem>
+                    <SelectItem value="organization">Organization - Only team members</SelectItem>
+                    <SelectItem value="private">Private - Only me</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Show Activity Status</Label>
+                  <p className="text-sm text-muted-foreground">Let others see when you're online</p>
+                </div>
+                <Switch checked={privacyPrefs.show_activity_status} onCheckedChange={(checked) => setPrivacyPrefs({...privacyPrefs, show_activity_status: checked})} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Show Last Seen</Label>
+                  <p className="text-sm text-muted-foreground">Display when you were last active</p>
+                </div>
+                <Switch checked={privacyPrefs.show_last_seen} onCheckedChange={(checked) => setPrivacyPrefs({...privacyPrefs, show_last_seen: checked})} />
+              </div>
+
+              <Button onClick={handleSavePrivacy} disabled={loading}>
+                <Save className="h-4 w-4 mr-2" />
+                Save Privacy Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Notifications Tab */}
+        <TabsContent value="notifications">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notification Preferences</CardTitle>
+              <CardDescription>Manage how you receive notifications</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Email Notifications</Label>
+                  <p className="text-sm text-muted-foreground">Receive notifications via email</p>
+                </div>
+                <Switch checked={notificationPrefs.emailNotifications} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, emailNotifications: checked})} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Push Notifications</Label>
+                  <p className="text-sm text-muted-foreground">Get browser push notifications</p>
+                </div>
+                <Switch checked={notificationPrefs.pushNotifications} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, pushNotifications: checked})} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Weekly Reports</Label>
+                  <p className="text-sm text-muted-foreground">Receive weekly summary emails</p>
+                </div>
+                <Switch checked={notificationPrefs.weeklyReports} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, weeklyReports: checked})} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Marketing Emails</Label>
+                  <p className="text-sm text-muted-foreground">Receive product updates and tips</p>
+                </div>
+                <Switch checked={notificationPrefs.marketingEmails} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, marketingEmails: checked})} />
+              </div>
+
+              <Button onClick={handleSaveNotifications} disabled={loading}>
+                <Save className="h-4 w-4 mr-2" />
+                Save Notification Preferences
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* API Tab */}
+        {(isAdmin() || isDeveloper()) && (
+          <TabsContent value="api">
+            <Card>
+              <CardHeader>
+                <CardTitle>API Configuration</CardTitle>
+                <CardDescription>Manage third-party API keys for email and integrations</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label>SendGrid API Key</Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Required for sending invitation emails. Get your API key from{' '}
+                    <a href="https://app.sendgrid.com/settings/api_keys" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">SendGrid Dashboard</a>
+                  </p>
+                  <div className="flex gap-2">
+                    <Input type="password" placeholder={apiSettings.sendgrid_configured ? "API key configured" : "SG.xxxxx..."} value={apiSettings.sendgrid_api_key} onChange={(e) => setApiSettings({...apiSettings, sendgrid_api_key: e.target.value})} className="font-mono" />
+                    {apiSettings.sendgrid_configured && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3 text-green-600" />Configured
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveApiSettings} disabled={loading || !apiSettings.sendgrid_api_key}>
+                    <Save className="h-4 w-4 mr-2" />
+                    {loading ? 'Saving...' : 'Save API Key'}
+                  </Button>
+                  <Button variant="outline" onClick={handleTestEmail} disabled={testingEmail || !apiSettings.sendgrid_configured}>
+                    <Key className="h-4 w-4 mr-2" />
+                    {testingEmail ? 'Testing...' : 'Test Connection'}
+                  </Button>
+                </div>
+
+                {emailTestResult && (
+                  <div className={`p-3 rounded-md border flex items-start gap-2 ${emailTestResult.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                    {emailTestResult.success ? <CheckCircle className="h-5 w-5 mt-0.5" /> : <XCircle className="h-5 w-5 mt-0.5" />}
+                    <div>
+                      <p className="font-medium">{emailTestResult.success ? 'Connection Successful' : 'Connection Failed'}</p>
+                      <p className="text-sm">{emailTestResult.message}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-medium text-blue-900 mb-2">How to get SendGrid API Key:</h4>
+                  <ol className="list-decimal list-inside text-sm text-blue-800 space-y-1">
+                    <li>Sign up for free at <a href="https://signup.sendgrid.com/" target="_blank" rel="noopener noreferrer" className="underline">SendGrid</a></li>
+                    <li>Navigate to Settings → API Keys</li>
+                    <li>Click "Create API Key"</li>
+                    <li>Give it Full Access or Mail Send permissions</li>
+                    <li>Copy the key and paste it above</li>
+                  </ol>
+                  <p className="text-xs text-blue-700 mt-2">Free tier includes 100 emails/day!</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {/* Organization Tab */}
+        {(isAdmin() || isDeveloper()) && (
+          <TabsContent value="organization">
+            <Card>
+              <CardHeader>
+                <CardTitle>Organization Settings</CardTitle>
+                <CardDescription>Manage organization-wide settings</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Alert className="bg-amber-50 border-amber-200">
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-amber-800">
+                    Organization settings are coming soon. This section will include company logo upload, working hours configuration, holiday calendar, and default role settings.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+      </Tabs>
+    </div>
+  );
+};
+
+export default EnhancedSettingsPage;
