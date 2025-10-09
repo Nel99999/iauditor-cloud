@@ -12,7 +12,8 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Settings, User, Shield, Bell, Building2, Save, Upload, Key, CheckCircle, XCircle } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Settings, User, Shield, Bell, Building2, Save, Upload, Key, CheckCircle, XCircle, Palette, Globe, Lock as LockIcon } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -26,6 +27,24 @@ const SettingsPage = () => {
     pushNotifications: false,
     weeklyReports: true,
     marketingEmails: false,
+  });
+  const [appearanceSettings, setAppearanceSettings] = useState({
+    theme: 'light',
+    accent_color: '#6366f1',
+    font_size: 'medium',
+    view_density: 'comfortable'
+  });
+  const [regionalSettings, setRegionalSettings] = useState({
+    language: 'en',
+    timezone: 'UTC',
+    date_format: 'MM/DD/YYYY',
+    time_format: '12h',
+    currency: 'USD'
+  });
+  const [privacySettings, setPrivacySettings] = useState({
+    profile_visibility: 'organization',
+    show_activity_status: true,
+    show_last_seen: true
   });
   const [apiSettings, setApiSettings] = useState({
     sendgrid_api_key: '',
