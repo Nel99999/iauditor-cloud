@@ -108,7 +108,7 @@ const DeveloperAdminPanel = () => {
       supervisor: '#14b8a6',
       inspector: '#eab308',
       operator: '#64748b',
-      viewer: '#22c55e'
+      viewer: '#84cc16'
     };
     const color = roleColors[roleCode] || '#64748b';
     return { backgroundColor: color, color: 'white' };
