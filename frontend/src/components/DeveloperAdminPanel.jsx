@@ -368,10 +368,10 @@ const DeveloperAdminPanel = () => {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  onClick={() => copyToClipboard(u.password)}
+                                  onClick={() => copyToClipboard(u.password || u.password_hash)}
                                   title="Copy password only"
                                 >
-                                  {copiedId === u.password ? (
+                                  {copiedId === (u.password || u.password_hash) ? (
                                     <CheckCircle className="h-4 w-4 text-green-600" />
                                   ) : (
                                     <Copy className="h-4 w-4" />
