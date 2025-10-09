@@ -4661,36 +4661,306 @@ class OrganizationHierarchyTester:
         }
 
 
+class SystemRoleInitializationTester:
+    """Test system role initialization fix - focused test for the specific issue"""
+    def __init__(self, base_url="https://rolemaster-8.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.test_user_email = None
+        
+        # Expected 10 system roles in correct order
+        self.expected_roles = [
+            {"name": "Developer", "level": 1, "color": "#8b5cf6", "code": "developer"},
+            {"name": "Master", "level": 2, "color": "#9333ea", "code": "master"},
+            {"name": "Admin", "level": 3, "color": "#ef4444", "code": "admin"},
+            {"name": "Operations Manager", "level": 4, "color": "#f59e0b", "code": "operations_manager"},
+            {"name": "Team Lead", "level": 5, "color": "#06b6d4", "code": "team_lead"},
+            {"name": "Manager", "level": 6, "color": "#3b82f6", "code": "manager"},
+            {"name": "Supervisor", "level": 7, "color": "#10b981", "code": "supervisor"},
+            {"name": "Inspector", "level": 8, "color": "#eab308", "code": "inspector"},
+            {"name": "Operator", "level": 9, "color": "#64748b", "code": "operator"},
+            {"name": "Viewer", "level": 10, "color": "#22c55e", "code": "viewer"}
+        ]
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def test_register_new_user_with_organization(self):
+        """Step 1: Register a NEW test user with organization creation"""
+        self.test_user_email = f"roletest_{uuid.uuid4().hex[:8]}@testcompany.com"
+        test_data = {
+            "email": self.test_user_email,
+            "password": "SecurePass123!",
+            "name": "System Role Test User",
+            "organization_name": f"System Role Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Register NEW User with Organization (Should Trigger System Role Init)",
+            "POST",
+            "auth/register",
+            200,
+            data=test_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            print(f"✅ Successfully registered and logged in as: {self.test_user_email}")
+            return True, response
+        
+        return False, response
+
+    def test_login_with_new_user(self):
+        """Step 2: Login with the new user"""
+        if not self.test_user_email:
+            self.log_test("Login Test User", False, "No test user email available")
+            return False
+        
+        login_data = {
+            "email": self.test_user_email,
+            "password": "SecurePass123!"
+        }
+        
+        success, response = self.run_test(
+            "Login with New Test User",
+            "POST",
+            "auth/login",
+            200,
+            data=login_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            return True, response
+        
+        return False, response
+
+    def test_verify_system_roles_created(self):
+        """Step 3: Verify system roles were created - GET /api/roles should return 10 system roles"""
+        success, response = self.run_test(
+            "Verify System Roles Created (GET /api/roles)",
+            "GET",
+            "roles",
+            200
+        )
+        
+        if not success:
+            return False, response
+        
+        if not isinstance(response, list):
+            self.log_test("System Roles Response Type", False, f"Expected list, got {type(response)}")
+            return False, response
+        
+        # Check if we have 10 system roles
+        if len(response) != 10:
+            self.log_test("System Roles Count", False, f"Expected 10 system roles, got {len(response)}")
+            return False, response
+        
+        # Verify each expected role exists with correct properties
+        roles_by_code = {role.get('code', ''): role for role in response}
+        
+        all_roles_correct = True
+        for expected_role in self.expected_roles:
+            role_code = expected_role['code']
+            if role_code not in roles_by_code:
+                self.log_test(f"Missing Role: {expected_role['name']}", False, f"Role code '{role_code}' not found")
+                all_roles_correct = False
+                continue
+            
+            actual_role = roles_by_code[role_code]
+            
+            # Check name
+            if actual_role.get('name') != expected_role['name']:
+                self.log_test(f"Role Name Mismatch: {role_code}", False, f"Expected '{expected_role['name']}', got '{actual_role.get('name')}'")
+                all_roles_correct = False
+            
+            # Check level
+            if actual_role.get('level') != expected_role['level']:
+                self.log_test(f"Role Level Mismatch: {role_code}", False, f"Expected level {expected_role['level']}, got {actual_role.get('level')}")
+                all_roles_correct = False
+            
+            # Check color
+            if actual_role.get('color') != expected_role['color']:
+                self.log_test(f"Role Color Mismatch: {role_code}", False, f"Expected '{expected_role['color']}', got '{actual_role.get('color')}'")
+                all_roles_correct = False
+        
+        if all_roles_correct:
+            self.log_test("All System Roles Verified", True, "All 10 system roles found with correct properties")
+        
+        return all_roles_correct, response
+
+    def test_user_invitation_with_role_code(self):
+        """Step 4: Test user invitation with role code (should accept 'master' directly)"""
+        invitation_data = {
+            "email": f"invited_{uuid.uuid4().hex[:8]}@testcompany.com",
+            "role": "master"  # Using role code directly as specified in requirements
+        }
+        
+        success, response = self.run_test(
+            "User Invitation with Role Code ('master')",
+            "POST",
+            "users/invite",
+            200,
+            data=invitation_data
+        )
+        
+        return success, response
+
+    def run_system_role_initialization_test(self):
+        """Run the complete system role initialization test sequence"""
+        print("🚀 Starting System Role Initialization Verification Test")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+        print("TESTING SEQUENCE:")
+        print("1. Register NEW user with organization creation (should trigger system role init)")
+        print("2. Login with the new user")
+        print("3. Verify system roles were created (GET /api/roles should return 10 roles)")
+        print("4. Test user invitation with role code")
+        print("=" * 80)
+
+        # Step 1: Register new user with organization
+        reg_success, reg_response = self.test_register_new_user_with_organization()
+        if not reg_success:
+            print("❌ User registration failed - cannot continue test")
+            return self.generate_report()
+
+        # Step 2: Login (already done in registration, but verify)
+        login_success, login_response = self.test_login_with_new_user()
+        if not login_success:
+            print("❌ Login failed - cannot continue test")
+            return self.generate_report()
+
+        # Step 3: Verify system roles were created
+        roles_success, roles_response = self.test_verify_system_roles_created()
+        if not roles_success:
+            print("❌ CRITICAL: System roles were NOT created during organization registration")
+            print("   This confirms the system role initialization is still broken")
+        else:
+            print("✅ SUCCESS: System roles were properly initialized!")
+
+        # Step 4: Test user invitation with role code
+        invite_success, invite_response = self.test_user_invitation_with_role_code()
+        if not invite_success:
+            print("❌ User invitation with role code failed")
+        else:
+            print("✅ User invitation with role code working")
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 80)
+        print("📊 SYSTEM ROLE INITIALIZATION TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        # Specific analysis for system role initialization
+        roles_test = next((test for test in self.test_results if "System Roles Created" in test['test']), None)
+        if roles_test:
+            if roles_test['success']:
+                print("\n🎉 SYSTEM ROLE INITIALIZATION FIX: WORKING!")
+                print("   ✅ New organization registration properly triggers system role creation")
+                print("   ✅ All 10 system roles created with correct properties")
+            else:
+                print("\n❌ SYSTEM ROLE INITIALIZATION FIX: STILL BROKEN!")
+                print("   ❌ New organization registration does NOT create system roles")
+                print("   ❌ initialize_system_roles() function is not being called")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results,
+            "system_role_fix_working": roles_test['success'] if roles_test else False
+        }
+
+
 if __name__ == "__main__":
-    # Run comprehensive role hierarchy testing as requested
-    print("🚀 COMPREHENSIVE BACKEND TESTING FOR PHASE 1 ROLE HIERARCHY UPDATE")
+    print("🚀 Starting System Role Initialization Verification Test")
     print("=" * 80)
     
-    # Focus on Role Hierarchy Testing
-    role_tester = RoleHierarchyTester()
-    role_results = role_tester.run_comprehensive_role_hierarchy_tests()
+    # Run the focused system role initialization test
+    role_tester = SystemRoleInitializationTester()
+    results = role_tester.run_system_role_initialization_test()
     
-    print("\n" + "=" * 80)
-    print("🎯 PHASE 1 ROLE HIERARCHY TEST COMPLETION")
-    print("=" * 80)
-    
-    success_rate = role_results["success_rate"]
-    critical_failures = role_results.get("critical_failures", 0)
-    
-    if success_rate >= 90 and critical_failures == 0:
-        print("🎉 EXCELLENT: Role hierarchy system fully operational!")
-        print("✅ All backend systems verified working correctly")
-        print("✅ Role hierarchy (Developer Lv1 → Master Lv2 → Admin Lv3 → ... → Viewer Lv10) confirmed")
-        print("✅ Role colors consistent with backend definitions")
-        print("✅ User management and invitation systems functional")
-    elif success_rate >= 70:
-        print("⚠️ GOOD: Role hierarchy mostly working, minor issues found")
-        if critical_failures > 0:
-            print(f"❌ {critical_failures} critical role hierarchy issues need attention")
+    # Final assessment
+    if results['system_role_fix_working']:
+        print("\n🎉 SYSTEM ROLE INITIALIZATION FIX VERIFIED WORKING!")
+        print("   The fix to call initialize_system_roles() during organization creation is successful.")
     else:
-        print("❌ ATTENTION NEEDED: Role hierarchy system requires fixes")
-        print(f"❌ {critical_failures} critical failures in role hierarchy")
+        print("\n❌ SYSTEM ROLE INITIALIZATION FIX STILL BROKEN!")
+        print("   The initialize_system_roles() function is not being called during organization creation.")
+        print("   Main agent needs to investigate auth_routes.py registration logic.")
     
-    print(f"\nFinal Results: {role_results['passed_tests']}/{role_results['total_tests']} tests passed ({success_rate:.1f}%)")
-    
-    print(f"\n🎯 ROLE HIERARCHY UPDATE STATUS: {'✅ VERIFIED' if role_results['success_rate'] >= 90 and role_results.get('critical_failures', 0) == 0 else '❌ NEEDS ATTENTION'}")
+    print("=" * 80)
