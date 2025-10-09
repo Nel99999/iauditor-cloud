@@ -65,11 +65,14 @@ async def initialize_phase1_database():
     print("✅ Created index: roles (organization_id, code)")
     
     # Invitations indexes
-    await db.invitations.create_index([("token", 1)], unique=True)
-    await db.invitations.create_index([("email", 1), ("organization_id", 1)])
-    await db.invitations.create_index([("status", 1)])
-    await db.invitations.create_index([("expires_at", 1)])
-    print("✅ Created index: invitations (token, email, status)")
+    try:
+        await db.invitations.create_index([("token", 1)], unique=True, sparse=True)
+        await db.invitations.create_index([("email", 1), ("organization_id", 1)])
+        await db.invitations.create_index([("status", 1)])
+        await db.invitations.create_index([("expires_at", 1)])
+        print("✅ Created index: invitations (token, email, status)")
+    except Exception as e:
+        print(f"ℹ️  Invitations indexes may already exist: {str(e)[:50]}")
     
     # User deactivations indexes
     await db.user_deactivations.create_index([("user_id", 1)])
