@@ -1,0 +1,58 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "confirm": "Confirm"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account settings and preferences",
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "regional": "Regional",
+    "privacy": "Privacy",
+    "api": "API Settings",
+    "organization": "Organization",
+    "advanced": "Advanced"
+  },
+  "appearance": {
+    "title": "Appearance Settings",
+    "subtitle": "Customize how the application looks",
+    "theme": "Theme",
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "accentColor": "Accent Color",
+    "viewDensity": "View Density",
+    "compact": "Compact",
+    "comfortable": "Comfortable",
+    "spacious": "Spacious",
+    "fontSize": "Font Size",
+    "small": "Small",
+    "medium": "Medium",
+    "large": "Large"
+  },
+  "regional": {
+    "title": "Regional Settings",
+    "subtitle": "Set your location and format preferences",
+    "language": "Language",
+    "timezone": "Timezone",
+    "dateFormat": "Date Format",
+    "timeFormat": "Time Format",
+    "12hour": "12-hour",
+    "24hour": "24-hour",
+    "currency": "Currency"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back"
+  }
+}
