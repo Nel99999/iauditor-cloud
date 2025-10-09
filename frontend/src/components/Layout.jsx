@@ -35,7 +35,8 @@ import {
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, userRole } = useAuth();
+  const { canAccessPage, hasAnyPermission } = usePermissions();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
