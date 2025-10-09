@@ -50,6 +50,9 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         org_dict["updated_at"] = org_dict["updated_at"].isoformat()
         await db.organizations.insert_one(org_dict)
         organization_id = org.id
+        
+        # Initialize system roles for the new organization
+        await initialize_system_roles(db, organization_id)
     
     # Create user
     user = User(
