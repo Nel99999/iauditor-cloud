@@ -4662,25 +4662,35 @@ class OrganizationHierarchyTester:
 
 
 if __name__ == "__main__":
-    print("🚀 Starting Phase 1 Comprehensive Backend API Testing Suite")
+    # Run comprehensive role hierarchy testing as requested
+    print("🚀 COMPREHENSIVE BACKEND TESTING FOR PHASE 1 ROLE HIERARCHY UPDATE")
     print("=" * 80)
     
-    # Test Phase 1 New APIs - PRIORITY TESTING
-    phase1_tester = Phase1APITester()
-    phase1_results = phase1_tester.run_all_tests()
+    # Focus on Role Hierarchy Testing
+    role_tester = RoleHierarchyTester()
+    role_results = role_tester.run_comprehensive_role_hierarchy_tests()
     
-    print("\n" + "="*80)
-    print("🎯 PHASE 1 API TEST SUMMARY")
-    print("="*80)
-    print(f"Success Rate: {phase1_results['success_rate']:.1f}% ({phase1_results['passed_tests']}/{phase1_results['total_tests']})")
+    print("\n" + "=" * 80)
+    print("🎯 PHASE 1 ROLE HIERARCHY TEST COMPLETION")
+    print("=" * 80)
     
-    if phase1_results['success_rate'] >= 90:
-        print("🎉 EXCELLENT! Phase 1 APIs are working very well.")
-    elif phase1_results['success_rate'] >= 80:
-        print("✅ GOOD! Phase 1 APIs are mostly working with minor issues.")
-    elif phase1_results['success_rate'] >= 70:
-        print("⚠️  FAIR! Phase 1 APIs have some issues that need attention.")
+    success_rate = role_results["success_rate"]
+    critical_failures = role_results.get("critical_failures", 0)
+    
+    if success_rate >= 90 and critical_failures == 0:
+        print("🎉 EXCELLENT: Role hierarchy system fully operational!")
+        print("✅ All backend systems verified working correctly")
+        print("✅ Role hierarchy (Developer Lv1 → Master Lv2 → Admin Lv3 → ... → Viewer Lv10) confirmed")
+        print("✅ Role colors consistent with backend definitions")
+        print("✅ User management and invitation systems functional")
+    elif success_rate >= 70:
+        print("⚠️ GOOD: Role hierarchy mostly working, minor issues found")
+        if critical_failures > 0:
+            print(f"❌ {critical_failures} critical role hierarchy issues need attention")
     else:
-        print("❌ POOR! Phase 1 APIs have significant issues requiring immediate attention.")
+        print("❌ ATTENTION NEEDED: Role hierarchy system requires fixes")
+        print(f"❌ {critical_failures} critical failures in role hierarchy")
     
-    print("="*80)
+    print(f"\nFinal Results: {role_results['passed_tests']}/{role_results['total_tests']} tests passed ({success_rate:.1f}%)")
+    
+    print(f"\n🎯 ROLE HIERARCHY UPDATE STATUS: {'✅ VERIFIED' if role_results['success_rate'] >= 90 and role_results.get('critical_failures', 0) == 0 else '❌ NEEDS ATTENTION'}")
