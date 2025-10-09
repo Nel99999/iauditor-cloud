@@ -124,28 +124,28 @@ const UserManagementPage = () => {
 
   const getRoleBadgeStyle = (role) => {
     switch (role) {
+      case 'developer':
+        return { backgroundColor: '#8b5cf6', color: 'white', borderColor: '#8b5cf6' }; // Violet
       case 'master':
         return { backgroundColor: '#9333ea', color: 'white', borderColor: '#9333ea' }; // Purple
       case 'admin':
         return { backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' }; // Red
-      case 'developer':
-        return { backgroundColor: '#9333ea', color: 'white', borderColor: '#9333ea' }; // Purple
       case 'operations_manager':
-        return { backgroundColor: '#f97316', color: 'white', borderColor: '#f97316' }; // Orange
+        return { backgroundColor: '#f59e0b', color: 'white', borderColor: '#f59e0b' }; // Amber
       case 'team_lead':
-        return { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' }; // Blue
+        return { backgroundColor: '#06b6d4', color: 'white', borderColor: '#06b6d4' }; // Cyan
       case 'manager':
         return { backgroundColor: '#3b82f6', color: 'white', borderColor: '#3b82f6' }; // Blue
       case 'supervisor':
-        return { backgroundColor: '#22c55e', color: 'white', borderColor: '#22c55e' }; // Green
+        return { backgroundColor: '#10b981', color: 'white', borderColor: '#10b981' }; // Emerald
       case 'inspector':
         return { backgroundColor: '#eab308', color: 'white', borderColor: '#eab308' }; // Yellow
       case 'operator':
-        return { backgroundColor: '#94a3b8', color: 'white', borderColor: '#94a3b8' }; // Gray/White
+        return { backgroundColor: '#64748b', color: 'white', borderColor: '#64748b' }; // Slate
       case 'viewer':
         return { backgroundColor: '#22c55e', color: 'white', borderColor: '#22c55e' }; // Green
       default:
-        return { backgroundColor: '#94a3b8', color: 'white', borderColor: '#94a3b8' }; // Gray
+        return { backgroundColor: '#64748b', color: 'white', borderColor: '#64748b' }; // Slate
     }
   };
 
