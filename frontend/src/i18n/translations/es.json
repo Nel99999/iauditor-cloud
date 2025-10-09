@@ -1,0 +1,58 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "loading": "Cargando...",
+    "success": "Éxito",
+    "error": "Error",
+    "confirm": "Confirmar"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu cuenta y preferencias",
+    "profile": "Perfil",
+    "security": "Seguridad",
+    "notifications": "Notificaciones",
+    "appearance": "Apariencia",
+    "regional": "Regional",
+    "privacy": "Privacidad",
+    "api": "Configuración API",
+    "organization": "Organización",
+    "advanced": "Avanzado"
+  },
+  "appearance": {
+    "title": "Configuración de Apariencia",
+    "subtitle": "Personaliza el aspecto de la aplicación",
+    "theme": "Tema",
+    "light": "Modo Claro",
+    "dark": "Modo Oscuro",
+    "accentColor": "Color de Acento",
+    "viewDensity": "Densidad de Vista",
+    "compact": "Compacto",
+    "comfortable": "Cómodo",
+    "spacious": "Espacioso",
+    "fontSize": "Tamaño de Fuente",
+    "small": "Pequeño",
+    "medium": "Mediano",
+    "large": "Grande"
+  },
+  "regional": {
+    "title": "Configuración Regional",
+    "subtitle": "Establece tu ubicación y preferencias de formato",
+    "language": "Idioma",
+    "timezone": "Zona Horaria",
+    "dateFormat": "Formato de Fecha",
+    "timeFormat": "Formato de Hora",
+    "12hour": "12 horas",
+    "24hour": "24 horas",
+    "currency": "Moneda"
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "welcome": "Bienvenido de nuevo"
+  }
+}
