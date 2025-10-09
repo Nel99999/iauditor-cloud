@@ -298,27 +298,33 @@ const Layout = ({ children }) => {
                 {section.items.map((item, itemIdx) => {
                   const Icon = item.icon;
                   const active = isActive(item.path);
+                  const hasAccess = checkItemAccess(item);
+                  const isRestricted = item.active && !hasAccess;
                   
                   return (
                     <button
                       key={itemIdx}
                       onClick={() => handleMenuClick(item)}
-                      disabled={!item.active}
+                      disabled={!item.active || isRestricted}
                       className={`
                         w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
                         ${active
                           ? 'bg-primary text-primary-foreground'
-                          : item.active
+                          : item.active && hasAccess
                           ? 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                          : 'text-slate-400 dark:text-slate-500 cursor-not-allowed'
+                          : 'text-slate-400 dark:text-slate-500 cursor-not-allowed opacity-50'
                         }
+                        ${isRestricted ? 'relative' : ''}
                       `}
                       data-testid={`menu-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       <div className="flex items-center gap-3">
                         <Icon className="h-5 w-5" />
                         <div className="text-left">
-                          <div>{item.name}</div>
+                          <div className="flex items-center gap-2">
+                            {item.name}
+                            {isRestricted && <Lock className="h-3 w-3" />}
+                          </div>
                           {item.description && (
                             <div className="text-xs opacity-70">{item.description}</div>
                           )}
@@ -326,7 +332,7 @@ const Layout = ({ children }) => {
                       </div>
                       {item.badge && (
                         <Badge
-                          variant={item.active ? 'secondary' : 'outline'}
+                          variant={item.active && hasAccess ? 'secondary' : 'outline'}
                           className="text-xs"
                         >
                           {item.badge}
