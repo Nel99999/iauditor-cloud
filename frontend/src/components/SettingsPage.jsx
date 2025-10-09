@@ -242,6 +242,12 @@ const SettingsPage = () => {
             <Bell className="h-4 w-4" />
             Notifications
           </TabsTrigger>
+          {(user?.role === 'developer' || user?.role === 'master' || user?.role === 'admin') && (
+            <TabsTrigger value="api" className="gap-2">
+              <Key className="h-4 w-4" />
+              API Settings
+            </TabsTrigger>
+          )}
           <TabsTrigger value="organization" className="gap-2">
             <Building2 className="h-4 w-4" />
             Organization
