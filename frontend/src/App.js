@@ -122,6 +122,26 @@ function App() {
               }
             />
             <Route
+              path="/roles"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <RoleManagementPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/invitations"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <InvitationManagementPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/checklists"
               element={
                 <ProtectedRoute>
