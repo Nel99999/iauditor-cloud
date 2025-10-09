@@ -147,7 +147,16 @@ const InvitationManagementPage = () => {
                       <TableRow key={invitation.id}>
                         <TableCell>{invitation.email}</TableCell>
                         <TableCell>
-                          <Badge>{invitation.role_id}</Badge>
+                          {(() => {
+                            const role = roles.find(r => r.id === invitation.role_id);
+                            return role ? (
+                              <Badge style={{ backgroundColor: role.color, color: 'white' }}>
+                                {role.name}
+                              </Badge>
+                            ) : (
+                              <Badge>{invitation.role_id}</Badge>
+                            );
+                          })()}
                         </TableCell>
                         <TableCell>{invitation.invited_by_name}</TableCell>
                         <TableCell>{new Date(invitation.created_at).toLocaleDateString()}</TableCell>
@@ -212,7 +221,16 @@ const InvitationManagementPage = () => {
                       <TableRow key={invitation.id}>
                         <TableCell>{invitation.email}</TableCell>
                         <TableCell>
-                          <Badge>{invitation.role_id}</Badge>
+                          {(() => {
+                            const role = roles.find(r => r.id === invitation.role_id);
+                            return role ? (
+                              <Badge style={{ backgroundColor: role.color, color: 'white' }}>
+                                {role.name}
+                              </Badge>
+                            ) : (
+                              <Badge>{invitation.role_id}</Badge>
+                            );
+                          })()}
                         </TableCell>
                         <TableCell>{getStatusBadge(invitation.status)}</TableCell>
                         <TableCell>{invitation.invited_by_name}</TableCell>
