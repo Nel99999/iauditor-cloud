@@ -58,6 +58,9 @@ const SettingsPage = () => {
   useEffect(() => {
     loadSettings();
     loadApiSettings();
+    loadAppearanceSettings();
+    loadRegionalSettings();
+    loadPrivacySettings();
     if (user) {
       setProfileData({ name: user.name || '', phone: user.phone || '', bio: user.bio || '' });
     }
@@ -84,6 +87,33 @@ const SettingsPage = () => {
       });
     } catch (err) {
       console.error('Failed to load settings:', err);
+    }
+  };
+
+  const loadAppearanceSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/users/theme`);
+      setAppearanceSettings(response.data);
+    } catch (err) {
+      console.error('Failed to load appearance settings:', err);
+    }
+  };
+
+  const loadRegionalSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/users/regional`);
+      setRegionalSettings(response.data);
+    } catch (err) {
+      console.error('Failed to load regional settings:', err);
+    }
+  };
+
+  const loadPrivacySettings = async () => {
+    try {
+      const response = await axios.get(`${API}/users/privacy`);
+      setPrivacySettings(response.data);
+    } catch (err) {
+      console.error('Failed to load privacy settings:', err);
     }
   };
 
