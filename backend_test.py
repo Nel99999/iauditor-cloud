@@ -2083,7 +2083,7 @@ class Phase1APITester:
             "role_id": "viewer",  # Use a system role
             "scope_type": "organization",
             "scope_id": None,
-            "function_overrides": []
+            "function_overrides": {}  # Use dict instead of list
         }
         
         success, response = self.run_test(
