@@ -441,12 +441,12 @@ const UserManagementPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="master">🟣 Master - System Administrator</SelectItem>
-                    <SelectItem value="admin">🔴 Admin - Full access</SelectItem>
-                    <SelectItem value="developer">🟣 Developer - API & integrations</SelectItem>
+                    <SelectItem value="developer">💻 Developer - Software Owner</SelectItem>
+                    <SelectItem value="master">👑 Master - Business Owner</SelectItem>
+                    <SelectItem value="admin">🔴 Admin - Organization Admin</SelectItem>
                     <SelectItem value="operations_manager">🟠 Operations Manager - Strategic</SelectItem>
                     <SelectItem value="team_lead">🔵 Team Lead - Lead teams</SelectItem>
-                    <SelectItem value="manager">🔵 Manager - Manage teams</SelectItem>
+                    <SelectItem value="manager">🔵 Manager - Branch/Dept management</SelectItem>
                     <SelectItem value="supervisor">🟢 Supervisor - Supervise shifts</SelectItem>
                     <SelectItem value="inspector">🟡 Inspector - Execute operations</SelectItem>
                     <SelectItem value="operator">⚪ Operator - Basic tasks</SelectItem>
@@ -528,12 +528,12 @@ const UserManagementPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="master">🟣 Master - System Administrator</SelectItem>
-                    <SelectItem value="admin">🔴 Admin - Full access</SelectItem>
-                    <SelectItem value="developer">🟣 Developer - API & integrations</SelectItem>
+                    <SelectItem value="developer">💻 Developer - Software Owner</SelectItem>
+                    <SelectItem value="master">👑 Master - Business Owner</SelectItem>
+                    <SelectItem value="admin">🔴 Admin - Organization Admin</SelectItem>
                     <SelectItem value="operations_manager">🟠 Operations Manager - Strategic</SelectItem>
                     <SelectItem value="team_lead">🔵 Team Lead - Lead teams</SelectItem>
-                    <SelectItem value="manager">🔵 Manager - Manage teams</SelectItem>
+                    <SelectItem value="manager">🔵 Manager - Branch/Dept management</SelectItem>
                     <SelectItem value="supervisor">🟢 Supervisor - Supervise shifts</SelectItem>
                     <SelectItem value="inspector">🟡 Inspector - Execute operations</SelectItem>
                     <SelectItem value="operator">⚪ Operator - Basic tasks</SelectItem>
