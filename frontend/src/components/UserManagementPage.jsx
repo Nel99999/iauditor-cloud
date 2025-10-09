@@ -441,13 +441,13 @@ const UserManagementPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="developer">🟣 Developer - Software Owner (Lv1)</SelectItem>
+                    <SelectItem value="developer">🔵 Developer - Software Owner (Lv1)</SelectItem>
                     <SelectItem value="master">🟣 Master - Business Owner (Lv2)</SelectItem>
                     <SelectItem value="admin">🔴 Admin - Organization Admin (Lv3)</SelectItem>
                     <SelectItem value="operations_manager">🟠 Operations Manager - Strategic (Lv4)</SelectItem>
                     <SelectItem value="team_lead">🔵 Team Lead - Lead teams (Lv5)</SelectItem>
                     <SelectItem value="manager">🔵 Manager - Branch/Dept management (Lv6)</SelectItem>
-                    <SelectItem value="supervisor">🟢 Supervisor - Supervise shifts (Lv7)</SelectItem>
+                    <SelectItem value="supervisor">🩵 Supervisor - Supervise shifts (Lv7)</SelectItem>
                     <SelectItem value="inspector">🟡 Inspector - Execute operations (Lv8)</SelectItem>
                     <SelectItem value="operator">⚫ Operator - Basic tasks (Lv9)</SelectItem>
                     <SelectItem value="viewer">🟢 Viewer - Read only (Lv10)</SelectItem>
@@ -528,13 +528,13 @@ const UserManagementPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="developer">🟣 Developer - Software Owner (Lv1)</SelectItem>
+                    <SelectItem value="developer">🔵 Developer - Software Owner (Lv1)</SelectItem>
                     <SelectItem value="master">🟣 Master - Business Owner (Lv2)</SelectItem>
                     <SelectItem value="admin">🔴 Admin - Organization Admin (Lv3)</SelectItem>
                     <SelectItem value="operations_manager">🟠 Operations Manager - Strategic (Lv4)</SelectItem>
                     <SelectItem value="team_lead">🔵 Team Lead - Lead teams (Lv5)</SelectItem>
                     <SelectItem value="manager">🔵 Manager - Branch/Dept management (Lv6)</SelectItem>
-                    <SelectItem value="supervisor">🟢 Supervisor - Supervise shifts (Lv7)</SelectItem>
+                    <SelectItem value="supervisor">🩵 Supervisor - Supervise shifts (Lv7)</SelectItem>
                     <SelectItem value="inspector">🟡 Inspector - Execute operations (Lv8)</SelectItem>
                     <SelectItem value="operator">⚫ Operator - Basic tasks (Lv9)</SelectItem>
                     <SelectItem value="viewer">🟢 Viewer - Read only (Lv10)</SelectItem>
