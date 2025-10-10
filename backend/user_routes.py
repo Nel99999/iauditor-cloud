@@ -504,14 +504,13 @@ async def get_regional_preferences(
     """Get user regional preferences"""
     current_user = await get_current_user(request, db)
     
-    user = await db.users.find_one({"id": current_user["id"]})
-    
+    # get_current_user already returns the full user object from database
     return {
-        "language": user.get("language", "en"),
-        "timezone": user.get("timezone", "UTC"),
-        "date_format": user.get("date_format", "MM/DD/YYYY"),
-        "time_format": user.get("time_format", "12h"),
-        "currency": user.get("currency", "USD")
+        "language": current_user.get("language", "en"),
+        "timezone": current_user.get("timezone", "UTC"),
+        "date_format": current_user.get("date_format", "MM/DD/YYYY"),
+        "time_format": current_user.get("time_format", "12h"),
+        "currency": current_user.get("currency", "USD")
     }
 
 
