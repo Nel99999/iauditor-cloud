@@ -30,7 +30,7 @@ const DashboardHome = () => {
 
   const loadStats = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('access_token');
       const response = await axios.get(`${API}/dashboard/stats`, {
         headers: {
           Authorization: `Bearer ${token}`
