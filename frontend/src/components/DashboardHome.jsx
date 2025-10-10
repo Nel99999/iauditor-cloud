@@ -30,7 +30,12 @@ const DashboardHome = () => {
 
   const loadStats = async () => {
     try {
-      const response = await axios.get(`${API}/inspections/stats`);
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/dashboard/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setStats(response.data);
     } catch (err) {
       console.error('Failed to load stats:', err);
