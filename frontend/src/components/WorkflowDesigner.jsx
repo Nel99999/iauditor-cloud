@@ -456,14 +456,14 @@ const WorkflowDesigner = () => {
                       <div>
                         <Label>Escalate To (if timeout)</Label>
                         <Select
-                          value={step.escalate_to_role || ''}
-                          onValueChange={(value) => updateStep(index, 'escalate_to_role', value)}
+                          value={step.escalate_to_role || 'none'}
+                          onValueChange={(value) => updateStep(index, 'escalate_to_role', value === 'none' ? '' : value)}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="No escalation" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">No escalation</SelectItem>
+                            <SelectItem value="none">No escalation</SelectItem>
                             {roles && roles.length > 0 && roles.map(role => (
                               <SelectItem key={role.code} value={role.code}>
                                 {role.name}
