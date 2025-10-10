@@ -478,6 +478,13 @@ async def update_theme_preferences(
         
         if update_data:
             update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+            
+            # Check if user exists first
+            existing_user = await db.users.find_one({"id": current_user["id"]})
+            print(f"DEBUG: User exists check: {existing_user is not None}")
+            if existing_user:
+                print(f"DEBUG: Found user with ID: {existing_user.get('id')}")
+            
             result = await db.users.update_one(
                 {"id": current_user["id"]},
                 {"$set": update_data}
@@ -485,8 +492,10 @@ async def update_theme_preferences(
             
             print(f"DEBUG: Update result - matched: {result.matched_count}, modified: {result.modified_count}")
             
-            if result.modified_count == 0:
+            if result.matched_count == 0:
                 raise HTTPException(status_code=404, detail="User not found")
+        else:
+            print("DEBUG: No update data provided")
         
         return {"message": "Theme preferences updated successfully"}
     except Exception as e:
