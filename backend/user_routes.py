@@ -552,55 +552,7 @@ async def get_theme_preferences(
     }
 
 
-@router.put("/theme")
-async def update_theme_preferences(
-    preferences: ThemePreferences,
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Update user theme preferences"""
-    try:
-        print(f"DEBUG: Theme PUT called with preferences: {preferences}")
-        current_user = await get_current_user(request, db)
-        print(f"DEBUG: Current user ID: {current_user['id']}")
-        
-        update_data = {}
-        if preferences.theme is not None:
-            update_data["theme"] = preferences.theme
-        if preferences.accent_color is not None:
-            update_data["accent_color"] = preferences.accent_color
-        if preferences.view_density is not None:
-            update_data["view_density"] = preferences.view_density
-        if preferences.font_size is not None:
-            update_data["font_size"] = preferences.font_size
-        
-        print(f"DEBUG: Update data: {update_data}")
-        
-        if update_data:
-            update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-            
-            # Check if user exists first
-            existing_user = await db.users.find_one({"id": current_user["id"]})
-            print(f"DEBUG: User exists check: {existing_user is not None}")
-            if existing_user:
-                print(f"DEBUG: Found user with ID: {existing_user.get('id')}")
-            
-            result = await db.users.update_one(
-                {"id": current_user["id"]},
-                {"$set": update_data}
-            )
-            
-            print(f"DEBUG: Update result - matched: {result.matched_count}, modified: {result.modified_count}")
-            
-            if result.matched_count == 0:
-                raise HTTPException(status_code=404, detail="User not found")
-        else:
-            print("DEBUG: No update data provided")
-        
-        return {"message": "Theme preferences updated successfully"}
-    except Exception as e:
-        print(f"DEBUG: Exception in theme PUT: {e}")
-        raise
+# Theme route moved above to prevent conflict with /{user_id}
 
 
 # =====================================
