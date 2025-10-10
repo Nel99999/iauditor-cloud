@@ -280,6 +280,16 @@ function App() {
               }
             />
             <Route
+              path="/audit"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AuditViewer />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>
