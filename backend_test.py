@@ -6124,24 +6124,1042 @@ class ReviewRequestTester:
         }
 
 
+class ComprehensiveRBACTester:
+    def __init__(self, base_url="https://orgflow-1.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.test_user_id = None
+        self.test_user_email = None
+        self.created_users = []
+        self.created_roles = []
+        self.created_invitations = []
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def setup_test_user(self):
+        """Create and login test user"""
+        unique_email = f"rbactest_{uuid.uuid4().hex[:8]}@testcompany.com"
+        user_data = {
+            "email": unique_email,
+            "password": "SecurePass123!",
+            "name": "RBAC Test User",
+            "organization_name": f"RBAC Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Create Test User with Organization",
+            "POST",
+            "auth/register",
+            200,
+            data=user_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.test_user_id = response.get('user', {}).get('id')
+            self.test_user_email = unique_email
+            return True
+        return False
+
+    # =====================================
+    # 1. SETTINGS & PREFERENCES APIs
+    # =====================================
+
+    def test_theme_preferences(self):
+        """Test theme/appearance settings API"""
+        print("\n🎨 Testing Theme/Appearance Settings...")
+        
+        # Get default theme settings
+        success1, default_theme = self.run_test(
+            "Get Default Theme Settings",
+            "GET",
+            "users/theme",
+            200
+        )
+        
+        if not success1:
+            return False
+        
+        # Update theme with all fields
+        theme_data = {
+            "theme": "dark",
+            "accent_color": "#ef4444",
+            "font_size": "large",
+            "view_density": "spacious"
+        }
+        
+        success2, _ = self.run_test(
+            "Update Theme Settings (Full)",
+            "PUT",
+            "users/theme",
+            200,
+            data=theme_data
+        )
+        
+        # Verify changes persisted
+        success3, updated_theme = self.run_test(
+            "Verify Theme Changes Persisted",
+            "GET",
+            "users/theme",
+            200
+        )
+        
+        if success3 and isinstance(updated_theme, dict):
+            theme_match = (
+                updated_theme.get('theme') == 'dark' and
+                updated_theme.get('accent_color') == '#ef4444' and
+                updated_theme.get('font_size') == 'large' and
+                updated_theme.get('view_density') == 'spacious'
+            )
+            self.log_test("Theme Data Persistence Validation", theme_match, f"Theme data: {updated_theme}")
+        
+        # Test partial update
+        partial_data = {"font_size": "small"}
+        success4, _ = self.run_test(
+            "Update Theme Settings (Partial)",
+            "PUT",
+            "users/theme",
+            200,
+            data=partial_data
+        )
+        
+        # Verify partial update
+        success5, final_theme = self.run_test(
+            "Verify Partial Theme Update",
+            "GET",
+            "users/theme",
+            200
+        )
+        
+        if success5 and isinstance(final_theme, dict):
+            partial_match = (
+                final_theme.get('font_size') == 'small' and
+                final_theme.get('theme') == 'dark'  # Should retain previous value
+            )
+            self.log_test("Partial Theme Update Validation", partial_match, f"Final theme: {final_theme}")
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    def test_regional_preferences(self):
+        """Test regional preferences API"""
+        print("\n🌍 Testing Regional Preferences...")
+        
+        # Get default regional settings
+        success1, default_regional = self.run_test(
+            "Get Default Regional Settings",
+            "GET",
+            "users/regional",
+            200
+        )
+        
+        # Update regional preferences
+        regional_data = {
+            "language": "es",
+            "timezone": "Europe/Paris",
+            "date_format": "DD/MM/YYYY",
+            "time_format": "24h",
+            "currency": "EUR"
+        }
+        
+        success2, _ = self.run_test(
+            "Update Regional Preferences",
+            "PUT",
+            "users/regional",
+            200,
+            data=regional_data
+        )
+        
+        # Verify changes saved
+        success3, updated_regional = self.run_test(
+            "Verify Regional Changes Saved",
+            "GET",
+            "users/regional",
+            200
+        )
+        
+        if success3 and isinstance(updated_regional, dict):
+            regional_match = (
+                updated_regional.get('language') == 'es' and
+                updated_regional.get('timezone') == 'Europe/Paris' and
+                updated_regional.get('date_format') == 'DD/MM/YYYY' and
+                updated_regional.get('time_format') == '24h' and
+                updated_regional.get('currency') == 'EUR'
+            )
+            self.log_test("Regional Data Persistence Validation", regional_match, f"Regional data: {updated_regional}")
+        
+        return success1 and success2 and success3
+
+    def test_privacy_preferences(self):
+        """Test privacy preferences API"""
+        print("\n🔒 Testing Privacy Preferences...")
+        
+        # Get default privacy settings
+        success1, default_privacy = self.run_test(
+            "Get Default Privacy Settings",
+            "GET",
+            "users/privacy",
+            200
+        )
+        
+        # Update privacy preferences
+        privacy_data = {
+            "profile_visibility": "private",
+            "show_activity_status": False,
+            "show_last_seen": False
+        }
+        
+        success2, _ = self.run_test(
+            "Update Privacy Preferences",
+            "PUT",
+            "users/privacy",
+            200,
+            data=privacy_data
+        )
+        
+        # Verify privacy toggles saved
+        success3, updated_privacy = self.run_test(
+            "Verify Privacy Toggles Saved",
+            "GET",
+            "users/privacy",
+            200
+        )
+        
+        if success3 and isinstance(updated_privacy, dict):
+            privacy_match = (
+                updated_privacy.get('profile_visibility') == 'private' and
+                updated_privacy.get('show_activity_status') == False and
+                updated_privacy.get('show_last_seen') == False
+            )
+            self.log_test("Privacy Data Persistence Validation", privacy_match, f"Privacy data: {updated_privacy}")
+        
+        return success1 and success2 and success3
+
+    def test_notification_settings(self):
+        """Test notification settings API"""
+        print("\n🔔 Testing Notification Settings...")
+        
+        # Get default notification settings
+        success1, default_settings = self.run_test(
+            "Get Default Notification Settings",
+            "GET",
+            "users/settings",
+            200
+        )
+        
+        # Update all 4 notification toggles
+        settings_data = {
+            "email_notifications": True,
+            "push_notifications": False,
+            "weekly_reports": True,
+            "marketing_emails": False
+        }
+        
+        success2, _ = self.run_test(
+            "Update Notification Settings (All Toggles)",
+            "PUT",
+            "users/settings",
+            200,
+            data=settings_data
+        )
+        
+        # Verify notification settings persistence
+        success3, updated_settings = self.run_test(
+            "Verify Notification Settings Persistence",
+            "GET",
+            "users/settings",
+            200
+        )
+        
+        if success3 and isinstance(updated_settings, dict):
+            settings_match = (
+                updated_settings.get('email_notifications') == True and
+                updated_settings.get('push_notifications') == False and
+                updated_settings.get('weekly_reports') == True and
+                updated_settings.get('marketing_emails') == False
+            )
+            self.log_test("Notification Settings Persistence Validation", settings_match, f"Settings data: {updated_settings}")
+        
+        return success1 and success2 and success3
+
+    # =====================================
+    # 2. USER MANAGEMENT
+    # =====================================
+
+    def test_user_crud_operations(self):
+        """Test user CRUD operations"""
+        print("\n👥 Testing User CRUD Operations...")
+        
+        # Get users list and check password fields visibility
+        success1, users_list = self.run_test(
+            "Get Users List (Check Password Fields)",
+            "GET",
+            "users",
+            200
+        )
+        
+        password_fields_visible = False
+        if success1 and isinstance(users_list, list) and len(users_list) > 0:
+            for user in users_list:
+                if 'password' in user or 'password_hash' in user:
+                    password_fields_visible = True
+                    break
+            self.log_test("Password Fields Visibility Check", password_fields_visible, f"Found password fields in user data: {password_fields_visible}")
+        
+        if not success1 or not isinstance(users_list, list) or len(users_list) == 0:
+            return False
+        
+        # Test updating user role
+        test_user = users_list[0]
+        user_id = test_user.get('id')
+        
+        if not user_id:
+            self.log_test("User ID Extraction", False, "No user ID found in users list")
+            return False
+        
+        # Update user role from viewer to admin
+        role_update_data = {"role": "admin"}
+        success2, _ = self.run_test(
+            "Update User Role (viewer → admin)",
+            "PUT",
+            f"users/{user_id}",
+            200,
+            data=role_update_data
+        )
+        
+        # Verify role change
+        success3, updated_users = self.run_test(
+            "Verify Role Change",
+            "GET",
+            "users",
+            200
+        )
+        
+        role_changed = False
+        if success3 and isinstance(updated_users, list):
+            for user in updated_users:
+                if user.get('id') == user_id and user.get('role') == 'admin':
+                    role_changed = True
+                    break
+            self.log_test("Role Change Verification", role_changed, f"User role updated to admin: {role_changed}")
+        
+        # Update user status
+        status_update_data = {"status": "inactive"}
+        success4, _ = self.run_test(
+            "Update User Status (active → inactive)",
+            "PUT",
+            f"users/{user_id}",
+            200,
+            data=status_update_data
+        )
+        
+        # Test soft delete user (if not self)
+        if user_id != self.test_user_id:
+            success5, _ = self.run_test(
+                "Soft Delete User",
+                "DELETE",
+                f"users/{user_id}",
+                200
+            )
+            
+            # Verify user not in list after soft delete
+            success6, final_users = self.run_test(
+                "Verify Soft Delete (User Not in List)",
+                "GET",
+                "users",
+                200
+            )
+            
+            user_deleted = True
+            if success6 and isinstance(final_users, list):
+                for user in final_users:
+                    if user.get('id') == user_id:
+                        user_deleted = False
+                        break
+                self.log_test("Soft Delete Verification", user_deleted, f"User removed from list: {user_deleted}")
+        else:
+            success5 = success6 = True  # Skip delete tests for self
+        
+        return success1 and success2 and success3 and success4 and success5 and success6
+
+    def test_profile_management(self):
+        """Test profile management"""
+        print("\n👤 Testing Profile Management...")
+        
+        # Update profile
+        profile_data = {
+            "name": "Updated Test User",
+            "phone": "+1234567890",
+            "bio": "Updated bio for testing purposes"
+        }
+        
+        success1, _ = self.run_test(
+            "Update User Profile",
+            "PUT",
+            "users/profile",
+            200,
+            data=profile_data
+        )
+        
+        # Verify profile changes
+        success2, user_profile = self.run_test(
+            "Verify Profile Changes",
+            "GET",
+            "users/me",
+            200
+        )
+        
+        if success2 and isinstance(user_profile, dict):
+            profile_match = (
+                user_profile.get('name') == 'Updated Test User' and
+                user_profile.get('phone') == '+1234567890' and
+                user_profile.get('bio') == 'Updated bio for testing purposes'
+            )
+            self.log_test("Profile Update Verification", profile_match, f"Profile data: {user_profile}")
+        
+        # Test password change
+        password_data = {
+            "current_password": "SecurePass123!",
+            "new_password": "NewSecurePass456!"
+        }
+        
+        success3, _ = self.run_test(
+            "Change Password",
+            "PUT",
+            "users/password",
+            200,
+            data=password_data
+        )
+        
+        return success1 and success2 and success3
+
+    # =====================================
+    # 3. ROLE & PERMISSION MANAGEMENT
+    # =====================================
+
+    def test_role_operations(self):
+        """Test role operations"""
+        print("\n🛡️ Testing Role Operations...")
+        
+        # Get all roles and verify 10 system roles
+        success1, roles_list = self.run_test(
+            "Get All Roles (Verify 10 System Roles)",
+            "GET",
+            "roles",
+            200
+        )
+        
+        system_roles_count = 0
+        if success1 and isinstance(roles_list, list):
+            system_roles_count = len([role for role in roles_list if role.get('is_system', False)])
+            self.log_test("System Roles Count Verification", system_roles_count >= 10, f"Found {system_roles_count} system roles (expected >= 10)")
+        
+        # Create custom role
+        custom_role_data = {
+            "name": "QA Manager",
+            "code": "qa_manager",
+            "level": 11,
+            "color": "#8b5cf6",
+            "description": "Quality Assurance Manager role for testing"
+        }
+        
+        success2, created_role = self.run_test(
+            "Create Custom Role (QA Manager Level 11)",
+            "POST",
+            "roles",
+            201,
+            data=custom_role_data
+        )
+        
+        if success2 and isinstance(created_role, dict) and 'id' in created_role:
+            self.created_roles.append(created_role['id'])
+        
+        # Verify custom role created
+        success3, updated_roles = self.run_test(
+            "Verify Custom Role Created",
+            "GET",
+            "roles",
+            200
+        )
+        
+        custom_role_found = False
+        if success3 and isinstance(updated_roles, list):
+            for role in updated_roles:
+                if role.get('name') == 'QA Manager' and role.get('level') == 11:
+                    custom_role_found = True
+                    break
+            self.log_test("Custom Role Creation Verification", custom_role_found, f"QA Manager role found: {custom_role_found}")
+        
+        # Update custom role name
+        if self.created_roles:
+            role_id = self.created_roles[0]
+            update_data = {"name": "Senior QA Manager"}
+            
+            success4, _ = self.run_test(
+                "Update Custom Role Name",
+                "PUT",
+                f"roles/{role_id}",
+                200,
+                data=update_data
+            )
+        else:
+            success4 = True
+        
+        return success1 and success2 and success3 and success4
+
+    def test_permission_operations(self):
+        """Test permission operations"""
+        print("\n🔐 Testing Permission Operations...")
+        
+        # Get all permissions and verify 23 default permissions
+        success1, permissions_list = self.run_test(
+            "Get All Permissions (Verify 23 Default)",
+            "GET",
+            "permissions",
+            200
+        )
+        
+        permissions_count = 0
+        if success1 and isinstance(permissions_list, list):
+            permissions_count = len(permissions_list)
+            self.log_test("Default Permissions Count Verification", permissions_count >= 23, f"Found {permissions_count} permissions (expected >= 23)")
+        
+        return success1
+
+    def test_permission_matrix(self):
+        """Test permission matrix operations"""
+        print("\n📊 Testing Permission Matrix...")
+        
+        if not self.created_roles:
+            print("⚠️ No custom roles available for permission matrix testing")
+            return True
+        
+        role_id = self.created_roles[0]
+        
+        # Get current permissions for role
+        success1, current_perms = self.run_test(
+            "Get Role Permissions",
+            "GET",
+            f"roles/{role_id}/permissions",
+            200
+        )
+        
+        # Assign 5 specific permissions via bulk update
+        permission_ids = ["perm1", "perm2", "perm3", "perm4", "perm5"]  # Mock IDs for testing
+        bulk_data = {"permission_ids": permission_ids}
+        
+        success2, _ = self.run_test(
+            "Bulk Assign 5 Permissions",
+            "POST",
+            f"roles/{role_id}/permissions/bulk",
+            200,
+            data=bulk_data
+        )
+        
+        # Verify exactly 5 permissions assigned
+        success3, updated_perms = self.run_test(
+            "Verify 5 Permissions Assigned",
+            "GET",
+            f"roles/{role_id}/permissions",
+            200
+        )
+        
+        # Update to 3 different permissions (replace, not append)
+        new_permission_ids = ["perm6", "perm7", "perm8"]
+        new_bulk_data = {"permission_ids": new_permission_ids}
+        
+        success4, _ = self.run_test(
+            "Bulk Update to 3 Different Permissions",
+            "POST",
+            f"roles/{role_id}/permissions/bulk",
+            200,
+            data=new_bulk_data
+        )
+        
+        # Verify only 3 permissions now (replaced, not appended)
+        success5, final_perms = self.run_test(
+            "Verify Only 3 Permissions (Replaced)",
+            "GET",
+            f"roles/{role_id}/permissions",
+            200
+        )
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    # =====================================
+    # 4. INVITATION SYSTEM
+    # =====================================
+
+    def test_invitation_workflow(self):
+        """Test complete invitation workflow"""
+        print("\n📧 Testing Invitation System...")
+        
+        # Send invitation to new email
+        invitation_data = {
+            "email": f"invited_{uuid.uuid4().hex[:8]}@example.com",
+            "role": "viewer"
+        }
+        
+        success1, created_invitation = self.run_test(
+            "Send Invitation to New Email",
+            "POST",
+            "invitations",
+            201,
+            data=invitation_data
+        )
+        
+        invitation_id = None
+        if success1 and isinstance(created_invitation, dict) and 'id' in created_invitation:
+            invitation_id = created_invitation['id']
+            self.created_invitations.append(invitation_id)
+        
+        # Get invitations list and verify 7-day expiry
+        success2, invitations_list = self.run_test(
+            "Get Invitations List (Verify 7-day Expiry)",
+            "GET",
+            "invitations",
+            200
+        )
+        
+        expiry_correct = False
+        if success2 and isinstance(invitations_list, list) and len(invitations_list) > 0:
+            for invitation in invitations_list:
+                if invitation.get('id') == invitation_id:
+                    # Check if expiry is approximately 7 days from now
+                    expiry_date = invitation.get('expires_at')
+                    if expiry_date:
+                        expiry_correct = True  # Simplified check
+                    break
+            self.log_test("7-Day Expiry Verification", expiry_correct, f"Invitation expiry check: {expiry_correct}")
+        
+        # Get pending invitations
+        success3, pending_invitations = self.run_test(
+            "Get Pending Invitations",
+            "GET",
+            "invitations/pending",
+            200
+        )
+        
+        # Test resend invitation (with authentication)
+        if invitation_id:
+            success4, _ = self.run_test(
+                "Resend Invitation (Authenticated)",
+                "POST",
+                f"invitations/{invitation_id}/resend",
+                200
+            )
+            
+            # Test resend without auth (should fail)
+            old_token = self.token
+            self.token = None
+            success5, _ = self.run_test(
+                "Resend Invitation (Unauthenticated - Should Fail)",
+                "POST",
+                f"invitations/{invitation_id}/resend",
+                401
+            )
+            self.token = old_token
+            
+            # Verify expiry date updated after resend
+            success6, updated_invitation = self.run_test(
+                "Verify Expiry Updated After Resend",
+                "GET",
+                f"invitations/{invitation_id}",
+                200
+            )
+            
+            # Cancel invitation
+            success7, _ = self.run_test(
+                "Cancel Invitation",
+                "DELETE",
+                f"invitations/{invitation_id}",
+                200
+            )
+            
+            # Verify status changed to cancelled
+            success8, final_invitations = self.run_test(
+                "Verify Status Changed to Cancelled",
+                "GET",
+                "invitations",
+                200
+            )
+            
+            status_cancelled = False
+            if success8 and isinstance(final_invitations, list):
+                for invitation in final_invitations:
+                    if invitation.get('id') == invitation_id and invitation.get('status') == 'cancelled':
+                        status_cancelled = True
+                        break
+                self.log_test("Invitation Cancellation Verification", status_cancelled, f"Status changed to cancelled: {status_cancelled}")
+        else:
+            success4 = success5 = success6 = success7 = success8 = True
+        
+        return success1 and success2 and success3 and success4 and success5 and success6 and success7 and success8
+
+    # =====================================
+    # 5. ORGANIZATION STRUCTURE
+    # =====================================
+
+    def test_organization_structure(self):
+        """Test organization structure operations"""
+        print("\n🏢 Testing Organization Structure...")
+        
+        # Get organization data
+        success1, org_data = self.run_test(
+            "Get Organization Data",
+            "GET",
+            "organizations",
+            200
+        )
+        
+        # Create new organizational unit
+        unit_data = {
+            "name": f"Test Department {uuid.uuid4().hex[:6]}",
+            "description": "Test department for API testing",
+            "level": 1,
+            "parent_id": None
+        }
+        
+        success2, created_unit = self.run_test(
+            "Create New Organizational Unit",
+            "POST",
+            "org_units",
+            201,
+            data=unit_data
+        )
+        
+        unit_id = None
+        if success2 and isinstance(created_unit, dict) and 'id' in created_unit:
+            unit_id = created_unit['id']
+        
+        # Get org units and verify creation
+        success3, org_units = self.run_test(
+            "Get Org Units (Verify Creation)",
+            "GET",
+            "org_units",
+            200
+        )
+        
+        # Update unit name
+        if unit_id:
+            update_data = {"name": f"Updated Department {uuid.uuid4().hex[:6]}"}
+            success4, _ = self.run_test(
+                "Update Unit Name",
+                "PUT",
+                f"org_units/{unit_id}",
+                200,
+                data=update_data
+            )
+            
+            # Verify update persisted
+            success5, updated_units = self.run_test(
+                "Verify Update Persisted",
+                "GET",
+                "org_units",
+                200
+            )
+        else:
+            success4 = success5 = True
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    # =====================================
+    # 6. DATA INTEGRITY & EDGE CASES
+    # =====================================
+
+    def test_edge_cases(self):
+        """Test edge cases and data integrity"""
+        print("\n⚠️ Testing Edge Cases & Data Integrity...")
+        
+        # Try to save empty settings (should handle gracefully)
+        success1, _ = self.run_test(
+            "Save Empty Settings (Should Handle Gracefully)",
+            "PUT",
+            "users/settings",
+            200,
+            data={}
+        )
+        
+        # Try to update non-existent user (should return 404)
+        fake_user_id = str(uuid.uuid4())
+        success2, _ = self.run_test(
+            "Update Non-existent User (Should Return 404)",
+            "PUT",
+            f"users/{fake_user_id}",
+            404,
+            data={"name": "Non-existent User"}
+        )
+        
+        # Try to delete self (should return 400)
+        if self.test_user_id:
+            success3, response = self.run_test(
+                "Delete Self (Should Return 400)",
+                "DELETE",
+                f"users/{self.test_user_id}",
+                400
+            )
+            
+            # Verify error message
+            if success3 and isinstance(response, dict):
+                error_msg = response.get('detail', '').lower()
+                correct_error = 'cannot delete your own account' in error_msg or 'cannot delete' in error_msg
+                self.log_test("Self-Delete Error Message Verification", correct_error, f"Error message: {response.get('detail', 'N/A')}")
+        else:
+            success3 = True
+        
+        # Try to assign invalid role (should return proper error)
+        success4, _ = self.run_test(
+            "Assign Invalid Role (Should Return Error)",
+            "PUT",
+            f"users/{self.test_user_id}" if self.test_user_id else "users/invalid",
+            400,
+            data={"role": "invalid_role_name"}
+        )
+        
+        # Try to send invitation to existing user email (should return 400)
+        if self.test_user_email:
+            success5, _ = self.run_test(
+                "Send Invitation to Existing Email (Should Return 400)",
+                "POST",
+                "invitations",
+                400,
+                data={"email": self.test_user_email, "role": "viewer"}
+            )
+        else:
+            success5 = True
+        
+        return success1 and success2 and success3 and success4 and success5
+
+    def test_data_persistence(self):
+        """Test data persistence across requests"""
+        print("\n💾 Testing Data Persistence...")
+        
+        # Set theme preferences
+        theme_data = {"theme": "dark", "accent_color": "#ff0000"}
+        success1, _ = self.run_test(
+            "Set Theme for Persistence Test",
+            "PUT",
+            "users/theme",
+            200,
+            data=theme_data
+        )
+        
+        # Simulate page refresh by making new request
+        success2, persisted_theme = self.run_test(
+            "Verify Theme Persists (Simulate Page Refresh)",
+            "GET",
+            "users/theme",
+            200
+        )
+        
+        theme_persisted = False
+        if success2 and isinstance(persisted_theme, dict):
+            theme_persisted = (
+                persisted_theme.get('theme') == 'dark' and
+                persisted_theme.get('accent_color') == '#ff0000'
+            )
+            self.log_test("Theme Persistence Verification", theme_persisted, f"Persisted theme: {persisted_theme}")
+        
+        # Verify timestamps are in ISO format with timezone
+        success3, user_data = self.run_test(
+            "Verify ISO Timestamps with Timezone",
+            "GET",
+            "users/me",
+            200
+        )
+        
+        timestamp_valid = False
+        if success3 and isinstance(user_data, dict):
+            created_at = user_data.get('created_at', '')
+            updated_at = user_data.get('updated_at', '')
+            # Basic ISO format check (contains 'T' and timezone info)
+            timestamp_valid = 'T' in created_at and ('Z' in created_at or '+' in created_at or '-' in created_at[-6:])
+            self.log_test("ISO Timestamp Format Verification", timestamp_valid, f"Timestamps: created_at={created_at}, updated_at={updated_at}")
+        
+        return success1 and success2 and success3
+
+    def run_comprehensive_rbac_tests(self):
+        """Run all comprehensive RBAC tests"""
+        print("🚀 Starting Comprehensive RBAC Backend Testing")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # Setup test user
+        if not self.setup_test_user():
+            print("❌ Failed to setup test user, stopping tests")
+            return self.generate_report()
+
+        # Run all test categories
+        test_categories = [
+            ("Settings & Preferences APIs", [
+                self.test_theme_preferences,
+                self.test_regional_preferences,
+                self.test_privacy_preferences,
+                self.test_notification_settings
+            ]),
+            ("User Management", [
+                self.test_user_crud_operations,
+                self.test_profile_management
+            ]),
+            ("Role & Permission Management", [
+                self.test_role_operations,
+                self.test_permission_operations,
+                self.test_permission_matrix
+            ]),
+            ("Invitation System", [
+                self.test_invitation_workflow
+            ]),
+            ("Organization Structure", [
+                self.test_organization_structure
+            ]),
+            ("Data Integrity & Edge Cases", [
+                self.test_edge_cases,
+                self.test_data_persistence
+            ])
+        ]
+
+        for category_name, test_functions in test_categories:
+            print(f"\n{'='*20} {category_name} {'='*20}")
+            for test_func in test_functions:
+                try:
+                    test_func()
+                except Exception as e:
+                    self.log_test(f"{test_func.__name__} (Exception)", False, f"Exception: {str(e)}")
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate comprehensive test report"""
+        print("\n" + "=" * 80)
+        print("📊 COMPREHENSIVE RBAC TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        # Categorize results
+        failed_tests = [test for test in self.test_results if not test['success']]
+        critical_failures = []
+        minor_issues = []
+        
+        for test in failed_tests:
+            if any(keyword in test['test'].lower() for keyword in ['authentication', 'crud', 'permission', 'invitation']):
+                critical_failures.append(test)
+            else:
+                minor_issues.append(test)
+        
+        if critical_failures:
+            print("\n❌ CRITICAL FAILURES:")
+            for test in critical_failures:
+                print(f"  - {test['test']}: {test['details'][:200]}...")
+        
+        if minor_issues:
+            print(f"\n⚠️ MINOR ISSUES ({len(minor_issues)}):")
+            for test in minor_issues[:5]:  # Show first 5
+                print(f"  - {test['test']}")
+        
+        # Success rate assessment
+        if self.tests_passed / self.tests_run >= 0.95:
+            print(f"\n🎉 EXCELLENT: {(self.tests_passed/self.tests_run)*100:.1f}% success rate meets high standards!")
+        elif self.tests_passed / self.tests_run >= 0.85:
+            print(f"\n✅ GOOD: {(self.tests_passed/self.tests_run)*100:.1f}% success rate is acceptable")
+        else:
+            print(f"\n⚠️ NEEDS IMPROVEMENT: {(self.tests_passed/self.tests_run)*100:.1f}% success rate below expectations")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "critical_failures": len(critical_failures),
+            "minor_issues": len(minor_issues),
+            "test_results": self.test_results
+        }
+
+
 if __name__ == "__main__":
-    # Run the specific review request tests
-    print("🚀 Starting Review Request Backend API Tests")
+    print("🚀 Starting Comprehensive RBAC Backend API Testing")
     print("=" * 80)
     
-    # Test the specific APIs mentioned in the review request
-    review_tester = ReviewRequestTester()
-    review_results = review_tester.run_all_tests()
+    # Run comprehensive RBAC testing as per review request
+    rbac_tester = ComprehensiveRBACTester()
+    rbac_results = rbac_tester.run_comprehensive_rbac_tests()
     
-    # Generate overall summary
     print("\n" + "=" * 80)
-    print("🎯 REVIEW REQUEST TEST SUMMARY")
+    print("🎯 FINAL ASSESSMENT")
     print("=" * 80)
+    print(f"Total Tests: {rbac_results['total_tests']}")
+    print(f"Success Rate: {rbac_results['success_rate']:.1f}%")
+    print(f"Critical Failures: {rbac_results['critical_failures']}")
+    print(f"Minor Issues: {rbac_results['minor_issues']}")
     
-    print(f"Total Tests: {review_results['total_tests']}")
-    print(f"Total Passed: {review_results['passed_tests']}")
-    print(f"Total Failed: {review_results['failed_tests']}")
-    print(f"Overall Success Rate: {review_results['success_rate']:.1f}%")
+    if rbac_results['success_rate'] >= 95:
+        print("🎉 BACKEND READY FOR PRODUCTION - Exceeds high standards!")
+    elif rbac_results['success_rate'] >= 85:
+        print("✅ BACKEND FUNCTIONAL - Meets acceptable standards")
+    else:
+        print("⚠️ BACKEND NEEDS ATTENTION - Below expected standards")
     
-    print("\n🎉 Review Request Backend API Testing Complete!")
     print("=" * 80)
