@@ -563,12 +563,11 @@ async def get_privacy_preferences(
     """Get user privacy preferences"""
     current_user = await get_current_user(request, db)
     
-    user = await db.users.find_one({"id": current_user["id"]})
-    
+    # get_current_user already returns the full user object from database
     return {
-        "profile_visibility": user.get("profile_visibility", "organization"),
-        "show_activity_status": user.get("show_activity_status", True),
-        "show_last_seen": user.get("show_last_seen", True)
+        "profile_visibility": current_user.get("profile_visibility", "organization"),
+        "show_activity_status": current_user.get("show_activity_status", True),
+        "show_last_seen": current_user.get("show_last_seen", True)
     }
 
 
