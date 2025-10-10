@@ -87,7 +87,27 @@ class WorkflowEngine:
         
         logger.info(f"Started workflow {instance.id} for {resource_type}/{resource_id}")
         
-        return instance
+        # Send email notifications to approvers
+        if template.get("notify_on_start", True) and approvers:
+            approver_emails = []
+            for approver_id in approvers:
+                approver = await self.db.users.find_one({"id": approver_id}, {"email": 1})
+                if approver and approver.get("email"):
+                    approver_emails.append(approver["email"])
+            
+            if approver_emails:
+                try:
+                    self.email_service.send_workflow_started_email(
+                        to_emails=approver_emails,
+                        workflow_name=template["name"],
+                        resource_type=resource_type,
+                        resource_name=resource_name,
+                        frontend_url=self.frontend_url
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to send workflow start emails: {str(e)}")
+        
+        return instance_dict
     
     async def process_approval_action(
         self,
