@@ -2268,7 +2268,7 @@ class AuditAPITester:
             ("GET", "audit/logs", None),
             ("GET", "audit/logs/fake-id", None),
             ("GET", "audit/stats", None),
-            ("POST", "audit/compliance-report", {"start_date": "2024-01-01", "end_date": "2024-01-02", "report_type": "summary"}),
+            ("POST", "audit/compliance-report?start_date=2024-01-01&end_date=2024-01-02&report_type=summary", None),
             ("DELETE", "audit/logs?days=90", None)
         ]
         
