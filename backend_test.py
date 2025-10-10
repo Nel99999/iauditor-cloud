@@ -2269,8 +2269,8 @@ class AuditAPITester:
             use_developer_token=True
         )
         
-        if success and isinstance(response, dict):
-            # Verify response structure
+        if success and isinstance(response, dict) and expected_status == 200:
+            # Only check response structure if we expected success
             if 'message' not in response or 'cutoff_date' not in response:
                 self.log_test("Purge Logs Response Check", False, "Missing message or cutoff_date in response")
                 return False
@@ -2280,6 +2280,9 @@ class AuditAPITester:
             if not message.startswith('Purged') or 'audit logs' not in message:
                 self.log_test("Purge Logs Message Check", False, f"Unexpected message format: {message}")
                 return False
+        elif success and expected_status == 403:
+            # If we expected 403 and got it, that's correct behavior
+            self.log_test("Purge Logs Authorization Check", True, "Correctly denied access for non-developer user")
         
         return success
 
