@@ -786,7 +786,7 @@ class AdvancedWorkflowAPITester:
         
         endpoints_to_test = [
             ("POST", "advanced-workflows/conditional-routing/evaluate", {"resource_data": {}, "conditions": [], "default_step": 1}),
-            ("POST", "advanced-workflows/sla/config", {"workflow_template_id": "test", "target_hours": 24}),
+            ("POST", "advanced-workflows/sla/config", {"workflow_template_id": "test", "target_hours": 24, "warning_hours": 20, "escalation_hours": 22}),
             ("GET", "advanced-workflows/sla/config/test-id", None),
             ("GET", "advanced-workflows/sla/metrics/test-id", None),
             ("GET", "advanced-workflows/sla/at-risk", None),
