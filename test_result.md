@@ -583,7 +583,8 @@ metadata:
 test_plan:
   current_focus:
     - "Phase 1 Workflow Engine & Designer Frontend Testing"
-  stuck_tasks: []
+  stuck_tasks:
+    - "Phase 1 Workflow Engine & Designer Frontend Testing"
   test_all: false
   test_priority: "high_first"
 
