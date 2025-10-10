@@ -95,6 +95,7 @@ api_router.include_router(invitation_router)
 api_router.include_router(deactivation_router)
 api_router.include_router(role_router)
 api_router.include_router(settings_router)
+api_router.include_router(dashboard_router)
 
 app.include_router(api_router)
 
