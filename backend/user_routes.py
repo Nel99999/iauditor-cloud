@@ -45,6 +45,27 @@ class UserUpdate(BaseModel):
     status: Optional[str] = None
 
 
+class ThemePreferences(BaseModel):
+    theme: Optional[str] = None
+    accent_color: Optional[str] = None
+    view_density: Optional[str] = None
+    font_size: Optional[str] = None
+
+
+class RegionalPreferences(BaseModel):
+    language: Optional[str] = None
+    timezone: Optional[str] = None
+    date_format: Optional[str] = None
+    time_format: Optional[str] = None
+    currency: Optional[str] = None
+
+
+class PrivacyPreferences(BaseModel):
+    profile_visibility: Optional[str] = None
+    show_activity_status: Optional[bool] = None
+    show_last_seen: Optional[bool] = None
+
+
 # Get current user profile
 @router.get("/me")
 async def get_my_profile(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
