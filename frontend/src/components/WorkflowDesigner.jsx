@@ -397,11 +397,15 @@ const WorkflowDesigner = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {roles.map(role => (
-                                <SelectItem key={role.code} value={role.code}>
-                                  {role.name}
-                                </SelectItem>
-                              ))}
+                              {roles && roles.length > 0 ? (
+                                roles.map(role => (
+                                  <SelectItem key={role.code} value={role.code}>
+                                    {role.name}
+                                  </SelectItem>
+                                ))
+                              ) : (
+                                <SelectItem value="loading" disabled>Loading roles...</SelectItem>
+                              )}
                             </SelectContent>
                           </Select>
                         </div>
