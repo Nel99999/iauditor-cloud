@@ -30,6 +30,7 @@ import {
   X,
   GitBranch,
   CheckCircle2,
+  UserCheck,
   Calendar,
   FolderOpen,
   Bell,
