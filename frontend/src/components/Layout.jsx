@@ -150,6 +150,14 @@ const Layout = ({ children }) => {
           active: true,
           description: 'Authority delegation',
         },
+        {
+          name: 'Audit Trail',
+          icon: Shield,
+          path: '/audit',
+          badge: 'NEW',
+          active: true,
+          description: 'Compliance & logs',
+        },
       ],
     },
     {
