@@ -23,6 +23,7 @@ from invitation_routes import router as invitation_router
 from deactivation_routes import router as deactivation_router
 from role_routes import router as role_router
 from dashboard_routes import router as dashboard_router
+from workflow_routes import router as workflow_router
 
 
 ROOT_DIR = Path(__file__).parent
