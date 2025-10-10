@@ -75,12 +75,17 @@ class TimeBasedPermission(BaseModel):
 # CONDITIONAL ROUTING ENDPOINTS
 # =====================================
 
+class ConditionalRoutingRequest(BaseModel):
+    """Request model for conditional routing evaluation"""
+    resource_data: dict
+    conditions: List[Dict[str, Any]]
+    default_step: int
+
+
 @router.post("/conditional-routing/evaluate")
 async def evaluate_conditional_routing(
+    routing_request: ConditionalRoutingRequest,
     request: Request,
-    resource_data: dict,
-    conditions: List[Dict[str, Any]],
-    default_step: int,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Evaluate conditional routing rules"""
