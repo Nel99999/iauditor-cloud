@@ -206,6 +206,9 @@ class WorkflowEngine:
                     }
                 )
                 
+                # Sync resource status
+                await self._sync_resource_status(workflow, "approved")
+                
                 logger.info(f"Workflow {workflow_id} fully approved")
         
         elif action == "request_changes":
