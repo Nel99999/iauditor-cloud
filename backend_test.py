@@ -1926,19 +1926,14 @@ class ContextPermissionAPITester:
         if not self.permission_id:
             return False
         
-        check_data = {
-            "user_id": self.test_user_id,
-            "permission_id": self.permission_id,
-            "context_type": "branch",
-            "context_id": "branch-001"
-        }
+        # Use query parameters instead of POST body
+        query_params = f"user_id={self.test_user_id}&permission_id={self.permission_id}&context_type=branch&context_id=branch-001"
         
         success, response = self.run_test(
             "Check Context Permission (granted)",
             "POST",
-            "context-permissions/check",
-            200,
-            data=check_data
+            f"context-permissions/check?{query_params}",
+            200
         )
         
         if success and isinstance(response, dict):
