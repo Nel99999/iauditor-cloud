@@ -123,6 +123,27 @@ const Layout = ({ children }) => {
       ],
     },
     {
+      section: 'Workflows',
+      items: [
+        {
+          name: 'My Approvals',
+          icon: CheckCircle2,
+          path: '/approvals',
+          badge: 'NEW',
+          active: true,
+          description: 'Pending approvals',
+        },
+        {
+          name: 'Workflow Designer',
+          icon: GitBranch,
+          path: '/workflows',
+          badge: 'NEW',
+          active: true,
+          description: 'Manage workflows',
+        },
+      ],
+    },
+    {
       section: 'Operations',
       items: [
         {
