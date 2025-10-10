@@ -602,11 +602,7 @@ async def get_regional_preferences(
 # PRIVACY PREFERENCES
 # =====================================
 
-class PrivacyPreferences(BaseModel):
-    profile_visibility: Optional[str] = None
-    show_activity_status: Optional[bool] = None
-    show_last_seen: Optional[bool] = None
-
+# PrivacyPreferences model moved to top of file
 
 @router.get("/privacy")
 async def get_privacy_preferences(
