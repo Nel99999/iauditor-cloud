@@ -165,12 +165,20 @@ class AdvancedWorkflowAPITester:
 
     def test_conditional_routing_equals(self):
         """Test conditional routing with equals operator"""
-        # The endpoint expects query parameters, not body data
+        test_data = {
+            "resource_data": {"priority": "high", "score": 85},
+            "conditions": [
+                {"field": "priority", "operator": "equals", "value": "high", "next_step": 2}
+            ],
+            "default_step": 1
+        }
+        
         success, response = self.run_test(
             "Conditional Routing - Equals Condition",
             "POST",
-            "advanced-workflows/conditional-routing/evaluate?resource_data={\"priority\":\"high\",\"score\":85}&conditions=[{\"field\":\"priority\",\"operator\":\"equals\",\"value\":\"high\",\"next_step\":2}]&default_step=1",
-            200
+            "advanced-workflows/conditional-routing/evaluate",
+            200,
+            data=test_data
         )
         
         if success and isinstance(response, dict):
