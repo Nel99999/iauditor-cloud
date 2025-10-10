@@ -28,6 +28,8 @@ import {
   LogOut,
   Menu,
   X,
+  GitBranch,
+  CheckCircle2,
   Calendar,
   FolderOpen,
   Bell,
