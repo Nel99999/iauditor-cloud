@@ -1685,6 +1685,689 @@ class ReportsAPITester:
         }
 
 
+class AuditAPITester:
+    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.developer_token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_audit_logs = []
+        self.test_user_id = None
+        self.developer_user_id = None
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, use_developer_token=False):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        token = self.developer_token if use_developer_token else self.token
+        if token:
+            test_headers['Authorization'] = f'Bearer {token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def setup_test_users(self):
+        """Register and login test users including a developer"""
+        # Register regular user
+        user_email = f"audit_test_user_{uuid.uuid4().hex[:8]}@testcompany.com"
+        reg_data = {
+            "email": user_email,
+            "password": "AuditTest123!",
+            "name": "Audit Test User",
+            "organization_name": f"Audit Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Register Regular User with Organization",
+            "POST",
+            "auth/register",
+            200,
+            data=reg_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.test_user_id = response.get('user', {}).get('id')
+            print(f"✅ Created Regular User: {user_email}")
+        else:
+            return False
+        
+        # Register developer user
+        dev_email = f"audit_dev_user_{uuid.uuid4().hex[:8]}@testcompany.com"
+        dev_data = {
+            "email": dev_email,
+            "password": "AuditDev123!",
+            "name": "Audit Developer User",
+            "organization_name": f"Audit Dev Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Register Developer User",
+            "POST",
+            "auth/register",
+            200,
+            data=dev_data
+        )
+        
+        if success and 'access_token' in response:
+            self.developer_token = response['access_token']
+            self.developer_user_id = response.get('user', {}).get('id')
+            print(f"✅ Created Developer User: {dev_email}")
+            return True
+        
+        return False
+
+    def test_create_audit_log(self):
+        """Test creating an audit log"""
+        audit_data = {
+            "action": "test.action",
+            "resource_type": "test_resource",
+            "resource_id": "test-123",
+            "result": "success",
+            "context": {"ip": "127.0.0.1", "user_agent": "test-client"}
+        }
+        
+        success, response = self.run_test(
+            "Create Audit Log",
+            "POST",
+            "audit/log",
+            201,
+            data=audit_data
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify success message
+            if response.get('message') != 'Audit log created successfully':
+                self.log_test("Audit Log Creation Message Check", False, f"Expected success message, got: {response}")
+                return False
+        
+        return success
+
+    def test_create_multiple_audit_logs(self):
+        """Create multiple audit logs for testing filters"""
+        test_logs = [
+            {
+                "action": "user.login",
+                "resource_type": "user",
+                "resource_id": "user-001",
+                "result": "success",
+                "context": {"ip": "192.168.1.1"}
+            },
+            {
+                "action": "user.login",
+                "resource_type": "user", 
+                "resource_id": "user-002",
+                "result": "failure",
+                "context": {"ip": "192.168.1.2"}
+            },
+            {
+                "action": "task.create",
+                "resource_type": "task",
+                "resource_id": "task-001",
+                "result": "success",
+                "context": {"ip": "192.168.1.1"}
+            },
+            {
+                "action": "permission.check",
+                "resource_type": "permission",
+                "resource_id": "perm-001",
+                "result": "denied",
+                "permission_checked": "admin.access",
+                "context": {"ip": "192.168.1.3"}
+            }
+        ]
+        
+        all_success = True
+        for i, log_data in enumerate(test_logs):
+            success, _ = self.run_test(
+                f"Create Test Audit Log {i+1}",
+                "POST",
+                "audit/log",
+                201,
+                data=log_data
+            )
+            if not success:
+                all_success = False
+        
+        return all_success
+
+    def test_list_audit_logs_no_filters(self):
+        """Test listing audit logs without filters"""
+        success, response = self.run_test(
+            "List Audit Logs (no filters)",
+            "GET",
+            "audit/logs",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Verify logs are sorted by timestamp descending
+            if len(response) > 1:
+                timestamps = [log.get('timestamp') for log in response]
+                sorted_timestamps = sorted(timestamps, reverse=True)
+                if timestamps != sorted_timestamps:
+                    self.log_test("Audit Logs Sort Order Check", False, "Logs not sorted by timestamp descending")
+                    return False
+            
+            # Verify created logs appear
+            test_actions = ['test.action', 'user.login', 'task.create', 'permission.check']
+            found_actions = [log.get('action') for log in response]
+            for action in test_actions:
+                if action not in found_actions:
+                    self.log_test(f"Audit Log Action Check ({action})", False, f"Action {action} not found in logs")
+                    return False
+        
+        return success
+
+    def test_list_audit_logs_filter_by_action(self):
+        """Test filtering audit logs by action"""
+        # Test existing action
+        success1, response1 = self.run_test(
+            "List Audit Logs (filter by action - user.login)",
+            "GET",
+            "audit/logs?action=user.login",
+            200
+        )
+        
+        if success1 and isinstance(response1, list):
+            # Verify all returned logs have the correct action
+            for log in response1:
+                if log.get('action') != 'user.login':
+                    self.log_test("Audit Logs Action Filter Check", False, f"Found log with wrong action: {log.get('action')}")
+                    return False
+        
+        # Test non-existent action
+        success2, response2 = self.run_test(
+            "List Audit Logs (filter by non-existent action)",
+            "GET",
+            "audit/logs?action=nonexistent.action",
+            200
+        )
+        
+        if success2 and isinstance(response2, list):
+            if len(response2) != 0:
+                self.log_test("Audit Logs Non-existent Action Check", False, f"Expected empty list, got {len(response2)} logs")
+                return False
+        
+        return success1 and success2
+
+    def test_list_audit_logs_filter_by_resource_type(self):
+        """Test filtering audit logs by resource type"""
+        success, response = self.run_test(
+            "List Audit Logs (filter by resource_type - user)",
+            "GET",
+            "audit/logs?resource_type=user",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Verify all returned logs have the correct resource_type
+            for log in response:
+                if log.get('resource_type') != 'user':
+                    self.log_test("Audit Logs Resource Type Filter Check", False, f"Found log with wrong resource_type: {log.get('resource_type')}")
+                    return False
+        
+        return success
+
+    def test_list_audit_logs_filter_by_result(self):
+        """Test filtering audit logs by result"""
+        # Test success results
+        success1, response1 = self.run_test(
+            "List Audit Logs (filter by result - success)",
+            "GET",
+            "audit/logs?result=success",
+            200
+        )
+        
+        if success1 and isinstance(response1, list):
+            for log in response1:
+                if log.get('result') != 'success':
+                    self.log_test("Audit Logs Success Result Filter Check", False, f"Found log with wrong result: {log.get('result')}")
+                    return False
+        
+        # Test failure results
+        success2, response2 = self.run_test(
+            "List Audit Logs (filter by result - failure)",
+            "GET",
+            "audit/logs?result=failure",
+            200
+        )
+        
+        if success2 and isinstance(response2, list):
+            for log in response2:
+                if log.get('result') != 'failure':
+                    self.log_test("Audit Logs Failure Result Filter Check", False, f"Found log with wrong result: {log.get('result')}")
+                    return False
+        
+        return success1 and success2
+
+    def test_list_audit_logs_date_range_filter(self):
+        """Test filtering audit logs by date range"""
+        from datetime import datetime, timedelta
+        
+        # Get yesterday and today dates
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
+        
+        success, response = self.run_test(
+            "List Audit Logs (date range filter)",
+            "GET",
+            f"audit/logs?start_date={yesterday.isoformat()}&end_date={today.isoformat()}",
+            200
+        )
+        
+        # Test with future dates (should return empty)
+        future_date = today + timedelta(days=1)
+        success2, response2 = self.run_test(
+            "List Audit Logs (future date range)",
+            "GET",
+            f"audit/logs?start_date={future_date.isoformat()}&end_date={future_date.isoformat()}",
+            200
+        )
+        
+        if success2 and isinstance(response2, list):
+            if len(response2) != 0:
+                self.log_test("Audit Logs Future Date Check", False, f"Expected empty list for future dates, got {len(response2)} logs")
+                return False
+        
+        return success and success2
+
+    def test_list_audit_logs_combined_filters(self):
+        """Test combining multiple filters"""
+        success, response = self.run_test(
+            "List Audit Logs (combined filters)",
+            "GET",
+            "audit/logs?action=user.login&result=success&limit=10",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Verify all logs match all filters
+            for log in response:
+                if log.get('action') != 'user.login':
+                    self.log_test("Combined Filters Action Check", False, f"Wrong action: {log.get('action')}")
+                    return False
+                if log.get('result') != 'success':
+                    self.log_test("Combined Filters Result Check", False, f"Wrong result: {log.get('result')}")
+                    return False
+            
+            # Verify limit is respected
+            if len(response) > 10:
+                self.log_test("Combined Filters Limit Check", False, f"Expected max 10 logs, got {len(response)}")
+                return False
+        
+        return success
+
+    def test_get_specific_audit_log(self):
+        """Test getting a specific audit log"""
+        # First get list of logs to get an ID
+        success, logs = self.run_test(
+            "Get Logs for ID Test",
+            "GET",
+            "audit/logs?limit=1",
+            200
+        )
+        
+        if not success or not isinstance(logs, list) or len(logs) == 0:
+            self.log_test("Get Specific Audit Log Setup", False, "No logs available for testing")
+            return False
+        
+        log_id = logs[0].get('id')
+        if not log_id:
+            self.log_test("Get Specific Audit Log ID Check", False, "Log missing ID field")
+            return False
+        
+        # Test getting specific log
+        success, response = self.run_test(
+            "Get Specific Audit Log",
+            "GET",
+            f"audit/logs/{log_id}",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify all required fields are present
+            required_fields = ['id', 'organization_id', 'user_id', 'user_email', 'user_name', 
+                             'action', 'resource_type', 'resource_id', 'result', 'timestamp']
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                self.log_test("Specific Audit Log Fields Check", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            # Verify context and changes fields exist (can be empty)
+            if 'context' not in response:
+                self.log_test("Specific Audit Log Context Field", False, "Missing context field")
+                return False
+        
+        return success
+
+    def test_get_nonexistent_audit_log(self):
+        """Test getting a non-existent audit log"""
+        fake_id = str(uuid.uuid4())
+        success, response = self.run_test(
+            "Get Non-existent Audit Log",
+            "GET",
+            f"audit/logs/{fake_id}",
+            404
+        )
+        
+        return success
+
+    def test_audit_statistics(self):
+        """Test getting audit statistics"""
+        # Test default (7 days)
+        success1, response1 = self.run_test(
+            "Get Audit Statistics (default 7 days)",
+            "GET",
+            "audit/stats",
+            200
+        )
+        
+        if success1 and isinstance(response1, dict):
+            # Verify required fields
+            required_fields = ['period_days', 'total_logs', 'actions', 'top_users', 'results', 'failed_permissions']
+            missing_fields = [field for field in required_fields if field not in response1]
+            if missing_fields:
+                self.log_test("Audit Stats Fields Check", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            # Verify period_days is correct
+            if response1.get('period_days') != 7:
+                self.log_test("Audit Stats Period Check", False, f"Expected period_days=7, got {response1.get('period_days')}")
+                return False
+        
+        # Test different days parameters
+        day_params = [1, 30, 90]
+        all_success = True
+        
+        for days in day_params:
+            success, response = self.run_test(
+                f"Get Audit Statistics ({days} days)",
+                "GET",
+                f"audit/stats?days={days}",
+                200
+            )
+            
+            if success and isinstance(response, dict):
+                if response.get('period_days') != days:
+                    self.log_test(f"Audit Stats Period Check ({days})", False, f"Expected period_days={days}, got {response.get('period_days')}")
+                    all_success = False
+            else:
+                all_success = False
+        
+        return success1 and all_success
+
+    def test_compliance_report_full(self):
+        """Test generating a full compliance report"""
+        from datetime import datetime, timedelta
+        
+        # Get date range (last 7 days)
+        end_date = datetime.now().date()
+        start_date = end_date - timedelta(days=7)
+        
+        report_data = {
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat(),
+            "report_type": "full"
+        }
+        
+        success, response = self.run_test(
+            "Generate Full Compliance Report",
+            "POST",
+            "audit/compliance-report",
+            200,
+            data=report_data
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify report structure
+            required_fields = ['report_type', 'period', 'generated_at', 'generated_by', 'summary', 
+                             'security_events', 'user_activities', 'resource_changes']
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                self.log_test("Full Compliance Report Fields Check", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            # Verify summary structure
+            summary = response.get('summary', {})
+            summary_fields = ['total_events', 'security_events', 'unique_users', 'resource_changes']
+            missing_summary = [field for field in summary_fields if field not in summary]
+            if missing_summary:
+                self.log_test("Compliance Report Summary Check", False, f"Missing summary fields: {missing_summary}")
+                return False
+            
+            # Verify report metadata
+            if response.get('report_type') != 'full':
+                self.log_test("Compliance Report Type Check", False, f"Expected report_type='full', got {response.get('report_type')}")
+                return False
+        
+        return success
+
+    def test_compliance_report_summary(self):
+        """Test generating a summary compliance report"""
+        from datetime import datetime, timedelta
+        
+        end_date = datetime.now().date()
+        start_date = end_date - timedelta(days=7)
+        
+        report_data = {
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat(),
+            "report_type": "summary"
+        }
+        
+        success, response = self.run_test(
+            "Generate Summary Compliance Report",
+            "POST",
+            "audit/compliance-report",
+            200,
+            data=report_data
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify summary report only has summary section
+            required_fields = ['report_type', 'period', 'generated_at', 'summary']
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                self.log_test("Summary Compliance Report Fields Check", False, f"Missing fields: {missing_fields}")
+                return False
+            
+            # Verify it doesn't have full report fields
+            full_only_fields = ['security_events', 'user_activities', 'resource_changes']
+            extra_fields = [field for field in full_only_fields if field in response]
+            if extra_fields:
+                self.log_test("Summary Report Extra Fields Check", False, f"Summary report should not have: {extra_fields}")
+                return False
+        
+        return success
+
+    def test_purge_logs_non_developer(self):
+        """Test purging logs as non-developer (should fail)"""
+        success, response = self.run_test(
+            "Purge Logs (non-developer)",
+            "DELETE",
+            "audit/logs?days=90",
+            403
+        )
+        
+        return success
+
+    def test_purge_logs_developer(self):
+        """Test purging logs as developer"""
+        success, response = self.run_test(
+            "Purge Logs (developer)",
+            "DELETE",
+            "audit/logs?days=1",
+            200,
+            use_developer_token=True
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify response structure
+            if 'message' not in response or 'cutoff_date' not in response:
+                self.log_test("Purge Logs Response Check", False, "Missing message or cutoff_date in response")
+                return False
+            
+            # Verify message format
+            message = response.get('message', '')
+            if not message.startswith('Purged') or 'audit logs' not in message:
+                self.log_test("Purge Logs Message Check", False, f"Unexpected message format: {message}")
+                return False
+        
+        return success
+
+    def test_authorization_without_token(self):
+        """Test all endpoints without authentication"""
+        endpoints = [
+            ("POST", "audit/log", {"action": "test", "resource_type": "test", "resource_id": "test", "result": "success"}),
+            ("GET", "audit/logs", None),
+            ("GET", "audit/logs/fake-id", None),
+            ("GET", "audit/stats", None),
+            ("POST", "audit/compliance-report", {"start_date": "2024-01-01", "end_date": "2024-01-02", "report_type": "summary"}),
+            ("DELETE", "audit/logs?days=90", None)
+        ]
+        
+        old_token = self.token
+        self.token = None
+        
+        all_success = True
+        for method, endpoint, data in endpoints:
+            success, _ = self.run_test(
+                f"Unauthorized {method} {endpoint}",
+                method,
+                endpoint,
+                401,
+                data=data
+            )
+            if not success:
+                all_success = False
+        
+        self.token = old_token
+        return all_success
+
+    def run_all_tests(self):
+        """Run all audit API tests"""
+        print("🚀 Starting Phase 3 Audit Trail & Compliance Backend API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # 1. Authentication Setup
+        if not self.setup_test_users():
+            print("❌ User setup failed, stopping audit tests")
+            return self.generate_report()
+
+        # 2. Create Audit Logs
+        self.test_create_audit_log()
+        self.test_create_multiple_audit_logs()
+
+        # 3. List Audit Logs - No Filters
+        self.test_list_audit_logs_no_filters()
+
+        # 4-8. List Audit Logs - Various Filters
+        self.test_list_audit_logs_filter_by_action()
+        self.test_list_audit_logs_filter_by_resource_type()
+        self.test_list_audit_logs_filter_by_result()
+        self.test_list_audit_logs_date_range_filter()
+        self.test_list_audit_logs_combined_filters()
+
+        # 9. Get Specific Audit Log
+        self.test_get_specific_audit_log()
+        self.test_get_nonexistent_audit_log()
+
+        # 10. Audit Statistics
+        self.test_audit_statistics()
+
+        # 11-12. Compliance Reports
+        self.test_compliance_report_full()
+        self.test_compliance_report_summary()
+
+        # 13-14. Purge Old Logs
+        self.test_purge_logs_non_developer()
+        self.test_purge_logs_developer()
+
+        # 15. Authorization Testing
+        self.test_authorization_without_token()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 80)
+        print("📊 PHASE 3 AUDIT TRAIL & COMPLIANCE TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 class ContextPermissionAPITester:
     def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
         self.base_url = base_url
