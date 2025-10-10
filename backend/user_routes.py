@@ -473,13 +473,10 @@ async def update_theme_preferences(
     
     if update_data:
         update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-        result = await db.users.update_one(
+        await db.users.update_one(
             {"id": current_user["id"]},
             {"$set": update_data}
         )
-        
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="User not found")
     
     return {"message": "Theme preferences updated successfully"}
 
