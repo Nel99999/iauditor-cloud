@@ -2217,16 +2217,13 @@ class ContextPermissionAPITester:
 
     def test_check_delegation(self):
         """Test checking delegation"""
-        check_data = {
-            "delegate_id": self.test_user2_id
-        }
+        query_params = f"delegate_id={self.test_user2_id}"
         
         success, response = self.run_test(
             "Check Delegation",
             "POST",
-            "context-permissions/delegations/check",
-            200,
-            data=check_data
+            f"context-permissions/delegations/check?{query_params}",
+            200
         )
         
         if success and isinstance(response, dict):
