@@ -413,9 +413,10 @@ class WorkflowEngine:
         
         logger.info(f"Workflow {workflow_id} cancelled by user {user_id}")
         
-        
         # Sync resource status on cancellation
         await self._sync_resource_status(workflow, "cancelled")
+        
+        return await self.db.workflow_instances.find_one({"id": workflow_id}, {"_id": 0})
 
 
     
