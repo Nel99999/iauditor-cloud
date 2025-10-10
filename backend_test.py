@@ -1685,6 +1685,375 @@ class ReportsAPITester:
         }
 
 
+class DashboardAPITester:
+    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_tasks = []
+        self.created_users = []
+        self.test_user_id = None
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def register_and_login_user(self):
+        """Register a new user with organization and login"""
+        unique_email = f"dashboard_test_{uuid.uuid4().hex[:8]}@testcompany.com"
+        reg_data = {
+            "email": unique_email,
+            "password": "DashTest123!",
+            "name": "Dashboard Test User",
+            "organization_name": f"Dashboard Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success, response = self.run_test(
+            "Register User with Organization",
+            "POST",
+            "auth/register",
+            200,
+            data=reg_data
+        )
+        
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            self.test_user_id = response.get('user', {}).get('id')
+            print(f"✅ Created and logged in as: {unique_email}")
+            return True, unique_email
+        
+        return False, unique_email
+
+    def test_dashboard_stats_authenticated(self):
+        """Test dashboard stats endpoint with valid authentication"""
+        success, response = self.run_test(
+            "Dashboard Stats (Authenticated)",
+            "GET",
+            "dashboard/stats",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify response structure
+            required_sections = ['users', 'inspections', 'tasks', 'checklists', 'organization']
+            missing_sections = [section for section in required_sections if section not in response]
+            
+            if missing_sections:
+                self.log_test("Dashboard Stats Structure Validation", False, f"Missing sections: {missing_sections}")
+                return False, response
+            
+            # Verify users section
+            users = response.get('users', {})
+            user_fields = ['total_users', 'active_users', 'pending_invitations', 'recent_logins']
+            missing_user_fields = [field for field in user_fields if field not in users]
+            if missing_user_fields:
+                self.log_test("Users Section Validation", False, f"Missing user fields: {missing_user_fields}")
+                return False, response
+            
+            # Verify inspections section
+            inspections = response.get('inspections', {})
+            inspection_fields = ['total_inspections', 'pending', 'completed_today', 'pass_rate', 'average_score']
+            missing_inspection_fields = [field for field in inspection_fields if field not in inspections]
+            if missing_inspection_fields:
+                self.log_test("Inspections Section Validation", False, f"Missing inspection fields: {missing_inspection_fields}")
+                return False, response
+            
+            # Verify tasks section
+            tasks = response.get('tasks', {})
+            task_fields = ['total_tasks', 'todo', 'in_progress', 'completed', 'overdue']
+            missing_task_fields = [field for field in task_fields if field not in tasks]
+            if missing_task_fields:
+                self.log_test("Tasks Section Validation", False, f"Missing task fields: {missing_task_fields}")
+                return False, response
+            
+            # Verify checklists section
+            checklists = response.get('checklists', {})
+            checklist_fields = ['total_checklists', 'completed_today', 'pending_today', 'completion_rate']
+            missing_checklist_fields = [field for field in checklist_fields if field not in checklists]
+            if missing_checklist_fields:
+                self.log_test("Checklists Section Validation", False, f"Missing checklist fields: {missing_checklist_fields}")
+                return False, response
+            
+            # Verify organization section
+            organization = response.get('organization', {})
+            org_fields = ['total_units', 'total_levels']
+            missing_org_fields = [field for field in org_fields if field not in organization]
+            if missing_org_fields:
+                self.log_test("Organization Section Validation", False, f"Missing organization fields: {missing_org_fields}")
+                return False, response
+            
+            # Verify data types and ranges
+            # Pass rate should be 0-100
+            pass_rate = inspections.get('pass_rate', 0)
+            if not (0 <= pass_rate <= 100):
+                self.log_test("Pass Rate Range Validation", False, f"Pass rate {pass_rate} not in range 0-100")
+                return False, response
+            
+            # Completion rate should be 0-100
+            completion_rate = checklists.get('completion_rate', 0)
+            if not (0 <= completion_rate <= 100):
+                self.log_test("Completion Rate Range Validation", False, f"Completion rate {completion_rate} not in range 0-100")
+                return False, response
+            
+            # Average score can be null or a number
+            avg_score = inspections.get('average_score')
+            if avg_score is not None and not isinstance(avg_score, (int, float)):
+                self.log_test("Average Score Type Validation", False, f"Average score should be null or number, got {type(avg_score)}")
+                return False, response
+            
+            self.log_test("Dashboard Stats Structure Validation", True, "All required fields present and valid")
+            return True, response
+        
+        return success, response
+
+    def test_dashboard_stats_unauthenticated(self):
+        """Test dashboard stats endpoint without authentication"""
+        old_token = self.token
+        self.token = None
+        
+        success, response = self.run_test(
+            "Dashboard Stats (Unauthenticated)",
+            "GET",
+            "dashboard/stats",
+            401
+        )
+        
+        self.token = old_token
+        return success
+
+    def test_dashboard_stats_invalid_token(self):
+        """Test dashboard stats endpoint with invalid token"""
+        old_token = self.token
+        self.token = "invalid_token_12345"
+        
+        success, response = self.run_test(
+            "Dashboard Stats (Invalid Token)",
+            "GET",
+            "dashboard/stats",
+            401
+        )
+        
+        self.token = old_token
+        return success
+
+    def create_test_data(self):
+        """Create some test data to verify dashboard counts"""
+        print("\n📊 Creating test data for dashboard verification...")
+        
+        # Create a test task
+        task_data = {
+            "title": f"Dashboard Test Task {uuid.uuid4().hex[:6]}",
+            "description": "Test task for dashboard statistics verification",
+            "status": "todo",
+            "priority": "medium",
+            "due_date": "2024-12-31",
+            "tags": ["dashboard", "testing"]
+        }
+        
+        task_success, task_response = self.run_test(
+            "Create Test Task for Dashboard",
+            "POST",
+            "tasks",
+            201,
+            data=task_data
+        )
+        
+        if task_success and isinstance(task_response, dict) and 'id' in task_response:
+            self.created_tasks.append(task_response['id'])
+            print(f"✅ Created test task: {task_response['id']}")
+        
+        # Create an organization unit
+        unit_data = {
+            "name": f"Dashboard Test Unit {uuid.uuid4().hex[:6]}",
+            "description": "Test unit for dashboard statistics",
+            "level": 1,
+            "parent_id": None
+        }
+        
+        unit_success, unit_response = self.run_test(
+            "Create Test Organization Unit",
+            "POST",
+            "organizations/units",
+            201,
+            data=unit_data
+        )
+        
+        if unit_success:
+            print(f"✅ Created test organization unit")
+        
+        return task_success or unit_success
+
+    def test_data_accuracy_after_creation(self, initial_stats):
+        """Test that dashboard stats reflect created test data"""
+        success, new_stats = self.test_dashboard_stats_authenticated()
+        
+        if not success:
+            return False
+        
+        # Compare task counts
+        initial_tasks = initial_stats.get('tasks', {}).get('total_tasks', 0)
+        new_tasks = new_stats.get('tasks', {}).get('total_tasks', 0)
+        
+        if new_tasks > initial_tasks:
+            self.log_test("Task Count Increase Verification", True, f"Tasks increased from {initial_tasks} to {new_tasks}")
+        else:
+            self.log_test("Task Count Increase Verification", False, f"Tasks did not increase: {initial_tasks} -> {new_tasks}")
+        
+        # Compare organization units
+        initial_units = initial_stats.get('organization', {}).get('total_units', 0)
+        new_units = new_stats.get('organization', {}).get('total_units', 0)
+        
+        if new_units >= initial_units:
+            self.log_test("Organization Units Verification", True, f"Units: {initial_units} -> {new_units}")
+        else:
+            self.log_test("Organization Units Verification", False, f"Units decreased: {initial_units} -> {new_units}")
+        
+        return True
+
+    def cleanup_test_data(self):
+        """Clean up created test data"""
+        print("\n🧹 Cleaning up test data...")
+        
+        # Delete created tasks
+        for task_id in self.created_tasks:
+            self.run_test(
+                f"Delete Test Task {task_id}",
+                "DELETE",
+                f"tasks/{task_id}",
+                200
+            )
+
+    def run_all_tests(self):
+        """Run all dashboard API tests"""
+        print("🚀 Starting Dashboard Statistics API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 60)
+
+        # 1. Authentication Setup
+        print("\n🔐 STEP 1: Authentication Setup")
+        if not self.register_and_login_user()[0]:
+            print("❌ Authentication setup failed, stopping tests")
+            return self.generate_report()
+
+        # 2. Test JWT token works
+        success, response = self.run_test(
+            "Verify JWT Token Works",
+            "GET",
+            "auth/me",
+            200
+        )
+        
+        if not success:
+            print("❌ JWT token verification failed")
+            return self.generate_report()
+
+        # 3. Dashboard Stats Endpoint Testing
+        print("\n📊 STEP 2: Dashboard Stats Endpoint Testing")
+        stats_success, initial_stats = self.test_dashboard_stats_authenticated()
+        
+        if not stats_success:
+            print("❌ Dashboard stats endpoint failed")
+            return self.generate_report()
+
+        # 4. Data Accuracy Testing
+        print("\n📈 STEP 3: Data Accuracy Testing")
+        if self.create_test_data():
+            self.test_data_accuracy_after_creation(initial_stats)
+
+        # 5. Authentication Testing
+        print("\n🔒 STEP 4: Authentication Testing")
+        self.test_dashboard_stats_unauthenticated()
+        self.test_dashboard_stats_invalid_token()
+
+        # 6. Cleanup
+        self.cleanup_test_data()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 60)
+        print("📊 DASHBOARD API TEST SUMMARY")
+        print("=" * 60)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 class RoleHierarchyTester:
     def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
         self.base_url = base_url
