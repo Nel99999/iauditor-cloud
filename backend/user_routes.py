@@ -549,12 +549,7 @@ async def delete_user(
 # THEME/APPEARANCE PREFERENCES
 # =====================================
 
-class ThemePreferences(BaseModel):
-    theme: Optional[str] = None
-    accent_color: Optional[str] = None
-    view_density: Optional[str] = None
-    font_size: Optional[str] = None
-
+# ThemePreferences model moved to top of file
 
 @router.get("/theme")
 async def get_theme_preferences(
