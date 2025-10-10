@@ -2235,31 +2235,23 @@ class ContextPermissionAPITester:
             # Let's also test with workflow_type and resource_type filters
             
             # Test with workflow_type filter
-            check_data_workflow = {
-                "delegate_id": self.test_user2_id,
-                "workflow_type": "approval"
-            }
+            query_params_workflow = f"delegate_id={self.test_user2_id}&workflow_type=approval"
             
             success2, _ = self.run_test(
                 "Check Delegation (workflow_type filter)",
                 "POST",
-                "context-permissions/delegations/check",
-                200,
-                data=check_data_workflow
+                f"context-permissions/delegations/check?{query_params_workflow}",
+                200
             )
             
             # Test with resource_type filter
-            check_data_resource = {
-                "delegate_id": self.test_user2_id,
-                "resource_type": "inspection"
-            }
+            query_params_resource = f"delegate_id={self.test_user2_id}&resource_type=inspection"
             
             success3, _ = self.run_test(
                 "Check Delegation (resource_type filter)",
                 "POST",
-                "context-permissions/delegations/check",
-                200,
-                data=check_data_resource
+                f"context-permissions/delegations/check?{query_params_resource}",
+                200
             )
             
             return success and success2 and success3
