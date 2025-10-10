@@ -25,6 +25,7 @@ from role_routes import router as role_router
 from dashboard_routes import router as dashboard_router
 from workflow_routes import router as workflow_router
 from context_permission_routes import router as context_permission_router
+from audit_routes import router as audit_router
 
 
 ROOT_DIR = Path(__file__).parent
