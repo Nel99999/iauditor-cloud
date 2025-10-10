@@ -165,39 +165,93 @@ const DashboardHome = () => {
         </div>
       </div>
 
-      {/* Recent Activity */}
+      {/* System Overview */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest updates across your organization</CardDescription>
+          <CardTitle>System Overview</CardTitle>
+          <CardDescription>Comprehensive statistics across all modules</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {stats && stats.total_inspections > 0 ? (
-              <div className="flex items-center gap-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+            {/* Inspections */}
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                   <ClipboardCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Inspection System Active</p>
+                <div>
+                  <p className="font-medium text-sm">Inspections</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {stats.total_inspections} total inspections completed
+                    {stats?.inspections?.total_inspections || 0} total · Pass rate: {stats?.inspections?.pass_rate || 0}%
                   </p>
                 </div>
               </div>
-            ) : (
-              <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No recent activity. Start by creating an inspection template!</p>
-                <Button
-                  onClick={() => navigate('/inspections')}
-                  className="mt-4"
-                  size="sm"
-                >
-                  Get Started
-                </Button>
+              <div className="text-right">
+                <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                  {stats?.inspections?.pending || 0} pending
+                </p>
               </div>
-            )}
+            </div>
+
+            {/* Tasks */}
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                  <ListTodo className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Tasks</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {stats?.tasks?.total_tasks || 0} total · {stats?.tasks?.overdue || 0} overdue
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold text-purple-600 dark:text-purple-400">
+                  {stats?.tasks?.in_progress || 0} in progress
+                </p>
+              </div>
+            </div>
+
+            {/* Checklists */}
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                  <CheckSquare className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Checklists</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {stats?.checklists?.total_checklists || 0} total · {stats?.checklists?.completion_rate || 0}% completion rate
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                  {stats?.checklists?.completed_today || 0} today
+                </p>
+              </div>
+            </div>
+
+            {/* Organization */}
+            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+                  <Building2 className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Organization</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {stats?.organization?.total_units || 0} units · {stats?.organization?.total_levels || 0} levels
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold text-orange-600 dark:text-orange-400">
+                  {stats?.users?.recent_logins || 0} recent logins
+                </p>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
