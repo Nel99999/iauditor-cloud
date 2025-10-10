@@ -7509,26 +7509,24 @@ class ComprehensiveRBACTester:
 
 
 if __name__ == "__main__":
-    print("🚀 Starting Comprehensive RBAC Backend API Testing")
+    print("🚀 Starting Dashboard Statistics API Testing")
     print("=" * 80)
     
-    # Run comprehensive RBAC testing as per review request
-    rbac_tester = ComprehensiveRBACTester()
-    rbac_results = rbac_tester.run_comprehensive_rbac_tests()
+    # Run Dashboard API testing as per review request
+    dashboard_tester = DashboardAPITester()
+    dashboard_results = dashboard_tester.run_all_tests()
     
     print("\n" + "=" * 80)
-    print("🎯 FINAL ASSESSMENT")
+    print("🎯 DASHBOARD API TEST ASSESSMENT")
     print("=" * 80)
-    print(f"Total Tests: {rbac_results['total_tests']}")
-    print(f"Success Rate: {rbac_results['success_rate']:.1f}%")
-    print(f"Critical Failures: {rbac_results['critical_failures']}")
-    print(f"Minor Issues: {rbac_results['minor_issues']}")
+    print(f"Total Tests: {dashboard_results['total_tests']}")
+    print(f"Success Rate: {dashboard_results['success_rate']:.1f}%")
     
-    if rbac_results['success_rate'] >= 95:
-        print("🎉 BACKEND READY FOR PRODUCTION - Exceeds high standards!")
-    elif rbac_results['success_rate'] >= 85:
-        print("✅ BACKEND FUNCTIONAL - Meets acceptable standards")
+    if dashboard_results['success_rate'] >= 90:
+        print("🎉 DASHBOARD API READY FOR PRODUCTION - Exceeds expectations!")
+    elif dashboard_results['success_rate'] >= 80:
+        print("✅ DASHBOARD API FUNCTIONAL - Meets requirements")
     else:
-        print("⚠️ BACKEND NEEDS ATTENTION - Below expected standards")
+        print("⚠️ DASHBOARD API NEEDS ATTENTION - Below expected standards")
     
     print("=" * 80)
