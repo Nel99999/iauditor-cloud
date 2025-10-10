@@ -2008,19 +2008,13 @@ class ContextPermissionAPITester:
             self.created_context_permissions.append(response1['id'])
             
             # Check permission (should not be valid yet)
-            check_data = {
-                "user_id": self.test_user_id,
-                "permission_id": self.permission_id,
-                "context_type": "branch",
-                "context_id": "branch-future"
-            }
+            query_params = f"user_id={self.test_user_id}&permission_id={self.permission_id}&context_type=branch&context_id=branch-future"
             
             success2, response2 = self.run_test(
                 "Check Future Permission (not yet valid)",
                 "POST",
-                "context-permissions/check",
-                200,
-                data=check_data
+                f"context-permissions/check?{query_params}",
+                200
             )
             
             if success2 and isinstance(response2, dict):
