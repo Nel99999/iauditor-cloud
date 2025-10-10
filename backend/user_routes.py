@@ -575,13 +575,7 @@ async def get_theme_preferences(
 # REGIONAL PREFERENCES
 # =====================================
 
-class RegionalPreferences(BaseModel):
-    language: Optional[str] = None
-    timezone: Optional[str] = None
-    date_format: Optional[str] = None
-    time_format: Optional[str] = None
-    currency: Optional[str] = None
-
+# RegionalPreferences model moved to top of file
 
 @router.get("/regional")
 async def get_regional_preferences(
