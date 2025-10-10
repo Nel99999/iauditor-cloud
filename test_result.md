@@ -279,6 +279,18 @@ backend:
         -agent: "testing"
         -comment: "✅ COMPREHENSIVE USER DELETE FUNCTIONALITY TESTED - Delete functionality working perfectly. Test Results: 92.9% success rate (13/14 tests). ✅ VERIFIED: Delete self fails with correct error 'Cannot delete your own account', Delete other user works correctly with soft delete (status='deleted'), Deleted users properly removed from GET /users list, All users have last_login timestamps in ISO format, User edit functionality working (PUT /users/{id}), User invite functionality working (POST /users/invite). The one 'failed' test was expected behavior - system correctly prevents deleting users from different organizations (organization-level security working correctly). All core delete functionality operational and secure."
 
+  - task: "Dashboard Statistics API (/api/dashboard/stats)"
+    implemented: true
+    working: "NA"
+    file: "backend/dashboard_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Implemented comprehensive dashboard statistics API endpoint that aggregates data from all modules (Users, Inspections, Tasks, Checklists, Organizations). Returns UserStats (total, active, pending invitations, recent logins), InspectionStats (total, pending, completed today, pass rate, average score), TaskStats (total by status, overdue), ChecklistStats (total, completed today, pending today, completion rate), OrganizationStats (total units, total levels). Registered router in server.py. Backend compiled successfully. Ready for testing."
+
 frontend:
   - task: "ReportsPage component with custom report builder"
     implemented: true
