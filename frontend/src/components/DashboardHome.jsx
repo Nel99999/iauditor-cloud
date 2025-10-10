@@ -88,6 +88,13 @@ const DashboardHome = () => {
       onClick: () => navigate('/inspections'),
     },
     {
+      title: 'Manage Tasks',
+      description: 'Create and track tasks',
+      icon: ListTodo,
+      color: 'text-purple-600',
+      onClick: () => navigate('/tasks'),
+    },
+    {
       title: 'View Organization',
       description: 'Manage organizational structure',
       icon: Building2,
@@ -95,18 +102,11 @@ const DashboardHome = () => {
       onClick: () => navigate('/organization'),
     },
     {
-      title: 'Manage Templates',
-      description: 'Create and edit inspection templates',
-      icon: ListTodo,
-      color: 'text-purple-600',
-      onClick: () => navigate('/inspections'),
-    },
-    {
       title: 'View Reports',
       description: 'Analytics and performance reports',
       icon: BarChart3,
       color: 'text-orange-600',
-      onClick: () => alert('Reports - Coming in Milestone 6!'),
+      onClick: () => navigate('/reports'),
     },
   ];
 
