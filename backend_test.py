@@ -2158,18 +2158,14 @@ class AuditAPITester:
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=7)
         
-        report_data = {
-            "start_date": start_date.isoformat(),
-            "end_date": end_date.isoformat(),
-            "report_type": "full"
-        }
+        # Use query parameters instead of JSON body
+        query_params = f"start_date={start_date.isoformat()}&end_date={end_date.isoformat()}&report_type=full"
         
         success, response = self.run_test(
             "Generate Full Compliance Report",
             "POST",
-            "audit/compliance-report",
-            200,
-            data=report_data
+            f"audit/compliance-report?{query_params}",
+            200
         )
         
         if success and isinstance(response, dict):
