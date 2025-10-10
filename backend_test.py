@@ -1685,6 +1685,856 @@ class ReportsAPITester:
         }
 
 
+class ContextPermissionAPITester:
+    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api"
+        self.token = None
+        self.user2_token = None
+        self.tests_run = 0
+        self.tests_passed = 0
+        self.test_results = []
+        self.created_context_permissions = []
+        self.created_delegations = []
+        self.test_user_id = None
+        self.test_user2_id = None
+        self.permission_id = None
+
+    def log_test(self, name, success, details=""):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+        
+        result = {
+            "test": name,
+            "success": success,
+            "details": details,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASSED" if success else "❌ FAILED"
+        print(f"{status} - {name}")
+        if details:
+            print(f"   Details: {details}")
+
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, use_user2_token=False):
+        """Run a single API test"""
+        url = f"{self.api_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
+        
+        if headers:
+            test_headers.update(headers)
+        
+        token = self.user2_token if use_user2_token else self.token
+        if token:
+            test_headers['Authorization'] = f'Bearer {token}'
+
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
+        try:
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=10)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            success = response.status_code == expected_status
+            
+            try:
+                response_data = response.json()
+            except:
+                response_data = response.text
+
+            details = f"Status: {response.status_code}, Response: {json.dumps(response_data, indent=2) if isinstance(response_data, dict) else str(response_data)[:500]}"
+            
+            self.log_test(name, success, details)
+            
+            return success, response_data
+
+        except Exception as e:
+            self.log_test(name, False, f"Error: {str(e)}")
+            return False, {}
+
+    def setup_test_users(self):
+        """Register and login two test users for delegation testing"""
+        # Register first user
+        user1_email = f"context_test_user1_{uuid.uuid4().hex[:8]}@testcompany.com"
+        reg_data1 = {
+            "email": user1_email,
+            "password": "ContextTest123!",
+            "name": "Context Test User 1",
+            "organization_name": f"Context Test Org {uuid.uuid4().hex[:6]}"
+        }
+        
+        success1, response1 = self.run_test(
+            "Register User 1 with Organization",
+            "POST",
+            "auth/register",
+            200,
+            data=reg_data1
+        )
+        
+        if success1 and 'access_token' in response1:
+            self.token = response1['access_token']
+            self.test_user_id = response1.get('user', {}).get('id')
+            print(f"✅ Created User 1: {user1_email}")
+        else:
+            return False
+        
+        # Register second user (same organization)
+        user2_email = f"context_test_user2_{uuid.uuid4().hex[:8]}@testcompany.com"
+        reg_data2 = {
+            "email": user2_email,
+            "password": "ContextTest123!",
+            "name": "Context Test User 2"
+        }
+        
+        success2, response2 = self.run_test(
+            "Register User 2 (same org)",
+            "POST",
+            "auth/register",
+            200,
+            data=reg_data2
+        )
+        
+        if success2 and 'access_token' in response2:
+            self.user2_token = response2['access_token']
+            self.test_user2_id = response2.get('user', {}).get('id')
+            print(f"✅ Created User 2: {user2_email}")
+            return True
+        
+        return False
+
+    def get_permission_id(self):
+        """Get a permission ID from the permissions endpoint"""
+        success, response = self.run_test(
+            "Get Permissions List",
+            "GET",
+            "permissions",
+            200
+        )
+        
+        if success and isinstance(response, list) and len(response) > 0:
+            self.permission_id = response[0]['id']
+            print(f"✅ Using permission ID: {self.permission_id}")
+            return True
+        
+        return False
+
+    def test_create_context_permission(self):
+        """Test creating a context permission"""
+        if not self.permission_id:
+            return False
+        
+        context_data = {
+            "user_id": self.test_user_id,
+            "permission_id": self.permission_id,
+            "context_type": "branch",
+            "context_id": "branch-001",
+            "granted": True,
+            "reason": "Branch manager"
+        }
+        
+        success, response = self.run_test(
+            "Create Context Permission",
+            "POST",
+            "context-permissions",
+            201,
+            data=context_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_context_permissions.append(response['id'])
+            # Verify organization_id is set
+            if 'organization_id' not in response:
+                self.log_test("Context Permission Organization ID Check", False, "organization_id not set in response")
+                return False, response
+            return True, response
+        
+        return False, response
+
+    def test_list_context_permissions(self):
+        """Test listing context permissions"""
+        success, response = self.run_test(
+            "List Context Permissions",
+            "GET",
+            "context-permissions",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            # Verify created permission is in list
+            if self.created_context_permissions:
+                found = any(perm['id'] == self.created_context_permissions[0] for perm in response)
+                if not found:
+                    self.log_test("Context Permission in List Check", False, "Created permission not found in list")
+                    return False
+        
+        return success
+
+    def test_list_context_permissions_with_filters(self):
+        """Test listing context permissions with filters"""
+        # Test user_id filter
+        success1, _ = self.run_test(
+            "List Context Permissions (user_id filter)",
+            "GET",
+            f"context-permissions?user_id={self.test_user_id}",
+            200
+        )
+        
+        # Test context_type filter
+        success2, _ = self.run_test(
+            "List Context Permissions (context_type filter)",
+            "GET",
+            "context-permissions?context_type=branch",
+            200
+        )
+        
+        return success1 and success2
+
+    def test_get_context_permission(self):
+        """Test getting a specific context permission"""
+        if not self.created_context_permissions:
+            return False
+        
+        permission_id = self.created_context_permissions[0]
+        success, response = self.run_test(
+            "Get Specific Context Permission",
+            "GET",
+            f"context-permissions/{permission_id}",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify all fields are returned
+            required_fields = ['id', 'user_id', 'permission_id', 'context_type', 'context_id', 'granted', 'reason']
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                self.log_test("Context Permission Fields Check", False, f"Missing fields: {missing_fields}")
+                return False
+        
+        return success
+
+    def test_check_context_permission_granted(self):
+        """Test checking context permission (should be granted)"""
+        if not self.permission_id:
+            return False
+        
+        check_data = {
+            "user_id": self.test_user_id,
+            "permission_id": self.permission_id,
+            "context_type": "branch",
+            "context_id": "branch-001"
+        }
+        
+        success, response = self.run_test(
+            "Check Context Permission (granted)",
+            "POST",
+            "context-permissions/check",
+            200,
+            data=check_data
+        )
+        
+        if success and isinstance(response, dict):
+            if response.get('granted') != True:
+                self.log_test("Context Permission Check Result", False, f"Expected granted=true, got {response.get('granted')}")
+                return False
+        
+        return success
+
+    def test_check_context_permission_wrong_context(self):
+        """Test checking context permission with wrong context (should be denied)"""
+        if not self.permission_id:
+            return False
+        
+        # Test wrong context_id
+        check_data1 = {
+            "user_id": self.test_user_id,
+            "permission_id": self.permission_id,
+            "context_type": "branch",
+            "context_id": "branch-999"  # Wrong context
+        }
+        
+        success1, response1 = self.run_test(
+            "Check Context Permission (wrong context_id)",
+            "POST",
+            "context-permissions/check",
+            200,
+            data=check_data1
+        )
+        
+        if success1 and isinstance(response1, dict):
+            if response1.get('granted') != False:
+                self.log_test("Wrong Context ID Check", False, f"Expected granted=false, got {response1.get('granted')}")
+                success1 = False
+        
+        # Test wrong context_type
+        check_data2 = {
+            "user_id": self.test_user_id,
+            "permission_id": self.permission_id,
+            "context_type": "department",  # Wrong type
+            "context_id": "branch-001"
+        }
+        
+        success2, response2 = self.run_test(
+            "Check Context Permission (wrong context_type)",
+            "POST",
+            "context-permissions/check",
+            200,
+            data=check_data2
+        )
+        
+        if success2 and isinstance(response2, dict):
+            if response2.get('granted') != False:
+                self.log_test("Wrong Context Type Check", False, f"Expected granted=false, got {response2.get('granted')}")
+                success2 = False
+        
+        return success1 and success2
+
+    def test_time_based_context_permissions(self):
+        """Test time-based validity of context permissions"""
+        if not self.permission_id:
+            return False
+        
+        # Create permission with future valid_from date
+        future_data = {
+            "user_id": self.test_user_id,
+            "permission_id": self.permission_id,
+            "context_type": "branch",
+            "context_id": "branch-future",
+            "granted": True,
+            "reason": "Future permission",
+            "valid_from": "2025-12-31T00:00:00Z"
+        }
+        
+        success1, response1 = self.run_test(
+            "Create Future Context Permission",
+            "POST",
+            "context-permissions",
+            201,
+            data=future_data
+        )
+        
+        if success1:
+            self.created_context_permissions.append(response1['id'])
+            
+            # Check permission (should not be valid yet)
+            check_data = {
+                "user_id": self.test_user_id,
+                "permission_id": self.permission_id,
+                "context_type": "branch",
+                "context_id": "branch-future"
+            }
+            
+            success2, response2 = self.run_test(
+                "Check Future Permission (not yet valid)",
+                "POST",
+                "context-permissions/check",
+                200,
+                data=check_data
+            )
+            
+            if success2 and isinstance(response2, dict):
+                if response2.get('granted') != False or 'not yet valid' not in response2.get('reason', ''):
+                    self.log_test("Future Permission Check", False, f"Expected not yet valid, got {response2}")
+                    return False
+        
+        # Create permission with past valid_until date
+        past_data = {
+            "user_id": self.test_user_id,
+            "permission_id": self.permission_id,
+            "context_type": "branch",
+            "context_id": "branch-past",
+            "granted": True,
+            "reason": "Expired permission",
+            "valid_until": "2020-01-01T00:00:00Z"
+        }
+        
+        success3, response3 = self.run_test(
+            "Create Expired Context Permission",
+            "POST",
+            "context-permissions",
+            201,
+            data=past_data
+        )
+        
+        if success3:
+            self.created_context_permissions.append(response3['id'])
+            
+            # Check permission (should be expired)
+            check_data = {
+                "user_id": self.test_user_id,
+                "permission_id": self.permission_id,
+                "context_type": "branch",
+                "context_id": "branch-past"
+            }
+            
+            success4, response4 = self.run_test(
+                "Check Expired Permission",
+                "POST",
+                "context-permissions/check",
+                200,
+                data=check_data
+            )
+            
+            if success4 and isinstance(response4, dict):
+                if response4.get('granted') != False or 'expired' not in response4.get('reason', ''):
+                    self.log_test("Expired Permission Check", False, f"Expected expired, got {response4}")
+                    return False
+        
+        return success1 and success3
+
+    def test_delete_context_permission(self):
+        """Test deleting a context permission"""
+        if not self.created_context_permissions:
+            return False
+        
+        permission_id = self.created_context_permissions[-1]  # Delete last created
+        success, response = self.run_test(
+            "Delete Context Permission",
+            "DELETE",
+            f"context-permissions/{permission_id}",
+            200
+        )
+        
+        if success:
+            # Verify permission no longer in list
+            list_success, list_response = self.run_test(
+                "Verify Permission Deleted",
+                "GET",
+                "context-permissions",
+                200
+            )
+            
+            if list_success and isinstance(list_response, list):
+                found = any(perm['id'] == permission_id for perm in list_response)
+                if found:
+                    self.log_test("Permission Deletion Verification", False, "Deleted permission still in list")
+                    return False
+        
+        return success
+
+    def test_create_delegation(self):
+        """Test creating a delegation"""
+        delegation_data = {
+            "delegate_id": self.test_user2_id,
+            "workflow_types": [],
+            "resource_types": [],
+            "valid_from": "2025-01-15T00:00:00Z",
+            "valid_until": "2025-01-22T00:00:00Z",
+            "reason": "On vacation"
+        }
+        
+        success, response = self.run_test(
+            "Create Delegation",
+            "POST",
+            "context-permissions/delegations",
+            201,
+            data=delegation_data
+        )
+        
+        if success and isinstance(response, dict) and 'id' in response:
+            self.created_delegations.append(response['id'])
+            # Verify delegator_id and delegate_id are set correctly
+            if response.get('delegator_id') != self.test_user_id:
+                self.log_test("Delegation Delegator ID Check", False, f"Expected delegator_id={self.test_user_id}, got {response.get('delegator_id')}")
+                return False
+            if response.get('delegate_id') != self.test_user2_id:
+                self.log_test("Delegation Delegate ID Check", False, f"Expected delegate_id={self.test_user2_id}, got {response.get('delegate_id')}")
+                return False
+            if response.get('active') != True:
+                self.log_test("Delegation Active Check", False, f"Expected active=true, got {response.get('active')}")
+                return False
+            return True, response
+        
+        return False, response
+
+    def test_prevent_self_delegation(self):
+        """Test that self-delegation is prevented"""
+        delegation_data = {
+            "delegate_id": self.test_user_id,  # Same as delegator
+            "workflow_types": [],
+            "resource_types": [],
+            "valid_from": "2025-01-15T00:00:00Z",
+            "valid_until": "2025-01-22T00:00:00Z",
+            "reason": "Self delegation test"
+        }
+        
+        success, response = self.run_test(
+            "Prevent Self-Delegation",
+            "POST",
+            "context-permissions/delegations",
+            400,  # Should fail
+            data=delegation_data
+        )
+        
+        return success
+
+    def test_list_delegations(self):
+        """Test listing delegations"""
+        # Test as delegator
+        success1, response1 = self.run_test(
+            "List Delegations (as delegator)",
+            "GET",
+            "context-permissions/delegations",
+            200
+        )
+        
+        if success1 and isinstance(response1, list):
+            # Verify created delegation appears
+            if self.created_delegations:
+                found = any(del_item['id'] == self.created_delegations[0] for del_item in response1)
+                if not found:
+                    self.log_test("Delegation in List Check (delegator)", False, "Created delegation not found in delegator's list")
+                    success1 = False
+        
+        # Test as delegate
+        success2, response2 = self.run_test(
+            "List Delegations (as delegate)",
+            "GET",
+            "context-permissions/delegations",
+            200,
+            use_user2_token=True
+        )
+        
+        if success2 and isinstance(response2, list):
+            # Verify delegation appears for delegate too
+            if self.created_delegations:
+                found = any(del_item['id'] == self.created_delegations[0] for del_item in response2)
+                if not found:
+                    self.log_test("Delegation in List Check (delegate)", False, "Created delegation not found in delegate's list")
+                    success2 = False
+        
+        # Test active_only parameter
+        success3, _ = self.run_test(
+            "List Delegations (active_only=false)",
+            "GET",
+            "context-permissions/delegations?active_only=false",
+            200
+        )
+        
+        return success1 and success2 and success3
+
+    def test_get_delegation(self):
+        """Test getting a specific delegation"""
+        if not self.created_delegations:
+            return False
+        
+        delegation_id = self.created_delegations[0]
+        success, response = self.run_test(
+            "Get Specific Delegation",
+            "GET",
+            f"context-permissions/delegations/{delegation_id}",
+            200
+        )
+        
+        if success and isinstance(response, dict):
+            # Verify all fields are returned
+            required_fields = ['id', 'delegator_id', 'delegate_id', 'workflow_types', 'resource_types', 'valid_from', 'valid_until', 'reason', 'active']
+            missing_fields = [field for field in required_fields if field not in response]
+            if missing_fields:
+                self.log_test("Delegation Fields Check", False, f"Missing fields: {missing_fields}")
+                return False
+        
+        return success
+
+    def test_check_delegation(self):
+        """Test checking delegation"""
+        check_data = {
+            "delegate_id": self.test_user2_id
+        }
+        
+        success, response = self.run_test(
+            "Check Delegation",
+            "POST",
+            "context-permissions/delegations/check",
+            200,
+            data=check_data
+        )
+        
+        if success and isinstance(response, dict):
+            if 'has_delegation' not in response or 'delegations' not in response:
+                self.log_test("Delegation Check Response Structure", False, "Missing has_delegation or delegations fields")
+                return False
+            
+            # Since we created a delegation with future dates, it might not be active yet
+            # Let's also test with workflow_type and resource_type filters
+            
+            # Test with workflow_type filter
+            check_data_workflow = {
+                "delegate_id": self.test_user2_id,
+                "workflow_type": "approval"
+            }
+            
+            success2, _ = self.run_test(
+                "Check Delegation (workflow_type filter)",
+                "POST",
+                "context-permissions/delegations/check",
+                200,
+                data=check_data_workflow
+            )
+            
+            # Test with resource_type filter
+            check_data_resource = {
+                "delegate_id": self.test_user2_id,
+                "resource_type": "inspection"
+            }
+            
+            success3, _ = self.run_test(
+                "Check Delegation (resource_type filter)",
+                "POST",
+                "context-permissions/delegations/check",
+                200,
+                data=check_data_resource
+            )
+            
+            return success and success2 and success3
+        
+        return success
+
+    def test_revoke_delegation(self):
+        """Test revoking a delegation"""
+        if not self.created_delegations:
+            return False
+        
+        delegation_id = self.created_delegations[0]
+        
+        success, response = self.run_test(
+            "Revoke Delegation",
+            "POST",
+            f"context-permissions/delegations/{delegation_id}/revoke",
+            200
+        )
+        
+        if success:
+            # Verify delegation is no longer active
+            get_success, get_response = self.run_test(
+                "Verify Delegation Revoked",
+                "GET",
+                f"context-permissions/delegations/{delegation_id}",
+                200
+            )
+            
+            if get_success and isinstance(get_response, dict):
+                if get_response.get('active') != False:
+                    self.log_test("Delegation Revocation Verification", False, f"Expected active=false, got {get_response.get('active')}")
+                    return False
+        
+        return success
+
+    def test_revoke_delegation_unauthorized(self):
+        """Test that non-delegator cannot revoke delegation"""
+        if not self.created_delegations:
+            return True  # Skip if no delegations
+        
+        delegation_id = self.created_delegations[0]
+        
+        # Try to revoke as user2 (delegate, not delegator)
+        success, response = self.run_test(
+            "Revoke Delegation (unauthorized)",
+            "POST",
+            f"context-permissions/delegations/{delegation_id}/revoke",
+            404,  # Should fail
+            use_user2_token=True
+        )
+        
+        return success
+
+    def test_date_validity_delegations(self):
+        """Test delegation date validity"""
+        # Create delegation with future dates
+        future_delegation_data = {
+            "delegate_id": self.test_user2_id,
+            "workflow_types": [],
+            "resource_types": [],
+            "valid_from": "2025-12-01T00:00:00Z",
+            "valid_until": "2025-12-31T00:00:00Z",
+            "reason": "Future delegation"
+        }
+        
+        success1, response1 = self.run_test(
+            "Create Future Delegation",
+            "POST",
+            "context-permissions/delegations",
+            201,
+            data=future_delegation_data
+        )
+        
+        if success1:
+            self.created_delegations.append(response1['id'])
+        
+        # Create delegation with past dates
+        past_delegation_data = {
+            "delegate_id": self.test_user2_id,
+            "workflow_types": [],
+            "resource_types": [],
+            "valid_from": "2020-01-01T00:00:00Z",
+            "valid_until": "2020-01-31T00:00:00Z",
+            "reason": "Past delegation"
+        }
+        
+        success2, response2 = self.run_test(
+            "Create Past Delegation",
+            "POST",
+            "context-permissions/delegations",
+            201,
+            data=past_delegation_data
+        )
+        
+        if success2:
+            self.created_delegations.append(response2['id'])
+        
+        # Test active_only=true should not return inactive delegations
+        success3, response3 = self.run_test(
+            "List Active Delegations Only",
+            "GET",
+            "context-permissions/delegations?active_only=true",
+            200
+        )
+        
+        return success1 and success2 and success3
+
+    def test_authorization_endpoints(self):
+        """Test all endpoints without authentication"""
+        old_token = self.token
+        self.token = None
+        
+        endpoints_to_test = [
+            ("GET", "context-permissions", 401),
+            ("POST", "context-permissions", 401),
+            ("GET", "context-permissions/fake-id", 401),
+            ("DELETE", "context-permissions/fake-id", 401),
+            ("POST", "context-permissions/check", 401),
+            ("GET", "context-permissions/delegations", 401),
+            ("POST", "context-permissions/delegations", 401),
+            ("GET", "context-permissions/delegations/fake-id", 401),
+            ("POST", "context-permissions/delegations/fake-id/revoke", 401),
+            ("POST", "context-permissions/delegations/check", 401)
+        ]
+        
+        all_success = True
+        for method, endpoint, expected_status in endpoints_to_test:
+            success, _ = self.run_test(
+                f"Unauthorized {method} {endpoint}",
+                method,
+                endpoint,
+                expected_status,
+                data={"test": "data"} if method in ["POST", "PUT"] else None
+            )
+            if not success:
+                all_success = False
+        
+        self.token = old_token
+        return all_success
+
+    def run_all_tests(self):
+        """Run all context permission and delegation tests"""
+        print("🚀 Starting Phase 2 Context Permissions & Delegations API Tests")
+        print(f"Backend URL: {self.base_url}")
+        print("=" * 80)
+
+        # 1. Authentication Setup
+        if not self.setup_test_users():
+            print("❌ User setup failed, stopping tests")
+            return self.generate_report()
+
+        # 2. Get permission ID
+        if not self.get_permission_id():
+            print("❌ Could not get permission ID, stopping tests")
+            return self.generate_report()
+
+        # 3. Context Permissions Tests
+        print("\n📋 TESTING CONTEXT PERMISSIONS")
+        print("-" * 40)
+        
+        # Create context permission
+        create_success, _ = self.test_create_context_permission()
+        if not create_success:
+            print("❌ Context permission creation failed")
+        
+        # List context permissions
+        self.test_list_context_permissions()
+        self.test_list_context_permissions_with_filters()
+        
+        # Get specific context permission
+        self.test_get_context_permission()
+        
+        # Check context permissions
+        self.test_check_context_permission_granted()
+        self.test_check_context_permission_wrong_context()
+        
+        # Time-based validity
+        self.test_time_based_context_permissions()
+        
+        # Delete context permission
+        self.test_delete_context_permission()
+
+        # 4. Delegations Tests
+        print("\n🔄 TESTING DELEGATIONS")
+        print("-" * 40)
+        
+        # Create delegation
+        delegation_success, _ = self.test_create_delegation()
+        if not delegation_success:
+            print("❌ Delegation creation failed")
+        
+        # Prevent self-delegation
+        self.test_prevent_self_delegation()
+        
+        # List delegations
+        self.test_list_delegations()
+        
+        # Get specific delegation
+        self.test_get_delegation()
+        
+        # Check delegation
+        self.test_check_delegation()
+        
+        # Revoke delegation
+        self.test_revoke_delegation()
+        self.test_revoke_delegation_unauthorized()
+        
+        # Date validity
+        self.test_date_validity_delegations()
+
+        # 5. Authorization Tests
+        print("\n🔒 TESTING AUTHORIZATION")
+        print("-" * 40)
+        self.test_authorization_endpoints()
+
+        return self.generate_report()
+
+    def generate_report(self):
+        """Generate test report"""
+        print("\n" + "=" * 80)
+        print("📊 PHASE 2 CONTEXT PERMISSIONS & DELEGATIONS TEST SUMMARY")
+        print("=" * 80)
+        print(f"Total Tests: {self.tests_run}")
+        print(f"Passed: {self.tests_passed}")
+        print(f"Failed: {self.tests_run - self.tests_passed}")
+        print(f"Success Rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        failed_tests = [test for test in self.test_results if not test['success']]
+        if failed_tests:
+            print("\n❌ FAILED TESTS:")
+            for test in failed_tests:
+                print(f"  - {test['test']}: {test['details']}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": self.tests_run - self.tests_passed,
+            "success_rate": (self.tests_passed/self.tests_run)*100,
+            "test_results": self.test_results
+        }
+
+
 class DashboardAPITester:
     def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
         self.base_url = base_url
