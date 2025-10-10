@@ -579,7 +579,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Complete Role-Based Access Control System (RBAC)"
+    - "Phase 1 Workflow Engine & Designer Frontend Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
