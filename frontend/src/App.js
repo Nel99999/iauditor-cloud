@@ -23,6 +23,8 @@ import ChecklistTemplateBuilder from "@/components/ChecklistTemplateBuilder";
 import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
 import TasksPage from "@/components/TasksPage";
 import ReportsPage from "@/components/ReportsPage";
+import WorkflowDesigner from "@/components/WorkflowDesigner";
+import MyApprovalsPage from "@/components/MyApprovalsPage";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
