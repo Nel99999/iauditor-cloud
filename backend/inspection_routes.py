@@ -406,8 +406,18 @@ async def complete_inspection(
     answers_dict = [ans.dict() if hasattr(ans, 'dict') else ans for ans in completion_data.answers]
     score, passed = calculate_inspection_score(template, answers_dict)
     
+    # Check if workflow is required
+    requires_approval = template.get("requires_approval", False)
+    workflow_template_id = template.get("workflow_template_id")
+    
+    # Determine initial status based on approval requirement
+    if requires_approval and workflow_template_id:
+        initial_status = "pending_approval"
+    else:
+        initial_status = "completed"
+    
     update_data = {
-        "status": "completed",
+        "status": initial_status,
         "answers": answers_dict,
         "findings": completion_data.findings or [],
         "notes": completion_data.notes,
@@ -422,6 +432,43 @@ async def complete_inspection(
     )
     
     completed_execution = await db.inspection_executions.find_one({"id": execution_id}, {"_id": 0})
+    
+    # Auto-start workflow if required
+    if requires_approval and workflow_template_id:
+        from workflow_engine import WorkflowEngine
+        engine = WorkflowEngine(db)
+        
+        try:
+            # Check for duplicate workflow
+            existing_workflow = await db.workflow_instances.find_one({
+                "resource_type": "inspection",
+                "resource_id": execution_id,
+                "status": {"$in": ["pending", "in_progress", "escalated"]}
+            })
+            
+            if not existing_workflow:
+                workflow = await engine.start_workflow(
+                    template_id=workflow_template_id,
+                    resource_type="inspection",
+                    resource_id=execution_id,
+                    resource_name=f"{template.get('name', 'Inspection')} - {execution.get('unit_name', '')}",
+                    created_by=user["id"],
+                    created_by_name=user["name"],
+                    organization_id=user["organization_id"]
+                )
+                
+                # Link workflow to inspection
+                await db.inspection_executions.update_one(
+                    {"id": execution_id},
+                    {"$set": {"workflow_id": workflow["id"]}}
+                )
+                
+                completed_execution["workflow_id"] = workflow["id"]
+        except Exception as e:
+            # Log error but don't fail inspection completion
+            import logging
+            logging.error(f"Failed to start workflow for inspection {execution_id}: {str(e)}")
+    
     return completed_execution
 
 
