@@ -614,31 +614,4 @@ async def get_privacy_preferences(
     }
 
 
-@router.put("/privacy")
-async def update_privacy_preferences(
-    preferences: PrivacyPreferences,
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Update user privacy preferences"""
-    current_user = await get_current_user(request, db)
-    
-    update_data = {}
-    if preferences.profile_visibility is not None:
-        update_data["profile_visibility"] = preferences.profile_visibility
-    if preferences.show_activity_status is not None:
-        update_data["show_activity_status"] = preferences.show_activity_status
-    if preferences.show_last_seen is not None:
-        update_data["show_last_seen"] = preferences.show_last_seen
-    
-    if update_data:
-        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-        result = await db.users.update_one(
-            {"id": current_user["id"]},
-            {"$set": update_data}
-        )
-        
-        if result.modified_count == 0:
-            raise HTTPException(status_code=404, detail="User not found")
-    
-    return {"message": "Privacy preferences updated successfully"}
+# Privacy route moved above to prevent conflict with /{user_id}
