@@ -232,7 +232,7 @@ class WorkflowEngine:
     ) -> List[str]:
         """
         Find users who can approve this workflow step
-        Based on role and context
+        Based on role and context, including delegation routing
         """
         approver_role = step["approver_role"]
         context = step.get("approver_context", "organization")
@@ -254,18 +254,40 @@ class WorkflowEngine:
         # Apply context filtering
         if context == "own":
             # Only the creator can approve
-            return [created_by]
+            base_approvers = [created_by]
         
         elif context in ["team", "branch", "region"]:
             # Find users in same team/branch/region as resource
             # For now, return all users with the role (can enhance with org unit filtering)
             users = await self.db.users.find(query, {"id": 1}).to_list(100)
-            return [u["id"] for u in users]
+            base_approvers = [u["id"] for u in users]
         
         else:  # organization
             # All users with this role in organization
             users = await self.db.users.find(query, {"id": 1}).to_list(100)
-            return [u["id"] for u in users]
+            base_approvers = [u["id"] for u in users]
+        
+        # Check for active delegations and add delegates
+        now = datetime.now(timezone.utc).isoformat()
+        final_approvers = set(base_approvers)
+        
+        for approver_id in base_approvers:
+            # Find active delegations from this approver
+            delegations = await self.db.delegations.find({
+                "delegator_id": approver_id,
+                "active": True,
+                "valid_from": {"$lte": now},
+                "valid_until": {"$gte": now}
+            }).to_list(100)
+            
+            for delegation in delegations:
+                # Check if delegation applies to this workflow
+                workflow_types = delegation.get("workflow_types", [])
+                if len(workflow_types) == 0 or "all" in workflow_types:
+                    # Delegation applies to all workflows, add delegate
+                    final_approvers.add(delegation["delegate_id"])
+        
+        return list(final_approvers)
     
     async def check_escalations(self) -> List[Dict[str, Any]]:
         """
