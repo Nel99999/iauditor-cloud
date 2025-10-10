@@ -142,6 +142,14 @@ const Layout = ({ children }) => {
           active: true,
           description: 'Manage workflows',
         },
+        {
+          name: 'Delegations',
+          icon: UserCheck,
+          path: '/delegations',
+          badge: 'NEW',
+          active: true,
+          description: 'Authority delegation',
+        },
       ],
     },
     {
