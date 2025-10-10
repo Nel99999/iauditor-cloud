@@ -443,13 +443,12 @@ async def get_theme_preferences(
     """Get user theme preferences"""
     current_user = await get_current_user(request, db)
     
-    user = await db.users.find_one({"id": current_user["id"]})
-    
+    # get_current_user already returns the full user object from database
     return {
-        "theme": user.get("theme", "light"),
-        "accent_color": user.get("accent_color", "#6366f1"),
-        "view_density": user.get("view_density", "comfortable"),
-        "font_size": user.get("font_size", "medium")
+        "theme": current_user.get("theme", "light"),
+        "accent_color": current_user.get("accent_color", "#6366f1"),
+        "view_density": current_user.get("view_density", "comfortable"),
+        "font_size": current_user.get("font_size", "medium")
     }
 
 
