@@ -25,6 +25,7 @@ import TasksPage from "@/components/TasksPage";
 import ReportsPage from "@/components/ReportsPage";
 import WorkflowDesigner from "@/components/WorkflowDesigner";
 import MyApprovalsPage from "@/components/MyApprovalsPage";
+import DelegationManager from "@/components/DelegationManager";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
