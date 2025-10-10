@@ -474,5 +474,3 @@ class WorkflowEngine:
         )
         
         logger.info(f"Synced {resource_type}/{resource_id} status to {new_status}")
-
-        return await self.db.workflow_instances.find_one({"id": workflow_id}, {"_id": 0})
