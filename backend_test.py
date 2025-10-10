@@ -2045,19 +2045,13 @@ class ContextPermissionAPITester:
             self.created_context_permissions.append(response3['id'])
             
             # Check permission (should be expired)
-            check_data = {
-                "user_id": self.test_user_id,
-                "permission_id": self.permission_id,
-                "context_type": "branch",
-                "context_id": "branch-past"
-            }
+            query_params = f"user_id={self.test_user_id}&permission_id={self.permission_id}&context_type=branch&context_id=branch-past"
             
             success4, response4 = self.run_test(
                 "Check Expired Permission",
                 "POST",
-                "context-permissions/check",
-                200,
-                data=check_data
+                f"context-permissions/check?{query_params}",
+                200
             )
             
             if success4 and isinstance(response4, dict):
