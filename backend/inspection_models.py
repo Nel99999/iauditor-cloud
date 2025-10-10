@@ -96,13 +96,14 @@ class InspectionExecution(BaseModel):
     unit_id: Optional[str] = None  # Which org unit was inspected
     inspector_id: str  # User who performed inspection
     inspector_name: str  # Denormalized
-    status: str = "in_progress"  # in_progress, completed, failed
+    status: str = "in_progress"  # in_progress, completed, pending_approval, approved, rejected, failed
     answers: List[InspectionAnswer] = []
     location: Optional[Dict[str, float]] = None  # {"lat": 0.0, "lng": 0.0}
     score: Optional[float] = None  # Overall score if scoring enabled
     passed: Optional[bool] = None  # Pass/fail status
     findings: List[str] = []  # List of issues found
     notes: Optional[str] = None
+    workflow_id: Optional[str] = None  # NEW: Linked workflow instance
     started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
