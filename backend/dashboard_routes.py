@@ -191,7 +191,7 @@ async def get_dashboard_stats(
     )
     
     # === ORGANIZATION STATS ===
-    all_units = await db.org_units.find(
+    all_units = await db.organization_units.find(
         {"organization_id": org_id},
         {"_id": 0}
     ).to_list(10000)
