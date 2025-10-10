@@ -355,11 +355,16 @@ async def list_time_based_permissions(
     return permissions
 
 
+class TimeBasedPermissionCheckRequest(BaseModel):
+    """Request model for checking time-based permission"""
+    user_id: str
+    permission_id: str
+
+
 @router.post("/time-based-permissions/check")
 async def check_time_based_permission(
+    check_request: TimeBasedPermissionCheckRequest,
     request: Request,
-    user_id: str,
-    permission_id: str,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Check if time-based permission is currently valid"""
