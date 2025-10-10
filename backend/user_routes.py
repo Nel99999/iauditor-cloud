@@ -524,15 +524,15 @@ async def update_regional_preferences(
     current_user = await get_current_user(request, db)
     
     update_data = {}
-    if preferences.language:
+    if preferences.language is not None:
         update_data["language"] = preferences.language
-    if preferences.timezone:
+    if preferences.timezone is not None:
         update_data["timezone"] = preferences.timezone
-    if preferences.date_format:
+    if preferences.date_format is not None:
         update_data["date_format"] = preferences.date_format
-    if preferences.time_format:
+    if preferences.time_format is not None:
         update_data["time_format"] = preferences.time_format
-    if preferences.currency:
+    if preferences.currency is not None:
         update_data["currency"] = preferences.currency
     
     if update_data:
