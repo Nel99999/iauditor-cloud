@@ -585,38 +585,7 @@ async def get_regional_preferences(
     }
 
 
-@router.put("/regional")
-async def update_regional_preferences(
-    preferences: RegionalPreferences,
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Update user regional preferences"""
-    current_user = await get_current_user(request, db)
-    
-    update_data = {}
-    if preferences.language is not None:
-        update_data["language"] = preferences.language
-    if preferences.timezone is not None:
-        update_data["timezone"] = preferences.timezone
-    if preferences.date_format is not None:
-        update_data["date_format"] = preferences.date_format
-    if preferences.time_format is not None:
-        update_data["time_format"] = preferences.time_format
-    if preferences.currency is not None:
-        update_data["currency"] = preferences.currency
-    
-    if update_data:
-        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-        result = await db.users.update_one(
-            {"id": current_user["id"]},
-            {"$set": update_data}
-        )
-        
-        if result.modified_count == 0:
-            raise HTTPException(status_code=404, detail="User not found")
-    
-    return {"message": "Regional preferences updated successfully"}
+# Regional route moved above to prevent conflict with /{user_id}
 
 
 # =====================================
