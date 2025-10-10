@@ -41,6 +41,8 @@ class InspectionTemplate(BaseModel):
     pass_percentage: Optional[float] = None  # Minimum to pass (e.g., 80.0)
     require_gps: bool = False
     require_photos: bool = False
+    requires_approval: bool = False  # NEW: Requires workflow approval
+    workflow_template_id: Optional[str] = None  # NEW: Workflow template to use
     version: int = 1
     is_active: bool = True
     created_by: str
