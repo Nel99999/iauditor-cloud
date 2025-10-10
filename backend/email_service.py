@@ -160,3 +160,209 @@ class EmailService:
         except Exception as e:
             print(f"❌ SendGrid test failed: {str(e)}")
             return False
+
+    
+    def send_workflow_started_email(
+        self,
+        to_emails: list,
+        workflow_name: str,
+        resource_type: str,
+        resource_name: str,
+        frontend_url: str
+    ) -> bool:
+        """Send notification when workflow is started"""
+        if not self.client:
+            print(f"⚠️ SendGrid not configured. Email would be sent to {to_emails}")
+            return False
+        
+        try:
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .button {{ display: inline-block; background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+                    .info-box {{ background: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>📋 New Approval Request</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi there!</p>
+                        <p>A new workflow <strong>{workflow_name}</strong> has been started and requires your approval.</p>
+                        <div class="info-box">
+                            <p><strong>Resource Type:</strong> {resource_type}</p>
+                            <p><strong>Resource Name:</strong> {resource_name}</p>
+                        </div>
+                        <p>Please review and take action on this workflow.</p>
+                        <a href="{frontend_url}/approvals" class="button">View My Approvals</a>
+                        <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+                            Click the button above to go to your approvals dashboard.
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>© 2025 OpsPlatform. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            for email in to_emails:
+                message = Mail(
+                    from_email=Email('noreply@opsplatform.com', 'OpsPlatform'),
+                    to_emails=To(email),
+                    subject=f'New Approval Request: {workflow_name}',
+                    html_content=Content("text/html", html_content)
+                )
+                self.client.send(message)
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Failed to send workflow start email: {str(e)}")
+            return False
+    
+    def send_workflow_approved_email(
+        self,
+        to_email: str,
+        workflow_name: str,
+        resource_type: str,
+        resource_name: str,
+        approved_by: str,
+        frontend_url: str
+    ) -> bool:
+        """Send notification when workflow is approved"""
+        if not self.client:
+            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            return False
+        
+        try:
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .button {{ display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+                    .success-box {{ background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>✅ Workflow Approved!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi there!</p>
+                        <p>Great news! Your workflow <strong>{workflow_name}</strong> has been approved.</p>
+                        <div class="success-box">
+                            <p><strong>Resource Type:</strong> {resource_type}</p>
+                            <p><strong>Resource Name:</strong> {resource_name}</p>
+                            <p><strong>Approved By:</strong> {approved_by}</p>
+                        </div>
+                        <a href="{frontend_url}/workflows" class="button">View Workflow</a>
+                    </div>
+                    <div class="footer">
+                        <p>© 2025 OpsPlatform. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            message = Mail(
+                from_email=Email('noreply@opsplatform.com', 'OpsPlatform'),
+                to_emails=To(to_email),
+                subject=f'Workflow Approved: {workflow_name}',
+                html_content=Content("text/html", html_content)
+            )
+            
+            response = self.client.send(message)
+            return response.status_code in [200, 201, 202]
+            
+        except Exception as e:
+            print(f"❌ Failed to send workflow approved email: {str(e)}")
+            return False
+    
+    def send_workflow_rejected_email(
+        self,
+        to_email: str,
+        workflow_name: str,
+        resource_type: str,
+        resource_name: str,
+        rejected_by: str,
+        comments: str,
+        frontend_url: str
+    ) -> bool:
+        """Send notification when workflow is rejected"""
+        if not self.client:
+            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            return False
+        
+        try:
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .button {{ display: inline-block; background: #ef4444; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+                    .error-box {{ background: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>❌ Workflow Rejected</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi there!</p>
+                        <p>Your workflow <strong>{workflow_name}</strong> has been rejected.</p>
+                        <div class="error-box">
+                            <p><strong>Resource Type:</strong> {resource_type}</p>
+                            <p><strong>Resource Name:</strong> {resource_name}</p>
+                            <p><strong>Rejected By:</strong> {rejected_by}</p>
+                            <p><strong>Comments:</strong> {comments or 'No comments provided'}</p>
+                        </div>
+                        <p>Please review the comments and take appropriate action.</p>
+                        <a href="{frontend_url}/workflows" class="button">View Workflow</a>
+                    </div>
+                    <div class="footer">
+                        <p>© 2025 OpsPlatform. All rights reserved.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            message = Mail(
+                from_email=Email('noreply@opsplatform.com', 'OpsPlatform'),
+                to_emails=To(to_email),
+                subject=f'Workflow Rejected: {workflow_name}',
+                html_content=Content("text/html", html_content)
+            )
+            
+            response = self.client.send(message)
+            return response.status_code in [200, 201, 202]
+            
+        except Exception as e:
+            print(f"❌ Failed to send workflow rejected email: {str(e)}")
+            return False
+
