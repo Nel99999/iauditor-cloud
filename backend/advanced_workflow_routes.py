@@ -91,6 +91,10 @@ async def evaluate_conditional_routing(
     """Evaluate conditional routing rules"""
     user = await get_current_user(request, db)
     
+    resource_data = routing_request.resource_data
+    conditions = routing_request.conditions
+    default_step = routing_request.default_step
+    
     # Evaluate each condition
     for condition in conditions:
         field = condition["field"]
