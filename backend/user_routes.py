@@ -462,13 +462,13 @@ async def update_theme_preferences(
     current_user = await get_current_user(request, db)
     
     update_data = {}
-    if preferences.theme:
+    if preferences.theme is not None:
         update_data["theme"] = preferences.theme
-    if preferences.accent_color:
+    if preferences.accent_color is not None:
         update_data["accent_color"] = preferences.accent_color
-    if preferences.view_density:
+    if preferences.view_density is not None:
         update_data["view_density"] = preferences.view_density
-    if preferences.font_size:
+    if preferences.font_size is not None:
         update_data["font_size"] = preferences.font_size
     
     if update_data:
