@@ -9,7 +9,7 @@ import os
 class ComprehensiveSettingsAPITester:
     """PRIORITY 1: Settings APIs Testing - Theme, Regional, Privacy, Notifications"""
     
-    def __init__(self, base_url="https://orgflow-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -381,7 +381,7 @@ class ComprehensiveSettingsAPITester:
 class ComprehensiveUserManagementTester:
     """PRIORITY 2: User Management Testing"""
     
-    def __init__(self, base_url="https://orgflow-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None

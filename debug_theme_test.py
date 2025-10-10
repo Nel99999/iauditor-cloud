@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test theme update with detailed debugging
-base_url = "https://orgflow-1.preview.emergentagent.com"
+base_url = "https://admin-portal-v2.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user
