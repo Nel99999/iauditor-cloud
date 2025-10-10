@@ -269,6 +269,16 @@ function App() {
               }
             />
             <Route
+              path="/delegations"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <DelegationManager />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>
