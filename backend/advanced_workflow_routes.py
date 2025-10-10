@@ -370,6 +370,9 @@ async def check_time_based_permission(
     """Check if time-based permission is currently valid"""
     current_user = await get_current_user(request, db)
     
+    user_id = check_request.user_id
+    permission_id = check_request.permission_id
+    
     permission = await db.time_based_permissions.find_one({
         "user_id": user_id,
         "permission_id": permission_id
