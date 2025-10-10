@@ -101,6 +101,7 @@ api_router.include_router(settings_router)
 api_router.include_router(dashboard_router)
 api_router.include_router(workflow_router)
 api_router.include_router(context_permission_router)
+api_router.include_router(audit_router)
 
 app.include_router(api_router)
 
