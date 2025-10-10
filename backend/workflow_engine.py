@@ -83,7 +83,7 @@ class WorkflowEngine:
         
         logger.info(f"Started workflow {instance.id} for {resource_type}/{resource_id}")
         
-        return instance_dict
+        return instance
     
     async def process_approval_action(
         self,
