@@ -140,6 +140,9 @@ class WorkflowEngine:
                 }
             )
             
+            # Sync resource status
+            await self._sync_resource_status(workflow, "rejected")
+            
             logger.info(f"Workflow {workflow_id} rejected by {user_name}")
             
         elif action == "approve":
