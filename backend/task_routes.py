@@ -119,6 +119,38 @@ async def update_task(
     # Handle status change to completed
     if update_data.get("status") == "completed" and task.get("status") != "completed":
         update_data["completed_at"] = datetime.now(timezone.utc).isoformat()
+        
+        # Check if task requires approval
+        if task.get("requires_approval") and task.get("workflow_template_id"):
+            update_data["status"] = "pending_approval"
+            
+            # Auto-start workflow
+            from workflow_engine import WorkflowEngine
+            engine = WorkflowEngine(db)
+            
+            try:
+                # Check for duplicate workflow
+                existing_workflow = await db.workflow_instances.find_one({
+                    "resource_type": "task",
+                    "resource_id": task_id,
+                    "status": {"$in": ["pending", "in_progress", "escalated"]}
+                })
+                
+                if not existing_workflow:
+                    workflow = await engine.start_workflow(
+                        template_id=task["workflow_template_id"],
+                        resource_type="task",
+                        resource_id=task_id,
+                        resource_name=task.get("title", "Task"),
+                        created_by=user["id"],
+                        created_by_name=user["name"],
+                        organization_id=user["organization_id"]
+                    )
+                    
+                    update_data["workflow_id"] = workflow["id"]
+            except Exception as e:
+                import logging
+                logging.error(f"Failed to start workflow for task {task_id}: {str(e)}")
     
     if update_data:
         update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
