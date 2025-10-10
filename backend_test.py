@@ -1949,19 +1949,13 @@ class ContextPermissionAPITester:
             return False
         
         # Test wrong context_id
-        check_data1 = {
-            "user_id": self.test_user_id,
-            "permission_id": self.permission_id,
-            "context_type": "branch",
-            "context_id": "branch-999"  # Wrong context
-        }
+        query_params1 = f"user_id={self.test_user_id}&permission_id={self.permission_id}&context_type=branch&context_id=branch-999"
         
         success1, response1 = self.run_test(
             "Check Context Permission (wrong context_id)",
             "POST",
-            "context-permissions/check",
-            200,
-            data=check_data1
+            f"context-permissions/check?{query_params1}",
+            200
         )
         
         if success1 and isinstance(response1, dict):
@@ -1970,19 +1964,13 @@ class ContextPermissionAPITester:
                 success1 = False
         
         # Test wrong context_type
-        check_data2 = {
-            "user_id": self.test_user_id,
-            "permission_id": self.permission_id,
-            "context_type": "department",  # Wrong type
-            "context_id": "branch-001"
-        }
+        query_params2 = f"user_id={self.test_user_id}&permission_id={self.permission_id}&context_type=department&context_id=branch-001"
         
         success2, response2 = self.run_test(
             "Check Context Permission (wrong context_type)",
             "POST",
-            "context-permissions/check",
-            200,
-            data=check_data2
+            f"context-permissions/check?{query_params2}",
+            200
         )
         
         if success2 and isinstance(response2, dict):
