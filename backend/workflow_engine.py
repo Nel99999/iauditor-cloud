@@ -393,4 +393,62 @@ class WorkflowEngine:
         # Sync resource status on cancellation
         await self._sync_resource_status(workflow, "cancelled")
 
+
+    
+    async def _sync_resource_status(
+        self,
+        workflow: Dict[str, Any],
+        workflow_status: str
+    ) -> None:
+        """
+        Synchronize resource status when workflow changes
+        """
+        resource_type = workflow["resource_type"]
+        resource_id = workflow["resource_id"]
+        
+        # Map workflow status to resource status
+        status_map = {
+            "approved": "approved",
+            "rejected": "rejected",
+            "cancelled": "completed"  # Revert to completed if cancelled
+        }
+        
+        new_status = status_map.get(workflow_status)
+        if not new_status:
+            return
+        
+        # Update resource based on type
+        collection_map = {
+            "inspection": "inspection_executions",
+            "task": "tasks",
+            "checklist": "checklist_executions",
+            "report": "reports"
+        }
+        
+        collection_name = collection_map.get(resource_type)
+        if not collection_name:
+            logger.warning(f"Unknown resource type: {resource_type}")
+            return
+        
+        collection = getattr(self.db, collection_name)
+        
+        update_data = {
+            "status": new_status,
+            "workflow_status": workflow_status,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        # Add approval/rejection timestamp
+        if workflow_status == "approved":
+            update_data["approved_at"] = datetime.now(timezone.utc).isoformat()
+        elif workflow_status == "rejected":
+            update_data["rejected_at"] = datetime.now(timezone.utc).isoformat()
+        
+        await collection.update_one(
+            {"id": resource_id},
+            {"$set": update_data}
+        )
+        
+        logger.info(f"Synced {resource_type}/{resource_id} status to {new_status}")
+
         return await self.db.workflow_instances.find_one({"id": workflow_id}, {"_id": 0})
