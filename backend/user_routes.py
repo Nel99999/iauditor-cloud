@@ -584,7 +584,7 @@ async def update_privacy_preferences(
     current_user = await get_current_user(request, db)
     
     update_data = {}
-    if preferences.profile_visibility:
+    if preferences.profile_visibility is not None:
         update_data["profile_visibility"] = preferences.profile_visibility
     if preferences.show_activity_status is not None:
         update_data["show_activity_status"] = preferences.show_activity_status
