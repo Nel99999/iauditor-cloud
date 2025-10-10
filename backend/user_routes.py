@@ -353,6 +353,106 @@ async def get_pending_invitations(request: Request, db: AsyncIOMotorDatabase = D
     return invitations
 
 
+# =====================================
+# USER PREFERENCES (must come before /{user_id} route)
+# =====================================
+
+@router.put("/theme")
+async def update_theme_preferences(
+    preferences: ThemePreferences,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update user theme preferences"""
+    current_user = await get_current_user(request, db)
+    
+    update_data = {}
+    if preferences.theme is not None:
+        update_data["theme"] = preferences.theme
+    if preferences.accent_color is not None:
+        update_data["accent_color"] = preferences.accent_color
+    if preferences.view_density is not None:
+        update_data["view_density"] = preferences.view_density
+    if preferences.font_size is not None:
+        update_data["font_size"] = preferences.font_size
+    
+    if update_data:
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        result = await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "Theme preferences updated successfully"}
+
+
+@router.put("/regional")
+async def update_regional_preferences(
+    preferences: RegionalPreferences,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update user regional preferences"""
+    current_user = await get_current_user(request, db)
+    
+    update_data = {}
+    if preferences.language is not None:
+        update_data["language"] = preferences.language
+    if preferences.timezone is not None:
+        update_data["timezone"] = preferences.timezone
+    if preferences.date_format is not None:
+        update_data["date_format"] = preferences.date_format
+    if preferences.time_format is not None:
+        update_data["time_format"] = preferences.time_format
+    if preferences.currency is not None:
+        update_data["currency"] = preferences.currency
+    
+    if update_data:
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        result = await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "Regional preferences updated successfully"}
+
+
+@router.put("/privacy")
+async def update_privacy_preferences(
+    preferences: PrivacyPreferences,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update user privacy preferences"""
+    current_user = await get_current_user(request, db)
+    
+    update_data = {}
+    if preferences.profile_visibility is not None:
+        update_data["profile_visibility"] = preferences.profile_visibility
+    if preferences.show_activity_status is not None:
+        update_data["show_activity_status"] = preferences.show_activity_status
+    if preferences.show_last_seen is not None:
+        update_data["show_last_seen"] = preferences.show_last_seen
+    
+    if update_data:
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        result = await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "Privacy preferences updated successfully"}
+
+
 # Update user
 @router.put("/{user_id}")
 async def update_user(
