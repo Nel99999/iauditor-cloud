@@ -248,6 +248,26 @@ function App() {
               }
             />
             <Route
+              path="/workflows"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <WorkflowDesigner />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/approvals"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <MyApprovalsPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>
