@@ -464,7 +464,7 @@ const WorkflowDesigner = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="">No escalation</SelectItem>
-                            {roles.map(role => (
+                            {roles && roles.length > 0 && roles.map(role => (
                               <SelectItem key={role.code} value={role.code}>
                                 {role.name}
                               </SelectItem>
