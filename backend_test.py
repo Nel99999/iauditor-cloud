@@ -1792,7 +1792,8 @@ class ContextPermissionAPITester:
         reg_data2 = {
             "email": user2_email,
             "password": "ContextTest123!",
-            "name": "Context Test User 2"
+            "name": "Context Test User 2",
+            "organization_name": f"Context Test Org {uuid.uuid4().hex[:6]}"  # Same org name pattern
         }
         
         success2, response2 = self.run_test(
