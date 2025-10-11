@@ -222,17 +222,6 @@ async def assign_workflow_to_resource_type(
             detail="Invalid resource type. Must be: inspection, task, or checklist"
         )
 
-        {"_id": 0}
-    )
-    
-    if not template:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Workflow template not found"
-        )
-    
-    return template
-
 
 @router.put("/templates/{template_id}")
 async def update_workflow_template(
