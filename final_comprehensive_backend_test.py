@@ -202,12 +202,14 @@ class ComprehensiveFinalBackendTester:
         
         # Test add member to group
         if self.group_id and self.user_id:
-            member_data = {"user_id": self.user_id, "role": "member"}
+            member_data = {"user_ids": [self.user_id]}
             response = self.make_request("POST", f"/groups/{self.group_id}/members", member_data)
             success = response and response.status_code in [200, 201]
             self.log_test("Add Group Member", success, 
                          None if success else f"Status: {response.status_code if response else 'No response'}", 
                          "groups")
+        else:
+            self.log_test("Add Group Member", False, "No group or user ID available", "groups")
         
         # Test group statistics
         response = self.make_request("GET", "/groups/stats")
