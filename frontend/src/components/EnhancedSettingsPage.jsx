@@ -65,6 +65,15 @@ const EnhancedSettingsPage = () => {
     marketingEmails: false
   });
   
+  // GDPR
+  const [gdprConsents, setGdprConsents] = useState({
+    marketing: false,
+    analytics: false,
+    third_party: false
+  });
+  const [exportingData, setExportingData] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  
   // API Settings
   const [apiSettings, setApiSettings] = useState({
     sendgrid_api_key: '',
