@@ -15,6 +15,7 @@ import RoleManagementPage from "@/components/RoleManagementPage";
 import InvitationManagementPage from "@/components/InvitationManagementPage";
 import DeveloperAdminPanel from "@/components/DeveloperAdminPanel";
 import SettingsPage from "@/components/EnhancedSettingsPage";
+import MFASetupPage from "@/components/MFASetupPage";
 import InspectionsPage from "@/components/InspectionsPage";
 import TemplateBuilderPage from "@/components/TemplateBuilderPage";
 import InspectionExecutionPage from "@/components/InspectionExecutionPage";
