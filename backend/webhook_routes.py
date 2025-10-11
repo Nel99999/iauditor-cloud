@@ -231,6 +231,7 @@ async def create_webhook(
     webhook_dict = webhook.model_dump()
     webhook_dict["created_at"] = webhook_dict["created_at"].isoformat()
     webhook_dict["updated_at"] = webhook_dict["updated_at"].isoformat()
+    webhook_dict["url"] = str(webhook_dict["url"])  # Convert HttpUrl to string for MongoDB
     
     await db.webhooks.insert_one(webhook_dict)
     
