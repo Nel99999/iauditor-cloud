@@ -38,6 +38,7 @@ import {
   Bell,
   Lock,
   Activity,
+  Search,
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
