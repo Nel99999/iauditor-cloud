@@ -190,7 +190,8 @@ async def change_password(
     new_password_hash = pwd_context.hash(password_data.new_password)
     
     # Update password history
-    password_history.insert(0, user.get("password", ""))
+    current_hash = user.get("password_hash") or user.get("password", "")
+    password_history.insert(0, current_hash)
     password_history = password_history[:PASSWORD_HISTORY_COUNT]
     
     # Update user
@@ -319,7 +320,8 @@ async def reset_password(
     new_password_hash = pwd_context.hash(reset_data.new_password)
     
     # Update password history
-    password_history.insert(0, user.get("password", ""))
+    current_hash = user.get("password_hash") or user.get("password", "")
+    password_history.insert(0, current_hash)
     password_history = password_history[:PASSWORD_HISTORY_COUNT]
     
     # Update user
