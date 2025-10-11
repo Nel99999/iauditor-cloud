@@ -25,6 +25,26 @@ class User(BaseModel):
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    # MFA fields
+    mfa_enabled: bool = False
+    mfa_secret: Optional[str] = None
+    mfa_backup_codes: List[str] = []
+    mfa_setup_pending: bool = False
+    mfa_enabled_at: Optional[datetime] = None
+    
+    # Security fields
+    email_verified: bool = False
+    email_verification_token: Optional[str] = None
+    email_verification_sent_at: Optional[datetime] = None
+    password_reset_token: Optional[str] = None
+    password_reset_expires_at: Optional[datetime] = None
+    password_changed_at: Optional[datetime] = None
+    password_history: List[str] = []  # Store hashed passwords
+    failed_login_attempts: int = 0
+    account_locked_until: Optional[datetime] = None
+    last_login: Optional[datetime] = None
+    last_login_ip: Optional[str] = None
 
 
 class UserCreate(BaseModel):
