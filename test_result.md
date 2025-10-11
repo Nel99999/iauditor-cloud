@@ -840,7 +840,7 @@ test_plan:
     file: "frontend/src/components/GlobalSearch.jsx, Layout.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "main"
