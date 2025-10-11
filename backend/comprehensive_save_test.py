@@ -213,7 +213,7 @@ class ComprehensiveSaveTest:
         
         # Update template if created
         if template_id:
-            update_data = {"title": "Updated Inspection"}
+            update_data = {"name": "Updated Inspection"}
             response = self.session.put(f"{API_BASE}/inspections/templates/{template_id}", json=update_data)
             self.log("Inspections", "Update Template", response.status_code == 200, f"Status: {response.status_code}")
     
