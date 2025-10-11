@@ -154,7 +154,7 @@ class ComprehensiveSaveTest:
         # Update org unit if created
         if unit_id:
             update_data = {"name": "Updated Department"}
-            response = self.session.put(f"{API_BASE}/org_units/{unit_id}", json=update_data)
+            response = self.session.put(f"{API_BASE}/organizations/units/{unit_id}", json=update_data)
             self.log("Organization", "Update Unit", response.status_code == 200, f"Status: {response.status_code}")
     
     def test_task_crud(self):
