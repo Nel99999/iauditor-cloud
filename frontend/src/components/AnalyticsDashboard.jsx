@@ -51,7 +51,7 @@ const AnalyticsDashboard = () => {
         axios.get(`${API_BASE_URL}/api/analytics/tasks/by-status`, { headers }),
         axios.get(`${API_BASE_URL}/api/analytics/tasks/by-priority`, { headers }),
         axios.get(`${API_BASE_URL}/api/analytics/time-tracking/trends?period=${period}`, { headers }),
-        axios.get(`${API_BASE_URL}/api/analytics/users/activity?limit=5`, { headers })
+        axios.get(`${API_BASE_URL}/api/analytics/user-activity?limit=5`, { headers })
       ]);
 
       setOverview(overviewRes.data);
