@@ -759,11 +759,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 4 Analytics Dashboard Frontend"
-    - "Phase 4 Notifications Center Integration"
-    - "Phase 4 Global Search Modal"
+    - "Phase 4 Analytics Dashboard (/analytics)"
+    - "Phase 4 Notifications Center (Bell Icon Integration)"
+    - "Phase 4 Global Search Modal (Cmd+K Integration)"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
   - task: "Phase 4 Advanced Workflow Features Backend API"
