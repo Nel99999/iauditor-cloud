@@ -425,6 +425,14 @@ async def complete_checklist(
             detail="Checklist not found",
         )
     
+    # Get template to check for workflow requirements
+    template = await db.checklist_templates.find_one(
+        {"id": execution["template_id"], "organization_id": user["organization_id"]}
+    )
+    
+    requires_approval = template.get("requires_approval", False) if template else False
+    workflow_template_id = template.get("workflow_template_id") if template else None
+    
     # Convert items
     items_dict = []
     for item in completion_data.items:
@@ -449,6 +457,49 @@ async def complete_checklist(
     )
     
     completed_execution = await db.checklist_executions.find_one({"id": execution_id}, {"_id": 0})
+    
+    # Auto-start workflow if required
+    if requires_approval and workflow_template_id:
+        from workflow_engine import WorkflowEngine
+        engine = WorkflowEngine(db)
+        
+        try:
+            # Check for duplicate workflow
+            existing_workflow = await db.workflow_instances.find_one({
+                "resource_type": "checklist",
+                "resource_id": execution_id,
+                "status": {"$in": ["pending", "in_progress", "escalated"]}
+            })
+            
+            if not existing_workflow:
+                workflow = await engine.start_workflow(
+                    template_id=workflow_template_id,
+                    resource_type="checklist",
+                    resource_id=execution_id,
+                    resource_name=f"{template.get('name', 'Checklist')} - {execution.get('date', '')}",
+                    created_by=user["id"],
+                    created_by_name=user["name"],
+                    organization_id=user["organization_id"]
+                )
+                
+                # Link workflow to checklist
+                await db.checklist_executions.update_one(
+                    {"id": execution_id},
+                    {"$set": {
+                        "workflow_id": workflow["id"],
+                        "workflow_status": "pending",
+                        "workflow_template_id": workflow_template_id,
+                        "requires_approval": requires_approval
+                    }}
+                )
+                
+                completed_execution["workflow_id"] = workflow["id"]
+                completed_execution["workflow_status"] = "pending"
+        except Exception as e:
+            # Log error but don't fail checklist completion
+            import logging
+            logging.error(f"Failed to start workflow for checklist {execution_id}: {str(e)}")
+    
     return completed_execution
 
 
