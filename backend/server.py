@@ -78,6 +78,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add security headers
+from security_middleware import SecurityHeadersMiddleware
+app.add_middleware(SecurityHeadersMiddleware)
+
 
 class StatusCheck(BaseModel):
     model_config = ConfigDict(extra="ignore")
