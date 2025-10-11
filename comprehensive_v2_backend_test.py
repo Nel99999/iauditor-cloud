@@ -617,9 +617,9 @@ class ComprehensiveV2BackendTester:
         
         # Test GDPR
         gdpr_endpoints = [
-            "/gdpr/data-export",
-            "/gdpr/privacy-settings",
-            "/gdpr/consent-status"
+            "/gdpr/consent-status",
+            "/gdpr/data-retention-policy",
+            "/gdpr/privacy-report"
         ]
         
         for endpoint in gdpr_endpoints:
