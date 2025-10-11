@@ -220,6 +220,26 @@ class WorkflowEngine:
                 
                 logger.info(f"Workflow {workflow_id} advanced to step {next_step_num}")
                 
+                # Send emails to next approvers
+                if next_approvers:
+                    approver_emails = []
+                    for approver_id in next_approvers:
+                        approver = await self.db.users.find_one({"id": approver_id}, {"email": 1})
+                        if approver and approver.get("email"):
+                            approver_emails.append(approver["email"])
+                    
+                    if approver_emails:
+                        try:
+                            self.email_service.send_workflow_started_email(
+                                to_emails=approver_emails,
+                                workflow_name=workflow["template_name"],
+                                resource_type=workflow["resource_type"],
+                                resource_name=workflow["resource_name"],
+                                frontend_url=self.frontend_url
+                            )
+                        except Exception as e:
+                            logger.error(f"Failed to send step advance emails: {str(e)}")
+                
             else:
                 # All steps completed - workflow approved
                 await self.db.workflow_instances.update_one(
