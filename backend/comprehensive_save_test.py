@@ -225,7 +225,7 @@ class ComprehensiveSaveTest:
         
         # Create checklist template
         template_data = {
-            "title": "Test Checklist",
+            "name": "Test Checklist",
             "description": "Test description",
             "items": [
                 {"item": "Test item 1", "required": True}
