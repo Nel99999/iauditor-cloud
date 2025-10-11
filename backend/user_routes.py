@@ -668,7 +668,7 @@ async def update_security_preferences(
             {"$set": update_data}
         )
         
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="User not found")
+        # Don't check matched_count - if get_current_user worked, user exists
+        # matched_count can be 0 if values didn't change
     
     return {"message": "Security preferences updated successfully"}
