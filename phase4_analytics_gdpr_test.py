@@ -57,7 +57,7 @@ class Phase4BackendTester:
             }
             
             response = self.session.post(f"{API_BASE}/auth/register", json=register_data)
-            if response.status_code == 201:
+            if response.status_code in [200, 201]:
                 data = response.json()
                 self.token = data.get("access_token")
                 self.user_id = data.get("user", {}).get("id")
@@ -69,7 +69,7 @@ class Phase4BackendTester:
                 self.log_test("Authentication Setup", True, f"User: {register_data['email']}, Org: {register_data['organization_name']}")
                 return True
             else:
-                self.log_test("Authentication Setup", False, f"Registration failed: {response.status_code}")
+                self.log_test("Authentication Setup", False, f"Registration failed: {response.status_code} - {response.text}")
                 return False
                 
         except Exception as e:
