@@ -327,6 +327,18 @@ const Layout = ({ children }) => {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Global Search Button */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              <Search className="w-4 h-4" />
+              <span className="hidden lg:inline">Search</span>
+              <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-gray-900 rounded border border-gray-300 dark:border-gray-600">
+                ⌘K
+              </kbd>
+            </button>
+
             <NotificationCenter />
 
             <DropdownMenu>
