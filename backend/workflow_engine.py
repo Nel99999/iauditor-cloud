@@ -257,6 +257,22 @@ class WorkflowEngine:
                 await self._sync_resource_status(workflow, "approved")
                 
                 logger.info(f"Workflow {workflow_id} fully approved")
+                
+                # Send approval email to creator
+                if template.get("notify_on_complete", True):
+                    creator = await self.db.users.find_one({"id": workflow["created_by"]}, {"email": 1})
+                    if creator and creator.get("email"):
+                        try:
+                            self.email_service.send_workflow_approved_email(
+                                to_email=creator["email"],
+                                workflow_name=workflow["template_name"],
+                                resource_type=workflow["resource_type"],
+                                resource_name=workflow["resource_name"],
+                                approved_by=user_name,
+                                frontend_url=self.frontend_url
+                            )
+                        except Exception as e:
+                            logger.error(f"Failed to send approval email: {str(e)}")
         
         elif action == "request_changes":
             # Request changes - mark as pending
