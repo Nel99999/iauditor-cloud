@@ -365,7 +365,8 @@ class WorkflowEngine:
             
             # Fallback to all users with role if no context match
             if not base_approvers:
-                del query["assigned_unit_ids"] if "assigned_unit_ids" in query else None
+                if "assigned_unit_ids" in query:
+                    del query["assigned_unit_ids"]
                 users = await self.db.users.find(query, {"id": 1}).to_list(100)
                 base_approvers = [u["id"] for u in users]
         
