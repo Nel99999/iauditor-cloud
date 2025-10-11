@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime, timezone
 
 # Configuration
-BASE_URL = "https://workflowly.preview.emergentagent.com/api"
+BASE_URL = "https://enterprise-ops-1.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "phase3.collab@company.com"
 TEST_USER_PASSWORD = "Collab123!@#"
 
@@ -285,7 +285,7 @@ class Phase3ComprehensiveTester:
             self.log_test("Get Time Entries", True, f"Found {len(entries)} time entries")
             
             # Test filtering by task
-            task_response = self.session.get(f"{BASE_URL}/time-tracking/entries?task_id=28598da1-d2e4-4752-8c7a-a97f688eeed4", headers=headers)
+            task_response = self.session.get(f"{BASE_URL}/time-tracking/entries?task_id=enterprise-ops-1", headers=headers)
             if task_response.status_code == 200:
                 task_entries = task_response.json().get("entries", [])
                 self.log_test("Filter Entries by Task", True, f"Task entries: {len(task_entries)}")
