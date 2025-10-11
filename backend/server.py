@@ -28,6 +28,7 @@ from context_permission_routes import router as context_permission_router
 from audit_routes import router as audit_router
 from advanced_workflow_routes import router as advanced_workflow_router
 from mfa_routes import router as mfa_router
+from security_routes import router as security_router
 
 
 ROOT_DIR = Path(__file__).parent
