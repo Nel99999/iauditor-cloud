@@ -25,6 +25,18 @@ class Task(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
+    
+    # Subtask tracking
+    subtask_count: int = 0
+    subtasks_completed: int = 0
+    completion_percentage: float = 0.0
+    
+    # File attachments
+    attachments: List[dict] = []  # [{"id": "...", "filename": "...", "url": "...", "uploaded_at": "..."}]
+    
+    # Dependencies
+    depends_on: List[str] = []  # List of task IDs this task depends on
+    blocked_by: List[str] = []  # List of task IDs blocking this task
 
 
 class TaskCreate(BaseModel):
