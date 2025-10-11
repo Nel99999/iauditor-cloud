@@ -242,13 +242,13 @@ class ComprehensiveV2BackendTester:
             "description": "Comprehensive safety inspection",
             "questions": [
                 {
-                    "question": "Are safety protocols followed?",
-                    "type": "yes_no",
+                    "question_text": "Are safety protocols followed?",
+                    "question_type": "yes_no",
                     "required": True
                 },
                 {
-                    "question": "Equipment condition rating",
-                    "type": "number",
+                    "question_text": "Equipment condition rating",
+                    "question_type": "number",
                     "required": True,
                     "min_value": 1,
                     "max_value": 10
