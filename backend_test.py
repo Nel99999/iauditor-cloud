@@ -32,7 +32,8 @@ API_URL = f"{BASE_URL}/api"
 class Phase1BackendTester:
     def __init__(self):
         self.session = requests.Session()
-        self.test_user_email = "phase1.tester@security.com"
+        import uuid
+        self.test_user_email = f"phase1.fresh.{uuid.uuid4().hex[:8]}@security.com"
         self.test_password = "SecurePass123!@#"
         self.access_token = None
         self.user_id = None
