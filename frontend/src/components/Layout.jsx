@@ -116,12 +116,28 @@ const Layout = ({ children }) => {
           description: '10 system roles',
         },
         {
+          name: 'Groups & Teams',
+          icon: Users,
+          path: '/groups',
+          badge: 'NEW',
+          active: true,
+          description: 'Manage groups',
+        },
+        {
           name: 'Invitations',
           icon: Mail,
           path: '/invitations',
           badge: null,
           active: true,
           description: 'Track invites',
+        },
+        {
+          name: 'Bulk Import',
+          icon: Upload,
+          path: '/bulk-import',
+          badge: 'NEW',
+          active: true,
+          description: 'CSV user import',
         },
         {
           name: 'Settings',
