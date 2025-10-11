@@ -269,9 +269,15 @@ class ComprehensiveSaveTest:
         else:
             self.log("Roles", "Create Custom Role", False, f"Status: {response.status_code}")
         
-        # Update role if created
+        # Update role if created (requires all fields)
         if role_id:
-            update_data = {"name": "Updated Role"}
+            update_data = {
+                "name": "Updated Role",
+                "code": "test_role",
+                "level": 5,
+                "color": "#10b981",
+                "description": "Updated description"
+            }
             response = self.session.put(f"{API_BASE}/roles/{role_id}", json=update_data)
             self.log("Roles", "Update Role", response.status_code == 200, f"Status: {response.status_code}")
     
