@@ -8,7 +8,7 @@ from workflow_models import (
 from workflow_engine import WorkflowEngine
 from auth_utils import get_current_user
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List
 import logging
 
 logger = logging.getLogger(__name__)
