@@ -560,7 +560,7 @@ test2@company.com,Test User 2,inspector"""
         print("\n🛡️ TESTING GDPR COMPLIANCE SYSTEM")
         
         # Test data export (Right to Access)
-        response = self.make_request("GET", "/gdpr/export-data")
+        response = self.make_request("POST", "/gdpr/data-export")
         success = response and response.status_code == 200
         self.log_test("GDPR Data Export", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
