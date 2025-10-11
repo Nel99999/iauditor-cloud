@@ -197,7 +197,7 @@ class ComprehensiveSaveTest:
         
         # Create inspection template
         template_data = {
-            "title": "Test Inspection",
+            "name": "Test Inspection",
             "description": "Test description",
             "questions": [
                 {"question": "Test question?", "type": "yes_no", "required": True}
