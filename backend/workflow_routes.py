@@ -461,6 +461,31 @@ async def bulk_approve_workflows(
         organization_id=user["organization_id"]
     )
     
+
+
+
+@router.get("/escalations")
+async def check_workflow_escalations_endpoint(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Check for workflows that need escalation (manual trigger)"""
+    user = await get_current_user(request, db)
+    
+    engine = WorkflowEngine(db)
+    
+    try:
+        escalated = await engine.check_escalations()
+        return {
+            "message": f"Escalated {len(escalated)} workflows",
+            "escalated_workflows": escalated
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Escalation check failed: {str(e)}"
+        )
+
     if not has_permission:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
