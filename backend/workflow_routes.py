@@ -128,6 +128,91 @@ async def get_workflow_template(
     
     template = await db.workflow_templates.find_one(
         {"id": template_id, "organization_id": user["organization_id"]},
+
+
+
+@router.post("/templates/{template_id}/assign-to-resource")
+async def assign_workflow_to_resource_type(
+    template_id: str,
+    request: Request,
+    resource_type: str,
+    auto_trigger: bool = True,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Assign a workflow template to a resource type (inspection/task/checklist)"""
+    user = await get_current_user(request, db)
+    
+    template = await db.workflow_templates.find_one({
+        "id": template_id,
+        "organization_id": user["organization_id"]
+    })
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Workflow template not found"
+        )
+    
+    # Update resource templates to use this workflow
+    if resource_type == "inspection":
+        # Update all inspection templates
+        result = await db.inspection_templates.update_many(
+            {"organization_id": user["organization_id"]},
+            {
+                "$set": {
+                    "requires_approval": True,
+                    "workflow_template_id": template_id,
+                    "auto_trigger_workflow": auto_trigger
+                }
+            }
+        )
+        return {
+            "message": f"Assigned workflow to {result.modified_count} inspection templates",
+            "resource_type": resource_type,
+            "workflow_template_id": template_id
+        }
+    
+    elif resource_type == "task":
+        # Update all tasks
+        result = await db.tasks.update_many(
+            {"organization_id": user["organization_id"], "status": {"$ne": "completed"}},
+            {
+                "$set": {
+                    "requires_approval": True,
+                    "workflow_template_id": template_id,
+                    "auto_trigger_workflow": auto_trigger
+                }
+            }
+        )
+        return {
+            "message": f"Assigned workflow to {result.modified_count} tasks",
+            "resource_type": resource_type,
+            "workflow_template_id": template_id
+        }
+    
+    elif resource_type == "checklist":
+        result = await db.checklist_templates.update_many(
+            {"organization_id": user["organization_id"]},
+            {
+                "$set": {
+                    "requires_approval": True,
+                    "workflow_template_id": template_id,
+                    "auto_trigger_workflow": auto_trigger
+                }
+            }
+        )
+        return {
+            "message": f"Assigned workflow to {result.modified_count} checklist templates",
+            "resource_type": resource_type,
+            "workflow_template_id": template_id
+        }
+    
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid resource type. Must be: inspection, task, or checklist"
+        )
+
         {"_id": 0}
     )
     
