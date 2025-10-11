@@ -29,6 +29,9 @@ import MyApprovalsPage from "@/components/MyApprovalsPage";
 import DelegationManager from "@/components/DelegationManager";
 import AuditViewer from "@/components/AuditViewer";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import GroupsManagementPage from "@/components/GroupsManagementPage";
+import BulkImportPage from "@/components/BulkImportPage";
+import WebhooksPage from "@/components/WebhooksPage";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
