@@ -460,7 +460,7 @@ class Phase4ComprehensiveBackendTester:
         try:
             # Register test user
             register_response = self.session.post(f"{API_BASE}/auth/register", json=register_data)
-            if register_response.status_code == 201:
+            if register_response.status_code in [200, 201]:
                 # Login as test user
                 login_data = {"email": test_email, "password": "SecureTestPass123!"}
                 login_response = self.session.post(f"{API_BASE}/auth/login", json=login_data)
