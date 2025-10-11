@@ -230,7 +230,7 @@ class ComprehensiveSaveTest:
             "name": "Test Checklist",
             "description": "Test description",
             "items": [
-                {"item": "Test item 1", "required": True}
+                {"text": "Test item 1", "required": True}
             ]
         }
         response = self.session.post(f"{API_BASE}/checklists/templates", json=template_data)
