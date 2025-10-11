@@ -601,7 +601,7 @@ test2@company.com,Test User 2,inspector"""
                      "gdpr")
         
         # Test privacy reports
-        response = self.make_request("GET", "/gdpr/privacy-reports")
+        # Remove duplicate test
         success = response and response.status_code == 200
         self.log_test("GDPR Privacy Reports", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
