@@ -187,7 +187,7 @@ class ComprehensiveSaveTest:
             self.log("Tasks", "Update Task", response.status_code == 200, f"Status: {response.status_code}")
             
             # Add comment
-            comment_data = {"comment": "Test comment"}
+            comment_data = {"text": "Test comment"}
             response = self.session.post(f"{API_BASE}/tasks/{task_id}/comments", json=comment_data)
             self.log("Tasks", "Add Comment", response.status_code in [200, 201], f"Status: {response.status_code}")
     
