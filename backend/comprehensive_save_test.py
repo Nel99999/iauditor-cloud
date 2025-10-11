@@ -143,7 +143,7 @@ class ComprehensiveSaveTest:
         
         # Create org unit
         org_data = {"name": "Test Department", "level": 4, "parent_id": None}
-        response = self.session.post(f"{API_BASE}/org_units", json=org_data)
+        response = self.session.post(f"{API_BASE}/organizations/units", json=org_data)
         unit_id = None
         if response.status_code in [200, 201]:
             unit_id = response.json().get("id")
