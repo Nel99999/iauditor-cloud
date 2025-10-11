@@ -714,9 +714,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 4 Optimization & Polish - Analytics & GDPR Backend API"
+    - "Phase 4 Analytics Dashboard Frontend"
+    - "Phase 4 Notifications Center Integration"
+    - "Phase 4 Global Search Modal"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
   - task: "Phase 4 Advanced Workflow Features Backend API"
