@@ -7,7 +7,7 @@ import io
 import os
 
 class AuthAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -341,7 +341,7 @@ class AuthAPITester:
         }
 
 class OrganizationAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -702,7 +702,7 @@ class OrganizationAPITester:
         }
 
 class ChecklistAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -1069,7 +1069,7 @@ class ChecklistAPITester:
         }
 
 class TaskAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -1383,7 +1383,7 @@ class TaskAPITester:
 
 
 class ReportsAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -1686,7 +1686,7 @@ class ReportsAPITester:
 
 
 class AuditAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -2386,7 +2386,7 @@ class AuditAPITester:
 
 
 class ContextPermissionAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -3197,7 +3197,7 @@ class ContextPermissionAPITester:
 
 
 class DashboardAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -3566,7 +3566,7 @@ class DashboardAPITester:
 
 
 class RoleHierarchyTester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -4771,7 +4771,7 @@ class RoleHierarchyTester:
 
 
 class UserDeleteTester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -5231,7 +5231,7 @@ class UserDeleteTester:
 
 
 class UserAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -5810,7 +5810,7 @@ class UserAPITester:
 
 
 class InspectionAPITester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -6074,7 +6074,7 @@ class InspectionAPITester:
         }
 
 class OrganizationHierarchyTester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -6543,7 +6543,7 @@ class OrganizationHierarchyTester:
 
 class SystemRoleInitializationTester:
     """Test system role initialization fix - focused test for the specific issue"""
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -6829,7 +6829,7 @@ class SystemRoleInitializationTester:
 class Phase1ComprehensiveTester:
     """Comprehensive tester for all Phase 1 features"""
     
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -7210,7 +7210,7 @@ class Phase1ComprehensiveTester:
 class RBACSystemTester:
     """Comprehensive RBAC System Tester for the review request"""
     
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -7620,7 +7620,7 @@ class RBACSystemTester:
 
 class ReviewRequestTester:
     """Test the specific APIs mentioned in the review request"""
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -8005,7 +8005,7 @@ class ReviewRequestTester:
 
 
 class ComprehensiveRBACTester:
-    def __init__(self, base_url="https://admin-portal-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
