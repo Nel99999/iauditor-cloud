@@ -41,6 +41,35 @@ db = client[os.environ['DB_NAME']]
 app = FastAPI(title="Operational Management Platform API")
 app.state.db = db
 
+
+@app.on_event("startup")
+async def startup_db_client():
+    """Initialize database connection and collections"""
+    try:
+        # MongoDB connection
+        mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+        client = AsyncIOMotorClient(mongo_url)
+        db = client.operations_db
+        
+        # Test connection
+        await db.command('ping')
+        print("✅ MongoDB connected successfully")
+        
+        # Store db instance
+        app.state.db = db
+        
+        # Initialize system roles and permissions
+        from role_routes import initialize_system_roles
+        await initialize_system_roles(db)
+        
+        # Start background scheduler
+        from scheduler import start_scheduler
+        start_scheduler(db)
+        
+    except Exception as e:
+        print(f"❌ MongoDB connection failed: {str(e)}")
+        raise
+
 # Create API router
 api_router = APIRouter(prefix="/api")
 
