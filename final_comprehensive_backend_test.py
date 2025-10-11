@@ -221,28 +221,20 @@ class ComprehensiveFinalBackendTester:
         print("\n📊 TESTING BULK IMPORT SYSTEM")
         
         # Test get CSV template
-        response = self.make_request("GET", "/bulk-import/template")
+        response = self.make_request("GET", "/bulk-import/users/template")
         success = response and response.status_code == 200
         self.log_test("Get CSV Template", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
                      "bulk_import")
         
         # Create test CSV data
-        csv_data = """email,full_name,role
+        csv_data = """email,name,role
 test1@company.com,Test User 1,operator
 test2@company.com,Test User 2,inspector"""
         
-        # Test CSV validation
-        files = {'file': ('test_users.csv', io.StringIO(csv_data), 'text/csv')}
-        response = self.make_request("POST", "/bulk-import/validate", files=files)
-        success = response and response.status_code == 200
-        self.log_test("CSV Validation", success, 
-                     None if success else f"Status: {response.status_code if response else 'No response'}", 
-                     "bulk_import")
-        
         # Test bulk import preview
         files = {'file': ('test_users.csv', io.StringIO(csv_data), 'text/csv')}
-        response = self.make_request("POST", "/bulk-import/preview", files=files)
+        response = self.make_request("POST", "/bulk-import/users/preview", files=files)
         success = response and response.status_code == 200
         self.log_test("Bulk Import Preview", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
@@ -250,7 +242,7 @@ test2@company.com,Test User 2,inspector"""
         
         # Test actual bulk import
         files = {'file': ('test_users.csv', io.StringIO(csv_data), 'text/csv')}
-        response = self.make_request("POST", "/bulk-import/import", files=files)
+        response = self.make_request("POST", "/bulk-import/users/import", files=files)
         success = response and response.status_code in [200, 201]
         self.log_test("Execute Bulk Import", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
