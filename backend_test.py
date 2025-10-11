@@ -1,52 +1,77 @@
+#!/usr/bin/env python3
+"""
+Comprehensive Phase 1 Backend API Testing
+Tests all newly implemented Phase 1 features including:
+- Multi-Factor Authentication (MFA) Flow
+- Password Security & Policies
+- Account Lockout Testing
+- Password Reset Flow
+- Email Verification
+- Subtasks System Testing
+- File Attachments Testing
+- Rate Limiting Testing
+- Security Headers Testing
+- Enhanced Login Flow Testing
+- Audit Logging Verification
+- Integration Testing
+"""
+
 import requests
-import sys
 import json
-from datetime import datetime
-import uuid
-import io
+import time
+import pyotp
 import os
+from datetime import datetime, timedelta
+import tempfile
+import io
 
-class AuthAPITester:
-    def __init__(self, base_url="https://workflowly.preview.emergentagent.com"):
-        self.base_url = base_url
-        self.api_url = f"{base_url}/api"
-        self.token = None
-        self.tests_run = 0
-        self.tests_passed = 0
-        self.test_results = []
+# Configuration
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://workflowly.preview.emergentagent.com')
+API_URL = f"{BASE_URL}/api"
 
-    def log_test(self, name, success, details=""):
-        """Log test result"""
-        self.tests_run += 1
-        if success:
-            self.tests_passed += 1
-        
-        result = {
-            "test": name,
-            "success": success,
-            "details": details,
-            "timestamp": datetime.now().isoformat()
+class Phase1BackendTester:
+    def __init__(self):
+        self.session = requests.Session()
+        self.test_user_email = "phase1.tester@security.com"
+        self.test_password = "SecurePass123!@#"
+        self.access_token = None
+        self.user_id = None
+        self.organization_id = None
+        self.mfa_secret = None
+        self.backup_codes = []
+        self.task_id = None
+        self.subtask_ids = []
+        self.file_ids = []
+        self.results = {
+            "total_tests": 0,
+            "passed": 0,
+            "failed": 0,
+            "errors": []
         }
-        self.test_results.append(result)
+    
+    def log_result(self, test_name, success, message="", response=None):
+        """Log test result"""
+        self.results["total_tests"] += 1
+        if success:
+            self.results["passed"] += 1
+            print(f"✅ {test_name}: {message}")
+        else:
+            self.results["failed"] += 1
+            error_msg = f"❌ {test_name}: {message}"
+            if response:
+                error_msg += f" (Status: {response.status_code}, Response: {response.text[:200]})"
+            print(error_msg)
+            self.results["errors"].append(error_msg)
+    
+    def make_request(self, method, endpoint, **kwargs):
+        """Make authenticated request"""
+        if self.access_token and 'headers' not in kwargs:
+            kwargs['headers'] = {'Authorization': f'Bearer {self.access_token}'}
+        elif self.access_token and 'headers' in kwargs:
+            kwargs['headers']['Authorization'] = f'Bearer {self.access_token}'
         
-        status = "✅ PASSED" if success else "❌ FAILED"
-        print(f"{status} - {name}")
-        if details:
-            print(f"   Details: {details}")
-
-    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
-        """Run a single API test"""
-        url = f"{self.api_url}/{endpoint}"
-        test_headers = {'Content-Type': 'application/json'}
-        
-        if headers:
-            test_headers.update(headers)
-        
-        if self.token:
-            test_headers['Authorization'] = f'Bearer {self.token}'
-
-        print(f"\n🔍 Testing {name}...")
-        print(f"   URL: {url}")
+        url = f"{API_URL}{endpoint}"
+        return self.session.request(method, url, **kwargs)
         
         try:
             if method == 'GET':
