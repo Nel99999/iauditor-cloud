@@ -124,8 +124,7 @@ class ComprehensiveFinalBackendTester:
         registration_data = {
             "email": self.test_user_email,
             "password": self.test_password,
-            "full_name": "Final Test User",
-            "create_organization": True,
+            "name": "Final Test User",
             "organization_name": "Final Test Enterprise"
         }
         
