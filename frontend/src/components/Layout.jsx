@@ -61,6 +61,19 @@ const Layout = ({ children }) => {
       .toUpperCase();
   };
 
+  // Global search keyboard shortcut (Cmd+K / Ctrl+K)
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const menuItems = [
     {
       section: 'Main',
