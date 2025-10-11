@@ -38,6 +38,8 @@ from search_routes import router as search_router
 from mention_routes import router as mention_router
 from notification_routes import router as notification_router
 from time_tracking_routes import router as time_tracking_router
+from analytics_routes import router as analytics_router
+from gdpr_routes import router as gdpr_router
 
 
 ROOT_DIR = Path(__file__).parent
