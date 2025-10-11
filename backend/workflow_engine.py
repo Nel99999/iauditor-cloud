@@ -169,6 +169,23 @@ class WorkflowEngine:
             
             logger.info(f"Workflow {workflow_id} rejected by {user_name}")
             
+            # Send rejection email to creator
+            if template.get("notify_on_complete", True):
+                creator = await self.db.users.find_one({"id": workflow["created_by"]}, {"email": 1})
+                if creator and creator.get("email"):
+                    try:
+                        self.email_service.send_workflow_rejected_email(
+                            to_email=creator["email"],
+                            workflow_name=workflow["template_name"],
+                            resource_type=workflow["resource_type"],
+                            resource_name=workflow["resource_name"],
+                            rejected_by=user_name,
+                            comments=comments or "No comments provided",
+                            frontend_url=self.frontend_url
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to send rejection email: {str(e)}")
+            
         elif action == "approve":
             # Check if this step requires all approvers
             approval_type = current_step.get("approval_type", "any")
