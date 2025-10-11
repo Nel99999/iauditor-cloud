@@ -293,6 +293,20 @@ async def approve_workflow_step(
             detail="Action must be 'approve', 'reject', or 'request_changes'"
         )
     
+    # Permission check: workflow.approve
+    has_permission = await check_user_permission(
+        db=db,
+        user_id=user["id"],
+        permission_code="workflow.approve",
+        organization_id=user["organization_id"]
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to approve workflows"
+        )
+    
     engine = WorkflowEngine(db)
     
     try:
