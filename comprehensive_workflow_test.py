@@ -598,6 +598,9 @@ class ComprehensiveWorkflowTester:
     def test_18_reject_workflow_verify_inspection_status_rejected(self):
         """Test 18: Reject workflow → verify inspection status = 'rejected'"""
         # Get the workflow for the second inspection
+        if not hasattr(self, 'second_inspection_id'):
+            return False
+            
         success1, response1 = self.run_test(
             "18a. Get Second Inspection Workflow",
             "GET",
