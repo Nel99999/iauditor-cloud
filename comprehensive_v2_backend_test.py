@@ -459,7 +459,7 @@ class ComprehensiveV2BackendTester:
             self.log_result("Enterprise", "Create group", False, "Failed to create group", response)
         
         # Test Bulk Import
-        response = self.make_request("GET", "/bulk-import/templates")
+        response = self.make_request("GET", "/bulk-import/users/template")
         if response.status_code == 200:
             self.log_result("Enterprise", "Get import templates", True, "Import templates retrieved")
         else:
