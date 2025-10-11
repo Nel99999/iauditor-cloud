@@ -157,6 +157,7 @@ api_router.include_router(webhook_router)
 api_router.include_router(search_router)
 api_router.include_router(mention_router)
 api_router.include_router(notification_router)
+api_router.include_router(time_tracking_router)
 
 app.include_router(api_router)
 
