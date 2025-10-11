@@ -66,6 +66,11 @@ class PrivacyPreferences(BaseModel):
     show_last_seen: Optional[bool] = None
 
 
+class SecurityPreferences(BaseModel):
+    two_factor_enabled: Optional[bool] = None
+    session_timeout: Optional[int] = None
+
+
 # Get current user profile
 @router.get("/me")
 async def get_my_profile(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
