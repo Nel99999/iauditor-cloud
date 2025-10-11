@@ -87,6 +87,12 @@ class ChecklistExecution(BaseModel):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    # Workflow integration fields
+    workflow_id: Optional[str] = None
+    workflow_status: Optional[str] = None  # pending, in_progress, approved, rejected, cancelled
+    workflow_template_id: Optional[str] = None
+    requires_approval: bool = False
 
 
 class ChecklistExecutionUpdate(BaseModel):
