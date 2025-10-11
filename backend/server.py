@@ -53,9 +53,7 @@ async def startup_db_client():
         # Store db instance
         app.state.db = db
         
-        # Initialize system roles and permissions
-        from role_routes import initialize_system_roles
-        await initialize_system_roles(db)
+        # Note: System roles initialized per organization during registration
         
         # Start background scheduler
         from scheduler import start_scheduler
