@@ -30,6 +30,7 @@ from advanced_workflow_routes import router as advanced_workflow_router
 from mfa_routes import router as mfa_router
 from security_routes import router as security_router
 from subtask_routes import router as subtask_router
+from attachment_routes import router as attachment_router
 
 
 ROOT_DIR = Path(__file__).parent
