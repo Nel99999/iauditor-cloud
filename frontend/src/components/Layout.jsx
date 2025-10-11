@@ -5,6 +5,7 @@ import { usePermissions } from '../hooks/usePermissions';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NotificationCenter from '@/components/NotificationCenter';
+import GlobalSearch from '@/components/GlobalSearch';
 import {
   DropdownMenu,
   DropdownMenuContent,
