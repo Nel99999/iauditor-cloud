@@ -40,6 +40,7 @@ from notification_routes import router as notification_router
 from time_tracking_routes import router as time_tracking_router
 from analytics_routes import router as analytics_router
 from gdpr_routes import router as gdpr_router
+from preferences_routes import router as preferences_router
 
 
 ROOT_DIR = Path(__file__).parent
