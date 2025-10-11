@@ -147,6 +147,7 @@ api_router.include_router(security_router)
 api_router.include_router(subtask_router)
 api_router.include_router(attachment_router)
 api_router.include_router(group_router)
+api_router.include_router(bulk_import_router)
 
 app.include_router(api_router)
 
