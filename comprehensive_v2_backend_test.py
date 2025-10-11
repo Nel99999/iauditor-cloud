@@ -212,7 +212,7 @@ class ComprehensiveV2BackendTester:
             "level": 4
         }
         
-        response = self.make_request("POST", "/organizations", json=org_data)
+        response = self.make_request("POST", "/organizations/units", json=org_data)
         if response.status_code in [200, 201]:
             org_unit = response.json()
             self.test_data["org_unit_id"] = org_unit.get("id")
