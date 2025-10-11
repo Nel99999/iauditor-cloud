@@ -292,6 +292,16 @@ function App() {
               }
             />
             <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AnalyticsDashboard />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/security/mfa"
               element={
                 <ProtectedRoute>
