@@ -92,25 +92,21 @@ class Phase1BackendTester:
             self.access_token = data.get("access_token")
             self.user_id = data.get("user", {}).get("id")
             self.organization_id = data.get("user", {}).get("organization_id")
-            self.log_result("User Registration", True, f"User created with ID: {self.user_id}")
-            return True
-        else:
-            # Try to login if user already exists
-            login_data = {
-                "email": self.test_user_email,
-                "password": self.test_password
-            }
-            response = self.session.post(f"{API_URL}/auth/login", json=login_data)
-            if response.status_code == 200:
-                data = response.json()
-                self.access_token = data.get("access_token")
-                self.user_id = data.get("user", {}).get("id")
-                self.organization_id = data.get("user", {}).get("organization_id")
-                self.log_result("User Login", True, f"Logged in with ID: {self.user_id}")
+            
+            # Check if MFA is required (from previous test runs)
+            if data.get("user", {}).get("mfa_required"):
+                self.log_result("User Registration", False, "User has MFA enabled, cannot proceed with fresh testing")
+                return False
+            
+            if self.access_token:
+                self.log_result("User Registration", True, f"User created with ID: {self.user_id}")
                 return True
             else:
-                self.log_result("User Setup", False, "Failed to register or login", response)
+                self.log_result("User Registration", False, "No access token received")
                 return False
+        else:
+            self.log_result("User Setup", False, "Failed to register user", response)
+            return False
     
     def test_mfa_flow(self):
         """Test Multi-Factor Authentication Flow"""
