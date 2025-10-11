@@ -294,6 +294,7 @@ class ComprehensiveSaveTest:
             "resource_type": "task",
             "steps": [
                 {
+                    "step_number": 1,
                     "step_name": "Approval Step",
                     "approver_role": "supervisor",
                     "approval_type": "any_one",
