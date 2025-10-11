@@ -344,6 +344,110 @@ async def approve_workflow_step(
     
     try:
         updated_workflow = await engine.process_approval_action(
+
+
+
+@router.post("/instances/bulk-approve")
+async def bulk_approve_workflows(
+    request: Request,
+    workflow_ids: List[str],
+    comments: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Bulk approve multiple workflows at once"""
+    user = await get_current_user(request, db)
+    
+    # Permission check
+    has_permission = await check_user_permission(
+        db=db,
+        user_id=user["id"],
+        permission_code="workflow.approve",
+        organization_id=user["organization_id"]
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to approve workflows"
+        )
+    
+    engine = WorkflowEngine(db)
+    results = []
+    
+    for workflow_id in workflow_ids:
+        try:
+            updated_workflow = await engine.process_approval_action(
+                workflow_id=workflow_id,
+                user_id=user["id"],
+                user_name=user["name"],
+                action="approve",
+                comments=comments
+            )
+            results.append({"workflow_id": workflow_id, "status": "success", "workflow": updated_workflow})
+        except Exception as e:
+            results.append({"workflow_id": workflow_id, "status": "error", "error": str(e)})
+    
+    success_count = len([r for r in results if r["status"] == "success"])
+    
+    return {
+        "message": f"Bulk approve completed: {success_count}/{len(workflow_ids)} successful",
+        "results": results
+    }
+
+
+@router.post("/instances/bulk-reject")
+async def bulk_reject_workflows(
+    request: Request,
+    workflow_ids: List[str],
+    comments: str,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Bulk reject multiple workflows at once"""
+    user = await get_current_user(request, db)
+    
+    # Permission check
+    has_permission = await check_user_permission(
+        db=db,
+        user_id=user["id"],
+        permission_code="workflow.approve",
+        organization_id=user["organization_id"]
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to reject workflows"
+        )
+    
+    if not comments:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Comments are required for bulk rejection"
+        )
+    
+    engine = WorkflowEngine(db)
+    results = []
+    
+    for workflow_id in workflow_ids:
+        try:
+            updated_workflow = await engine.process_approval_action(
+                workflow_id=workflow_id,
+                user_id=user["id"],
+                user_name=user["name"],
+                action="reject",
+                comments=comments
+            )
+            results.append({"workflow_id": workflow_id, "status": "success", "workflow": updated_workflow})
+        except Exception as e:
+            results.append({"workflow_id": workflow_id, "status": "error", "error": str(e)})
+    
+    success_count = len([r for r in results if r["status"] == "success"])
+    
+    return {
+        "message": f"Bulk reject completed: {success_count}/{len(workflow_ids)} successful",
+        "results": results
+    }
+
             workflow_id=workflow_id,
             user_id=user["id"],
             user_name=user["name"],
