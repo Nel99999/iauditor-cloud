@@ -736,6 +736,7 @@ test2@company.com,Test User 2,inspector"""
             "resource_type": "task",
             "steps": [
                 {
+                    "step_number": 1,
                     "name": "Initial Review",
                     "approver_role": "supervisor",
                     "approval_type": "any_one",
