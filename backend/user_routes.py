@@ -479,6 +479,52 @@ async def update_privacy_preferences(
     return {"message": "Privacy preferences updated successfully"}
 
 
+# =====================================
+# SECURITY PREFERENCES (must be before /{user_id} route)
+# =====================================
+
+@router.get("/security-prefs")
+async def get_security_preferences(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get user security preferences"""
+    current_user = await get_current_user(request, db)
+    
+    return {
+        "two_factor_enabled": current_user.get("mfa_enabled", False),
+        "session_timeout": current_user.get("session_timeout", 3600)
+    }
+
+
+@router.put("/security-prefs")
+async def update_security_preferences(
+    preferences: SecurityPreferences,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Update user security preferences"""
+    current_user = await get_current_user(request, db)
+    
+    update_data = {}
+    if preferences.two_factor_enabled is not None:
+        update_data["mfa_enabled"] = preferences.two_factor_enabled
+    if preferences.session_timeout is not None:
+        update_data["session_timeout"] = preferences.session_timeout
+    
+    if update_data:
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        result = await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": update_data}
+        )
+        
+        # Don't check matched_count - if get_current_user worked, user exists
+        # matched_count can be 0 if values didn't change
+    
+    return {"message": "Security preferences updated successfully"}
+
+
 # Update user
 @router.put("/{user_id}")
 async def update_user(
