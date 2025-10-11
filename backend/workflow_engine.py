@@ -341,9 +341,33 @@ class WorkflowEngine:
         
         elif context in ["team", "branch", "region"]:
             # Find users in same team/branch/region as resource
-            # For now, return all users with the role (can enhance with org unit filtering)
+            # Get resource's org unit
+            resource_unit_id = await self._get_resource_unit_id(workflow["resource_type"], resource_id)
+            
+            if resource_unit_id:
+                # Get org unit and find approvers in same context
+                org_unit = await self.db.org_units.find_one({"id": resource_unit_id})
+                
+                if org_unit and context == "branch":
+                    # Find users assigned to this specific unit
+                    query["assigned_unit_ids"] = resource_unit_id
+                elif org_unit and context == "region":
+                    # Find users in same parent unit (region)
+                    parent_id = org_unit.get("parent_id")
+                    if parent_id:
+                        # Find all units under this parent
+                        child_units = await self.db.org_units.find({"parent_id": parent_id}, {"id": 1}).to_list(100)
+                        child_unit_ids = [u["id"] for u in child_units]
+                        query["assigned_unit_ids"] = {"$in": child_unit_ids}
+            
             users = await self.db.users.find(query, {"id": 1}).to_list(100)
-            base_approvers = [u["id"] for u in users]
+            base_approvers = [u["id"] for u in users] if users else []
+            
+            # Fallback to all users with role if no context match
+            if not base_approvers:
+                del query["assigned_unit_ids"] if "assigned_unit_ids" in query else None
+                users = await self.db.users.find(query, {"id": 1}).to_list(100)
+                base_approvers = [u["id"] for u in users]
         
         else:  # organization
             # All users with this role in organization
