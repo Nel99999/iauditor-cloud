@@ -91,8 +91,8 @@ const AnalyticsDashboard = () => {
       }
 
       // Format user activity
-      if (activityRes.data.users) {
-        setUserActivity(activityRes.data.users.slice(0, 5));
+      if (activityRes.data.most_active_users) {
+        setUserActivity(activityRes.data.most_active_users.slice(0, 5));
       }
 
     } catch (err) {
