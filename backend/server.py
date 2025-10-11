@@ -154,6 +154,8 @@ api_router.include_router(group_router)
 api_router.include_router(bulk_import_router)
 api_router.include_router(webhook_router)
 api_router.include_router(search_router)
+api_router.include_router(mention_router)
+api_router.include_router(notification_router)
 
 app.include_router(api_router)
 
