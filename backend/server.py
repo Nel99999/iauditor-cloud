@@ -35,6 +35,8 @@ from group_routes import router as group_router
 from bulk_import_routes import router as bulk_import_router
 from webhook_routes import router as webhook_router
 from search_routes import router as search_router
+from mention_routes import router as mention_router
+from notification_routes import router as notification_router
 
 
 ROOT_DIR = Path(__file__).parent
