@@ -413,17 +413,21 @@ class Phase4BackendTester:
             del self.session.headers["Authorization"]
         
         endpoints_to_test = [
-            "/analytics/overview",
-            "/analytics/tasks/trends",
-            "/gdpr/data-export",
-            "/gdpr/consent-status"
+            ("/analytics/overview", "GET"),
+            ("/analytics/tasks/trends", "GET"),
+            ("/gdpr/data-export", "POST"),  # This is a POST endpoint
+            ("/gdpr/consent-status", "GET")
         ]
         
         unauthorized_count = 0
         
-        for endpoint in endpoints_to_test:
+        for endpoint, method in endpoints_to_test:
             try:
-                response = self.session.get(f"{API_BASE}{endpoint}")
+                if method == "GET":
+                    response = self.session.get(f"{API_BASE}{endpoint}")
+                else:
+                    response = self.session.post(f"{API_BASE}{endpoint}")
+                    
                 if response.status_code == 401:
                     unauthorized_count += 1
                     
