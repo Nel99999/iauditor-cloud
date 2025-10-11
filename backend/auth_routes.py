@@ -99,10 +99,52 @@ async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_d
             detail="Invalid email or password",
         )
     
+    # Check if account is locked
+    if user.get("account_locked_until"):
+        locked_until = user["account_locked_until"]
+        if isinstance(locked_until, str):
+            locked_until = datetime.fromisoformat(locked_until)
+        
+        if locked_until > datetime.now(timezone.utc):
+            minutes_remaining = int((locked_until - datetime.now(timezone.utc)).total_seconds() / 60)
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Account is locked. Try again in {minutes_remaining} minutes.",
+            )
+        else:
+            # Unlock account if lock period expired
+            await db.users.update_one(
+                {"id": user["id"]},
+                {"$set": {"account_locked_until": None, "failed_login_attempts": 0}}
+            )
+            user["account_locked_until"] = None
+            user["failed_login_attempts"] = 0
+    
     # Verify password
     if not user.get("password_hash") or not verify_password(
         credentials.password, user["password_hash"]
     ):
+        # Increment failed login attempts
+        failed_attempts = user.get("failed_login_attempts", 0) + 1
+        update_data = {"failed_login_attempts": failed_attempts}
+        
+        # Lock account after max attempts
+        MAX_LOGIN_ATTEMPTS = 5
+        LOCKOUT_DURATION_MINUTES = 30
+        
+        if failed_attempts >= MAX_LOGIN_ATTEMPTS:
+            locked_until = datetime.now(timezone.utc) + timedelta(minutes=LOCKOUT_DURATION_MINUTES)
+            update_data["account_locked_until"] = locked_until.isoformat()
+            
+            await db.users.update_one({"id": user["id"]}, {"$set": update_data})
+            
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Account locked due to too many failed attempts. Try again in {LOCKOUT_DURATION_MINUTES} minutes.",
+            )
+        
+        await db.users.update_one({"id": user["id"]}, {"$set": update_data})
+        
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
@@ -115,10 +157,21 @@ async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_d
             detail="Account is disabled",
         )
     
-    # Update last login timestamp
+    # If MFA is enabled, return special response indicating MFA required
+    if user.get("mfa_enabled"):
+        return Token(
+            access_token="",  # Don't issue token yet
+            user={"id": user["id"], "email": user["email"], "mfa_required": True}
+        )
+    
+    # Reset failed login attempts on successful login
     await db.users.update_one(
         {"id": user["id"]},
-        {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+        {"$set": {
+            "last_login": datetime.now(timezone.utc).isoformat(),
+            "failed_login_attempts": 0,
+            "account_locked_until": None
+        }}
     )
     
     # Create access token
