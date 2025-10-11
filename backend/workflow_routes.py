@@ -128,7 +128,16 @@ async def get_workflow_template(
     
     template = await db.workflow_templates.find_one(
         {"id": template_id, "organization_id": user["organization_id"]},
-
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Workflow template not found"
+        )
+    
+    return template
 
 
 @router.post("/templates/{template_id}/assign-to-resource")
