@@ -56,7 +56,11 @@ def test_phase3_apis():
     # Get existing task
     tasks_response = requests.get(f"{BASE_URL}/tasks", headers=headers1)
     if tasks_response.status_code == 200:
-        tasks = tasks_response.json().get("tasks", [])
+        tasks_data = tasks_response.json()
+        if isinstance(tasks_data, list):
+            tasks = tasks_data
+        else:
+            tasks = tasks_data.get("tasks", [])
         if tasks:
             task_id = tasks[0]["id"]
             print(f"✅ Using existing task: {task_id}")
