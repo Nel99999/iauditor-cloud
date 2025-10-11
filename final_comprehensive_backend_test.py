@@ -538,6 +538,10 @@ test2@company.com,Test User 2,inspector"""
         # Test time tracking analytics
         response = self.make_request("GET", "/analytics/time-tracking/trends")
         success = response and response.status_code == 200
+        if success:
+            # Verify response has expected structure
+            data = response.json()
+            success = "trends" in data or "period" in data
         self.log_test("Time Tracking Trends Analytics", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
                      "analytics")
