@@ -151,7 +151,7 @@ class ComprehensiveSaveTest:
             unit_id = response.json().get("id")
             self.log("Organization", "Create Unit", True, f"Unit ID: {unit_id}")
         else:
-            self.log("Organization", "Create Unit", False, f"Status: {response.status_code}")
+            self.log("Organization", "Create Unit", False, f"Status: {response.status_code}", response=response)
         
         # Update org unit if created
         if unit_id:
