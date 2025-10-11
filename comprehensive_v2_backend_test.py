@@ -409,19 +409,29 @@ class ComprehensiveV2BackendTester:
         
         # Test Context Permissions
         if self.organization_id:
-            context_permission_data = {
-                "user_id": self.user_id,
-                "permission": "task.approve",
-                "context_type": "organization",
-                "context_id": self.organization_id,
-                "granted_by": self.user_id
-            }
-            
-            response = self.make_request("POST", "/context-permissions", json=context_permission_data)
-            if response.status_code in [200, 201]:
-                self.log_result("Workflow", "Create context permission", True, "Context permission created")
+            # First, get a valid permission ID
+            perm_response = self.make_request("GET", "/permissions")
+            if perm_response.status_code == 200:
+                permissions = perm_response.json()
+                if permissions and len(permissions) > 0:
+                    permission_id = permissions[0].get("id")
+                    
+                    context_permission_data = {
+                        "user_id": self.user_id,
+                        "permission_id": permission_id,
+                        "context_type": "organization",
+                        "context_id": self.organization_id
+                    }
+                    
+                    response = self.make_request("POST", "/context-permissions", json=context_permission_data)
+                    if response.status_code in [200, 201]:
+                        self.log_result("Workflow", "Create context permission", True, "Context permission created")
+                    else:
+                        self.log_result("Workflow", "Create context permission", False, "Failed to create permission", response)
+                else:
+                    self.log_result("Workflow", "Create context permission", False, "No permissions available")
             else:
-                self.log_result("Workflow", "Create context permission", False, "Failed to create permission", response)
+                self.log_result("Workflow", "Create context permission", False, "Failed to get permissions")
         
         # Test Delegations
         delegation_data = {
