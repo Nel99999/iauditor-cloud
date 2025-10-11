@@ -490,10 +490,12 @@ class ComprehensiveV2BackendTester:
             self.log_result("Enterprise", "Global search", False, "Search failed", response)
         
         # Test Mentions
-        response = self.make_request("GET", "/mentions")
+        response = self.make_request("GET", "/mentions/me")
         if response.status_code == 200:
-            mentions = response.json()
-            self.log_result("Enterprise", "Get mentions", True, f"Found {len(mentions)} mentions")
+            data = response.json()
+            mentions = data.get("mentions", []) if isinstance(data, dict) else data
+            count = len(mentions) if isinstance(mentions, list) else data.get("total", 0)
+            self.log_result("Enterprise", "Get mentions", True, f"Found {count} mentions")
         else:
             self.log_result("Enterprise", "Get mentions", False, "Failed to get mentions", response)
         
