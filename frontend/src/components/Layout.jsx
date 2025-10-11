@@ -158,6 +158,14 @@ const Layout = ({ children }) => {
           active: true,
           description: 'Compliance & logs',
         },
+        {
+          name: 'Analytics',
+          icon: Activity,
+          path: '/analytics',
+          badge: 'NEW',
+          active: true,
+          description: 'Charts & insights',
+        },
       ],
     },
     {
