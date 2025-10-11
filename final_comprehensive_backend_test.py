@@ -98,22 +98,22 @@ class ComprehensiveFinalBackendTester:
             
         try:
             if method.upper() == "GET":
-                response = self.session.get(url, params=params, headers=headers)
+                response = self.session.get(url, params=params, headers=headers, timeout=10)
             elif method.upper() == "POST":
                 if files:
-                    response = self.session.post(url, data=data, files=files, headers=headers)
+                    response = self.session.post(url, data=data, files=files, headers=headers, timeout=10)
                 else:
-                    response = self.session.post(url, json=data, headers=headers)
+                    response = self.session.post(url, json=data, headers=headers, timeout=10)
             elif method.upper() == "PUT":
-                response = self.session.put(url, json=data, headers=headers)
+                response = self.session.put(url, json=data, headers=headers, timeout=10)
             elif method.upper() == "DELETE":
-                response = self.session.delete(url, headers=headers)
+                response = self.session.delete(url, headers=headers, timeout=10)
             else:
                 raise ValueError(f"Unsupported method: {method}")
                 
             return response
         except Exception as e:
-            print(f"Request failed: {str(e)}")
+            print(f"Request failed for {method} {url}: {str(e)}")
             return None
 
     def test_authentication_system(self):
