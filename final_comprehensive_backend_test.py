@@ -397,11 +397,11 @@ test2@company.com,Test User 2,inspector"""
         
         # Test create mention
         mention_data = {
-            "mentioned_user_id": self.user_id,
+            "mentioned_user_ids": [self.user_id],
             "resource_type": "task",
             "resource_id": "test-task-id",
-            "comment": "Testing @mention functionality",
-            "context": "Final comprehensive testing"
+            "comment_id": str(uuid.uuid4()),
+            "comment_text": "Testing @mention functionality"
         }
         
         response = self.make_request("POST", "/mentions", mention_data)
