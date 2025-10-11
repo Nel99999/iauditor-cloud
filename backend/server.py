@@ -145,6 +145,7 @@ api_router.include_router(mfa_router)
 api_router.include_router(security_router)
 api_router.include_router(subtask_router)
 api_router.include_router(attachment_router)
+api_router.include_router(group_router)
 
 app.include_router(api_router)
 
