@@ -130,6 +130,7 @@ async def get_status_checks():
 
 # Import settings router
 from settings_routes import router as settings_router
+from preferences_routes import router as preferences_router
 
 # Include all routers
 api_router.include_router(auth_router)
