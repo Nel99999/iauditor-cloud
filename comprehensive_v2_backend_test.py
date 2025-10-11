@@ -435,11 +435,12 @@ class ComprehensiveV2BackendTester:
         
         # Test Delegations
         delegation_data = {
-            "delegate_to": self.user_id,
-            "workflow_type": "approval",
-            "resource_type": "task",
-            "start_date": datetime.now().isoformat(),
-            "end_date": (datetime.now() + timedelta(days=7)).isoformat()
+            "delegate_id": self.user_id,
+            "workflow_types": ["approval"],
+            "resource_types": ["task"],
+            "valid_from": datetime.now().isoformat(),
+            "valid_until": (datetime.now() + timedelta(days=7)).isoformat(),
+            "reason": "Testing delegation"
         }
         
         response = self.make_request("POST", "/context-permissions/delegations", json=delegation_data)
