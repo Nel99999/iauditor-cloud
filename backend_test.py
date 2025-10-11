@@ -449,7 +449,7 @@ class Phase1BackendTester:
         }
         
         response = self.make_request("POST", f"/subtasks/{self.task_id}", json=subtask_data)
-        if response.status_code == 201:
+        if response.status_code == 200:  # Subtask endpoint returns 200, not 201
             subtask2_id = response.json().get("id")
             self.subtask_ids.append(subtask2_id)
             self.log_result("Create Subtask 2", True, "Frontend subtask created")
