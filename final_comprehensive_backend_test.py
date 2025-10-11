@@ -549,7 +549,7 @@ test2@company.com,Test User 2,inspector"""
                      "analytics")
         
         # Test user activity analytics
-        response = self.make_request("GET", "/analytics/users/activity")
+        response = self.make_request("GET", "/analytics/user-activity")
         success = response and response.status_code == 200
         self.log_test("User Activity Analytics", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
