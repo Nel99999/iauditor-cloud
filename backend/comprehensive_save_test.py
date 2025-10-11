@@ -202,7 +202,7 @@ class ComprehensiveSaveTest:
             "name": "Test Inspection",
             "description": "Test description",
             "questions": [
-                {"question": "Test question?", "type": "yes_no", "required": True}
+                {"question_text": "Test question?", "question_type": "yes_no", "required": True}
             ]
         }
         response = self.session.post(f"{API_BASE}/inspections/templates", json=template_data)
