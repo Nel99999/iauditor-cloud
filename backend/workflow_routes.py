@@ -20,6 +20,39 @@ def get_db(request: Request) -> AsyncIOMotorDatabase:
     return request.app.state.db
 
 
+async def check_user_permission(
+    db: AsyncIOMotorDatabase,
+    user_id: str,
+    permission_code: str,
+    organization_id: str
+) -> bool:
+    """Check if user has specific permission"""
+    # Get permission
+    permission = await db.permissions.find_one({"code": permission_code})
+    if not permission:
+        return False
+    
+    # Check user override
+    user_perm = await db.user_permissions.find_one({
+        "user_id": user_id,
+        "permission_id": permission["id"]
+    })
+    if user_perm:
+        return user_perm.get("granted", False)
+    
+    # Check role permission
+    user_doc = await db.users.find_one({"id": user_id}, {"role_id": 1})
+    if not user_doc:
+        return False
+    
+    role_perm = await db.role_permissions.find_one({
+        "role_id": user_doc["role_id"],
+        "permission_id": permission["id"]
+    })
+    
+    return role_perm.get("granted", False) if role_perm else False
+
+
 # =====================================
 # WORKFLOW TEMPLATE ENDPOINTS
 # =====================================
