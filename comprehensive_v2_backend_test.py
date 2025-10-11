@@ -511,8 +511,9 @@ class ComprehensiveV2BackendTester:
         if self.test_data["task_id"]:
             time_entry_data = {
                 "task_id": self.test_data["task_id"],
-                "duration": 3600,  # 1 hour
-                "description": "Testing time tracking"
+                "duration_minutes": 60,  # 1 hour
+                "description": "Testing time tracking",
+                "billable": True
             }
             
             response = self.make_request("POST", "/time-tracking/entries", json=time_entry_data)
