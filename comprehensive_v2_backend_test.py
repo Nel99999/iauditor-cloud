@@ -591,13 +591,12 @@ class ComprehensiveV2BackendTester:
             finally:
                 os.unlink(temp_file_path)
         
-        # Test Advanced Workflows
-        response = self.make_request("GET", "/advanced-workflows/templates")
+        # Test Advanced Workflows - SLA at-risk
+        response = self.make_request("GET", "/advanced-workflows/sla/at-risk")
         if response.status_code == 200:
-            templates = response.json()
-            self.log_result("Advanced", "Get advanced workflow templates", True, f"Found {len(templates)} templates")
+            self.log_result("Advanced", "Get advanced workflow SLA at-risk", True, "SLA data retrieved")
         else:
-            self.log_result("Advanced", "Get advanced workflow templates", False, "Failed to get templates", response)
+            self.log_result("Advanced", "Get advanced workflow SLA at-risk", False, "Failed to get SLA data", response)
     
     def test_analytics_and_gdpr(self):
         """Test Analytics & GDPR (MEDIUM PRIORITY)"""
