@@ -82,6 +82,12 @@ app.add_middleware(
 from security_middleware import SecurityHeadersMiddleware
 app.add_middleware(SecurityHeadersMiddleware)
 
+# Add rate limiting
+from rate_limiter import limiter, get_rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, get_rate_limit_exceeded_handler())
+
 
 class StatusCheck(BaseModel):
     model_config = ConfigDict(extra="ignore")
