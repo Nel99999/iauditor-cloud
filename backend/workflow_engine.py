@@ -507,6 +507,29 @@ class WorkflowEngine:
         """
         resource_type = workflow["resource_type"]
         resource_id = workflow["resource_id"]
+
+    
+    async def _get_resource_unit_id(
+        self,
+        resource_type: str,
+        resource_id: str
+    ) -> Optional[str]:
+        """Get the organizational unit ID for a resource"""
+        collection_map = {
+            "inspection": "inspection_executions",
+            "task": "tasks",
+            "checklist": "checklist_executions"
+        }
+        
+        collection_name = collection_map.get(resource_type)
+        if not collection_name:
+            return None
+        
+        collection = getattr(self.db, collection_name)
+        resource = await collection.find_one({"id": resource_id}, {"unit_id": 1})
+        
+        return resource.get("unit_id") if resource else None
+
         
         # Map workflow status to resource status
         status_map = {
