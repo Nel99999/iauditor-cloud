@@ -127,8 +127,9 @@ api_router.include_router(dashboard_router)
 api_router.include_router(workflow_router)
 api_router.include_router(context_permission_router)
 api_router.include_router(audit_router)
-api_router.include_router(advanced_workflow_routes)
+api_router.include_router(advanced_workflow_router)
 api_router.include_router(mfa_router)
+api_router.include_router(security_router)
 
 app.include_router(api_router)
 
