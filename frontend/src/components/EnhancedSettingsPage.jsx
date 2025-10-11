@@ -290,6 +290,10 @@ const EnhancedSettingsPage = () => {
             <Bell className="h-4 w-4 mr-2" />
             Notifications
           </TabsTrigger>
+          <TabsTrigger value="gdpr">
+            <Shield className="h-4 w-4 mr-2" />
+            GDPR & Privacy
+          </TabsTrigger>
           {(isAdmin() || isDeveloper()) && (
             <TabsTrigger value="api">
               <Key className="h-4 w-4 mr-2" />
