@@ -296,6 +296,36 @@ function App() {
               }
             />
             <Route
+              path="/groups"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <GroupsManagementPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bulk-import"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <BulkImportPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/webhooks"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <WebhooksPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/security/mfa"
               element={
                 <ProtectedRoute>
