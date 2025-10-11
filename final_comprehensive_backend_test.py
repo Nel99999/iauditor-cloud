@@ -580,7 +580,7 @@ test2@company.com,Test User 2,inspector"""
             "third_party": True
         }
         
-        response = self.make_request("POST", "/gdpr/consents", consent_data)
+        response = self.make_request("PUT", "/gdpr/consent", consent_data)
         success = response and response.status_code == 200
         self.log_test("Update GDPR Consents", success, 
                      None if success else f"Status: {response.status_code if response else 'No response'}", 
