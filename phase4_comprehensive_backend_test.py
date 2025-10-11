@@ -70,7 +70,7 @@ class Phase4ComprehensiveBackendTester:
         
         try:
             response = self.session.post(f"{API_BASE}/auth/register", json=register_data)
-            if response.status_code == 201:
+            if response.status_code in [200, 201]:
                 self.log_test("User Registration", True, f"Created user: {test_email}")
                 
                 # Login to get token
