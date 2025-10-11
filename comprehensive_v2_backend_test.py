@@ -208,8 +208,8 @@ class ComprehensiveV2BackendTester:
         # Test Organizations
         org_data = {
             "name": "Test Department",
-            "type": "department",
-            "level": 4
+            "type": "company",
+            "level": 1  # Root unit must be level 1
         }
         
         response = self.make_request("POST", "/organizations/units", json=org_data)
