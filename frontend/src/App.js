@@ -291,6 +291,16 @@ function App() {
               }
             />
             <Route
+              path="/security/mfa"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <MFASetupPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/settings"
               element={
                 <ProtectedRoute>
