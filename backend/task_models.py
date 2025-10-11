@@ -37,6 +37,11 @@ class Task(BaseModel):
     # Dependencies
     depends_on: List[str] = []  # List of task IDs this task depends on
     blocked_by: List[str] = []  # List of task IDs blocking this task
+    
+    # Time tracking
+    has_time_entries: bool = False
+    total_time_minutes: int = 0
+    estimated_time_minutes: Optional[int] = None
 
 
 class TaskCreate(BaseModel):
