@@ -221,16 +221,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/analytics"
-              element={
-                <ProtectedRoute>
-                  <Layout>
-                    <ComingSoon feature="Analytics" />
-                  </Layout>
-                </ProtectedRoute>
-              }
-            />
+            {/* Removed duplicate /analytics route - using AnalyticsDashboard below */}
             <Route
               path="/documents"
               element={
