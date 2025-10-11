@@ -51,6 +51,8 @@ class ChecklistTemplateCreate(BaseModel):
     frequency: str = "daily"
     scheduled_time: Optional[str] = None
     assigned_to: Optional[str] = None
+    requires_approval: bool = False
+    workflow_template_id: Optional[str] = None
 
 
 class ChecklistTemplateUpdate(BaseModel):
@@ -63,6 +65,8 @@ class ChecklistTemplateUpdate(BaseModel):
     scheduled_time: Optional[str] = None
     assigned_to: Optional[str] = None
     is_active: Optional[bool] = None
+    requires_approval: Optional[bool] = None
+    workflow_template_id: Optional[str] = None
 
 
 class ChecklistItemCompletion(BaseModel):
