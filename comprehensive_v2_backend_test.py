@@ -366,6 +366,7 @@ class ComprehensiveV2BackendTester:
             "resource_type": "task",
             "steps": [
                 {
+                    "step_number": 1,
                     "name": "Initial Review",
                     "approver_role": "supervisor",
                     "approval_type": "any_one",
