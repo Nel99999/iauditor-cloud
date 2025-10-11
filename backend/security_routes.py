@@ -164,7 +164,8 @@ async def change_password(
     user = await get_current_user(request, db)
     
     # Verify current password
-    if not pwd_context.verify(password_data.current_password, user.get("password", "")):
+    password_hash = user.get("password_hash") or user.get("password", "")
+    if not pwd_context.verify(password_data.current_password, password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Current password is incorrect"
