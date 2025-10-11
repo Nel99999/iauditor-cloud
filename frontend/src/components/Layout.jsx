@@ -35,6 +35,7 @@ import {
   FolderOpen,
   Bell,
   Lock,
+  Activity,
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
