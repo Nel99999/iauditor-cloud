@@ -27,7 +27,7 @@ class ComprehensiveSaveTest:
         self.session = requests.Session()
         self.results = {"total": 0, "passed": 0, "failed": 0, "tests": []}
         
-    def log(self, category, operation, success, details=""):
+    def log(self, category, operation, success, details="", response=None):
         self.results["total"] += 1
         if success:
             self.results["passed"] += 1
@@ -35,6 +35,8 @@ class ComprehensiveSaveTest:
         else:
             self.results["failed"] += 1
             status = "❌ FAIL"
+            if response and hasattr(response, 'text'):
+                details += f" | Error: {response.text[:200]}"
         
         test = f"{status} | {category} | {operation}"
         if details:
