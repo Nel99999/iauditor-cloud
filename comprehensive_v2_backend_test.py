@@ -603,9 +603,9 @@ class ComprehensiveV2BackendTester:
         # Test Analytics
         analytics_endpoints = [
             "/analytics/overview",
-            "/analytics/tasks",
-            "/analytics/users",
-            "/analytics/performance"
+            "/analytics/tasks/trends",
+            "/analytics/user-activity",
+            "/analytics/workflows/completion-time"
         ]
         
         for endpoint in analytics_endpoints:
