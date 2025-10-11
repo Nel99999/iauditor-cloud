@@ -756,6 +756,207 @@ const EnhancedSettingsPage = () => {
           </TabsContent>
         )}
 
+        {/* GDPR & Privacy Tab */}
+        <TabsContent value="gdpr">
+          <div className="space-y-6">
+            {/* Data Export */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Export</CardTitle>
+                <CardDescription>Download all your personal data</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Request a complete export of all your personal data stored in the system. This includes your profile, tasks, time entries, audit logs, and more.
+                </p>
+                
+                <Button 
+                  onClick={async () => {
+                    try {
+                      setExportingData(true);
+                      const response = await axios.get(`${API}/gdpr/export-data`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                      });
+                      
+                      // Create and download JSON file
+                      const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `my-data-export-${new Date().toISOString().split('T')[0]}.json`;
+                      a.click();
+                      
+                      setMessage({ type: 'success', text: 'Data exported successfully!' });
+                    } catch (err) {
+                      setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to export data' });
+                    } finally {
+                      setExportingData(false);
+                    }
+                  }}
+                  disabled={exportingData}
+                >
+                  {exportingData ? 'Exporting...' : 'Export My Data'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Consent Management */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Consent Management</CardTitle>
+                <CardDescription>Manage your data processing consents</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Marketing Communications</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Receive product updates and promotional emails
+                      </p>
+                    </div>
+                    <Switch
+                      checked={gdprConsents.marketing}
+                      onCheckedChange={async (checked) => {
+                        try {
+                          await axios.post(`${API}/gdpr/consents`, {
+                            marketing: checked,
+                            analytics: gdprConsents.analytics,
+                            third_party: gdprConsents.third_party
+                          }, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                          });
+                          setGdprConsents({ ...gdprConsents, marketing: checked });
+                          setMessage({ type: 'success', text: 'Consent updated' });
+                        } catch (err) {
+                          setMessage({ type: 'error', text: 'Failed to update consent' });
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Analytics & Performance</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Help us improve by sharing usage analytics
+                      </p>
+                    </div>
+                    <Switch
+                      checked={gdprConsents.analytics}
+                      onCheckedChange={async (checked) => {
+                        try {
+                          await axios.post(`${API}/gdpr/consents`, {
+                            marketing: gdprConsents.marketing,
+                            analytics: checked,
+                            third_party: gdprConsents.third_party
+                          }, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                          });
+                          setGdprConsents({ ...gdprConsents, analytics: checked });
+                          setMessage({ type: 'success', text: 'Consent updated' });
+                        } catch (err) {
+                          setMessage({ type: 'error', text: 'Failed to update consent' });
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Third-Party Integrations</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Share data with integrated third-party services
+                      </p>
+                    </div>
+                    <Switch
+                      checked={gdprConsents.third_party}
+                      onCheckedChange={async (checked) => {
+                        try {
+                          await axios.post(`${API}/gdpr/consents`, {
+                            marketing: gdprConsents.marketing,
+                            analytics: gdprConsents.analytics,
+                            third_party: checked
+                          }, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                          });
+                          setGdprConsents({ ...gdprConsents, third_party: checked });
+                          setMessage({ type: 'success', text: 'Consent updated' });
+                        } catch (err) {
+                          setMessage({ type: 'error', text: 'Failed to update consent' });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Delete Account */}
+            <Card className="border-red-200 dark:border-red-800">
+              <CardHeader>
+                <CardTitle className="text-red-600 dark:text-red-400">Delete Account</CardTitle>
+                <CardDescription>Permanently delete your account and all associated data</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Alert className="bg-red-50 border-red-200">
+                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <AlertDescription className="text-red-800">
+                    <strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted, except for audit logs which are retained for compliance purposes.
+                  </AlertDescription>
+                </Alert>
+                
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    When you delete your account:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>Your profile and personal data will be deleted</li>
+                    <li>Your tasks and time entries will be anonymized</li>
+                    <li>You will lose access to all organization resources</li>
+                    <li>Audit logs will be retained (anonymized) for compliance</li>
+                  </ul>
+                </div>
+                
+                <Button 
+                  variant="destructive"
+                  onClick={async () => {
+                    if (!window.confirm('Are you absolutely sure? This action cannot be undone. Type DELETE to confirm.')) {
+                      return;
+                    }
+                    
+                    const confirmation = prompt('Type DELETE to confirm account deletion:');
+                    if (confirmation !== 'DELETE') {
+                      alert('Account deletion cancelled.');
+                      return;
+                    }
+                    
+                    try {
+                      setDeletingAccount(true);
+                      await axios.delete(`${API}/gdpr/delete-account`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                      });
+                      
+                      alert('Your account has been deleted. You will now be logged out.');
+                      // Logout user
+                      localStorage.removeItem('token');
+                      localStorage.removeItem('access_token');
+                      window.location.href = '/login';
+                    } catch (err) {
+                      setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to delete account' });
+                    } finally {
+                      setDeletingAccount(false);
+                    }
+                  }}
+                  disabled={deletingAccount}
+                >
+                  {deletingAccount ? 'Deleting...' : 'Delete My Account'}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
         {/* Organization Tab */}
         {(isAdmin() || isDeveloper()) && (
           <TabsContent value="organization">
