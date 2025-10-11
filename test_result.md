@@ -762,11 +762,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 4 Analytics Dashboard (/analytics)"
-    - "Phase 4 Notifications Center (Bell Icon Integration)"
-    - "Phase 4 Global Search Modal (Cmd+K Integration)"
+    - "Final 6 Components Completion - Groups, Bulk Import, Webhooks, Time Tracking, GDPR, Mentions"
+    - "Comprehensive Full-Stack Testing for 99% Quality"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
   - task: "Phase 4 Advanced Workflow Features Backend API"
