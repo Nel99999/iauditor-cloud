@@ -7,7 +7,7 @@ import io
 import os
 
 class AdvancedWorkflowAPITester:
-    def __init__(self, base_url="https://enterprise-ops-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://opsman-v2.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
