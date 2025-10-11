@@ -398,24 +398,39 @@ test2@company.com,Test User 2,inspector"""
         """Test @Mentions functionality"""
         print("\n💬 TESTING @MENTIONS SYSTEM")
         
-        # Test create mention
-        mention_data = {
-            "mentioned_user_ids": [self.user_id],
-            "resource_type": "task",
-            "resource_id": "test-task-id",
-            "comment_id": str(uuid.uuid4()),
-            "comment_text": "Testing @mention functionality"
+        # Test create mention (need to create a task first)
+        task_data = {
+            "title": "Mention Test Task",
+            "description": "Task for testing mentions",
+            "priority": "medium",
+            "status": "todo"
         }
         
-        response = self.make_request("POST", "/mentions", mention_data)
-        success = response and response.status_code in [200, 201, 500]  # 500 due to ObjectId serialization but data created
-        if success and response.status_code != 500:
-            data = response.json()
-            self.mention_id = data.get("id")
+        task_response = self.make_request("POST", "/tasks", task_data)
+        mention_task_id = None
+        if task_response and task_response.status_code in [200, 201]:
+            mention_task_id = task_response.json().get("id")
         
-        self.log_test("Create Mention", success, 
-                     None if success else f"Status: {response.status_code if response else 'No response'}", 
-                     "mentions")
+        if mention_task_id:
+            mention_data = {
+                "mentioned_user_ids": [self.user_id],
+                "resource_type": "task",
+                "resource_id": mention_task_id,
+                "comment_id": str(uuid.uuid4()),
+                "comment_text": "Testing @mention functionality"
+            }
+            
+            response = self.make_request("POST", "/mentions", mention_data)
+            success = response and response.status_code in [200, 201, 500]  # 500 due to ObjectId serialization but data created
+            if success and response.status_code != 500:
+                data = response.json()
+                self.mention_id = data.get("id")
+            
+            self.log_test("Create Mention", success, 
+                         None if success else f"Status: {response.status_code if response else 'No response'}", 
+                         "mentions")
+        else:
+            self.log_test("Create Mention", False, "Could not create task for mention", "mentions")
         
         # Test list my mentions
         response = self.make_request("GET", "/mentions/me")
