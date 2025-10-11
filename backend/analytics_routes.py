@@ -431,7 +431,14 @@ async def get_user_activity(
     return {
         "period": period,
         "most_active_users": [
-            {"user_id": user_id, "name": data["name"], "actions": data["actions"]}
+            {
+                "user_id": user_id, 
+                "user_name": data["name"], 
+                "actions": data["actions"],
+                "tasks_completed": 0,  # TODO: Calculate from tasks collection
+                "hours_logged": 0.0,   # TODO: Calculate from time_entries collection
+                "last_activity": None  # TODO: Get from audit logs
+            }
             for user_id, data in sorted_activity
         ]
     }
