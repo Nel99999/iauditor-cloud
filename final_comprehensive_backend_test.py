@@ -308,7 +308,7 @@ test2@company.com,Test User 2,inspector"""
         """Test Time Tracking functionality"""
         print("\n⏱️ TESTING TIME TRACKING SYSTEM")
         
-        # First create a task for time tracking
+        # First create a task for time tracking and mentions
         task_data = {
             "title": "Time Tracking Test Task",
             "description": "Task for testing time tracking functionality",
@@ -321,6 +321,7 @@ test2@company.com,Test User 2,inspector"""
         if response and response.status_code in [200, 201]:
             data = response.json()
             task_id = data.get("id")
+            print(f"Created task with ID: {task_id}")  # Debug info
         
         # Test create time entry (only if we have a task)
         if task_id:
