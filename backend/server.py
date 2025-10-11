@@ -32,14 +32,8 @@ from advanced_workflow_routes import router as advanced_workflow_router
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-
 # Create the main app
 app = FastAPI(title="Operational Management Platform API")
-app.state.db = db
 
 
 @app.on_event("startup")
@@ -48,8 +42,9 @@ async def startup_db_client():
     try:
         # MongoDB connection
         mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+        db_name = os.environ.get('DB_NAME', 'operations_db')
         client = AsyncIOMotorClient(mongo_url)
-        db = client.operations_db
+        db = client[db_name]
         
         # Test connection
         await db.command('ping')
