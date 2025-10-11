@@ -39,6 +39,8 @@ import {
   Lock,
   Activity,
   Search,
+  Upload,
+  Webhook,
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
