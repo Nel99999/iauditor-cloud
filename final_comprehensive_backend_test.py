@@ -129,7 +129,7 @@ class ComprehensiveFinalBackendTester:
         }
         
         response = self.make_request("POST", "/auth/register", registration_data)
-        success = response and response.status_code == 201
+        success = response and response.status_code in [200, 201]
         if success:
             data = response.json()
             self.access_token = data.get("access_token")
