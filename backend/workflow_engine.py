@@ -83,7 +83,10 @@ class WorkflowEngine:
         instance = WorkflowInstance(**workflow_instance)
         
         instance_dict = instance.model_dump()
-        await self.db.workflow_instances.insert_one(instance_dict)
+        
+        # Create a copy for insertion to avoid _id contamination
+        insert_dict = instance_dict.copy()
+        await self.db.workflow_instances.insert_one(insert_dict)
         
         logger.info(f"Started workflow {instance.id} for {resource_type}/{resource_id}")
         
@@ -107,6 +110,7 @@ class WorkflowEngine:
                 except Exception as e:
                     logger.error(f"Failed to send workflow start emails: {str(e)}")
         
+        # Return clean dict without MongoDB _id
         return instance_dict
     
     async def process_approval_action(
