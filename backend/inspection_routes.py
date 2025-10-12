@@ -284,9 +284,12 @@ async def start_inspection(
     execution_dict["started_at"] = execution_dict["started_at"].isoformat()
     execution_dict["created_at"] = execution_dict["created_at"].isoformat()
     
-    await db.inspection_executions.insert_one(execution_dict)
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = execution_dict.copy()
+    await db.inspection_executions.insert_one(insert_dict)
     
-    return execution
+    # Return clean dict without MongoDB _id
+    return execution_dict
 
 
 @router.get("/executions")
