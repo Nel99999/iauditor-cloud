@@ -70,8 +70,12 @@ async def create_task(
     task_dict["created_at"] = task_dict["created_at"].isoformat()
     task_dict["updated_at"] = task_dict["updated_at"].isoformat()
     
-    await db.tasks.insert_one(task_dict)
-    return task
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = task_dict.copy()
+    await db.tasks.insert_one(insert_dict)
+    
+    # Return clean dict without MongoDB _id
+    return task_dict
 
 
 @router.get("/{task_id}")
