@@ -65,9 +65,9 @@ def test_workflow_instance_creation():
     template = template_resp.json()
     print(f"✅ Template created: {template.get('id')}")
     
-    # Check for ObjectId in response
-    if '_id' in json.dumps(template):
-        print(f"⚠️ WARNING: _id field found in template response")
+    # Check for MongoDB _id field (not just '_id' substring)
+    if '_id' in template:
+        print(f"⚠️ WARNING: MongoDB _id field found in template response")
         print(f"   Response: {json.dumps(template, indent=2)}")
     
     # Create task for workflow
