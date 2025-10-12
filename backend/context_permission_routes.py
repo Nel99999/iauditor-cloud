@@ -220,11 +220,15 @@ async def create_delegation(
     )
     
     delegation_dict = delegation.model_dump()
-    await db.delegations.insert_one(delegation_dict)
+    
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = delegation_dict.copy()
+    await db.delegations.insert_one(insert_dict)
     
     logger.info(f"Created delegation {delegation.id}: {user['name']} → {delegate['name']}")
     
-    return delegation
+    # Return clean dict without MongoDB _id
+    return delegation_dict
 
 
 @router.get("/delegations")
