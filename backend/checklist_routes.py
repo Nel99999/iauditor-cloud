@@ -98,9 +98,12 @@ async def create_checklist_template(
     template_dict["created_at"] = template_dict["created_at"].isoformat()
     template_dict["updated_at"] = template_dict["updated_at"].isoformat()
     
-    await db.checklist_templates.insert_one(template_dict)
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = template_dict.copy()
+    await db.checklist_templates.insert_one(insert_dict)
     
-    return template
+    # Return clean dict without MongoDB _id
+    return template_dict
 
 
 @router.get("/templates/{template_id}")
