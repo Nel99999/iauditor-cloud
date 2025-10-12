@@ -222,13 +222,13 @@ def test_delegation_creation():
     delegation = deleg_resp.json()
     print(f"✅ Delegation created: {delegation.get('id')}")
     
-    # Check for ObjectId in response
-    response_str = json.dumps(delegation)
-    if '_id' in response_str:
-        print(f"⚠️ WARNING: _id field found in delegation response")
+    # Check for MongoDB _id field or ObjectId strings
+    if '_id' in delegation:
+        print(f"⚠️ WARNING: MongoDB _id field found in delegation response")
         print(f"   Response: {json.dumps(delegation, indent=2)}")
         return False
     
+    response_str = json.dumps(delegation)
     if 'ObjectId' in response_str:
         print(f"🔴 CONFIRMED: ObjectId string found in response!")
         return False
