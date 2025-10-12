@@ -198,6 +198,7 @@ def test_delegation_creation():
     delegation_data = {
         "delegate_id": user2_data.get('id'),
         "scope": "all_tasks",
+        "reason": "Testing delegation creation",
         "valid_from": datetime.now(timezone.utc).isoformat(),
         "valid_until": (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
     }
