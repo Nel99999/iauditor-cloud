@@ -148,8 +148,9 @@ def test_delegation_creation():
         print(f"❌ Delegator registration failed: {reg_resp1.status_code}")
         return False
     
-    user1_data = reg_resp1.json()
-    token1 = user1_data.get("access_token")
+    resp_data1 = reg_resp1.json()
+    token1 = resp_data1.get("access_token")
+    user1_data = resp_data1.get("user", resp_data1)
     headers1 = {"Authorization": f"Bearer {token1}"}
     org_id = user1_data.get("organization_id")
     
