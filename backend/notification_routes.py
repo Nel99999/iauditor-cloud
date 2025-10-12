@@ -54,7 +54,11 @@ async def create_notification(
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
-    await db.notifications.insert_one(notification)
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = notification.copy()
+    await db.notifications.insert_one(insert_dict)
+    
+    # Return clean dict without MongoDB _id
     return notification
 
 
