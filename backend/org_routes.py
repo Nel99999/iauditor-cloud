@@ -230,9 +230,12 @@ async def create_organization_unit(
     unit_dict["created_at"] = unit_dict["created_at"].isoformat()
     unit_dict["updated_at"] = unit_dict["updated_at"].isoformat()
     
-    await db.organization_units.insert_one(unit_dict)
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = unit_dict.copy()
+    await db.organization_units.insert_one(insert_dict)
     
-    return unit
+    # Return clean dict without MongoDB _id
+    return unit_dict
 
 
 @router.put("/units/{unit_id}")
