@@ -307,12 +307,17 @@ async def create_user_override(
         created_by=current_user["id"]
     )
     
-    await db.user_function_overrides.insert_one(ufo.dict())
+    ufo_dict = ufo.dict()
+    
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = ufo_dict.copy()
+    await db.user_function_overrides.insert_one(insert_dict)
     
     # Clear cache
     permission_cache.clear()
     
-    return ufo
+    # Return clean dict without MongoDB _id
+    return ufo_dict
 
 
 @router.delete("/users/{user_id}/overrides/{override_id}")
