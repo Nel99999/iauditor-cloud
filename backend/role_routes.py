@@ -140,9 +140,14 @@ async def create_role(
         is_system_role=False
     )
     
-    await db.roles.insert_one(new_role.dict())
+    role_dict = new_role.dict()
     
-    return new_role
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = role_dict.copy()
+    await db.roles.insert_one(insert_dict)
+    
+    # Return clean dict without MongoDB _id
+    return role_dict
 
 
 @router.get("/{role_id}")
