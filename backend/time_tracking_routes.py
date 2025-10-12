@@ -89,7 +89,9 @@ async def create_time_entry(
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
-    await db.time_entries.insert_one(time_entry)
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = time_entry.copy()
+    await db.time_entries.insert_one(insert_dict)
     
     # Update task with time tracking
     await db.tasks.update_one(
@@ -100,6 +102,7 @@ async def create_time_entry(
         }
     )
     
+    # Return clean dict without MongoDB _id
     return time_entry
 
 
