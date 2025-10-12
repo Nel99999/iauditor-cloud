@@ -64,11 +64,15 @@ async def create_context_permission(
     )
     
     context_dict = context_permission.model_dump()
-    await db.permission_contexts.insert_one(context_dict)
+    
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = context_dict.copy()
+    await db.permission_contexts.insert_one(insert_dict)
     
     logger.info(f"Created context permission {context_permission.id} by {user['name']}")
     
-    return context_permission
+    # Return clean dict without MongoDB _id
+    return context_dict
 
 
 @router.get("")
