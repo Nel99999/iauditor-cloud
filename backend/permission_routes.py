@@ -225,12 +225,17 @@ async def assign_permission_to_role(
         return {"message": "Role permission updated"}
     
     rp = RolePermission(role_id=role_id, **role_perm.dict())
-    await db.role_permissions.insert_one(rp.dict())
+    rp_dict = rp.dict()
+    
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = rp_dict.copy()
+    await db.role_permissions.insert_one(insert_dict)
     
     # Clear cache
     permission_cache.clear()
     
-    return rp
+    # Return clean dict without MongoDB _id
+    return rp_dict
 
 
 @router.delete("/roles/{role_id}/permissions/{permission_id}")
