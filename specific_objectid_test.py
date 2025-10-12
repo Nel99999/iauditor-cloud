@@ -28,8 +28,9 @@ def test_workflow_instance_creation():
         print(f"❌ Registration failed: {reg_resp.status_code} - {reg_resp.text}")
         return False
     
-    user_data = reg_resp.json()
-    token = user_data.get("access_token")
+    resp_data = reg_resp.json()
+    token = resp_data.get("access_token")
+    user_data = resp_data.get("user", resp_data)
     headers = {"Authorization": f"Bearer {token}"}
     
     print(f"✅ User registered: {user_data.get('id')}")
@@ -252,8 +253,9 @@ def test_time_entry_creation():
         print(f"❌ Registration failed: {reg_resp.status_code}")
         return False
     
-    user_data = reg_resp.json()
-    token = user_data.get("access_token")
+    resp_data = reg_resp.json()
+    token = resp_data.get("access_token")
+    user_data = resp_data.get("user", resp_data)
     headers = {"Authorization": f"Bearer {token}"}
     
     print(f"✅ User registered: {user_data.get('id')}")
