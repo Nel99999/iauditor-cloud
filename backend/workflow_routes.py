@@ -110,11 +110,15 @@ async def create_workflow_template(
     )
     
     template_dict = template.model_dump()
-    await db.workflow_templates.insert_one(template_dict)
+    
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = template_dict.copy()
+    await db.workflow_templates.insert_one(insert_dict)
     
     logger.info(f"Created workflow template {template.id} by {user['name']}")
     
-    return template
+    # Return clean dict without MongoDB _id
+    return template_dict
 
 
 @router.get("/templates/{template_id}")
