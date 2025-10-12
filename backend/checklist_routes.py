@@ -263,9 +263,12 @@ async def start_checklist(
     if execution_dict["started_at"]:
         execution_dict["started_at"] = execution_dict["started_at"].isoformat()
     
-    await db.checklist_executions.insert_one(execution_dict)
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = execution_dict.copy()
+    await db.checklist_executions.insert_one(insert_dict)
     
-    return execution
+    # Return clean dict without MongoDB _id
+    return execution_dict
 
 
 @router.get("/executions")
