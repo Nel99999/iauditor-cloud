@@ -140,9 +140,14 @@ async def create_permission(
         )
     
     perm = Permission(**permission.dict())
-    await db.permissions.insert_one(perm.dict())
+    perm_dict = perm.dict()
     
-    return perm
+    # Create a copy for insertion to avoid _id contamination
+    insert_dict = perm_dict.copy()
+    await db.permissions.insert_one(insert_dict)
+    
+    # Return clean dict without MongoDB _id
+    return perm_dict
 
 
 @router.delete("/{permission_id}")
