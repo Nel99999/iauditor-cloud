@@ -113,13 +113,13 @@ def test_workflow_instance_creation():
     instance = instance_resp.json()
     print(f"✅ Workflow instance created: {instance.get('id')}")
     
-    # Check for ObjectId in response
-    response_str = json.dumps(instance)
-    if '_id' in response_str:
-        print(f"⚠️ WARNING: _id field found in instance response")
+    # Check for MongoDB _id field or ObjectId strings
+    if '_id' in instance:
+        print(f"⚠️ WARNING: MongoDB _id field found in instance response")
         print(f"   Response: {json.dumps(instance, indent=2)}")
         return False
     
+    response_str = json.dumps(instance)
     if 'ObjectId' in response_str:
         print(f"🔴 CONFIRMED: ObjectId string found in response!")
         return False
