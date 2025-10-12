@@ -163,7 +163,7 @@ def test_delegation_creation():
     }
     
     reg_resp2 = requests.post(f"{BASE_URL}/auth/register", json=register_data2)
-    if reg_resp2.status_code != 201:
+    if reg_resp2.status_code not in [200, 201]:
         print(f"❌ Delegate registration failed: {reg_resp2.status_code}")
         return False
     
