@@ -24,7 +24,7 @@ def test_workflow_instance_creation():
     }
     
     reg_resp = requests.post(f"{BASE_URL}/auth/register", json=register_data)
-    if reg_resp.status_code != 201:
+    if reg_resp.status_code not in [200, 201]:
         print(f"❌ Registration failed: {reg_resp.status_code} - {reg_resp.text}")
         return False
     
