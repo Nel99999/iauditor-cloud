@@ -308,13 +308,13 @@ def test_time_entry_creation():
     time_entry = entry_resp.json()
     print(f"✅ Time entry created: {time_entry.get('id')}")
     
-    # Check for ObjectId in response
-    response_str = json.dumps(time_entry)
-    if '_id' in response_str:
-        print(f"⚠️ WARNING: _id field found in time entry response")
+    # Check for MongoDB _id field or ObjectId strings
+    if '_id' in time_entry:
+        print(f"⚠️ WARNING: MongoDB _id field found in time entry response")
         print(f"   Response: {json.dumps(time_entry, indent=2)}")
         return False
     
+    response_str = json.dumps(time_entry)
     if 'ObjectId' in response_str:
         print(f"🔴 CONFIRMED: ObjectId string found in response!")
         return False
