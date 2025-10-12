@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test auth endpoints to see where the issue is
-base_url = "https://opsman-v2.preview.emergentagent.com"
+base_url = "https://rbac-workflow.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

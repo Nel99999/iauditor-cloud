@@ -23,7 +23,7 @@ import tempfile
 import uuid
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://opsman-v2.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://rbac-workflow.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 class ComprehensiveV2BackendTester:
