@@ -169,7 +169,8 @@ def test_delegation_creation():
         print(f"❌ Delegate registration failed: {reg_resp2.status_code}")
         return False
     
-    user2_data = reg_resp2.json()
+    resp_data2 = reg_resp2.json()
+    user2_data = resp_data2.get("user", resp_data2)
     print(f"✅ Delegate registered: {user2_data.get('id')}")
     
     # Test self-delegation (should fail)
