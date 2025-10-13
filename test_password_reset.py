@@ -14,9 +14,12 @@ def test_password_reset_flow():
     
     # Step 1: Register a test user
     print("\n1️⃣ Registering test user...")
+    import time
+    timestamp = int(time.time())
+    
     register_data = {
         "name": "Password Reset Test User",
-        "email": f"reset.test.{requests.get('http://worldtimeapi.org/api/timezone/Etc/UTC').json()['unixtime']}@test.com",
+        "email": f"reset.test.{timestamp}@test.com",
         "password": "OldPassword123!",
         "create_organization": True,
         "organization_name": "Reset Test Org"
