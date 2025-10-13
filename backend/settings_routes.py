@@ -91,15 +91,15 @@ async def test_email_settings(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Test email configuration"""
+    """Test email configuration (only for Master and Developer roles)"""
     current_user = await get_current_user(request, db)
     
-    # Check if user has permission
-    allowed_roles = ['developer', 'master', 'admin']
+    # Check if user has permission (ONLY Developer and Master)
+    allowed_roles = ['developer', 'master']
     if current_user.get("role") not in allowed_roles:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient permissions to test email settings"
+            detail="Only Master and Developer roles can test email settings"
         )
     
     settings = await db.organization_settings.find_one({
