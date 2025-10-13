@@ -309,6 +309,58 @@ const EnhancedSettingsPage = () => {
     }
   };
 
+  const handleTestSMS = async () => {
+    if (!testSMSPhone) {
+      showMessage('error', 'Please enter a phone number');
+      return;
+    }
+    setSendingSMS(true);
+    setSmsTestResult(null);
+    try {
+      const response = await axios.post(`${API}/sms/send`, {
+        to_number: testSMSPhone,
+        message: 'This is a test SMS from your Operational Management Platform. Your Twilio SMS integration is working correctly!'
+      });
+      setSmsTestResult({ 
+        success: true, 
+        message: `SMS sent successfully! Message SID: ${response.data.message_sid}` 
+      });
+    } catch (err) {
+      setSmsTestResult({ 
+        success: false, 
+        message: err.response?.data?.detail || 'Failed to send SMS' 
+      });
+    } finally {
+      setSendingSMS(false);
+    }
+  };
+
+  const handleTestWhatsApp = async () => {
+    if (!testWhatsAppPhone) {
+      showMessage('error', 'Please enter a phone number');
+      return;
+    }
+    setSendingWhatsApp(true);
+    setWhatsappTestResult(null);
+    try {
+      const response = await axios.post(`${API}/sms/whatsapp/send`, {
+        to_number: testWhatsAppPhone,
+        message: 'This is a test WhatsApp message from your Operational Management Platform. Your Twilio WhatsApp integration is working correctly!'
+      });
+      setWhatsappTestResult({ 
+        success: true, 
+        message: `WhatsApp message sent successfully! Message SID: ${response.data.message_sid}` 
+      });
+    } catch (err) {
+      setWhatsappTestResult({ 
+        success: false, 
+        message: err.response?.data?.detail || 'Failed to send WhatsApp message' 
+      });
+    } finally {
+      setSendingWhatsApp(false);
+    }
+  };
+
   const languages = [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
