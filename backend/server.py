@@ -11,9 +11,21 @@ from typing import List
 import uuid
 from datetime import datetime, timezone
 
-# Suppress bcrypt version warning from passlib
+# Fix bcrypt compatibility with passlib
+# Passlib 1.7.4 expects bcrypt.__about__.__version__ but bcrypt 4.x doesn't have it
+try:
+    import bcrypt
+    if not hasattr(bcrypt, '__about__'):
+        # Create a mock __about__ module with version
+        class MockAbout:
+            __version__ = bcrypt.__version__
+        bcrypt.__about__ = MockAbout()
+except ImportError:
+    pass
+
+# Suppress any remaining warnings
 warnings.filterwarnings("ignore", message=".*trapped.*error reading bcrypt version.*")
-warnings.filterwarnings("ignore", message=".*module 'bcrypt' has no attribute '__about__'.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="passlib")
 
 # Import all routes
 from auth_routes import router as auth_router
