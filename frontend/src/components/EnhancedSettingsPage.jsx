@@ -114,6 +114,13 @@ const EnhancedSettingsPage = () => {
       setPrivacyPrefs(privacy.data);
       setSecurityPrefs(security.data);
       if (api.data) setApiSettings(api.data);
+      if (twilio.data) setTwilioSettings({
+        account_sid: twilio.data.account_sid || '',
+        auth_token: '',
+        phone_number: twilio.data.phone_number || '',
+        whatsapp_number: twilio.data.whatsapp_number || '',
+        twilio_configured: twilio.data.twilio_configured || false
+      });
     } catch (err) {
       console.error('Failed to load preferences:', err);
     }
