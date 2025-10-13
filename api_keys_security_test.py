@@ -152,6 +152,9 @@ class APIKeysSecurityTester:
         
         print(f"✅ Master user created: {master_email}")
         
+        # Debug master user info
+        master_info = self.debug_user_info(self.master_token, "Master")
+        
         # Register Admin user (create separate org, then update role to admin)
         admin_email = f"admin.security.test.{datetime.now().strftime('%Y%m%d%H%M%S')}@example.com"
         self.admin_token, self.admin_user_id, _ = self.register_user(
@@ -163,6 +166,10 @@ class APIKeysSecurityTester:
             return False
         
         print(f"✅ Admin user created: {admin_email}")
+        
+        # Debug admin user info
+        admin_info = self.debug_user_info(self.admin_token, "Admin")
+        
         return True
     
     def test_master_role_access(self):
