@@ -815,13 +815,13 @@ const EnhancedSettingsPage = () => {
           </Card>
         </TabsContent>
 
-        {/* API Tab */}
-        {(isAdmin() || isDeveloper()) && (
+        {/* API Tab - Only for Master and Developer */}
+        {isDeveloperOrMaster() && (
           <TabsContent value="api">
             <Card>
               <CardHeader>
                 <CardTitle>API Configuration</CardTitle>
-                <CardDescription>Manage third-party API keys for email and integrations</CardDescription>
+                <CardDescription>Manage third-party API keys (Master and Developer only)</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
