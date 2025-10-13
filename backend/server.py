@@ -1,31 +1,17 @@
+# Fix bcrypt compatibility issue - must be first import
+import fix_bcrypt
+
 from fastapi import FastAPI, APIRouter
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-import warnings
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
 from datetime import datetime, timezone
-
-# Fix bcrypt compatibility with passlib
-# Passlib 1.7.4 expects bcrypt.__about__.__version__ but bcrypt 4.x doesn't have it
-try:
-    import bcrypt
-    if not hasattr(bcrypt, '__about__'):
-        # Create a mock __about__ module with version
-        class MockAbout:
-            __version__ = bcrypt.__version__
-        bcrypt.__about__ = MockAbout()
-except ImportError:
-    pass
-
-# Suppress any remaining warnings
-warnings.filterwarnings("ignore", message=".*trapped.*error reading bcrypt version.*")
-warnings.filterwarnings("ignore", category=UserWarning, module="passlib")
 
 # Import all routes
 from auth_routes import router as auth_router
