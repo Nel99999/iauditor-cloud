@@ -142,14 +142,14 @@ async def test_twilio_connection(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Test Twilio connection"""
+    """Test Twilio connection (only for Master and Developer roles)"""
     user = await get_current_user(request, db)
     
-    # Check if user has admin permissions
-    if user.get("role") not in ["admin", "master", "developer"]:
+    # Check if user has permission (ONLY Master and Developer)
+    if user.get("role") not in ["master", "developer"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only admins can test Twilio connection"
+            detail="Only Master and Developer roles can test Twilio connection"
         )
     
     settings = await db.organization_settings.find_one(
