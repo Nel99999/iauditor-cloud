@@ -8,6 +8,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Layout from "@/components/Layout";
 import LoginPage from "@/components/LoginPage";
 import RegisterPage from "@/components/RegisterPage";
+import ForgotPasswordPage from "@/components/ForgotPasswordPage";
+import ResetPasswordPage from "@/components/ResetPasswordPage";
 import DashboardHome from "@/components/DashboardHome";
 import OrganizationPage from "@/components/OrganizationPage";
 import UserManagementPage from "@/components/UserManagementPage";
