@@ -963,6 +963,85 @@ const EnhancedSettingsPage = () => {
                   </div>
                 )}
 
+                {/* Test SMS & WhatsApp */}
+                {twilioSettings.twilio_configured && (
+                  <div className="border-t pt-6 space-y-6">
+                    <h3 className="font-semibold text-lg">Test Messaging</h3>
+                    
+                    {/* Test SMS */}
+                    <div className="space-y-3">
+                      <Label className="text-base">Test SMS</Label>
+                      <p className="text-xs text-muted-foreground">Send a test SMS to verify your configuration</p>
+                      <div className="flex gap-2">
+                        <Input 
+                          type="tel" 
+                          placeholder="+1234567890 (with country code)" 
+                          value={testSMSPhone} 
+                          onChange={(e) => setTestSMSPhone(e.target.value)} 
+                          className="flex-1"
+                        />
+                        <Button 
+                          onClick={handleTestSMS} 
+                          disabled={sendingSMS || !testSMSPhone}
+                          variant="outline"
+                        >
+                          {sendingSMS ? 'Sending...' : 'Send Test SMS'}
+                        </Button>
+                      </div>
+                      {smsTestResult && (
+                        <div className={`p-3 rounded-md border flex items-start gap-2 ${smsTestResult.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                          {smsTestResult.success ? <CheckCircle className="h-5 w-5 mt-0.5" /> : <XCircle className="h-5 w-5 mt-0.5" />}
+                          <div>
+                            <p className="font-medium">{smsTestResult.success ? 'SMS Sent Successfully' : 'SMS Failed'}</p>
+                            <p className="text-sm">{smsTestResult.message}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Test WhatsApp */}
+                    {twilioSettings.whatsapp_number && (
+                      <div className="space-y-3">
+                        <Label className="text-base">Test WhatsApp</Label>
+                        <p className="text-xs text-muted-foreground">Send a test WhatsApp message (Note: Recipient must join your sandbox first)</p>
+                        <div className="flex gap-2">
+                          <Input 
+                            type="tel" 
+                            placeholder="whatsapp:+1234567890 (with country code)" 
+                            value={testWhatsAppPhone} 
+                            onChange={(e) => setTestWhatsAppPhone(e.target.value)} 
+                            className="flex-1"
+                          />
+                          <Button 
+                            onClick={handleTestWhatsApp} 
+                            disabled={sendingWhatsApp || !testWhatsAppPhone}
+                            variant="outline"
+                          >
+                            {sendingWhatsApp ? 'Sending...' : 'Send Test WhatsApp'}
+                          </Button>
+                        </div>
+                        {whatsappTestResult && (
+                          <div className={`p-3 rounded-md border flex items-start gap-2 ${whatsappTestResult.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                            {whatsappTestResult.success ? <CheckCircle className="h-5 w-5 mt-0.5" /> : <XCircle className="h-5 w-5 mt-0.5" />}
+                            <div>
+                              <p className="font-medium">{whatsappTestResult.success ? 'WhatsApp Sent Successfully' : 'WhatsApp Failed'}</p>
+                              <p className="text-sm">{whatsappTestResult.message}</p>
+                            </div>
+                          </div>
+                        )}
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                          <p className="text-xs text-amber-800">
+                            <strong>WhatsApp Sandbox Note:</strong> For testing, recipients must first send a join code to your WhatsApp sandbox number. 
+                            Find your join code in Twilio Console → Messaging → Try it out → Send a WhatsApp message.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <Separator />
+
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
                   <h4 className="font-medium text-purple-900 mb-2">How to get Twilio Credentials:</h4>
                   <ol className="list-decimal list-inside text-sm text-purple-800 space-y-1">
