@@ -102,11 +102,12 @@ const EnhancedSettingsPage = () => {
 
   const loadAllPreferences = async () => {
     try {
-      const [regional, privacy, security, api] = await Promise.all([
+      const [regional, privacy, security, api, twilio] = await Promise.all([
         axios.get(`${API}/users/regional`),
         axios.get(`${API}/users/privacy`),
         axios.get(`${API}/users/security-prefs`),
-        isAdmin() || isDeveloper() ? axios.get(`${API}/settings/email`) : Promise.resolve({ data: {} })
+        isAdmin() || isDeveloper() ? axios.get(`${API}/settings/email`) : Promise.resolve({ data: {} }),
+        isAdmin() || isDeveloper() ? axios.get(`${API}/sms/settings`) : Promise.resolve({ data: {} })
       ]);
       
       setRegionalPrefs(regional.data);
