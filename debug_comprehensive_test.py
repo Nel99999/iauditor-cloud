@@ -35,7 +35,7 @@ class DebugTester:
         else:
             print(f"❌ {test_name}: {message}")
             if response:
-                print(f"   Status: {response.status_code}, Response: {response.text[:300]}")
+                print(f"   Status: {response.status_code}, Response: {response.text[:500]}")
     
     def make_request(self, method, endpoint, **kwargs):
         """Make authenticated request"""
