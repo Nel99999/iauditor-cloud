@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Response, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timedelta, timezone
 import httpx
+from pydantic import BaseModel, EmailStr
 from models import User, UserCreate, UserLogin, Session, Token, Organization, OrganizationCreate
 from auth_utils import (
     get_password_hash,
