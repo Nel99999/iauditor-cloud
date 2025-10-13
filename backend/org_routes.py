@@ -14,6 +14,7 @@ from org_models import (
     PermissionCheck,
 )
 from auth_utils import get_current_user
+from sanitization import sanitize_dict
 
 router = APIRouter(prefix="/organizations", tags=["Organizations"])
 
