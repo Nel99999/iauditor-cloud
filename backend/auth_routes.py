@@ -500,4 +500,3 @@ async def reset_password(
     
     return {"message": "Password has been reset successfully. You can now login with your new password"}
     
-    return {"user": user, "message": "Authentication successful"}
