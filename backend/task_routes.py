@@ -50,6 +50,10 @@ async def create_task(
     """Create a new task"""
     user = await get_current_user(request, db)
     
+    # Sanitize user inputs to prevent XSS
+    task_dict = task_data.model_dump()
+    sanitized_data = sanitize_dict(task_dict, ['title', 'description'])
+    
     # Get assigned user name if provided
     assigned_to_name = None
     if task_data.assigned_to:
@@ -59,8 +63,8 @@ async def create_task(
     
     task = Task(
         organization_id=user["organization_id"],
-        title=task_data.title,
-        description=task_data.description,
+        title=sanitized_data['title'],
+        description=sanitized_data['description'],
         status=task_data.status,
         priority=task_data.priority,
         assigned_to=task_data.assigned_to,
