@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator, constr
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
 import uuid
