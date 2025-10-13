@@ -420,10 +420,10 @@ const EnhancedSettingsPage = () => {
             <Shield className="h-4 w-4 mr-2" />
             GDPR & Privacy
           </TabsTrigger>
-          {(isAdmin() || isDeveloper()) && (
+          {isDeveloperOrMaster() && (
             <TabsTrigger value="api">
               <Key className="h-4 w-4 mr-2" />
-              API
+              API Settings
             </TabsTrigger>
           )}
           {(isAdmin() || isDeveloper()) && (
