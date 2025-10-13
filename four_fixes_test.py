@@ -196,9 +196,13 @@ class BackendTester:
         
         response = self.session.post(f"{BACKEND_URL}/workflows/templates", json=workflow_data)
         if response.status_code == 201:
-            self.log("❌ Workflow creation should have failed with empty approver_role", "ERROR")
+            self.log(f"❌ Workflow creation should have failed with empty approver_role. Response: {response.text}", "ERROR")
             return False
-        self.log("✅ Empty approver_role correctly rejected")
+        elif response.status_code in [400, 422]:
+            self.log("✅ Empty approver_role correctly rejected")
+        else:
+            self.log(f"❌ Unexpected response for empty approver_role: {response.status_code} - {response.text}", "ERROR")
+            return False
         
         # Test 2: Empty approver_context should fail
         workflow_data["steps"][0]["approver_role"] = "manager"
