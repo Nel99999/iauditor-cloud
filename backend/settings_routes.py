@@ -55,15 +55,15 @@ async def update_email_settings(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Update email settings (only for high-level roles)"""
+    """Update email settings (only for Master and Developer roles)"""
     current_user = await get_current_user(request, db)
     
-    # Check if user has permission (Developer, Master, or Admin)
-    allowed_roles = ['developer', 'master', 'admin']
+    # Check if user has permission (ONLY Developer and Master)
+    allowed_roles = ['developer', 'master']
     if current_user.get("role") not in allowed_roles:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Insufficient permissions to update email settings"
+            detail="Only Master and Developer roles can update email settings"
         )
     
     # Upsert settings
