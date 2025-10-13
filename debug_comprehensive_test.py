@@ -123,10 +123,11 @@ class DebugTester:
         
         # Test profile endpoint
         response = self.make_request("GET", "/users/profile")
+        print(f"Profile endpoint status: {response.status_code}")
         if response.status_code == 200:
             self.log_result("Get Profile", True, "Profile endpoint working")
         else:
-            self.log_result("Get Profile", False, "Profile endpoint failed", response)
+            self.log_result("Get Profile", False, f"Profile endpoint failed - {response.status_code}: {response.text[:200]}")
         
         # Test users/me endpoint
         response = self.make_request("GET", "/users/me")
