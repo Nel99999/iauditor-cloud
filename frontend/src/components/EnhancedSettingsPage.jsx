@@ -391,7 +391,7 @@ const EnhancedSettingsPage = () => {
       )}
 
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${(isAdmin() || isDeveloper()) ? 8 : 7}, 1fr)` }}>
+        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${isDeveloperOrMaster() ? 8 : 7}, 1fr)` }}>
           <TabsTrigger value="profile">
             <User className="h-4 w-4 mr-2" />
             Profile
