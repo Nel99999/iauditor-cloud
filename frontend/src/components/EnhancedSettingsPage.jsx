@@ -92,6 +92,14 @@ const EnhancedSettingsPage = () => {
   });
   const [testingTwilio, setTestingTwilio] = useState(false);
   const [twilioTestResult, setTwilioTestResult] = useState(null);
+  
+  // Test SMS/WhatsApp
+  const [testSMSPhone, setTestSMSPhone] = useState('');
+  const [testWhatsAppPhone, setTestWhatsAppPhone] = useState('');
+  const [sendingSMS, setSendingSMS] = useState(false);
+  const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
+  const [smsTestResult, setSmsTestResult] = useState(null);
+  const [whatsappTestResult, setWhatsappTestResult] = useState(null);
 
   useEffect(() => {
     if (user) {
