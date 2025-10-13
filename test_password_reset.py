@@ -61,6 +61,14 @@ def test_password_reset_flow():
         db = client.operations_db
         
         user = await db.users.find_one({"email": email})
+        if not user:
+            print(f"⚠️  User not found in database with email: {email}")
+            # Try to find any user with similar email
+            all_users = await db.users.find({}, {"email": 1}).to_list(10)
+            print(f"   Recent users: {[u.get('email') for u in all_users[-3:]]}")
+            await client.close()
+            return None
+        
         token = user.get("password_reset_token")
         await client.close()
         return token
