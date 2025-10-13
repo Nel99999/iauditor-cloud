@@ -62,7 +62,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         password_hash=get_password_hash(user_data.password),
         auth_provider="local",
         organization_id=organization_id,
-        role="admin" if organization_id else "viewer",
+        role="master" if organization_id else "viewer",  # Organization creator gets master role
     )
     
     user_dict = user.model_dump()
