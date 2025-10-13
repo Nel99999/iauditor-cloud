@@ -374,7 +374,10 @@ const Layout = ({ children }) => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar data-testid="user-avatar">
-                    <AvatarImage src={user?.picture} alt={user?.name} />
+                    <AvatarImage 
+                      src={user?.picture ? (user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`) : null} 
+                      alt={user?.name} 
+                    />
                     <AvatarFallback>{getInitials(user?.name || 'U')}</AvatarFallback>
                   </Avatar>
                 </Button>
