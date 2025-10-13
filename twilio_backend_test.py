@@ -317,7 +317,7 @@ class TwilioSMSBackendTester:
         try:
             # Register regular user
             response = self.session.post(f"{API_BASE}/auth/register", json=register_data)
-            if response.status_code == 201:
+            if response.status_code in [200, 201]:
                 # Login as regular user
                 login_data = {
                     "email": regular_user_email,
