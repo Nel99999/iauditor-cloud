@@ -156,10 +156,10 @@ const EnhancedSettingsPage = () => {
     
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/users/${user.id}/photo`, formData, {
+      const response = await axios.post(`${API}/users/profile/picture`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setUser({ ...user, photo_url: response.data.photo_url });
+      setUser({ ...user, picture: response.data.picture_url });
       showMessage('success', 'Photo uploaded successfully!');
       window.location.reload();
     } catch (err) {
