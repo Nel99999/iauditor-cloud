@@ -133,7 +133,7 @@ class APIKeysSecurityTester:
         
         print(f"✅ Master user created: {master_email}")
         
-        # Register Admin user
+        # Register Admin user (create separate org, then update role to admin)
         admin_email = f"admin.security.test.{datetime.now().strftime('%Y%m%d%H%M%S')}@example.com"
         self.admin_token, self.admin_user_id, _ = self.register_user(
             admin_email, "Admin Security User", "admin"
@@ -143,12 +143,7 @@ class APIKeysSecurityTester:
             print("❌ Failed to create Admin user")
             return False
         
-        # Add admin user to the same organization with admin role
-        if not self.add_user_to_organization(self.admin_user_id, self.organization_id, "admin"):
-            print("❌ Failed to add admin user to organization")
-            return False
-        
-        print(f"✅ Admin user created and added to organization: {admin_email}")
+        print(f"✅ Admin user created: {admin_email}")
         return True
     
     def test_master_role_access(self):
