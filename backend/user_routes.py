@@ -475,8 +475,22 @@ async def update_privacy_preferences(
         
         if result.matched_count == 0:
             raise HTTPException(status_code=404, detail="User not found")
+        
+        # Return updated preferences
+        updated_user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+        return {
+            "message": "Privacy preferences updated successfully",
+            "profile_visibility": updated_user.get("profile_visibility", "organization"),
+            "show_activity_status": updated_user.get("show_activity_status", True),
+            "show_last_seen": updated_user.get("show_last_seen", True)
+        }
     
-    return {"message": "Privacy preferences updated successfully"}
+    return {
+        "message": "No changes to update",
+        "profile_visibility": current_user.get("profile_visibility", "organization"),
+        "show_activity_status": current_user.get("show_activity_status", True),
+        "show_last_seen": current_user.get("show_last_seen", True)
+    }
 
 
 # =====================================
