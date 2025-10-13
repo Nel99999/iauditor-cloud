@@ -104,6 +104,9 @@ async def update_profile(
     if not update_data:
         raise HTTPException(status_code=400, detail="No data to update")
     
+    # Sanitize user inputs to prevent XSS
+    update_data = sanitize_dict(update_data, ['name', 'bio', 'phone'])
+    
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
     result = await db.users.update_one(
