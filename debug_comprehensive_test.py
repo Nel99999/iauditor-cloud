@@ -169,10 +169,12 @@ class DebugTester:
         }
         
         response = self.make_request("POST", "/workflows/templates", json=workflow_data)
+        print(f"Workflow creation status: {response.status_code}")
+        print(f"Workflow creation response: {response.text[:300]}")
         if response.status_code in [200, 201]:
             self.log_result("Create Workflow Template", True, "Workflow template created")
         else:
-            self.log_result("Create Workflow Template", False, "Failed to create workflow template", response)
+            self.log_result("Create Workflow Template", False, f"Failed to create workflow template - {response.status_code}: {response.text[:200]}")
     
     def debug_settings_endpoints(self):
         """Debug settings endpoints"""
