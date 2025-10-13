@@ -25,7 +25,7 @@ const EnhancedSettingsPage = () => {
   const { user, setUser } = useAuth();
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   const { t, i18n } = useTranslation();
-  const { isAdmin, isDeveloper } = usePermissions();
+  const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
