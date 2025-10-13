@@ -128,12 +128,8 @@ async def get_pending_invitations(
         "status": "pending"
     }, {"_id": 0}).to_list(length=None)
     
-    # Populate role details
-    for invite in invitations:
-        role = await db.roles.find_one({"id": invite["role_id"]}, {"_id": 0})
-        if role:
-            invite["role"] = role
-    
+    # Invitations already have role as string, no need to populate from roles collection
+    # Just return the invitations as is
     return invitations
 
 
