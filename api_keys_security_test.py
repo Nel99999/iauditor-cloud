@@ -50,19 +50,28 @@ class APIKeysSecurityTester:
                     "organization_name": "Security Test Corp"
                 }
             else:
-                # For admin user, register without organization (will be added later)
+                # For admin user, create separate organization (since we can't easily add to existing org)
                 payload = {
                     "email": email,
                     "password": "SecurePass123!",
                     "name": name,
-                    "create_organization": False
+                    "create_organization": True,
+                    "organization_name": "Admin Test Corp"
                 }
             
             response = self.session.post(f"{API_BASE}/auth/register", json=payload)
             
             if response.status_code == 200:
                 data = response.json()
-                return data.get("access_token"), data.get("user", {}).get("id"), data.get("user", {}).get("organization_id")
+                user_id = data.get("user", {}).get("id")
+                org_id = data.get("user", {}).get("organization_id")
+                token = data.get("access_token")
+                
+                # For admin user, update role to admin (default is master when creating org)
+                if role_type == "admin" and token and user_id:
+                    self.update_user_role(user_id, "admin", token)
+                
+                return token, user_id, org_id
             else:
                 print(f"Registration failed for {email}: {response.status_code} - {response.text}")
                 return None, None, None
@@ -71,28 +80,23 @@ class APIKeysSecurityTester:
             print(f"Registration error for {email}: {str(e)}")
             return None, None, None
     
-    def add_user_to_organization(self, user_id, organization_id, role="admin"):
-        """Add user to organization with specific role"""
+    def update_user_role(self, user_id, role, token):
+        """Update user role"""
         try:
-            # Use master token to add user to organization
-            headers = {"Authorization": f"Bearer {self.master_token}"}
-            
-            # First, update the user's organization and role
-            payload = {
-                "organization_id": organization_id,
-                "role": role
-            }
+            headers = {"Authorization": f"Bearer {token}"}
+            payload = {"role": role}
             
             response = self.session.put(f"{API_BASE}/users/{user_id}", json=payload, headers=headers)
             
             if response.status_code == 200:
+                print(f"✅ Updated user role to {role}")
                 return True
             else:
-                print(f"Failed to add user to organization: {response.status_code} - {response.text}")
+                print(f"Failed to update user role: {response.status_code} - {response.text}")
                 return False
                 
         except Exception as e:
-            print(f"Error adding user to organization: {str(e)}")
+            print(f"Error updating user role: {str(e)}")
             return False
     
     def test_endpoint_access(self, endpoint, method="GET", token=None, expected_status=200, payload=None):
