@@ -80,6 +80,25 @@ class APIKeysSecurityTester:
             print(f"Registration error for {email}: {str(e)}")
             return None, None, None
     
+    def update_user_role(self, user_id, role, token):
+        """Update user role"""
+        try:
+            headers = {"Authorization": f"Bearer {token}"}
+            payload = {"role": role}
+            
+            response = self.session.put(f"{API_BASE}/users/{user_id}", json=payload, headers=headers)
+            
+            if response.status_code == 200:
+                print(f"✅ Updated user role to {role}")
+                return True
+            else:
+                print(f"Failed to update user role: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            print(f"Error updating user role: {str(e)}")
+            return False
+    
     def debug_user_info(self, token, user_type):
         """Debug user information"""
         try:
