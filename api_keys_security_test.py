@@ -67,9 +67,13 @@ class APIKeysSecurityTester:
                 org_id = data.get("user", {}).get("organization_id")
                 token = data.get("access_token")
                 
-                # For admin user, update role to admin (default is master when creating org)
-                if role_type == "admin" and token and user_id:
-                    self.update_user_role(user_id, "admin", token)
+                # Update role after registration (registration always creates "admin" for org creators)
+                if token and user_id:
+                    if role_type == "master":
+                        self.update_user_role(user_id, "master", token)
+                    elif role_type == "admin":
+                        # Keep as admin (already set by registration)
+                        pass
                 
                 return token, user_id, org_id
             else:
