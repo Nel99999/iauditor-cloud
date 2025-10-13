@@ -113,6 +113,20 @@ export const usePermissions = () => {
     return user?.role === 'developer';
   };
 
+  /**
+   * Check if user is Master (level 2)
+   */
+  const isMaster = () => {
+    return user?.role === 'master';
+  };
+
+  /**
+   * Check if user is Developer OR Master (for API settings access)
+   */
+  const isDeveloperOrMaster = () => {
+    return ['developer', 'master'].includes(user?.role);
+  };
+
   return {
     hasPermission,
     hasAnyPermission,
@@ -123,6 +137,8 @@ export const usePermissions = () => {
     getRoleLevel,
     isAdmin,
     isDeveloper,
+    isMaster,
+    isDeveloperOrMaster,
     userPermissions,
     userRole,
   };
