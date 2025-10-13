@@ -18,10 +18,15 @@ async def get_tasks(
     status_filter: Optional[str] = None,
     assigned_to: Optional[str] = None,
     priority: Optional[str] = None,
+    limit: int = 50,  # Default limit
+    skip: int = 0,  # Default skip for pagination
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get tasks with filters"""
+    """Get tasks with filters and pagination"""
     user = await get_current_user(request, db)
+    
+    # Enforce maximum limit
+    limit = min(limit, 100)  # Max 100 tasks per request
     
     query = {"organization_id": user["organization_id"]}
     if status_filter:
@@ -31,7 +36,7 @@ async def get_tasks(
     if priority:
         query["priority"] = priority
     
-    tasks = await db.tasks.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    tasks = await db.tasks.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     return tasks
 
 
