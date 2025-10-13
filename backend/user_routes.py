@@ -5,6 +5,7 @@ from typing import Optional, List
 from datetime import datetime, timezone
 import uuid
 from auth_utils import get_current_user
+from sanitization import sanitize_dict
 import bcrypt
 
 router = APIRouter(prefix="/users", tags=["users"])
