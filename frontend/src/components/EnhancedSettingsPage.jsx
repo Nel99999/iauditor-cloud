@@ -114,8 +114,8 @@ const EnhancedSettingsPage = () => {
         axios.get(`${API}/users/regional`),
         axios.get(`${API}/users/privacy`),
         axios.get(`${API}/users/security-prefs`),
-        isAdmin() || isDeveloper() ? axios.get(`${API}/settings/email`) : Promise.resolve({ data: {} }),
-        isAdmin() || isDeveloper() ? axios.get(`${API}/sms/settings`) : Promise.resolve({ data: {} })
+        isDeveloperOrMaster() ? axios.get(`${API}/settings/email`) : Promise.resolve({ data: {} }),
+        isDeveloperOrMaster() ? axios.get(`${API}/sms/settings`) : Promise.resolve({ data: {} })
       ]);
       
       setRegionalPrefs(regional.data);
