@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Optional
 from task_models import Task, TaskCreate, TaskUpdate, TaskComment, TaskStats
 from auth_utils import get_current_user
+from sanitization import sanitize_dict
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
