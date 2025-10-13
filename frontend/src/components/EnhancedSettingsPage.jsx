@@ -263,6 +263,44 @@ const EnhancedSettingsPage = () => {
     }
   };
 
+  const handleSaveTwilioSettings = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/sms/settings`, {
+        account_sid: twilioSettings.account_sid,
+        auth_token: twilioSettings.auth_token,
+        phone_number: twilioSettings.phone_number,
+        whatsapp_number: twilioSettings.whatsapp_number
+      });
+      showMessage('success', 'Twilio settings saved successfully!');
+      loadAllPreferences();
+    } catch (err) {
+      showMessage('error', err.response?.data?.detail || 'Failed to save Twilio settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestTwilio = async () => {
+    setTestingTwilio(true);
+    setTwilioTestResult(null);
+    try {
+      const response = await axios.post(`${API}/sms/test-connection`);
+      setTwilioTestResult({ 
+        success: true, 
+        message: `Connected to ${response.data.data.friendly_name}`,
+        account_sid: response.data.data.account_sid
+      });
+    } catch (err) {
+      setTwilioTestResult({ 
+        success: false, 
+        message: err.response?.data?.detail || 'Connection failed' 
+      });
+    } finally {
+      setTestingTwilio(false);
+    }
+  };
+
   const languages = [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
