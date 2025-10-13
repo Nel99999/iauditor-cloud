@@ -19,6 +19,14 @@ class WorkflowStep(BaseModel):
     escalate_to_role: Optional[str] = None  # Role to escalate to if timeout
     required_permissions: List[str] = []  # Additional permissions required
     conditions: Optional[Dict[str, Any]] = None  # Conditional logic
+    
+    @field_validator('approver_role', 'approver_context', 'approval_type')
+    @classmethod
+    def validate_non_empty(cls, v, info):
+        if not v or (isinstance(v, str) and not v.strip()):
+            field_name = info.field_name
+            raise ValueError(f'{field_name} cannot be empty')
+        return v
 
 
 class WorkflowTemplate(BaseModel):
