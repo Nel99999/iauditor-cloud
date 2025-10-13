@@ -10,7 +10,7 @@ import os
 import tempfile
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://rbac-workflow.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://opscontrol-pro.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 def test_phase2_apis():
