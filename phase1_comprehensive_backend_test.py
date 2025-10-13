@@ -767,6 +767,7 @@ def test_inspections():
              f"Status: {response.status_code if response else 'No response'}", "medium")
     
     # Test 3: Start Inspection Execution
+    execution_id = None
     if template_id:
         execution_data = {
             "template_id": template_id,
@@ -775,7 +776,6 @@ def test_inspections():
         }
         response = make_request("POST", "/inspections/executions", execution_data, headers=auth_headers)
         success = response and response.status_code in [200, 201]
-        execution_id = None
         if success:
             execution_id = response.json().get("id")
         log_test("Inspections", "POST /api/inspections/executions (start execution)", success,
