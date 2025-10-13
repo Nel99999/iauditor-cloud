@@ -7,6 +7,7 @@ from workflow_models import (
 )
 from workflow_engine import WorkflowEngine
 from auth_utils import get_current_user
+from sanitization import sanitize_dict
 from datetime import datetime, timezone
 from typing import Optional, List
 import logging
