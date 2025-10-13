@@ -329,8 +329,12 @@ const EnhancedSettingsPage = () => {
                 <div className="flex items-center gap-6">
                   <div className="relative">
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
-                      {user?.photo_url ? (
-                        <img src={user.photo_url} alt="Profile" className="w-full h-full object-cover" />
+                      {user?.picture ? (
+                        <img 
+                          src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
+                          alt="Profile" 
+                          className="w-full h-full object-cover" 
+                        />
                       ) : (
                         user?.name?.charAt(0).toUpperCase()
                       )}
@@ -338,7 +342,7 @@ const EnhancedSettingsPage = () => {
                   </div>
                   <div>
                     <Label htmlFor="photo" className="cursor-pointer">
-                      <div className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-slate-50">
+                      <div className="flex items-center gap-2 px-4 py-2 border rounded-md hover:bg-slate-50 dark:hover:bg-slate-800">
                         <Upload className="h-4 w-4" />
                         Upload Photo
                       </div>
