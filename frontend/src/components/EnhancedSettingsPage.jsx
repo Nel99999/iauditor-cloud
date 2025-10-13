@@ -81,6 +81,17 @@ const EnhancedSettingsPage = () => {
   });
   const [testingEmail, setTestingEmail] = useState(false);
   const [emailTestResult, setEmailTestResult] = useState(null);
+  
+  // Twilio Settings
+  const [twilioSettings, setTwilioSettings] = useState({
+    account_sid: '',
+    auth_token: '',
+    phone_number: '',
+    whatsapp_number: '',
+    twilio_configured: false
+  });
+  const [testingTwilio, setTestingTwilio] = useState(false);
+  const [twilioTestResult, setTwilioTestResult] = useState(null);
 
   useEffect(() => {
     if (user) {
