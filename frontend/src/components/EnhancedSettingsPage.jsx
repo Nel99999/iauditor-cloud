@@ -757,6 +757,108 @@ const EnhancedSettingsPage = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Twilio SMS & WhatsApp Configuration */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Twilio SMS & WhatsApp</CardTitle>
+                <CardDescription>Configure Twilio for SMS and WhatsApp notifications</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Account SID</Label>
+                    <p className="text-xs text-muted-foreground mb-2">Your Twilio Account SID</p>
+                    <Input 
+                      type="text" 
+                      placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+                      value={twilioSettings.account_sid} 
+                      onChange={(e) => setTwilioSettings({...twilioSettings, account_sid: e.target.value})} 
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                  <div>
+                    <Label>Auth Token</Label>
+                    <p className="text-xs text-muted-foreground mb-2">Your Twilio Auth Token</p>
+                    <Input 
+                      type="password" 
+                      placeholder={twilioSettings.twilio_configured ? "Token configured" : "Your auth token"} 
+                      value={twilioSettings.auth_token} 
+                      onChange={(e) => setTwilioSettings({...twilioSettings, auth_token: e.target.value})} 
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Phone Number (SMS)</Label>
+                    <p className="text-xs text-muted-foreground mb-2">Your Twilio phone number for SMS</p>
+                    <Input 
+                      type="text" 
+                      placeholder="+1234567890" 
+                      value={twilioSettings.phone_number} 
+                      onChange={(e) => setTwilioSettings({...twilioSettings, phone_number: e.target.value})} 
+                      className="font-mono"
+                    />
+                  </div>
+                  <div>
+                    <Label>WhatsApp Number (Optional)</Label>
+                    <p className="text-xs text-muted-foreground mb-2">Twilio WhatsApp sandbox number</p>
+                    <Input 
+                      type="text" 
+                      placeholder="+14155238886" 
+                      value={twilioSettings.whatsapp_number} 
+                      onChange={(e) => setTwilioSettings({...twilioSettings, whatsapp_number: e.target.value})} 
+                      className="font-mono"
+                    />
+                  </div>
+                </div>
+
+                {twilioSettings.twilio_configured && (
+                  <Badge variant="outline" className="flex items-center gap-1 w-fit">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    Twilio Configured
+                  </Badge>
+                )}
+
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveTwilioSettings} disabled={loading || !twilioSettings.account_sid || !twilioSettings.auth_token}>
+                    <Save className="h-4 w-4 mr-2" />
+                    {loading ? 'Saving...' : 'Save Twilio Settings'}
+                  </Button>
+                  <Button variant="outline" onClick={handleTestTwilio} disabled={testingTwilio || !twilioSettings.twilio_configured}>
+                    <Key className="h-4 w-4 mr-2" />
+                    {testingTwilio ? 'Testing...' : 'Test Connection'}
+                  </Button>
+                </div>
+
+                {twilioTestResult && (
+                  <div className={`p-3 rounded-md border flex items-start gap-2 ${twilioTestResult.success ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                    {twilioTestResult.success ? <CheckCircle className="h-5 w-5 mt-0.5" /> : <XCircle className="h-5 w-5 mt-0.5" />}
+                    <div>
+                      <p className="font-medium">{twilioTestResult.success ? 'Twilio Connection Successful' : 'Connection Failed'}</p>
+                      <p className="text-sm">{twilioTestResult.message}</p>
+                      {twilioTestResult.account_sid && (
+                        <p className="text-xs mt-1">Account: {twilioTestResult.account_sid}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <h4 className="font-medium text-purple-900 mb-2">How to get Twilio Credentials:</h4>
+                  <ol className="list-decimal list-inside text-sm text-purple-800 space-y-1">
+                    <li>Sign up for free at <a href="https://www.twilio.com/try-twilio" target="_blank" rel="noopener noreferrer" className="underline">Twilio</a> (Get $15 credit)</li>
+                    <li>Go to Console Dashboard</li>
+                    <li>Copy your Account SID and Auth Token</li>
+                    <li>Purchase a phone number ($1/month)</li>
+                    <li>For WhatsApp: Go to Messaging → Try WhatsApp</li>
+                  </ol>
+                  <p className="text-xs text-purple-700 mt-2">Free trial includes $15 credit. SMS: ~$0.0075/msg, WhatsApp: ~$0.005/msg</p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         )}
 
