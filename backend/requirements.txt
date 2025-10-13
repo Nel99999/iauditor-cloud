@@ -79,3 +79,4 @@ redis==6.4.0
 slowapi==0.1.9
 aiohttp==3.13.0
 twilio==9.8.3
+bleach==6.2.0
