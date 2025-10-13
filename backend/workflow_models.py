@@ -12,21 +12,13 @@ class WorkflowStep(BaseModel):
     """Individual step in workflow"""
     step_number: int
     name: str
-    approver_role: str  # Role code that can approve this step
-    approver_context: str = "organization"  # 'own', 'team', 'branch', 'region', 'organization'
-    approval_type: str = "any"  # 'any' (any one approver) or 'all' (all must approve)
+    approver_role: constr(min_length=1)  # Role code that can approve this step - must not be empty
+    approver_context: constr(min_length=1) = "organization"  # Must not be empty
+    approval_type: constr(min_length=1) = "any"  # Must not be empty
     timeout_hours: Optional[int] = 24
     escalate_to_role: Optional[str] = None  # Role to escalate to if timeout
     required_permissions: List[str] = []  # Additional permissions required
     conditions: Optional[Dict[str, Any]] = None  # Conditional logic
-    
-    @field_validator('approver_role', 'approver_context', 'approval_type')
-    @classmethod
-    def validate_non_empty(cls, v, info):
-        if not v or (isinstance(v, str) and not v.strip()):
-            field_name = info.field_name
-            raise ValueError(f'{field_name} cannot be empty')
-        return v
 
 
 class WorkflowTemplate(BaseModel):
