@@ -124,6 +124,10 @@ async def update_task(
     
     update_data = task_data.model_dump(exclude_unset=True)
     
+    # Sanitize user inputs to prevent XSS
+    if 'title' in update_data or 'description' in update_data:
+        update_data = sanitize_dict(update_data, ['title', 'description'])
+    
     # Update assigned user name if changed
     if "assigned_to" in update_data and update_data["assigned_to"]:
         assigned_user = await db.users.find_one({"id": update_data["assigned_to"]}, {"name": 1})
