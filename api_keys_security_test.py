@@ -272,11 +272,11 @@ class APIKeysSecurityTester:
         status, response = self.test_endpoint_access("/settings/email", "GET", self.master_token, 200)
         if status == 200:
             api_key = response.get("sendgrid_api_key", "")
-            # Should be masked as "SG.test_k...defg"
-            expected_pattern = api_key.startswith("SG.test_k") and api_key.endswith("defg") and "..." in api_key
+            # Should be masked as "SG.test_...defg" (first 8 chars + ... + last 4 chars)
+            expected_pattern = api_key.startswith("SG.test_") and api_key.endswith("defg") and "..." in api_key
             passed = expected_pattern
             self.log_test("SendGrid key masking", passed, 
-                         f"Masked key: {api_key}, Expected pattern: SG.test_k...defg")
+                         f"Masked key: {api_key}, Expected pattern: SG.test_...defg")
         else:
             self.log_test("SendGrid key masking", False, f"Failed to get settings: {status}")
         
