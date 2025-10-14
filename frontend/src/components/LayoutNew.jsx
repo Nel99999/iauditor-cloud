@@ -134,7 +134,7 @@ const LayoutNew = ({ children }) => {
       items: [
         {
           name: 'Inspections',
-          icon: ClipboardList,
+          icon: ClipboardCheck,
           path: '/inspections',
         },
         {
