@@ -32,7 +32,7 @@ import InvitationManagementPage from "@/components/InvitationManagementPage";
 import InvitationManagementPageNew from "@/components/InvitationManagementPageNew";
 import DeveloperAdminPanel from "@/components/DeveloperAdminPanel";
 import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
-import SettingsPage from "@/components/EnhancedSettingsPage";
+import SettingsPage from "@/components/EnhancedSettingsPageNew";
 import MFASetupPage from "@/components/MFASetupPage";
 import MFASetupPageNew from "@/components/MFASetupPageNew";
 import InspectionsPage from "@/components/InspectionsPage";
