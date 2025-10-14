@@ -65,7 +65,7 @@
     "start": "NODE_NO_WARNINGS=1 craco start",
     "build": "craco build",
     "test": "craco test",
-    "tokens:build": "cd design-system/tokens && node ../../node_modules/style-dictionary/bin/style-dictionary.js build"
+    "tokens:build": "cd design-system/tokens && node ../../node_modules/style-dictionary/bin/style-dictionary.js build --config style-dictionary.config.js"
   },
   "browserslist": {
     "production": [
