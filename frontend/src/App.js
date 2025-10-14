@@ -76,9 +76,9 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <DashboardHomeNew />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -86,9 +86,9 @@ function App() {
               path="/organization"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <OrganizationPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -96,9 +96,9 @@ function App() {
               path="/inspections"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <InspectionsPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -106,9 +106,9 @@ function App() {
               path="/inspections/templates/new"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <TemplateBuilderPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -116,9 +116,9 @@ function App() {
               path="/inspections/templates/:templateId/edit"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <TemplateBuilderPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -126,9 +126,9 @@ function App() {
               path="/inspections/execute/:templateId"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <InspectionExecutionPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -136,9 +136,9 @@ function App() {
               path="/inspections/executions/:executionId"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <InspectionExecutionPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -146,9 +146,9 @@ function App() {
               path="/users"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <UserManagementPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -156,9 +156,9 @@ function App() {
               path="/roles"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <RoleManagementPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -166,9 +166,9 @@ function App() {
               path="/invitations"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <InvitationManagementPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -176,9 +176,9 @@ function App() {
               path="/checklists"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ChecklistsPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -186,9 +186,9 @@ function App() {
               path="/checklists/templates/new"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ChecklistTemplateBuilder />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -196,9 +196,9 @@ function App() {
               path="/checklists/templates/:templateId/edit"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ChecklistTemplateBuilder />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -206,9 +206,9 @@ function App() {
               path="/checklists/execute/:executionId"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ChecklistExecutionPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -216,9 +216,9 @@ function App() {
               path="/tasks"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <TasksPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -226,9 +226,9 @@ function App() {
               path="/schedule"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ComingSoon feature="Schedule" />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -236,9 +236,9 @@ function App() {
               path="/reports"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ReportsPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -247,9 +247,9 @@ function App() {
               path="/documents"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ComingSoon feature="Documents" />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -257,9 +257,9 @@ function App() {
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <ComingSoon feature="Profile" />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -267,9 +267,9 @@ function App() {
               path="/workflows"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <WorkflowDesigner />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -277,9 +277,9 @@ function App() {
               path="/approvals"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <MyApprovalsPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -287,9 +287,9 @@ function App() {
               path="/delegations"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <DelegationManager />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -297,9 +297,9 @@ function App() {
               path="/audit"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <AuditViewer />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -307,9 +307,9 @@ function App() {
               path="/analytics"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <AnalyticsDashboard />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -317,9 +317,9 @@ function App() {
               path="/groups"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <GroupsManagementPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -327,9 +327,9 @@ function App() {
               path="/bulk-import"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <BulkImportPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -337,9 +337,9 @@ function App() {
               path="/webhooks"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <WebhooksPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -347,9 +347,9 @@ function App() {
               path="/security/mfa"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <MFASetupPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -357,9 +357,9 @@ function App() {
               path="/settings"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <SettingsPage />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
@@ -367,9 +367,9 @@ function App() {
               path="/developer-admin"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <LayoutNew>
                     <DeveloperAdminPanel />
-                  </Layout>
+                  </LayoutNew>
                 </ProtectedRoute>
               }
             />
