@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import uuid
 
 # Configuration
-BASE_URL = "https://opscontrol-pro.preview.emergentagent.com/api"
+BASE_URL = "https://secureflow-mgmt.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage

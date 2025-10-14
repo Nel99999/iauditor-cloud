@@ -24,7 +24,7 @@ import os
 from typing import Dict, List, Optional
 
 # Configuration
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://opscontrol-pro.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://secureflow-mgmt.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 class Phase4ComprehensiveBackendTester:

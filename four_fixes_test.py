@@ -24,7 +24,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://opscontrol-pro.preview.emergentagent.com/api"
+BACKEND_URL = "https://secureflow-mgmt.preview.emergentagent.com/api"
 
 class BackendTester:
     def __init__(self):
