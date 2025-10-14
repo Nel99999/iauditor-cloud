@@ -48,102 +48,140 @@ const LayoutNew = ({ children }) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const menuItems = [
-    // Core
     {
-      name: 'Dashboard',
-      icon: LayoutDashboard,
-      path: '/dashboard',
-    },
-    // Organization
-    {
-      name: 'Users',
-      icon: Users,
-      path: '/users',
+      section: 'Main',
+      items: [
+        {
+          name: 'Dashboard',
+          icon: LayoutDashboard,
+          path: '/dashboard',
+        },
+      ],
     },
     {
-      name: 'Roles',
-      icon: Settings,
-      path: '/roles',
+      section: 'Organization',
+      items: [
+        {
+          name: 'Organization Structure',
+          icon: Building2,
+          path: '/organization',
+        },
+        {
+          name: 'User Management',
+          icon: Users,
+          path: '/users',
+        },
+        {
+          name: 'Roles',
+          icon: Shield,
+          path: '/roles',
+        },
+        {
+          name: 'Groups & Teams',
+          icon: Users,
+          path: '/groups',
+        },
+        {
+          name: 'Invitations',
+          icon: Mail,
+          path: '/invitations',
+        },
+        {
+          name: 'Bulk Import',
+          icon: Upload,
+          path: '/bulk-import',
+        },
+        {
+          name: 'Settings',
+          icon: Settings,
+          path: '/settings',
+        },
+        ...(user?.role === 'developer' ? [{
+          name: 'Developer Admin',
+          icon: Shield,
+          path: '/developer',
+        }] : []),
+      ],
     },
     {
-      name: 'Organization',
-      icon: Building2,
-      path: '/organization',
+      section: 'Workflows',
+      items: [
+        {
+          name: 'My Approvals',
+          icon: CheckCircle2,
+          path: '/approvals',
+        },
+        {
+          name: 'Workflow Designer',
+          icon: GitBranch,
+          path: '/workflows',
+        },
+        {
+          name: 'Delegations',
+          icon: UserCheck,
+          path: '/delegations',
+        },
+        {
+          name: 'Audit Trail',
+          icon: Shield,
+          path: '/audit',
+        },
+      ],
     },
     {
-      name: 'Groups',
-      icon: Users,
-      path: '/groups',
+      section: 'Operations',
+      items: [
+        {
+          name: 'Inspections',
+          icon: ClipboardList,
+          path: '/inspections',
+        },
+        {
+          name: 'Checklists',
+          icon: CheckSquare,
+          path: '/checklists',
+        },
+        {
+          name: 'Tasks',
+          icon: ListTodo,
+          path: '/tasks',
+        },
+        {
+          name: 'Schedule',
+          icon: Calendar,
+          path: '/schedule',
+        },
+      ],
     },
     {
-      name: 'Invitations',
-      icon: Mail,
-      path: '/invitations',
-    },
-    // Workflows
-    {
-      name: 'Workflows',
-      icon: FileText,
-      path: '/workflows',
-    },
-    {
-      name: 'My Approvals',
-      icon: CheckSquare,
-      path: '/approvals',
-    },
-    {
-      name: 'Delegations',
-      icon: Users,
-      path: '/delegations',
-    },
-    {
-      name: 'Audit Trail',
-      icon: Settings,
-      path: '/audit',
-    },
-    // Operations
-    {
-      name: 'Inspections',
-      icon: ClipboardList,
-      path: '/inspections',
+      section: 'Insights',
+      items: [
+        {
+          name: 'Reports',
+          icon: FileText,
+          path: '/reports',
+        },
+        {
+          name: 'Analytics',
+          icon: BarChart3,
+          path: '/analytics',
+        },
+        {
+          name: 'Webhooks',
+          icon: Webhook,
+          path: '/webhooks',
+        },
+      ],
     },
     {
-      name: 'Checklists',
-      icon: CheckSquare,
-      path: '/checklists',
-    },
-    {
-      name: 'Tasks',
-      icon: CheckSquare,
-      path: '/tasks',
-    },
-    // Insights
-    {
-      name: 'Reports',
-      icon: FileText,
-      path: '/reports',
-    },
-    {
-      name: 'Analytics',
-      icon: FileText,
-      path: '/analytics',
-    },
-    // Integrations
-    {
-      name: 'Webhooks',
-      icon: Settings,
-      path: '/webhooks',
-    },
-    {
-      name: 'Bulk Import',
-      icon: FileText,
-      path: '/bulk-import',
-    },
-    // Settings
-    {
-      name: 'Settings',
-      icon: Settings,
-      path: '/settings',
+      section: 'Resources',
+      items: [
+        {
+          name: 'Documents',
+          icon: FolderOpen,
+          path: '/documents',
+        },
+      ],
     },
   ];
 
