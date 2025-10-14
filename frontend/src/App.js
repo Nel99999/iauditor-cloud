@@ -71,6 +71,7 @@ function App() {
             {/* Design System Showcase - Public route for testing */}
             <Route path="/design-system" element={<DesignSystemShowcase />} />
             <Route path="/visual-polish" element={<VisualPolishShowcase />} />
+            <Route path="/theme" element={<ThemeShowcase />} />
             
             {/* Protected routes with Layout */}
             <Route
