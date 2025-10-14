@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   CheckSquare,
   ClipboardList,
+  ClipboardCheck,
   Users,
   Building2,
   Settings,
