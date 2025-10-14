@@ -52,9 +52,11 @@ class BackendTester:
     
     def test_authentication_apis(self):
         """Test 2: Authentication APIs - Login and JWT token verification"""
-        # Try with existing test user from previous tests
+        # Create a new test user with unique email
+        import uuid
+        unique_id = uuid.uuid4().hex[:8]
         test_user = {
-            "email": "testuser.222072@example.com",
+            "email": f"uitest.{unique_id}@example.com",
             "password": "SecurePassword123!",
             "name": "UI Test User",
             "organization_name": "UI Test Organization"
