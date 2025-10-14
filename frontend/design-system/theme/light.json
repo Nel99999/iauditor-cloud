@@ -1,0 +1,48 @@
+{
+  "color": {
+    "surface": {
+      "base": {
+        "value": "oklch(98% 0.005 250)",
+        "comment": "Light mode background"
+      },
+      "elevated": {
+        "value": "oklch(100% 0 0)",
+        "comment": "Pure white cards"
+      },
+      "overlay": {
+        "value": "oklch(98% 0.005 250 / 0.95)"
+      }
+    },
+    "glass": {
+      "background": {
+        "value": "oklch(98% 0.005 250 / 0.8)"
+      },
+      "border": {
+        "value": "oklch(85% 0.01 250 / 0.3)"
+      }
+    },
+    "text": {
+      "primary": {
+        "value": "oklch(20% 0.01 250)"
+      },
+      "secondary": {
+        "value": "oklch(45% 0.015 250)"
+      },
+      "disabled": {
+        "value": "oklch(65% 0.01 250)"
+      }
+    },
+    "neutral": {
+      "50": { "value": "oklch(15% 0.015 250)" },
+      "100": { "value": "oklch(24% 0.015 250)" },
+      "200": { "value": "oklch(32% 0.015 250)" },
+      "300": { "value": "oklch(40% 0.015 250)" },
+      "400": { "value": "oklch(50% 0.02 250)" },
+      "500": { "value": "oklch(60% 0.02 250)" },
+      "600": { "value": "oklch(75% 0.02 250)" },
+      "700": { "value": "oklch(88% 0.015 250)" },
+      "800": { "value": "oklch(95% 0.01 250)" },
+      "900": { "value": "oklch(98% 0.01 250)" }
+    }
+  }
+}
