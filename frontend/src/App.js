@@ -76,7 +76,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <DashboardHome />
+                    <DashboardHomeNew />
                   </Layout>
                 </ProtectedRoute>
               }
