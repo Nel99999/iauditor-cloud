@@ -9,9 +9,13 @@ export { default as EmptyState } from './EmptyState';
 export { default as Spinner } from './Spinner';
 export { default as ModernTable } from './ModernTable';
 export { default as ModernPageWrapper } from './ModernPageWrapper';
+export { default as BottomSheet } from './BottomSheet';
 
 // Navigation Components
 export { default as BottomNav } from './Navigation/BottomNav';
 export { default as NavRail } from './Navigation/NavRail';
 export { default as AdaptiveNav } from './Navigation/AdaptiveNav';
 export { NAV_MODEL, MOBILE_NAV_ITEMS, TABLET_NAV_ITEMS } from './Navigation/navigationConfig';
+
+// Hooks
+export { default as useBottomSheet } from '../hooks/useBottomSheet';
