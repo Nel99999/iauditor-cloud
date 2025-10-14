@@ -33,7 +33,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   className = '',
 }) => {
   const [currentSnap, setCurrentSnap] = React.useState<BottomSheetSnapPoint>(snapPoint);
-  const [isDragging, setIsDragging] = React.useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const startYRef = useRef(0);
   const currentYRef = useRef(0);
