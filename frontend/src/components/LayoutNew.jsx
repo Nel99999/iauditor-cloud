@@ -24,6 +24,17 @@ import {
   Search,
   User,
   Mail,
+  Shield,
+  Upload,
+  CheckCircle2,
+  GitBranch,
+  UserCheck,
+  Activity,
+  BarChart3,
+  Webhook,
+  ListTodo,
+  Calendar,
+  FolderOpen,
 } from 'lucide-react';
 import './LayoutNew.css';
 
