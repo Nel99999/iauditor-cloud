@@ -100,7 +100,7 @@ const LayoutNew = ({ children }) => {
         ...(user?.role === 'developer' ? [{
           name: 'Developer Admin',
           icon: Shield,
-          path: '/developer',
+          path: '/developer-admin',
         }] : []),
       ],
     },
