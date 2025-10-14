@@ -49,6 +49,24 @@ const LayoutNew = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  // Gesture support for mobile - swipe right to go back
+  const swipeHandlers = useSwipeable({
+    onSwipedRight: (eventData) => {
+      // Only enable on mobile (screen width < 768px)
+      if (window.innerWidth < 768) {
+        // Only go back if not on home/dashboard and swipe started from left edge
+        if (location.pathname !== '/' && location.pathname !== '/dashboard' && eventData.initial[0] < 50) {
+          navigate(-1);
+        }
+      }
+    },
+    trackMouse: false, // Disable mouse tracking (desktop)
+    trackTouch: true,  // Enable touch tracking (mobile)
+    delta: 50,         // Minimum swipe distance
+    preventScrollOnSwipe: false, // Allow vertical scrolling
+    swipeDuration: 500, // Maximum swipe duration
+  });
+
   const menuItems = [
     {
       section: 'Main',
