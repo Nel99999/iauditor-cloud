@@ -18,6 +18,7 @@ import RegisterPage from "@/components/RegisterPage";
 import RegisterPageNew from "@/components/RegisterPageNew";
 import ForgotPasswordPage from "@/components/ForgotPasswordPage";
 import ForgotPasswordPageNew from "@/components/ForgotPasswordPageNew";
+import ComponentDemo from "@/components/ComponentDemo";
 import ResetPasswordPage from "@/components/ResetPasswordPage";
 import ResetPasswordPageNew from "@/components/ResetPasswordPageNew";
 import DashboardHome from "@/components/DashboardHome";
