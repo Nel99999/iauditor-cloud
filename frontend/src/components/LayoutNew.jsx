@@ -48,9 +48,17 @@ const LayoutNew = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [swipeProgress, setSwipeProgress] = useState(0);
 
   // Gesture support for mobile - swipe right to go back
   const swipeHandlers = useSwipeable({
+    onSwiping: (eventData) => {
+      // Show visual feedback during swipe
+      if (window.innerWidth < 768 && eventData.dir === 'Right' && eventData.initial[0] < 50) {
+        const progress = Math.min(eventData.deltaX / 100, 1);
+        setSwipeProgress(progress);
+      }
+    },
     onSwipedRight: (eventData) => {
       // Only enable on mobile (screen width < 768px)
       if (window.innerWidth < 768) {
@@ -59,6 +67,10 @@ const LayoutNew = ({ children }) => {
           navigate(-1);
         }
       }
+      setSwipeProgress(0);
+    },
+    onSwiped: () => {
+      setSwipeProgress(0);
     },
     trackMouse: false, // Disable mouse tracking (desktop)
     trackTouch: true,  // Enable touch tracking (mobile)
