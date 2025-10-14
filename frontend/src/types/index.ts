@@ -402,13 +402,15 @@ export interface ButtonProps {
   className?: string;
 }
 
-export type CardPadding = 'sm' | 'md' | 'lg';
+export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
 export interface CardProps {
   padding?: CardPadding;
   className?: string;
   children: React.ReactNode;
   style?: React.CSSProperties;
+  onClick?: () => void;
+  hover?: boolean;
 }
 
 export type GlassCardBlur = 'sm' | 'md' | 'lg' | 'xl';
