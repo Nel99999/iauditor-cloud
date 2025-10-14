@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NotificationCenter from '@/components/NotificationCenter';
 import GlobalSearch from '@/components/GlobalSearch';
+import { AdaptiveNav, MOBILE_NAV_ITEMS } from '@/design-system/components';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 import {
