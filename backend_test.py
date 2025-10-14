@@ -60,7 +60,7 @@ class BackendHealthChecker:
         register_data = {
             "email": test_email,
             "password": test_password,
-            "full_name": "Health Check User",
+            "name": "Health Check User",
             "organization_name": "Health Check Org"
         }
         
