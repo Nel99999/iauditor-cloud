@@ -520,6 +520,9 @@ const Layout = ({ children }) => {
 
       {/* Global Search Modal */}
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      
+      {/* Adaptive Navigation (Mobile/Tablet) */}
+      <AdaptiveNav items={MOBILE_NAV_ITEMS} />
     </div>
   );
 };
