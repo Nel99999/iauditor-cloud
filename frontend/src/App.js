@@ -65,7 +65,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPageNew />} />
             <Route path="/login-old" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register" element={<RegisterPageNew />} />
+            <Route path="/register-old" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             
