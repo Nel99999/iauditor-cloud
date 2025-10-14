@@ -23,6 +23,7 @@ import {
   Bell,
   Search,
   User,
+  Mail,
 } from 'lucide-react';
 import './LayoutNew.css';
 
