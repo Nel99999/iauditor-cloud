@@ -31,6 +31,7 @@ import RoleManagementPageNew from "@/components/RoleManagementPageNew";
 import InvitationManagementPage from "@/components/InvitationManagementPage";
 import InvitationManagementPageNew from "@/components/InvitationManagementPageNew";
 import DeveloperAdminPanel from "@/components/DeveloperAdminPanel";
+import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
 import SettingsPage from "@/components/EnhancedSettingsPage";
 import MFASetupPage from "@/components/MFASetupPage";
 import MFASetupPageNew from "@/components/MFASetupPageNew";
@@ -51,10 +52,13 @@ import TasksPageNew from "@/components/TasksPageNew";
 import ReportsPage from "@/components/ReportsPage";
 import ReportsPageNew from "@/components/ReportsPageNew";
 import WorkflowDesigner from "@/components/WorkflowDesigner";
+import WorkflowDesignerNew from "@/components/WorkflowDesignerNew";
 import MyApprovalsPage from "@/components/MyApprovalsPage";
 import MyApprovalsPageNew from "@/components/MyApprovalsPageNew";
 import DelegationManager from "@/components/DelegationManager";
+import DelegationManagerNew from "@/components/DelegationManagerNew";
 import AuditViewer from "@/components/AuditViewer";
+import AuditViewerNew from "@/components/AuditViewerNew";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import AnalyticsDashboardNew from "@/components/AnalyticsDashboardNew";
 import GroupsManagementPage from "@/components/GroupsManagementPage";
@@ -294,7 +298,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <WorkflowDesigner />
+                    <WorkflowDesignerNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -314,7 +318,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <DelegationManager />
+                    <DelegationManagerNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -324,7 +328,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <AuditViewer />
+                    <AuditViewerNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -394,7 +398,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <DeveloperAdminPanel />
+                    <DeveloperAdminPanelNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
