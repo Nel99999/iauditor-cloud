@@ -56,8 +56,7 @@ class BackendTester:
         test_user = {
             "email": "testuser.222072@example.com",
             "password": "SecurePassword123!",
-            "full_name": "UI Test User",
-            "create_organization": True,
+            "name": "UI Test User",
             "organization_name": "UI Test Organization"
         }
         
