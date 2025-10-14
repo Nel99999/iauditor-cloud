@@ -4,7 +4,7 @@ from datetime import datetime
 import uuid
 
 class UserDeleteFunctionalityTester:
-    def __init__(self, base_url="https://modern-workflow-ui.preview.emergentagent.com"):
+    def __init__(self, base_url="https://ui-refresh-ops.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None

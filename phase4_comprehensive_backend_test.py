@@ -24,7 +24,7 @@ import os
 from typing import Dict, List, Optional
 
 # Configuration
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://modern-workflow-ui.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://ui-refresh-ops.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 class Phase4ComprehensiveBackendTester:
