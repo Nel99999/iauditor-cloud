@@ -23,7 +23,7 @@ import base64
 import io
 
 # Configuration
-BASE_URL = "https://ops-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://modern-workflow-ui.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage

@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://ops-revamp.preview.emergentagent.com/api"
+BACKEND_URL = "https://modern-workflow-ui.preview.emergentagent.com/api"
 
 class BackendTester:
     def __init__(self):

@@ -16,7 +16,7 @@ import time
 from datetime import datetime
 import uuid
 
-BASE_URL = "https://ops-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://modern-workflow-ui.preview.emergentagent.com/api"
 
 class ProtocolTester:
     def __init__(self):

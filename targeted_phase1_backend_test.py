@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import uuid
 
 # Configuration
-BASE_URL = "https://ops-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://modern-workflow-ui.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage
