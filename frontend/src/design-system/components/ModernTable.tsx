@@ -1,5 +1,5 @@
 import React from 'react';
-import { GlassCard } from '@/design-system/components';
+import GlassCard from './GlassCard';
 import { motion } from 'framer-motion';
 import './ModernTable.css';
 
