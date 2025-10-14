@@ -42,6 +42,7 @@ import BulkImportPage from "@/components/BulkImportPage";
 import WebhooksPage from "@/components/WebhooksPage";
 import DesignSystemShowcase from "@/components/DesignSystemShowcase";
 import VisualPolishShowcase from "@/components/VisualPolishShowcase";
+import ThemeShowcase from "@/components/ThemeShowcase";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
