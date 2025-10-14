@@ -1,0 +1,202 @@
+/**
+ * Global Modern Overrides
+ * This stylesheet modernizes ALL existing components globally
+ * Applies glassmorphism and modern styling to Tailwind components
+ */
+
+/* Apply glassmorphism to all card-like elements */
+[class*="bg-white"],
+[class*="bg-slate-50"],
+.card,
+.Card,
+[class*="CardContent"],
+[class*="rounded-lg"][class*="bg-"],
+[class*="shadow"][class*="bg-"] {
+  background: var(--color-glass-background) !important;
+  backdrop-filter: blur(var(--blur-glass)) !important;
+  -webkit-backdrop-filter: blur(var(--blur-glass)) !important;
+  border: 1px solid var(--color-glass-border) !important;
+}
+
+/* Modernize all buttons */
+button:not(.ds-button):not([class*="toast"]):not([class*="nav-item"]) {
+  font-weight: var(--typography-weight-semibold) !important;
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+button:not(.ds-button):hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Modernize inputs */
+input:not(.ds-input),
+textarea:not(.ds-input),
+select:not(.ds-input) {
+  background-color: var(--color-surface-elevated) !important;
+  border: 1px solid var(--color-neutral-300) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard) !important;
+}
+
+input:not(.ds-input):focus,
+textarea:not(.ds-input):focus,
+select:not(.ds-input):focus {
+  border-color: var(--color-brand-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-brand-primary) 20%, transparent) !important;
+  outline: none !important;
+}
+
+/* Modernize tables */
+table:not(.modern-table) {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+table:not(.modern-table) thead {
+  background: color-mix(in oklch, var(--color-brand-primary) 10%, transparent) !important;
+}
+
+table:not(.modern-table) thead th {
+  font-weight: var(--typography-weight-semibold) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--spacing-4) !important;
+  border-bottom: 2px solid var(--color-brand-primary) !important;
+}
+
+table:not(.modern-table) tbody tr {
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard) !important;
+}
+
+table:not(.modern-table) tbody tr:hover {
+  background-color: var(--color-neutral-100) !important;
+}
+
+table:not(.modern-table) tbody td {
+  padding: var(--spacing-4) !important;
+  border-bottom: 1px solid var(--color-neutral-200) !important;
+}
+
+/* Modernize badges/tags */
+[class*="badge"],
+[class*="tag"],
+[class*="Badge"] {
+  border-radius: var(--radius-full) !important;
+  font-weight: var(--typography-weight-medium) !important;
+  padding: var(--spacing-1) var(--spacing-3) !important;
+}
+
+/* Primary color overrides */
+[class*="bg-blue"],
+[class*="bg-primary"] {
+  background-color: var(--color-brand-primary) !important;
+  color: var(--color-brand-primary-contrast) !important;
+}
+
+[class*="text-blue"],
+[class*="text-primary"] {
+  color: var(--color-brand-primary) !important;
+}
+
+[class*="border-blue"],
+[class*="border-primary"] {
+  border-color: var(--color-brand-primary) !important;
+}
+
+/* Success color overrides */
+[class*="bg-green"] {
+  background-color: var(--color-semantic-success) !important;
+}
+
+[class*="text-green"] {
+  color: var(--color-semantic-success) !important;
+}
+
+/* Error color overrides */
+[class*="bg-red"] {
+  background-color: var(--color-semantic-error) !important;
+}
+
+[class*="text-red"] {
+  color: var(--color-semantic-error) !important;
+}
+
+/* Warning color overrides */
+[class*="bg-yellow"],
+[class*="bg-orange"] {
+  background-color: var(--color-semantic-warning) !important;
+}
+
+[class*="text-yellow"],
+[class*="text-orange"] {
+  color: var(--color-semantic-warning) !important;
+}
+
+/* Modernize modals/dialogs */
+[role="dialog"],
+[class*="modal"],
+[class*="Modal"] {
+  background: var(--color-glass-background) !important;
+  backdrop-filter: blur(var(--blur-xl)) !important;
+  -webkit-backdrop-filter: blur(var(--blur-xl)) !important;
+  border: 1px solid var(--color-glass-border) !important;
+  box-shadow: var(--shadow-xl) !important;
+  border-radius: var(--radius-xl) !important;
+}
+
+/* Smooth scrollbars */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-600);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-500);
+}
+
+/* Add micro-interactions to links */
+a:not(.ds-button) {
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard) !important;
+}
+
+a:not(.ds-button):hover {
+  opacity: 0.8;
+}
+
+/* Modernize form labels */
+label {
+  font-weight: var(--typography-weight-medium) !important;
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--spacing-2) !important;
+}
+
+/* Add elevation to dropdowns */
+[class*="dropdown"],
+[class*="Dropdown"],
+[class*="menu"],
+[class*="Menu"] {
+  background: var(--color-glass-background) !important;
+  backdrop-filter: blur(var(--blur-glass)) !important;
+  border: 1px solid var(--color-glass-border) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* Modernize alerts */
+[class*="alert"],
+[class*="Alert"] {
+  border-radius: var(--radius-lg) !important;
+  border-left-width: 4px !important;
+}
