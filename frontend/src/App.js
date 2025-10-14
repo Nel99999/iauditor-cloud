@@ -1,5 +1,7 @@
 import React from "react";
 import "@/App.css";
+// Import Design System tokens FIRST
+import "@/../design-system/tokens/base.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
