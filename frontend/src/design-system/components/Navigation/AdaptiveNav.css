@@ -1,0 +1,23 @@
+/* Adaptive Navigation Container Styles */
+
+/* Adjust main content padding based on navigation type */
+@media (max-width: 600px) {
+  /* Mobile: Bottom nav */
+  .main-content {
+    padding-bottom: 80px; /* Space for bottom nav */
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  /* Tablet: Nav rail */
+  .main-content {
+    margin-left: 72px; /* Space for nav rail */
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Desktop: Uses existing sidebar */
+  .main-content {
+    /* Existing sidebar styles apply */
+  }
+}
