@@ -39,6 +39,7 @@ import GroupsManagementPage from "@/components/GroupsManagementPage";
 import BulkImportPage from "@/components/BulkImportPage";
 import WebhooksPage from "@/components/WebhooksPage";
 import DesignSystemShowcase from "@/components/DesignSystemShowcase";
+import VisualPolishShowcase from "@/components/VisualPolishShowcase";
 
 // Placeholder components for future features
 const ComingSoon = ({ feature }) => (
