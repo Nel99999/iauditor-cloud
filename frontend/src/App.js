@@ -9,6 +9,7 @@ import "@/i18n/config";
 import RouteMiddleware from "@/routing/RouteMiddleware";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Layout from "@/components/Layout";
+import LayoutNew from "@/components/LayoutNew";
 import LoginPage from "@/components/LoginPage";
 import LoginPageNew from "@/components/LoginPageNew";
 import RegisterPage from "@/components/RegisterPage";
