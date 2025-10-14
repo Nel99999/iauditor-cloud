@@ -17,33 +17,52 @@ import LoginPageNew from "@/components/LoginPageNew";
 import RegisterPage from "@/components/RegisterPage";
 import RegisterPageNew from "@/components/RegisterPageNew";
 import ForgotPasswordPage from "@/components/ForgotPasswordPage";
+import ForgotPasswordPageNew from "@/components/ForgotPasswordPageNew";
 import ResetPasswordPage from "@/components/ResetPasswordPage";
+import ResetPasswordPageNew from "@/components/ResetPasswordPageNew";
 import DashboardHome from "@/components/DashboardHome";
 import DashboardHomeNew from "@/components/DashboardHomeNew";
 import OrganizationPage from "@/components/OrganizationPage";
+import OrganizationPageNew from "@/components/OrganizationPageNew";
 import UserManagementPage from "@/components/UserManagementPage";
+import UserManagementPageNew from "@/components/UserManagementPageNew";
 import RoleManagementPage from "@/components/RoleManagementPage";
+import RoleManagementPageNew from "@/components/RoleManagementPageNew";
 import InvitationManagementPage from "@/components/InvitationManagementPage";
+import InvitationManagementPageNew from "@/components/InvitationManagementPageNew";
 import DeveloperAdminPanel from "@/components/DeveloperAdminPanel";
 import SettingsPage from "@/components/EnhancedSettingsPage";
 import MFASetupPage from "@/components/MFASetupPage";
+import MFASetupPageNew from "@/components/MFASetupPageNew";
 import InspectionsPage from "@/components/InspectionsPage";
+import InspectionsPageNew from "@/components/InspectionsPageNew";
 import TemplateBuilderPage from "@/components/TemplateBuilderPage";
+import TemplateBuilderPageNew from "@/components/TemplateBuilderPageNew";
 import InspectionExecutionPage from "@/components/InspectionExecutionPage";
+import InspectionExecutionPageNew from "@/components/InspectionExecutionPageNew";
 import ChecklistsPage from "@/components/ChecklistsPage";
+import ChecklistsPageNew from "@/components/ChecklistsPageNew";
 import ChecklistTemplateBuilder from "@/components/ChecklistTemplateBuilder";
+import ChecklistTemplateBuilderNew from "@/components/ChecklistTemplateBuilderNew";
 import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
+import ChecklistExecutionPageNew from "@/components/ChecklistExecutionPageNew";
 import TasksPage from "@/components/TasksPage";
 import TasksPageNew from "@/components/TasksPageNew";
 import ReportsPage from "@/components/ReportsPage";
+import ReportsPageNew from "@/components/ReportsPageNew";
 import WorkflowDesigner from "@/components/WorkflowDesigner";
 import MyApprovalsPage from "@/components/MyApprovalsPage";
+import MyApprovalsPageNew from "@/components/MyApprovalsPageNew";
 import DelegationManager from "@/components/DelegationManager";
 import AuditViewer from "@/components/AuditViewer";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import AnalyticsDashboardNew from "@/components/AnalyticsDashboardNew";
 import GroupsManagementPage from "@/components/GroupsManagementPage";
+import GroupsManagementPageNew from "@/components/GroupsManagementPageNew";
 import BulkImportPage from "@/components/BulkImportPage";
+import BulkImportPageNew from "@/components/BulkImportPageNew";
 import WebhooksPage from "@/components/WebhooksPage";
+import WebhooksPageNew from "@/components/WebhooksPageNew";
 import DesignSystemShowcase from "@/components/DesignSystemShowcase";
 import VisualPolishShowcase from "@/components/VisualPolishShowcase";
 import ThemeShowcase from "@/components/ThemeShowcase";
@@ -70,8 +89,8 @@ function App() {
             <Route path="/login-old" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPageNew />} />
             <Route path="/register-old" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPageNew />} />
+            <Route path="/reset-password" element={<ResetPasswordPageNew />} />
             
             {/* Design System Showcase - Public route for testing */}
             <Route path="/design-system" element={<DesignSystemShowcase />} />
@@ -94,7 +113,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <OrganizationPage />
+                    <OrganizationPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -104,7 +123,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionsPage />
+                    <InspectionsPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -114,7 +133,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TemplateBuilderPage />
+                    <TemplateBuilderPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -124,7 +143,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TemplateBuilderPage />
+                    <TemplateBuilderPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -134,7 +153,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionExecutionPage />
+                    <InspectionExecutionPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -144,7 +163,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionExecutionPage />
+                    <InspectionExecutionPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -154,7 +173,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <UserManagementPage />
+                    <UserManagementPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -164,7 +183,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <RoleManagementPage />
+                    <RoleManagementPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -174,7 +193,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InvitationManagementPage />
+                    <InvitationManagementPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -184,7 +203,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistsPage />
+                    <ChecklistsPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -194,7 +213,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistTemplateBuilder />
+                    <ChecklistTemplateBuilderNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -204,7 +223,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistTemplateBuilder />
+                    <ChecklistTemplateBuilderNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -214,7 +233,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistExecutionPage />
+                    <ChecklistExecutionPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -244,7 +263,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ReportsPage />
+                    <ReportsPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -285,7 +304,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <MyApprovalsPage />
+                    <MyApprovalsPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -315,7 +334,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <AnalyticsDashboard />
+                    <AnalyticsDashboardNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -325,7 +344,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <GroupsManagementPage />
+                    <GroupsManagementPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -335,7 +354,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <BulkImportPage />
+                    <BulkImportPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -345,7 +364,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <WebhooksPage />
+                    <WebhooksPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -355,7 +374,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <MFASetupPage />
+                    <MFASetupPageNew />
                   </LayoutNew>
                 </ProtectedRoute>
               }
