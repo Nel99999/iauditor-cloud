@@ -10,6 +10,7 @@ import RouteMiddleware from "@/routing/RouteMiddleware";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Layout from "@/components/Layout";
 import LoginPage from "@/components/LoginPage";
+import LoginPageNew from "@/components/LoginPageNew";
 import RegisterPage from "@/components/RegisterPage";
 import ForgotPasswordPage from "@/components/ForgotPasswordPage";
 import ResetPasswordPage from "@/components/ResetPasswordPage";
