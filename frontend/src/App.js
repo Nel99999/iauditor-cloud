@@ -13,6 +13,7 @@ import LayoutNew from "@/components/LayoutNew";
 import LoginPage from "@/components/LoginPage";
 import LoginPageNew from "@/components/LoginPageNew";
 import RegisterPage from "@/components/RegisterPage";
+import RegisterPageNew from "@/components/RegisterPageNew";
 import ForgotPasswordPage from "@/components/ForgotPasswordPage";
 import ResetPasswordPage from "@/components/ResetPasswordPage";
 import DashboardHome from "@/components/DashboardHome";
