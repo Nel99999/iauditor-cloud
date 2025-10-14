@@ -93,6 +93,7 @@ function App() {
             <Route path="/login" element={<LoginPageNew />} />
             <Route path="/login-old" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPageNew />} />
+            <Route path="/demo" element={<ComponentDemo />} />
             <Route path="/register-old" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPageNew />} />
             <Route path="/reset-password" element={<ResetPasswordPageNew />} />
