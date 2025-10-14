@@ -136,7 +136,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 
           {/* Bottom Sheet */}
           <motion.div
-            ref={sheetRef}
             className={`bottom-sheet bottom-sheet--${currentSnap} ${className}`}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
@@ -153,6 +152,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             style={{
               height: SNAP_POINTS[currentSnap],
             }}
+            ref={sheetRef}
             {...(enableSwipe ? swipeHandlers : {})}
           >
             {/* Drag Handle */}
