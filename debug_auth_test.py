@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test auth endpoints to see where the issue is
-base_url = "https://ui-refresh-ops.preview.emergentagent.com"
+base_url = "https://ux-overhaul-7.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user
