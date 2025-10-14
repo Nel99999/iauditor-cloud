@@ -8,6 +8,7 @@ export { default as Toast, ToastContainer } from './Toast';
 export { default as EmptyState } from './EmptyState';
 export { default as Spinner } from './Spinner';
 export { default as ModernTable } from './ModernTable';
+export { default as ModernPageWrapper } from './ModernPageWrapper';
 
 // Navigation Components
 export { default as BottomNav } from './Navigation/BottomNav';
