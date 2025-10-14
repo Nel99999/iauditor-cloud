@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Backend Testing for UI/UX Phase 1 & 2 - Verification that backend APIs still work after frontend CSS/React component updates."
+user_problem_statement: "Frontend Testing for UI/UX Phase 1 & 2 - Comprehensive testing of design system implementation, theme switching, component functionality, and responsive design."
 
 backend:
   - task: "UI/UX Phase 1 & 2 Backend Verification Testing"
