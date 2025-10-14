@@ -224,30 +224,35 @@ const LayoutNew = ({ children }) => {
 
               {/* Navigation */}
               <nav className="sidebar-nav">
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
-                  const active = isActive(item.path);
-                  
-                  return (
-                    <motion.button
-                      key={item.path}
-                      onClick={() => navigate(item.path)}
-                      className={`nav-item ${active ? 'nav-item--active' : ''}`}
-                      whileHover={{ x: 4 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Icon size={20} />
-                      <span>{item.name}</span>
-                      {active && (
-                        <motion.div
-                          className="active-indicator"
-                          layoutId="activeIndicator"
-                          transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
-                        />
-                      )}
-                    </motion.button>
-                  );
-                })}
+                {menuItems.map((section, sectionIndex) => (
+                  <div key={sectionIndex} className="nav-section">
+                    <div className="nav-section-title">{section.section}</div>
+                    {section.items.map((item) => {
+                      const Icon = item.icon;
+                      const active = isActive(item.path);
+                      
+                      return (
+                        <motion.button
+                          key={item.path}
+                          onClick={() => navigate(item.path)}
+                          className={`nav-item ${active ? 'nav-item--active' : ''}`}
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Icon size={20} />
+                          <span>{item.name}</span>
+                          {active && (
+                            <motion.div
+                              className="active-indicator"
+                              layoutId="activeIndicator"
+                              transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+                            />
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                ))}
               </nav>
 
               {/* User Profile */}
