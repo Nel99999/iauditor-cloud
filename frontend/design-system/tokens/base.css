@@ -1,0 +1,133 @@
+/**
+ * Design System Base Styles
+ * Import tokens and set up global styles
+ */
+
+/* Import generated tokens */
+@import './build/tokens.css';
+
+/* Base body styles using tokens */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--typography-family-base);
+  font-size: var(--typography-size-base);
+  font-weight: var(--typography-weight-normal);
+  line-height: 1.5;
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--motion-duration-base) var(--motion-easing-standard),
+              color var(--motion-duration-base) var(--motion-easing-standard);
+}
+
+/* Light theme overrides */
+[data-theme="light"] {
+  --color-surface-base: oklch(98% 0.005 250);
+  --color-surface-elevated: oklch(100% 0 0);
+  --color-surface-overlay: oklch(98% 0.005 250 / 0.95);
+  --color-glass-background: oklch(98% 0.005 250 / 0.8);
+  --color-glass-border: oklch(85% 0.01 250 / 0.3);
+  --color-text-primary: oklch(20% 0.01 250);
+  --color-text-secondary: oklch(45% 0.015 250);
+  --color-text-disabled: oklch(65% 0.01 250);
+  --color-neutral-50: oklch(15% 0.015 250);
+  --color-neutral-100: oklch(24% 0.015 250);
+  --color-neutral-200: oklch(32% 0.015 250);
+  --color-neutral-300: oklch(40% 0.015 250);
+  --color-neutral-400: oklch(50% 0.02 250);
+  --color-neutral-500: oklch(60% 0.02 250);
+  --color-neutral-600: oklch(75% 0.02 250);
+  --color-neutral-700: oklch(88% 0.015 250);
+  --color-neutral-800: oklch(95% 0.01 250);
+  --color-neutral-900: oklch(98% 0.01 250);
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color var(--motion-duration-base) var(--motion-easing-standard),
+              border-color var(--motion-duration-base) var(--motion-easing-standard),
+              color var(--motion-duration-base) var(--motion-easing-standard);
+}
+
+/* Disable transitions for elements that shouldn't animate */
+*:focus,
+*:active,
+input,
+textarea,
+select {
+  transition: none !important;
+}
+
+/* Base scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-600);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-500);
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--color-brand-primary);
+  color: var(--color-brand-primary-contrast);
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Glass effect utility class */
+.glass {
+  background: var(--color-glass-background);
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Glow effect utility classes */
+.glow-blue {
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.glow-green {
+  box-shadow: var(--shadow-glow-green);
+}
+
+/* Utility classes for common patterns */
+.surface-base {
+  background-color: var(--color-surface-base);
+}
+
+.surface-elevated {
+  background-color: var(--color-surface-elevated);
+}
+
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-disabled {
+  color: var(--color-text-disabled);
+}
