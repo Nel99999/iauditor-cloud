@@ -1,0 +1,102 @@
+.modern-page-wrapper {
+  position: relative;
+  min-height: calc(100vh - 200px);
+  padding: 0;
+}
+
+.page-background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.page-background .gradient-orb {
+  position: absolute;
+  border-radius: var(--radius-full);
+  filter: blur(100px);
+  opacity: 0.2;
+  animation: float 25s ease-in-out infinite;
+}
+
+.page-background .orb-1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  right: -200px;
+  background: var(--color-brand-primary);
+}
+
+.page-background .orb-2 {
+  width: 500px;
+  height: 500px;
+  bottom: -150px;
+  left: -150px;
+  background: var(--color-brand-accent);
+  animation-delay: 8s;
+}
+
+.page-header-modern {
+  margin-bottom: var(--spacing-6);
+  position: relative;
+  z-index: 1;
+}
+
+.page-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-6);
+}
+
+.page-title-section {
+  flex: 1;
+}
+
+.page-title-modern {
+  font-size: var(--typography-size-3xl);
+  font-weight: var(--typography-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.page-subtitle-modern {
+  font-size: var(--typography-size-base);
+  color: var(--color-text-secondary);
+}
+
+.page-actions-modern {
+  display: flex;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+.page-content-modern {
+  position: relative;
+  z-index: 1;
+}
+
+/* Apply glassmorphism to child Cards automatically */
+.page-content-modern > div[class*="card"],
+.page-content-modern > div[class*="Card"] {
+  background: var(--color-glass-background) !important;
+  backdrop-filter: blur(var(--blur-glass));
+  -webkit-backdrop-filter: blur(var(--blur-glass));
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+@media (max-width: 768px) {
+  .page-header-content {
+    flex-direction: column;
+  }
+
+  .page-title-modern {
+    font-size: var(--typography-size-2xl);
+  }
+
+  .page-actions-modern {
+    width: 100%;
+  }
+}
