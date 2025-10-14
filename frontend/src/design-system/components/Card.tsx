@@ -3,12 +3,7 @@ import { motion } from 'framer-motion';
 import type { CardProps } from '../../types';
 import './Card.css';
 
-interface ExtendedCardProps extends CardProps {
-  hover?: boolean;
-  onClick?: () => void;
-}
-
-const Card: React.FC<ExtendedCardProps> = ({
+const Card: React.FC<CardProps> = ({
   children,
   hover = false,
   padding = 'md',
@@ -25,25 +20,33 @@ const Card: React.FC<ExtendedCardProps> = ({
     className
   ].filter(Boolean).join(' ');
 
-  const CardComponent = hover || onClick ? motion.div : 'div';
-  const motionProps = hover || onClick ? {
-    whileHover: { y: -4 },
-    transition: {
-      duration: 0.2,
-      ease: [0.2, 0, 0, 1]
-    }
-  } : {};
+  if (hover || onClick) {
+    return (
+      <motion.div
+        className={classNames}
+        onClick={onClick}
+        style={style}
+        whileHover={{ y: -4 }}
+        transition={{
+          duration: 0.2,
+          ease: [0.2, 0, 0, 1] as any
+        }}
+        {...props}
+      >
+        {children}
+      </motion.div>
+    );
+  }
 
-  return React.createElement(
-    CardComponent,
-    {
-      className: classNames,
-      onClick,
-      style,
-      ...motionProps,
-      ...props
-    },
-    children
+  return (
+    <div
+      className={classNames}
+      onClick={onClick}
+      style={style}
+      {...props}
+    >
+      {children}
+    </div>
   );
 };
 
