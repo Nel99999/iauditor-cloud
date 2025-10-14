@@ -52,7 +52,7 @@ export const ROUTES = {
   // Design System
   DESIGN_SYSTEM: '/design-system',
   
-} as const;
+};
 
 /**
  * Type-safe route builder
