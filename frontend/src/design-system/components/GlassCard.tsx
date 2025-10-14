@@ -22,25 +22,33 @@ const GlassCard: React.FC<GlassCardProps> = ({
     className
   ].filter(Boolean).join(' ');
 
-  const GlassComponent = hover || onClick ? motion.div : 'div';
-  const motionProps = hover || onClick ? {
-    whileHover: { y: -6, scale: 1.01 },
-    transition: {
-      duration: 0.3,
-      ease: [0.34, 1.56, 0.64, 1] // Spring easing
-    }
-  } : {};
+  if (hover || onClick) {
+    return (
+      <motion.div
+        className={classNames}
+        onClick={onClick}
+        style={style}
+        whileHover={{ y: -6, scale: 1.01 }}
+        transition={{
+          duration: 0.3,
+          ease: [0.34, 1.56, 0.64, 1] as any // Spring easing
+        }}
+        {...props}
+      >
+        {children}
+      </motion.div>
+    );
+  }
 
-  return React.createElement(
-    GlassComponent,
-    {
-      className: classNames,
-      onClick,
-      style,
-      ...motionProps,
-      ...props
-    },
-    children
+  return (
+    <div
+      className={classNames}
+      onClick={onClick}
+      style={style}
+      {...props}
+    >
+      {children}
+    </div>
   );
 };
 
