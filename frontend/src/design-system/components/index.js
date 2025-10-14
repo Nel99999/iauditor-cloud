@@ -10,6 +10,7 @@ export { default as Spinner } from './Spinner';
 export { default as ModernTable } from './ModernTable';
 export { default as ModernPageWrapper } from './ModernPageWrapper';
 export { default as BottomSheet } from './BottomSheet';
+export { default as FAB, DefaultIcons as FABIcons } from './FAB';
 
 // Navigation Components
 export { default as BottomNav } from './Navigation/BottomNav';
