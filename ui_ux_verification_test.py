@@ -70,7 +70,7 @@ class BackendTester:
                 # User might already exist, that's okay
                 self.log_test("User Registration", True, "User already exists (expected)")
             else:
-                self.log_test("User Registration", False, f"Registration failed: {reg_response.status_code}")
+                self.log_test("User Registration", False, f"Registration failed: {reg_response.status_code} - {reg_response.text}")
         except Exception as e:
             self.log_test("User Registration", False, f"Registration error: {str(e)}")
         
