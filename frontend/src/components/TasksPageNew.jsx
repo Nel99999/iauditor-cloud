@@ -19,6 +19,10 @@ const TasksPageNew = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [formData, setFormData] = useState({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
   const [loading, setLoading] = useState(true);
+  const [selectedTask, setSelectedTask] = useState(null);
+  
+  // BottomSheet for task details
+  const { isOpen: isDetailsOpen, open: openDetails, close: closeDetails } = useBottomSheet(false, 'half');
 
   useEffect(() => {
     loadData();
