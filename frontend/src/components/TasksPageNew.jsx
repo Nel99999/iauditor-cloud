@@ -208,6 +208,62 @@ const TasksPageNew = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Task Details Bottom Sheet */}
+      <BottomSheet
+        isOpen={isDetailsOpen}
+        onClose={() => { closeDetails(); setSelectedTask(null); }}
+        snapPoint="half"
+        title="Task Details"
+      >
+        {selectedTask && (
+          <div className="task-details-content">
+            <div className="task-detail-section">
+              <h3 className="task-detail-title">{selectedTask.title}</h3>
+              <div className="task-detail-meta">
+                <Badge className={priorityColors[selectedTask.priority]}>{selectedTask.priority}</Badge>
+                <span className="task-detail-status">{selectedTask.status}</span>
+              </div>
+            </div>
+            
+            <div className="task-detail-section">
+              <h4 className="task-detail-label">Description</h4>
+              <p className="task-detail-text">{selectedTask.description || 'No description provided'}</p>
+            </div>
+
+            {selectedTask.due_date && (
+              <div className="task-detail-section">
+                <h4 className="task-detail-label">Due Date</h4>
+                <p className="task-detail-text">{new Date(selectedTask.due_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              </div>
+            )}
+
+            <div className="task-detail-section">
+              <h4 className="task-detail-label">Created</h4>
+              <p className="task-detail-text">{selectedTask.created_at ? new Date(selectedTask.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Unknown'}</p>
+            </div>
+
+            <div className="task-detail-actions">
+              <Button variant="primary" size="md" icon={<Edit size={18} />} onClick={() => { closeDetails(); setShowCreateDialog(true); }}>
+                Edit Task
+              </Button>
+              <Button variant="ghost" size="md" icon={<Trash2 size={18} />}>
+                Delete Task
+              </Button>
+            </div>
+          </div>
+        )}
+      </BottomSheet>
+
+      {/* Floating Action Button */}
+      <FAB
+        variant="simple"
+        position="bottom-right"
+        icon={<FABIcons.Plus />}
+        label="Create New Task"
+        color="primary"
+        onClick={() => setShowCreateDialog(true)}
+      />
     </ModernPageWrapper>
   );
 };
