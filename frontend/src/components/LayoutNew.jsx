@@ -213,7 +213,7 @@ const LayoutNew = ({ children }) => {
   };
 
   return (
-    <div className="layout-new">
+    <div className="layout-new" {...swipeHandlers}>
       {/* Animated Background */}
       <div className="layout-background">
         <div className="gradient-orb orb-1"></div>
