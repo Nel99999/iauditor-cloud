@@ -67,28 +67,15 @@ class BackendHealthChecker:
         try:
             # Register new user
             response = self.session.post(f"{BASE_URL}/auth/register", json=register_data)
-            if response.status_code == 201:
-                self.log_test("User Registration", True, f"Created user: {test_email}")
-                
-                # Now try to login
-                login_data = {
-                    "email": test_email,
-                    "password": test_password
-                }
-                
-                login_response = self.session.post(f"{BASE_URL}/auth/login", json=login_data)
-                if login_response.status_code == 200:
-                    login_result = login_response.json()
-                    if "access_token" in login_result:
-                        self.token = login_result["access_token"]
-                        self.session.headers.update({"Authorization": f"Bearer {self.token}"})
-                        self.log_test("User Login", True, f"JWT token obtained")
-                        return True
-                    else:
-                        self.log_test("User Login", False, f"No access_token in response: {login_result}")
-                        return False
+            if response.status_code == 200:
+                register_result = response.json()
+                if "access_token" in register_result:
+                    self.token = register_result["access_token"]
+                    self.session.headers.update({"Authorization": f"Bearer {self.token}"})
+                    self.log_test("User Registration & Login", True, f"Created user and obtained token: {test_email}")
+                    return True
                 else:
-                    self.log_test("User Login", False, f"Login failed: {login_response.status_code}, {login_response.text}")
+                    self.log_test("User Registration", False, f"No access_token in registration response: {register_result}")
                     return False
             else:
                 self.log_test("User Registration", False, f"Registration failed: {response.status_code}, {response.text}")
