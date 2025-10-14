@@ -420,7 +420,7 @@ export interface GlassCardProps extends CardProps {
 
 export type InputSize = 'sm' | 'md' | 'lg';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   size?: InputSize;
   icon?: React.ReactNode;
   error?: boolean;
