@@ -60,7 +60,10 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const applyTheme = (newTheme, newAccent, newDensity, newFontSize) => {
-    // Apply dark mode
+    // Apply dark mode using data-theme attribute for token system
+    document.documentElement.setAttribute('data-theme', newTheme);
+    
+    // Also keep the dark class for Tailwind compatibility
     if (newTheme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
