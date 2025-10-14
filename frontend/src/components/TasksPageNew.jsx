@@ -148,7 +148,7 @@ const TasksPageNew = () => {
                   <div className="task-icon">
                     <StatusIcon size={20} />
                   </div>
-                  <div className="task-content">
+                  <div className="task-content" onClick={() => { setSelectedTask(task); openDetails(); }} style={{ cursor: 'pointer' }}>
                     <h4 className="task-title">{task.title}</h4>
                     <p className="task-description">{task.description}</p>
                     <div className="task-meta">
@@ -158,7 +158,7 @@ const TasksPageNew = () => {
                     </div>
                   </div>
                   <div className="task-actions">
-                    <Button variant="ghost" size="sm" icon={<Edit size={16} />} />
+                    <Button variant="ghost" size="sm" icon={<Edit size={16} />} onClick={(e) => { e.stopPropagation(); setSelectedTask(task); setShowCreateDialog(true); }} />
                     <Button variant="ghost" size="sm" icon={<Trash2 size={16} />} />
                   </div>
                 </motion.div>
