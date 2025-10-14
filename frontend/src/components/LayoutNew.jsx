@@ -36,25 +36,22 @@ const LayoutNew = ({ children }) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const menuItems = [
+    // Core
     {
       name: 'Dashboard',
       icon: LayoutDashboard,
       path: '/dashboard',
     },
-    {
-      name: 'Tasks',
-      icon: CheckSquare,
-      path: '/tasks',
-    },
-    {
-      name: 'Inspections',
-      icon: ClipboardList,
-      path: '/inspections',
-    },
+    // Organization
     {
       name: 'Users',
       icon: Users,
       path: '/users',
+    },
+    {
+      name: 'Roles',
+      icon: Settings,
+      path: '/roles',
     },
     {
       name: 'Organization',
@@ -62,10 +59,75 @@ const LayoutNew = ({ children }) => {
       path: '/organization',
     },
     {
+      name: 'Groups',
+      icon: Users,
+      path: '/groups',
+    },
+    {
+      name: 'Invitations',
+      icon: Mail,
+      path: '/invitations',
+    },
+    // Workflows
+    {
+      name: 'Workflows',
+      icon: FileText,
+      path: '/workflows',
+    },
+    {
+      name: 'My Approvals',
+      icon: CheckSquare,
+      path: '/approvals',
+    },
+    {
+      name: 'Delegations',
+      icon: Users,
+      path: '/delegations',
+    },
+    {
+      name: 'Audit Trail',
+      icon: Settings,
+      path: '/audit',
+    },
+    // Operations
+    {
+      name: 'Inspections',
+      icon: ClipboardList,
+      path: '/inspections',
+    },
+    {
+      name: 'Checklists',
+      icon: CheckSquare,
+      path: '/checklists',
+    },
+    {
+      name: 'Tasks',
+      icon: CheckSquare,
+      path: '/tasks',
+    },
+    // Insights
+    {
       name: 'Reports',
       icon: FileText,
       path: '/reports',
     },
+    {
+      name: 'Analytics',
+      icon: FileText,
+      path: '/analytics',
+    },
+    // Integrations
+    {
+      name: 'Webhooks',
+      icon: Settings,
+      path: '/webhooks',
+    },
+    {
+      name: 'Bulk Import',
+      icon: FileText,
+      path: '/bulk-import',
+    },
+    // Settings
     {
       name: 'Settings',
       icon: Settings,
