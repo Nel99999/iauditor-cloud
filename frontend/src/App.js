@@ -15,6 +15,7 @@ import RegisterPage from "@/components/RegisterPage";
 import ForgotPasswordPage from "@/components/ForgotPasswordPage";
 import ResetPasswordPage from "@/components/ResetPasswordPage";
 import DashboardHome from "@/components/DashboardHome";
+import DashboardHomeNew from "@/components/DashboardHomeNew";
 import OrganizationPage from "@/components/OrganizationPage";
 import UserManagementPage from "@/components/UserManagementPage";
 import RoleManagementPage from "@/components/RoleManagementPage";
