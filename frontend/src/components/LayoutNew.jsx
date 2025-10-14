@@ -226,6 +226,35 @@ const LayoutNew = ({ children }) => {
 
   return (
     <div className="layout-new" {...swipeHandlers}>
+      {/* Swipe Back Indicator (Mobile Only) */}
+      {swipeProgress > 0 && (
+        <motion.div
+          style={{
+            position: 'fixed',
+            left: 0,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '60px',
+            height: '60px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: '0 50% 50% 0',
+            opacity: swipeProgress,
+            zIndex: 9999,
+            pointerEvents: 'none',
+          }}
+          initial={{ opacity: 0, x: -60 }}
+          animate={{ opacity: swipeProgress, x: 0 }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: '#6366f1' }}>
+            <path d="M19 12H5M5 12l7 7M5 12l7-7" />
+          </svg>
+        </motion.div>
+      )}
+
       {/* Animated Background */}
       <div className="layout-background">
         <div className="gradient-orb orb-1"></div>
