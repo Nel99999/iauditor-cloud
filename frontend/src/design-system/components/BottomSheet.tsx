@@ -66,7 +66,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const swipeHandlers = useSwipeable({
     onSwipeStart: (eventData: SwipeEventData) => {
       if (!enableSwipe) return;
-      setIsDragging(true);
       startYRef.current = eventData.initial[1];
     },
     onSwiping: (eventData: SwipeEventData) => {
@@ -81,7 +80,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     },
     onSwiped: (eventData: SwipeEventData) => {
       if (!enableSwipe) return;
-      setIsDragging(false);
       const deltaY = eventData.deltaY;
       const velocity = eventData.velocity;
 
