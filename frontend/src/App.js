@@ -60,6 +60,9 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             
+            {/* Design System Showcase - Public route for testing */}
+            <Route path="/design-system" element={<DesignSystemShowcase />} />
+            
             {/* Protected routes with Layout */}
             <Route
               path="/dashboard"
