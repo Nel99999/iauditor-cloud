@@ -11,7 +11,7 @@ import tempfile
 import time
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://secureflow-mgmt.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://ops-revamp.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 class Phase2Tester:
