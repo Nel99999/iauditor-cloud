@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix all remaining errors to get to 100%. Focus on MongoDB ObjectId serialization issues in workflow instance creation, delegation, and time entry creation."
+user_problem_statement: "Backend Testing for UI/UX Phase 1 & 2 - Verification that backend APIs still work after frontend CSS/React component updates."
 
 backend:
   - task: "MongoDB ObjectId Serialization Fixes"
