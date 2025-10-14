@@ -34,6 +34,7 @@ import ChecklistsPage from "@/components/ChecklistsPage";
 import ChecklistTemplateBuilder from "@/components/ChecklistTemplateBuilder";
 import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
 import TasksPage from "@/components/TasksPage";
+import TasksPageNew from "@/components/TasksPageNew";
 import ReportsPage from "@/components/ReportsPage";
 import WorkflowDesigner from "@/components/WorkflowDesigner";
 import MyApprovalsPage from "@/components/MyApprovalsPage";
