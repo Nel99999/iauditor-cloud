@@ -23,7 +23,7 @@ import uuid
 import concurrent.futures
 
 # Configuration
-BASE_URL = "https://typescript-complete.preview.emergentagent.com/api"
+BASE_URL = "https://typescript-complete-1.preview.emergentagent.com/api"
 TEST_TIMEOUT = 30
 PERFORMANCE_THRESHOLD_MS = 500
 CONCURRENT_REQUESTS = 5

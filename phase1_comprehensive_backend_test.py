@@ -23,7 +23,7 @@ import base64
 import io
 
 # Configuration
-BASE_URL = "https://typescript-complete.preview.emergentagent.com/api"
+BASE_URL = "https://typescript-complete-1.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage
