@@ -1,0 +1,152 @@
+{
+  "total": 29,
+  "passed": 20,
+  "failed": 9,
+  "tests": [
+    {
+      "name": "1.1 - Org creator gets approval_status='approved'",
+      "passed": true,
+      "details": "Got: approved"
+    },
+    {
+      "name": "1.2 - Org creator gets is_active=True",
+      "passed": true,
+      "details": "Got: True"
+    },
+    {
+      "name": "1.3 - Org creator receives access token",
+      "passed": true,
+      "details": "Token present: True"
+    },
+    {
+      "name": "1.4 - Org creator can login immediately",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "2.1 - Regular user gets approval_status='pending'",
+      "passed": true,
+      "details": "Got: pending"
+    },
+    {
+      "name": "2.2 - Regular user gets is_active=False",
+      "passed": false,
+      "details": "Got: None"
+    },
+    {
+      "name": "2.3 - Regular user does NOT receive token",
+      "passed": true,
+      "details": "Token: "
+    },
+    {
+      "name": "2.4 - Regular user CANNOT login (403)",
+      "passed": true,
+      "details": "Status: 403"
+    },
+    {
+      "name": "2.5 - Login returns approval message",
+      "passed": true,
+      "details": "Message: {\"detail\":\"Your registration is pending admin approval. You will receive an email once your account "
+    },
+    {
+      "name": "3.1 - Master can view pending approvals",
+      "passed": true,
+      "details": "Found 0 pending users"
+    },
+    {
+      "name": "3.2 - Pending list includes regular user",
+      "passed": false,
+      "details": "Regular user in list: False"
+    },
+    {
+      "name": "4.1 - Master approves user",
+      "passed": false,
+      "details": "Status 404: {\"detail\":\"User not found or not in your organization\"}"
+    },
+    {
+      "name": "5.1 - Find rejected user",
+      "passed": false,
+      "details": "User not found in pending list"
+    },
+    {
+      "name": "6.1 - Master can send invitation",
+      "passed": true,
+      "details": "Status: 201"
+    },
+    {
+      "name": "6.2 - Admin invitation sent",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "6.3 - Admin can send invitation",
+      "passed": false,
+      "details": "Status: 403"
+    },
+    {
+      "name": "7.1 - Admin CANNOT invite Master (403)",
+      "passed": true,
+      "details": "Status: 403"
+    },
+    {
+      "name": "7.2 - Returns hierarchy violation message",
+      "passed": false,
+      "details": "Message: {\"detail\":\"You don't have permission to invite users\"}"
+    },
+    {
+      "name": "7.3 - Admin CAN invite Viewer",
+      "passed": false,
+      "details": "Status: 403"
+    },
+    {
+      "name": "7.4 - Master CAN invite Admin",
+      "passed": true,
+      "details": "Status: 201"
+    },
+    {
+      "name": "8.1 - Invitation accepted successfully",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "8.2 - Invited user approval_status='approved'",
+      "passed": true,
+      "details": "Got: approved"
+    },
+    {
+      "name": "8.3 - Invited user invited=True",
+      "passed": true,
+      "details": "Got: True"
+    },
+    {
+      "name": "8.4 - Role stored as CODE (not UUID)",
+      "passed": true,
+      "details": "Got: viewer"
+    },
+    {
+      "name": "8.5 - User receives access token",
+      "passed": true,
+      "details": "Token present: True"
+    },
+    {
+      "name": "8.6 - Invited user can login immediately",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "C.1 - Approval permissions initialized",
+      "passed": true,
+      "details": "Approve: True, Reject: True"
+    },
+    {
+      "name": "C.2 - Admin role has user.invite permission",
+      "passed": false,
+      "details": "Has invite: False"
+    },
+    {
+      "name": "C.3 - All approval statuses working",
+      "passed": false,
+      "details": "Verified through previous tests"
+    }
+  ]
+}
