@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Bell, Check, CheckCheck, Trash2, X, Settings as SettingsIcon } from 'lucide-react';
+import { Bell, Check, CheckCheck, Trash2, X } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
