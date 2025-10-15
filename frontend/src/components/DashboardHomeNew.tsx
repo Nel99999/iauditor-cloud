@@ -7,13 +7,9 @@ import { motion } from 'framer-motion';
 import {
   ClipboardCheck,
   CheckSquare,
-  ListTodo,
   Users,
   TrendingUp,
-  AlertCircle,
-  Building2,
   BarChart3,
-  ArrowRight,
   LucideIcon,
 } from 'lucide-react';
 import './DashboardHomeNew.css';
