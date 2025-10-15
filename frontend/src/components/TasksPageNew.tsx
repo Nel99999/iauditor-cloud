@@ -57,7 +57,7 @@ const TasksPageNew: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   
   // BottomSheet for task details
-  const { isOpen: isDetailsOpen, open: openDetails, close: closeDetails } = useBottomSheet(false, 'half') as any;
+  const { isOpen: isDetailsOpen, open: openDetails, close: closeDetails } = useBottomSheet(false, 'half');
 
   useEffect(() => {
     loadData();
