@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Clock, Play, Pause, Square, Plus, Edit2, Trash2, DollarSign } from 'lucide-react';
+import { Clock, Play, Square, Plus, Trash2, DollarSign } from 'lucide-react';
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
