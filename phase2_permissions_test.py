@@ -200,11 +200,15 @@ def test_role_permissions():
                         "permission_id": perm_id,
                         "granted": True
                     }
-                    requests.post(
+                    assign_resp = requests.post(
                         f"{BACKEND_URL}/permissions/roles/{role['id']}", 
                         json=assign_data, 
                         headers=headers
                     )
+                    if assign_resp.status_code not in [200, 201]:
+                        print_test(f"  Failed to assign {action} to {role_code}: {assign_resp.status_code} - {assign_resp.text}", "warning")
+                    else:
+                        print_test(f"  Assigned {action} to {role_code}", "info")
         
         print_test("Permissions assigned. Now verifying...", "info")
         
