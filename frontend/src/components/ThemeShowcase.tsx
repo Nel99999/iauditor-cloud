@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, GlassCard } from '@/design-system/components';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Sun, Moon, Laptop } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './ThemeShowcase.css';
 
