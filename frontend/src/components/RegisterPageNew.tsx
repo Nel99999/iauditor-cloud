@@ -66,7 +66,7 @@ const RegisterPageNew: React.FC = () => {
     if (result.success) {
       navigate(ROUTES.DASHBOARD);
     } else {
-      setError(result.error);
+      setError(result.error || 'Registration failed');
     }
 
     setLoading(false);
