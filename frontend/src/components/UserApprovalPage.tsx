@@ -199,7 +199,6 @@ const UserApprovalPage: React.FC = () => {
 
                   <div className="flex gap-2">
                     <Button
-                      variant="outline"
                       size="sm"
                       onClick={() => handleAction(pendingUser, 'approve')}
                       className="bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500/20"
@@ -208,7 +207,6 @@ const UserApprovalPage: React.FC = () => {
                       Approve
                     </Button>
                     <Button
-                      variant="outline"
                       size="sm"
                       onClick={() => handleAction(pendingUser, 'reject')}
                       className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
