@@ -343,6 +343,7 @@ def test_permission_check_endpoint():
         print_test("Assigning permissions to master role for new organization...", "info")
         for action, perm_id in new_perm_ids.items():
             assign_data = {
+                "role_id": master_role['id'],
                 "permission_id": perm_id,
                 "granted": True
             }
@@ -353,6 +354,8 @@ def test_permission_check_endpoint():
             )
             if assign_response.status_code in [200, 201]:
                 print_test(f"  Assigned {action} permission", "info")
+            else:
+                print_test(f"  Failed to assign {action}: {assign_response.status_code} - {assign_response.text}", "warning")
         
         # Now test checking each of the 3 new permissions
         permissions_to_check = [
