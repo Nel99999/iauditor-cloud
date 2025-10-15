@@ -343,6 +343,22 @@ def test_permission_check_endpoint():
             print_test("Master role not found", "fail")
             return False
         
+        # Update user's role_id to use the UUID instead of the code
+        print_test(f"Updating user role_id from '{user_data.get('role')}' to UUID '{master_role['id']}'", "info")
+        update_user_response = requests.put(
+            f"{BACKEND_URL}/users/{user_id}",
+            json={"role_id": master_role['id']},
+            headers=headers
+        )
+        if update_user_response.status_code not in [200, 201]:
+            print_test(f"Failed to update user role_id: {update_user_response.status_code}", "warning")
+        
+        # Refresh user data
+        user_response = requests.get(f"{BACKEND_URL}/auth/me", headers=headers)
+        if user_response.status_code == 200:
+            user_data = user_response.json()
+            print_test(f"User role_id now: {user_data.get('role_id') or user_data.get('role')}", "info")
+        
         # Assign permissions to master role
         print_test("Assigning permissions to master role for new organization...", "info")
         for action, perm_id in new_perm_ids.items():
