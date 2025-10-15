@@ -2,7 +2,6 @@ import React, { useState, ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 import { useAuth } from '../contexts/AuthContext';
-import { usePermissions } from '../hooks/usePermissions';
 import { Button, GlassCard, AdaptiveNav, MOBILE_NAV_ITEMS } from '@/design-system/components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
