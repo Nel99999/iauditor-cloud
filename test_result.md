@@ -1356,7 +1356,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Phase 2 Permission Check Fix - String Role Code Resolution"
+    - "Phases 3-6 User Approval System Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
