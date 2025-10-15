@@ -11,6 +11,7 @@ from auth_utils import (
     get_current_user,
 )
 from role_routes import initialize_system_roles
+from permission_routes import initialize_permissions
 import uuid
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
