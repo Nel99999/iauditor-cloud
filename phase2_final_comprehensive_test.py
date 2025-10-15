@@ -51,7 +51,7 @@ def create_test_user(email, name, org_name):
             timeout=10
         )
         
-        if response.status_code == 201:
+        if response.status_code in [200, 201]:
             data = response.json()
             return {
                 "token": data["access_token"],
