@@ -81,14 +81,14 @@ export const usePermissions = (): UsePermissionsReturn => {
    * Check if user's role level is sufficient
    */
   const hasRoleLevel = (requiredLevel: number): boolean => {
-    const userLevel = (ROLE_LEVELS as any)[user?.role] || 999;
+    const userLevel = (ROLE_LEVELS as any)[user?.role || ''] || 999;
     return userLevel <= requiredLevel;
   };
 
   /**
    * Check if user can access a page
    */
-  const canAccessPage = (pageName: string, config: PageConfig = {}): boolean => {
+  const canAccessPage = (_pageName: string, config: PageConfig = {}): boolean => {
     // Developer and Master can access everything
     if (user?.role === 'developer' || user?.role === 'master') {
       return true;
