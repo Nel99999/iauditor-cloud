@@ -197,6 +197,7 @@ def test_role_permissions():
             if role:
                 for action, perm_id in new_perm_ids.items():
                     assign_data = {
+                        "role_id": role['id'],
                         "permission_id": perm_id,
                         "granted": True
                     }
