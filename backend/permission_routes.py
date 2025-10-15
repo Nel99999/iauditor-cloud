@@ -80,8 +80,9 @@ async def check_permission(
     # Get role_id - handle both UUID and string role codes
     role_id = user.get("role_id") or user.get("role")
     
-    # If role_id is a string code (e.g., "master"), resolve it to UUID
-    if role_id and not role_id.startswith(('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')):
+    # If role_id is a string code (e.g., "master", "admin"), resolve it to UUID
+    # Check if it's a UUID format (contains dashes) vs a role code (no dashes)
+    if role_id and '-' not in role_id:
         # Looks like a code, not a UUID - resolve it
         role_record = await db.roles.find_one({
             "code": role_id,
