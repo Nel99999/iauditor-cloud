@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test user creation and settings update
-base_url = "https://typed-ops-platform.preview.emergentagent.com"
+base_url = "https://ts-conversion.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

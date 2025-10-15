@@ -16,7 +16,7 @@ import time
 from datetime import datetime
 import uuid
 
-BASE_URL = "https://typed-ops-platform.preview.emergentagent.com/api"
+BASE_URL = "https://ts-conversion.preview.emergentagent.com/api"
 
 class ProtocolTester:
     def __init__(self):

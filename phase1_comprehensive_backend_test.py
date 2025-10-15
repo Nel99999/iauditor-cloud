@@ -23,7 +23,7 @@ import base64
 import io
 
 # Configuration
-BASE_URL = "https://typed-ops-platform.preview.emergentagent.com/api"
+BASE_URL = "https://ts-conversion.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage
