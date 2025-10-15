@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [token]);
 
   // Fetch user permissions based on their role
-  const loadUserPermissions = async (userRole: string, userId: string): Promise<void> => {
+  const loadUserPermissions = async (userRole: string, _userId: string): Promise<void> => {
     try {
       // Get all roles to find the user's role ID
       const rolesResponse = await axios.get<Role[]>(`${API}/roles`);
