@@ -57,7 +57,6 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { canAccessPage } = usePermissions();
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
