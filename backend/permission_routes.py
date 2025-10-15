@@ -426,6 +426,9 @@ async def initialize_permissions(db: AsyncIOMotorDatabase):
         {"resource_type": "user", "action": "read", "scope": "organization", "description": "View users"},
         {"resource_type": "user", "action": "update", "scope": "organization", "description": "Update users"},
         {"resource_type": "user", "action": "delete", "scope": "organization", "description": "Delete users"},
+        {"resource_type": "user", "action": "invite", "scope": "organization", "description": "Invite users to organization"},
+        {"resource_type": "user", "action": "approve", "scope": "organization", "description": "Approve pending user registrations"},
+        {"resource_type": "user", "action": "reject", "scope": "organization", "description": "Reject pending user registrations"},
         
         # Report permissions
         {"resource_type": "report", "action": "read", "scope": "own", "description": "View own reports"},
