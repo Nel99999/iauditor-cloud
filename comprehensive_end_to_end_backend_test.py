@@ -658,9 +658,8 @@ def test_phase6_inspections():
                                     "description": "Testing inspection template creation",
                                     "questions": [
                                         {
-                                            "id": "q1",
-                                            "text": "Is the equipment operational?",
-                                            "type": "yes_no",
+                                            "question_text": "Is the equipment operational?",
+                                            "question_type": "yes_no",
                                             "required": True
                                         }
                                     ]
