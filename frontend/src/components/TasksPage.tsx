@@ -13,7 +13,7 @@ import { Plus, ListTodo, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const TasksPage: React.FC = (: any) => {
+const TasksPage: React.FC = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
