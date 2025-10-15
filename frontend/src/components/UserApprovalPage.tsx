@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, XCircle, Clock, Mail, User as UserIcon, Building } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Mail, User as UserIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
