@@ -29,7 +29,6 @@ interface PendingUser {
 }
 
 const UserApprovalPage: React.FC = () => {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [loading, setLoading] = useState(true);
