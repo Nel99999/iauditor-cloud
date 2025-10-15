@@ -36,7 +36,6 @@ interface SubtasksPanelProps {
 }
 
 const SubtasksPanel: React.FC<SubtasksPanelProps> = ({ taskId, onClose }) => {
-  const { user } = useAuth();
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [stats, setStats] = useState<SubtaskStats | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
