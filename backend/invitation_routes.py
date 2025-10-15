@@ -217,10 +217,15 @@ async def accept_invitation(
         "id": str(uuid.uuid4()),
         "email": invitation["email"],
         "name": acceptance.name,
-        "password": hashed_password,
+        "password_hash": hashed_password,
         "organization_id": invitation["organization_id"],
         "role": invitation["role_id"],
-        "status": "active",
+        "is_active": True,
+        "approval_status": "approved",  # Invited users are pre-approved
+        "invited": True,  # Mark as invited
+        "approved_by": invitation["invited_by"],  # The person who invited
+        "approved_at": datetime.now(timezone.utc).isoformat(),
+        "approval_notes": "Pre-approved via invitation",
         "created_at": datetime.now(timezone.utc).isoformat(),
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "last_login": datetime.now(timezone.utc).isoformat()
@@ -241,8 +246,8 @@ async def accept_invitation(
     from auth_utils import create_access_token
     access_token = create_access_token(data={"sub": user_dict["id"]})
     
-    user_dict.pop("password")
-    user_dict.pop("_id")
+    user_dict.pop("password_hash", None)
+    user_dict.pop("_id", None)
     
     return {
         "message": "Invitation accepted successfully",
