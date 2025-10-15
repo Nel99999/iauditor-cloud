@@ -778,7 +778,7 @@ def test_phase7_checklists():
     # Test 2: Execute checklist
     try:
         if test_data["checklist_template_id"]:
-            response = requests.post(f"{BACKEND_URL}/checklists/execute",
+            response = requests.post(f"{BACKEND_URL}/checklists/executions",
                                     headers=headers,
                                     json={
                                         "template_id": test_data["checklist_template_id"],
