@@ -99,11 +99,6 @@ const UserApprovalPage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-  };
-
   const getDaysAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
