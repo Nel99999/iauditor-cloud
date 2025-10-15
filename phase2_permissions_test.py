@@ -265,7 +265,7 @@ def test_role_permissions():
                 continue
             
             role_permissions = role_perm_response.json()
-            role_perm_ids = [p["id"] for p in role_permissions]
+            role_perm_ids = [p["permission_id"] for p in role_permissions]
             
             # Check if any of the 3 new permissions are assigned (they shouldn't be)
             has_any = any(perm_id in role_perm_ids for perm_id in new_perm_ids.values())
