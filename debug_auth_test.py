@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test auth endpoints to see where the issue is
-base_url = "https://opsplatform-v2.preview.emergentagent.com"
+base_url = "https://typed-ops-platform.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

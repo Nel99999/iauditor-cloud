@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime, timezone
 
 # Configuration
-BASE_URL = "https://opsplatform-v2.preview.emergentagent.com/api"
+BASE_URL = "https://typed-ops-platform.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "phase3.collab@company.com"
 TEST_USER_PASSWORD = "Collab123!@#"
 TEST_USER2_EMAIL = "phase3.user2@company.com"

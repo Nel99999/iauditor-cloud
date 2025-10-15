@@ -14,7 +14,7 @@ import tempfile
 import uuid
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://opsplatform-v2.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://typed-ops-platform.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 class ProductionReadyBackendTester:

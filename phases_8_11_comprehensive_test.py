@@ -27,7 +27,7 @@ import concurrent.futures
 import threading
 
 # Configuration
-BASE_URL = "https://opsplatform-v2.preview.emergentagent.com/api"
+BASE_URL = "https://typed-ops-platform.preview.emergentagent.com/api"
 TEST_TIMEOUT = 30
 PERFORMANCE_THRESHOLD_MS = 500
 CONCURRENT_REQUESTS = 5

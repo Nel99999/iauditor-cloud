@@ -9,7 +9,7 @@ import os
 class ComprehensiveWorkflowTester:
     """Comprehensive Workflow System Testing - All Phases 1-8 (91 Tests)"""
     
-    def __init__(self, base_url="https://opsplatform-v2.preview.emergentagent.com"):
+    def __init__(self, base_url="https://typed-ops-platform.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
