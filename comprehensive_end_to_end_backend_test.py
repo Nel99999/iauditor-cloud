@@ -988,7 +988,7 @@ def test_phase10_statistics_accuracy():
         # Get dashboard stats
         stats_response = requests.get(f"{BACKEND_URL}/dashboard/stats", headers=headers)
         # Get actual org unit count
-        units_response = requests.get(f"{BACKEND_URL}/org_units", headers=headers)
+        units_response = requests.get(f"{BACKEND_URL}/organizations/units", headers=headers)
         
         if stats_response.status_code == 200 and units_response.status_code == 200:
             stats = stats_response.json()
