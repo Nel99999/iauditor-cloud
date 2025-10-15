@@ -1336,7 +1336,7 @@ agent_communication:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 11
+  test_sequence: 12
   run_ui: false
 
   - task: "Phase 2 Permission Check Fix - String Role Code Resolution"
