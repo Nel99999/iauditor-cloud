@@ -412,6 +412,8 @@ def test_permission_check_endpoint():
                 print_test(f"  Response: {json.dumps(result, indent=2)}", "info")
             else:
                 print_test(f"Master user does NOT have {perm_name} permission (unexpected)", "fail")
+                print_test(f"  Response: {json.dumps(result, indent=2)}", "info")
+                print_test(f"  User ID: {user_data.get('id')}, Role ID: {user_data.get('role_id') or user_data.get('role')}", "info")
                 all_passed = False
         
         return all_passed
