@@ -56,7 +56,7 @@ const RegisterPageNew: React.FC = () => {
 
     setLoading(true);
 
-    const result = await register(
+    const result = await (register as any)(
       formData.email,
       formData.password,
       formData.name,
