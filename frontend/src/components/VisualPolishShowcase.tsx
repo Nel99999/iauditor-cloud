@@ -79,7 +79,7 @@ const VisualPolishShowcase: React.FC = () => {
             <Skeleton variant="circular" width="48px" height="48px" />
             <div style={{ flex: 1 }}>
               <Skeleton width="60%" height="16px" />
-              <Skeleton width="40%" height="12px" style={{ marginTop: '8px' }} />
+              <Skeleton width="40%" height="12px" className="mt-2" />
             </div>
           </div>
           <div className="skeleton-item">
