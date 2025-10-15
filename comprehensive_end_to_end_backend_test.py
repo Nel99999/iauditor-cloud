@@ -696,23 +696,23 @@ def test_phase6_inspections():
                 test_data["inspection_execution_id"] = execution_data.get("id")
                 
                 if test_data["inspection_execution_id"]:
-                    log_test(phase, "POST /inspections/execute", True, 
+                    log_test(phase, "POST /inspections/executions", True, 
                             "- Inspection execution created")
                 else:
-                    log_test(phase, "POST /inspections/execute", False, 
+                    log_test(phase, "POST /inspections/executions", False, 
                             "- No execution ID returned")
             else:
-                log_test(phase, "POST /inspections/execute", False, 
+                log_test(phase, "POST /inspections/executions", False, 
                         f"- Status: {response.status_code}")
         else:
-            log_test(phase, "POST /inspections/execute", False, 
+            log_test(phase, "POST /inspections/executions", False, 
                     "- No template ID available")
     except Exception as e:
-        log_test(phase, "POST /inspections/execute", False, f"- Exception: {str(e)}")
+        log_test(phase, "POST /inspections/executions", False, f"- Exception: {str(e)}")
     
     # Test 3: List inspections
     try:
-        response = requests.get(f"{BACKEND_URL}/inspections", headers=headers)
+        response = requests.get(f"{BACKEND_URL}/inspections/executions", headers=headers)
         
         if response.status_code == 200:
             inspections = response.json()
