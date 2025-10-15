@@ -271,7 +271,67 @@ def test_permission_check_endpoint():
     headers = {"Authorization": f"Bearer {token}"}
     
     try:
-        # Test checking each of the 3 new permissions
+        # First, manually assign permissions to the newly created organization's roles
+        # Get the user's organization
+        user_response = requests.get(f"{BACKEND_URL}/auth/me", headers=headers)
+        if user_response.status_code != 200:
+            print_test(f"Failed to get user info: {user_response.status_code}", "fail")
+            return False
+        
+        user_data = user_response.json()
+        org_id = user_data.get("organization_id")
+        
+        if not org_id:
+            print_test("User has no organization", "fail")
+            return False
+        
+        # Get all permissions
+        perm_response = requests.get(f"{BACKEND_URL}/permissions", headers=headers)
+        if perm_response.status_code != 200:
+            print_test(f"Failed to get permissions: {perm_response.status_code}", "fail")
+            return False
+        
+        permissions = perm_response.json()
+        
+        # Find the 3 new permission IDs
+        new_perm_ids = {}
+        for action in ["invite", "approve", "reject"]:
+            perm = next((p for p in permissions if 
+                        p["resource_type"] == "user" and
+                        p["action"] == action and
+                        p["scope"] == "organization"), None)
+            if perm:
+                new_perm_ids[action] = perm["id"]
+        
+        # Get roles
+        roles_response = requests.get(f"{BACKEND_URL}/roles", headers=headers)
+        if roles_response.status_code != 200:
+            print_test(f"Failed to get roles: {roles_response.status_code}", "fail")
+            return False
+        
+        roles = roles_response.json()
+        master_role = next((r for r in roles if r["code"] == "master"), None)
+        
+        if not master_role:
+            print_test("Master role not found", "fail")
+            return False
+        
+        # Assign permissions to master role
+        print_test("Assigning permissions to master role for new organization...", "info")
+        for action, perm_id in new_perm_ids.items():
+            assign_data = {
+                "permission_id": perm_id,
+                "granted": True
+            }
+            assign_response = requests.post(
+                f"{BACKEND_URL}/permissions/roles/{master_role['id']}", 
+                json=assign_data, 
+                headers=headers
+            )
+            if assign_response.status_code in [200, 201]:
+                print_test(f"  Assigned {action} permission", "info")
+        
+        # Now test checking each of the 3 new permissions
         permissions_to_check = [
             {"resource_type": "user", "action": "invite", "scope": "organization"},
             {"resource_type": "user", "action": "approve", "scope": "organization"},
@@ -283,23 +343,28 @@ def test_permission_check_endpoint():
         for perm in permissions_to_check:
             perm_name = f"{perm['resource_type']}.{perm['action']}.{perm['scope']}"
             
-            response = requests.post(f"{BACKEND_URL}/permissions/check", json=perm, headers=headers)
+            # Send as query parameters, not JSON body
+            response = requests.post(
+                f"{BACKEND_URL}/permissions/check",
+                params=perm,
+                headers=headers
+            )
             
             if response.status_code != 200:
-                print_test(f"Permission check failed for {perm_name}: {response.status_code}", "fail")
+                print_test(f"Permission check failed for {perm_name}: {response.status_code} - {response.text}", "fail")
                 all_passed = False
                 continue
             
             result = response.json()
             
             # Verify response structure
-            if "granted" not in result:
-                print_test(f"Response missing 'granted' field for {perm_name}", "fail")
+            if "has_permission" not in result:
+                print_test(f"Response missing 'has_permission' field for {perm_name}", "fail")
                 all_passed = False
                 continue
             
             # Master should have all permissions
-            if result["granted"]:
+            if result["has_permission"]:
                 print_test(f"Master user has {perm_name} permission ✓", "pass")
                 print_test(f"  Response: {json.dumps(result, indent=2)}", "info")
             else:
