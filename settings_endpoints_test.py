@@ -20,7 +20,7 @@ import uuid
 from datetime import datetime
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://ux-overhaul-7.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://opsplatform-v2.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 class SettingsEndpointsTester:

@@ -23,7 +23,7 @@ import base64
 import io
 
 # Configuration
-BASE_URL = "https://ux-overhaul-7.preview.emergentagent.com/api"
+BASE_URL = "https://opsplatform-v2.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage
