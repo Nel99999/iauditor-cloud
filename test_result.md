@@ -1243,7 +1243,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "4 Backend Fixes Verification (Privacy, Workflow, Role, Pagination)"
+    - "TypeScript Migration Verification Testing"
   stuck_tasks:
     - "Workflow Validation Fields - validation not implemented in backend"
   test_all: false
