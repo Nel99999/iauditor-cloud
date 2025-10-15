@@ -13,8 +13,11 @@ async def migrate_users():
     
     # Connect to MongoDB
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/')
+    db_name = os.environ.get('DB_NAME', 'operational_platform')  # Use environment variable or default
     client = AsyncIOMotorClient(mongo_url)
-    db = client['operations_db']  # Use the operations database
+    db = client[db_name]
+    
+    print(f"📡 Connecting to database: {db_name}")
     
     print("🔄 Starting user migration...")
     
