@@ -48,7 +48,6 @@ const UserApprovalPage: React.FC = () => {
       console.error('Error fetching pending users:', error);
       if (error.response?.status === 403) {
         toast({
-          variant: 'destructive',
           title: 'Access Denied',
           description: 'You do not have permission to view pending approvals.'
         });
