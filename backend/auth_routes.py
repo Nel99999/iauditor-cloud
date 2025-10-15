@@ -53,6 +53,9 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     await db.organizations.insert_one(org_dict)
     organization_id = org.id
     
+    # Initialize permissions (global, only once)
+    await initialize_permissions(db)
+    
     # Initialize system roles for the new organization
     await initialize_system_roles(db, organization_id)
     
