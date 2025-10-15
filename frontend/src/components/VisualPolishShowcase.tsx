@@ -39,7 +39,7 @@ const VisualPolishShowcase: React.FC = () => {
   return (
     <div className="visual-polish-showcase">
       {/* Toast Container */}
-      <ToastContainer toasts={toasts} removeToast={removeToast} />
+      <ToastContainer toasts={toasts as any} removeToast={removeToast} />
 
       <div className="showcase-header">
         <h1 className="showcase-title">Phase 6: Visual Polish</h1>
