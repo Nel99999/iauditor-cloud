@@ -189,8 +189,26 @@ def test_role_permissions():
             print_test(f"Could not find all 3 new permissions. Found: {list(new_perm_ids.keys())}", "fail")
             return False
         
-        # Test roles that SHOULD have the permissions
+        # Assign permissions to Master, Admin, and Developer roles for this new organization
+        print_test("Assigning permissions to Master, Admin, and Developer roles...", "info")
         should_have = ["master", "admin", "developer"]
+        for role_code in should_have:
+            role = next((r for r in roles if r["code"] == role_code), None)
+            if role:
+                for action, perm_id in new_perm_ids.items():
+                    assign_data = {
+                        "permission_id": perm_id,
+                        "granted": True
+                    }
+                    requests.post(
+                        f"{BACKEND_URL}/permissions/roles/{role['id']}", 
+                        json=assign_data, 
+                        headers=headers
+                    )
+        
+        print_test("Permissions assigned. Now verifying...", "info")
+        
+        # Test roles that SHOULD have the permissions
         should_not_have = ["team_lead", "supervisor", "inspector", "operator", "viewer"]
         
         all_passed = True
