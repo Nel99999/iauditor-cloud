@@ -170,6 +170,7 @@ api_router.include_router(time_tracking_router)
 api_router.include_router(analytics_router)
 api_router.include_router(gdpr_router)
 api_router.include_router(sms_router)
+api_router.include_router(approval_router)
 
 app.include_router(api_router)
 
