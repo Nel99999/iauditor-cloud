@@ -955,12 +955,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "✅ UI/UX Phase 1 & 2 Backend Verification Complete - 100% Success Rate (12/12 tests)"
-    - "✅ All Backend APIs Working After Frontend Updates"
-    - "🎯 VERIFICATION COMPLETE - NO BREAKING CHANGES DETECTED"
-  stuck_tasks: []
+    - "Phase 2 New Permissions Testing - 2/3 tests passed"
+    - "CRITICAL BUG: Permission check endpoint fails for new organizations"
+  stuck_tasks:
+    - "Phase 2 New Permissions Testing (user.invite/approve/reject.organization)"
   test_all: false
-  test_priority: "verification_complete"
+  test_priority: "high_first"
 
   - task: "Phase 4 Advanced Workflow Features Backend API"
     implemented: true
