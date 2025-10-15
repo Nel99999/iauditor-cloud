@@ -60,7 +60,7 @@ const RegisterPageNew: React.FC = () => {
       formData.email,
       formData.password,
       formData.name,
-      createOrg ? formData.organizationName : null
+      createOrg ? formData.organizationName : ''
     );
 
     if (result.success) {
