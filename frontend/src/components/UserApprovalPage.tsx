@@ -93,7 +93,6 @@ const UserApprovalPage: React.FC = () => {
     } catch (error: any) {
       console.error(`Error ${actionType}ing user:`, error);
       toast({
-        variant: 'destructive',
         title: 'Error',
         description: error.response?.data?.detail || `Failed to ${actionType} user`
       });
