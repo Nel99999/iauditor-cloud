@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime, timezone
 
 # Configuration
-BASE_URL = "https://ts-conversion.preview.emergentagent.com/api"
+BASE_URL = "https://typescript-complete.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "phase3.collab@company.com"
 TEST_USER_PASSWORD = "Collab123!@#"
 

@@ -9,7 +9,7 @@ import json
 import time
 from datetime import datetime
 
-BASE_URL = "https://ts-conversion.preview.emergentagent.com/api"
+BASE_URL = "https://typescript-complete.preview.emergentagent.com/api"
 
 class DebugTestSuite:
     def __init__(self):

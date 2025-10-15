@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://ts-conversion.preview.emergentagent.com/api"
+BACKEND_URL = "https://typescript-complete.preview.emergentagent.com/api"
 
 class BackendTester:
     def __init__(self):

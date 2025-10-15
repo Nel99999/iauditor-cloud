@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import uuid
 
 # Configuration
-BASE_URL = "https://ts-conversion.preview.emergentagent.com/api"
+BASE_URL = "https://typescript-complete.preview.emergentagent.com/api"
 HEADERS = {"Content-Type": "application/json"}
 
 # Test Results Storage
