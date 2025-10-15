@@ -264,7 +264,7 @@ const DashboardHomeNew: React.FC = () => {
                 Create Task
               </Button>
               <Button
-                variant="accent"
+                variant="secondary"
                 size="lg"
                 onClick={() => navigate('/inspections')}
                 icon={<ClipboardCheck size={20} />}
