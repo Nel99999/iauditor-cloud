@@ -39,25 +39,24 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
             detail="Email already registered",
         )
     
-    # Create organization if provided
-    organization_id = None
-    if user_data.organization_name:
-        org = Organization(
-            name=user_data.organization_name,
-            owner_id="",  # Will be updated after user creation
-        )
-        org_dict = org.model_dump()
-        org_dict["created_at"] = org_dict["created_at"].isoformat()
-        org_dict["updated_at"] = org_dict["updated_at"].isoformat()
-        await db.organizations.insert_one(org_dict)
-        organization_id = org.id
-        
-        # Initialize system roles for the new organization
-        await initialize_system_roles(db, organization_id)
+    # Create organization (required)
+    # All registrations must create a new organization
+    # To join existing organizations, users must be invited
+    org = Organization(
+        name=user_data.organization_name,
+        owner_id="",  # Will be updated after user creation
+    )
+    org_dict = org.model_dump()
+    org_dict["created_at"] = org_dict["created_at"].isoformat()
+    org_dict["updated_at"] = org_dict["updated_at"].isoformat()
+    await db.organizations.insert_one(org_dict)
+    organization_id = org.id
     
-    # Determine approval status
-    # Organization creators are auto-approved, others need approval
-    is_org_creator = organization_id is not None
+    # Initialize system roles for the new organization
+    await initialize_system_roles(db, organization_id)
+    
+    # Organization creators are auto-approved as Master
+    # This is secure because they control their own organization
     
     # Create user
     user = User(
@@ -66,9 +65,9 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         password_hash=get_password_hash(user_data.password),
         auth_provider="local",
         organization_id=organization_id,
-        role="master" if organization_id else "viewer",  # Organization creator gets master role
-        approval_status="approved" if is_org_creator else "pending",
-        is_active=True if is_org_creator else False,
+        role="master",  # Organization creator gets master role
+        approval_status="approved",  # Auto-approved
+        is_active=True,
         invited=False,
         registration_ip=None,  # TODO: Get from request
     )
@@ -76,22 +75,18 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     user_dict = user.model_dump()
     user_dict["created_at"] = user_dict["created_at"].isoformat()
     user_dict["updated_at"] = user_dict["updated_at"].isoformat()
-    user_dict["last_login"] = datetime.now(timezone.utc).isoformat() if is_org_creator else None
-    
-    # Set approval fields for org creators
-    if is_org_creator:
-        user_dict["approved_at"] = datetime.now(timezone.utc).isoformat()
-        user_dict["approved_by"] = None  # Self-approved
-        user_dict["approval_notes"] = "Organization creator - auto-approved"
+    user_dict["last_login"] = datetime.now(timezone.utc).isoformat()
+    user_dict["approved_at"] = datetime.now(timezone.utc).isoformat()
+    user_dict["approved_by"] = None  # Self-approved
+    user_dict["approval_notes"] = "Organization creator - auto-approved"
     
     await db.users.insert_one(user_dict)
     
-    # Update organization owner if created
-    if organization_id:
-        await db.organizations.update_one(
-            {"id": organization_id},
-            {"$set": {"owner_id": user.id}}
-        )
+    # Update organization owner
+    await db.organizations.update_one(
+        {"id": organization_id},
+        {"$set": {"owner_id": user.id}}
+    )
     
     # If user is pending approval, return different response
     if not is_org_creator:
