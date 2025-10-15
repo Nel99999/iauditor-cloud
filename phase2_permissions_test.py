@@ -244,7 +244,7 @@ def test_role_permissions():
                 print_test(f"{role_code.upper()} role has all 3 new permissions ✓", "pass")
             else:
                 missing = [action for action, perm_id in new_perm_ids.items() if perm_id not in role_perm_ids]
-                print_test(f"{role_code.UPPER()} role missing permissions: {missing}", "fail")
+                print_test(f"{role_code.upper()} role missing permissions: {missing}", "fail")
                 # Debug: show what permissions we're looking for vs what we found
                 print_test(f"  Looking for IDs: {list(new_perm_ids.values())}", "info")
                 print_test(f"  Found {len(role_perm_ids)} permission IDs in role", "info")
