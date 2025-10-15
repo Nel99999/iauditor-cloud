@@ -88,22 +88,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         {"$set": {"owner_id": user.id}}
     )
     
-    # If user is pending approval, return different response
-    if not is_org_creator:
-        # Return success message without token (user needs approval)
-        return {
-            "access_token": "",
-            "token_type": "bearer",
-            "user": {
-                "id": user.id,
-                "email": user.email,
-                "name": user.name,
-                "approval_status": "pending",
-                "message": "Registration successful. Your account is pending admin approval. You will receive an email once approved."
-            }
-        }
-    
-    # Create access token for org creators only
+    # Create access token
     access_token = create_access_token(data={"sub": user.id})
     
     # Return token and user data (without password hash)
@@ -112,6 +97,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     user_response["last_login"] = user_dict["last_login"]
     
     return Token(access_token=access_token, user=user_response)
+
 
 
 @router.post("/login", response_model=Token)
