@@ -26,7 +26,7 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ReportsPage: React.FC = (: any) => {
+const ReportsPage: React.FC = () => {
   const [overview, setOverview] = useState<any>(null);
   const [trends, setTrends] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);

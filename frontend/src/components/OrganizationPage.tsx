@@ -120,7 +120,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
   );
 };
 
-const OrganizationPage: React.FC = (: any) => {
+const OrganizationPage: React.FC = () => {
   const { user } = useAuth();
   const [hierarchy, setHierarchy] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -180,7 +180,7 @@ const OrganizationPage: React.FC = (: any) => {
     }));
   };
 
-  const handleCreateRoot: React.FC = (: any) => {
+  const handleCreateRoot: React.FC = () => {
     setFormData({ name: '', description: '', level: 1, parent_id: null });
     setSelectedNode(null);
     setShowCreateDialog(true);
@@ -257,7 +257,7 @@ const OrganizationPage: React.FC = (: any) => {
     }
   };
 
-  const handleInviteUser: React.FC = (: any) => {
+  const handleInviteUser: React.FC = () => {
     setInviteData({ email: '', unit_id: selectedNode?.id || '', role: 'viewer' });
     setShowInviteDialog(true);
   };

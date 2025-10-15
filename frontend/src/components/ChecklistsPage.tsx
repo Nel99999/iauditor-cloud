@@ -11,7 +11,7 @@ import { Plus, CheckCircle, Clock, AlertTriangle, TrendingUp, Play, Edit, Trash2
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ChecklistsPage: React.FC = (: any) => {
+const ChecklistsPage: React.FC = () => {
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<any[]>([]);
   const [todaysChecklists, setTodaysChecklists] = useState<any>({ executions: [], pending_templates: [] });
