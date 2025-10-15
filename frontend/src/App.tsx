@@ -21,6 +21,7 @@ import ResetPasswordPageNew from "@/components/ResetPasswordPageNew";
 import DashboardHomeNew from "@/components/DashboardHomeNew";
 import OrganizationPageNew from "@/components/OrganizationPageNew";
 import UserManagementPageNew from "@/components/UserManagementPageNew";
+import UserApprovalPage from "@/components/UserApprovalPage";
 import RoleManagementPageNew from "@/components/RoleManagementPageNew";
 import InvitationManagementPageNew from "@/components/InvitationManagementPageNew";
 import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
