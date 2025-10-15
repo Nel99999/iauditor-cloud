@@ -790,23 +790,23 @@ def test_phase7_checklists():
                 test_data["checklist_execution_id"] = execution_data.get("id")
                 
                 if test_data["checklist_execution_id"]:
-                    log_test(phase, "POST /checklists/execute", True, 
+                    log_test(phase, "POST /checklists/executions", True, 
                             "- Checklist execution created")
                 else:
-                    log_test(phase, "POST /checklists/execute", False, 
+                    log_test(phase, "POST /checklists/executions", False, 
                             "- No execution ID returned")
             else:
-                log_test(phase, "POST /checklists/execute", False, 
+                log_test(phase, "POST /checklists/executions", False, 
                         f"- Status: {response.status_code}")
         else:
-            log_test(phase, "POST /checklists/execute", False, 
+            log_test(phase, "POST /checklists/executions", False, 
                     "- No template ID available")
     except Exception as e:
-        log_test(phase, "POST /checklists/execute", False, f"- Exception: {str(e)}")
+        log_test(phase, "POST /checklists/executions", False, f"- Exception: {str(e)}")
     
     # Test 3: List checklists
     try:
-        response = requests.get(f"{BACKEND_URL}/checklists", headers=headers)
+        response = requests.get(f"{BACKEND_URL}/checklists/executions", headers=headers)
         
         if response.status_code == 200:
             checklists = response.json()
