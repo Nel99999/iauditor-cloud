@@ -717,16 +717,16 @@ def test_phase6_inspections():
         if response.status_code == 200:
             inspections = response.json()
             if isinstance(inspections, list):
-                log_test(phase, "GET /inspections", True, 
+                log_test(phase, "GET /inspections/executions", True, 
                         f"- Found {len(inspections)} inspection(s)")
             else:
-                log_test(phase, "GET /inspections", False, 
+                log_test(phase, "GET /inspections/executions", False, 
                         "- Invalid response format")
         else:
-            log_test(phase, "GET /inspections", False, 
+            log_test(phase, "GET /inspections/executions", False, 
                     f"- Status: {response.status_code}")
     except Exception as e:
-        log_test(phase, "GET /inspections", False, f"- Exception: {str(e)}")
+        log_test(phase, "GET /inspections/executions", False, f"- Exception: {str(e)}")
 
 
 # ============================================================================
