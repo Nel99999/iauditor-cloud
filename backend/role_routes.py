@@ -330,6 +330,7 @@ async def assign_default_permissions_to_role(db: AsyncIOMotorDatabase, role_id: 
         "admin": ["inspection.create.team", "inspection.read.all", "inspection.update.own", "inspection.approve.team",
                   "task.create.own", "task.read.team", "task.update.own", "task.assign.team", "task.delete.own",
                   "user.create.organization", "user.read.organization", "user.update.organization", "user.delete.organization",
+                  "user.invite.organization", "user.approve.organization", "user.reject.organization",
                   "report.read.all", "report.export.all"],
         "operations_manager": ["inspection.read.all", "inspection.approve.team",
                                "task.read.team", "task.assign.team",
