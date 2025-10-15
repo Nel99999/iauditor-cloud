@@ -33,8 +33,53 @@ async def create_invitation(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Send user invitation"""
+    """Send user invitation - Requires user.invite.organization permission"""
     current_user = await get_current_user(request, db)
+    
+    # Check if user has permission to invite
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        current_user["id"],
+        "user",
+        "invite",
+        "organization"
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to invite users"
+        )
+    
+    # Validate role hierarchy - can only invite equal or lower level roles
+    # Get the role being invited
+    invited_role = await db.roles.find_one({"id": invitation.role_id})
+    if not invited_role:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid role_id"
+        )
+    
+    # Get current user's role
+    current_user_role_code = current_user.get("role")
+    if current_user_role_code:
+        # Resolve to role object
+        current_role = await db.roles.find_one({
+            "code": current_user_role_code,
+            "organization_id": current_user["organization_id"]
+        })
+        
+        if current_role and invited_role:
+            current_level = current_role.get("level", 999)
+            invited_level = invited_role.get("level", 999)
+            
+            # Can only invite equal or lower level (higher number = lower level)
+            if current_level > invited_level:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"You can only invite users with equal or lower role levels. Your level: {current_level}, Invited level: {invited_level}"
+                )
     
     # Check if user already exists
     existing_user = await db.users.find_one({"email": invitation.email})
