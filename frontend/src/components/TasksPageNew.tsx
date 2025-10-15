@@ -193,7 +193,7 @@ const TasksPageNew: React.FC = () => {
                     </div>
                   </div>
                   <div className="task-actions">
-                    <Button variant="ghost" size="sm" icon={<Edit size={16} />} onClick={(e) => { e.stopPropagation(); setSelectedTask(task); setShowCreateDialog(true); }} />
+                    <Button variant="ghost" size="sm" icon={<Edit size={16} />} onClick={() => { setSelectedTask(task); setShowCreateDialog(true); }} />
                     <Button variant="ghost" size="sm" icon={<Trash2 size={16} />} />
                   </div>
                 </motion.div>
