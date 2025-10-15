@@ -684,7 +684,7 @@ def test_phase6_inspections():
     # Test 2: Execute inspection
     try:
         if test_data["inspection_template_id"]:
-            response = requests.post(f"{BACKEND_URL}/inspections/execute",
+            response = requests.post(f"{BACKEND_URL}/inspections/executions",
                                     headers=headers,
                                     json={
                                         "template_id": test_data["inspection_template_id"],
