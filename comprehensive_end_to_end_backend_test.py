@@ -778,12 +778,8 @@ def test_phase7_checklists():
     # Test 2: Execute checklist
     try:
         if test_data["checklist_template_id"]:
-            response = requests.post(f"{BACKEND_URL}/checklists/executions",
-                                    headers=headers,
-                                    json={
-                                        "template_id": test_data["checklist_template_id"],
-                                        "assigned_to": test_data["user"]["id"]
-                                    })
+            response = requests.post(f"{BACKEND_URL}/checklists/executions?template_id={test_data['checklist_template_id']}",
+                                    headers=headers)
             
             if response.status_code in [200, 201]:
                 execution_data = response.json()
