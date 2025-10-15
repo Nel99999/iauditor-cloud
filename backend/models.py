@@ -45,6 +45,14 @@ class User(BaseModel):
     account_locked_until: Optional[datetime] = None
     last_login: Optional[datetime] = None
     last_login_ip: Optional[str] = None
+    
+    # User Approval fields
+    approval_status: str = "pending"  # "pending", "approved", "rejected"
+    approved_by: Optional[str] = None  # user_id who approved/rejected
+    approved_at: Optional[datetime] = None
+    approval_notes: Optional[str] = None
+    registration_ip: Optional[str] = None
+    invited: bool = False  # True if created via invitation (auto-approved)
 
 
 class UserCreate(BaseModel):
