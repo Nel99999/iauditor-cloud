@@ -181,6 +181,19 @@ async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_d
             detail="Invalid email or password",
         )
     
+    # Check approval status
+    approval_status = user.get("approval_status", "approved")
+    if approval_status == "pending":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your registration is pending admin approval. You will receive an email once your account is approved.",
+        )
+    elif approval_status == "rejected":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your registration was not approved. Please contact support for more information.",
+        )
+    
     # Check if user is active
     if not user.get("is_active", True):
         raise HTTPException(
