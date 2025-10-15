@@ -42,6 +42,7 @@ interface MenuItem {
   name: string;
   icon: LucideIcon;
   path: string;
+  badge?: string;
 }
 
 interface MenuSection {
