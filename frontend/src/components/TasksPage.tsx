@@ -13,12 +13,12 @@ import { Plus, ListTodo, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const TasksPage: React.FC = () => {
-  const [tasks, setTasks] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [formData, setFormData] = useState({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
-  const [loading, setLoading] = useState(true);
+const TasksPage: React.FC = (: any) => {
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+  const [formData, setFormData] = useState<any>({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();
@@ -52,7 +52,7 @@ const TasksPage: React.FC = () => {
     }
   };
 
-  const handleStatusChange = async (taskId, newStatus) => {
+  const handleStatusChange = async (taskId, newStatus: any) => {
     try {
       await axios.put(`${API}/tasks/${taskId}`, { status: newStatus });
       loadData();
@@ -61,7 +61,7 @@ const TasksPage: React.FC = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: any) => {
     const badges = {
       todo: <Badge variant="secondary">To Do</Badge>,
       in_progress: <Badge className="bg-blue-500">In Progress</Badge>,
@@ -71,7 +71,7 @@ const TasksPage: React.FC = () => {
     return badges[status] || <Badge>{status}</Badge>;
   };
 
-  const getPriorityBadge = (priority) => {
+  const getPriorityBadge = (priority: any) => {
     const badges = {
       low: <Badge variant="outline">Low</Badge>,
       medium: <Badge variant="secondary">Medium</Badge>,
@@ -81,7 +81,7 @@ const TasksPage: React.FC = () => {
     return badges[priority] || <Badge>{priority}</Badge>;
   };
 
-  const groupByStatus = (tasks) => {
+  const groupByStatus = (tasks: any) => {
     return {
       todo: tasks.filter(t => t.status === 'todo'),
       in_progress: tasks.filter(t => t.status === 'in_progress'),

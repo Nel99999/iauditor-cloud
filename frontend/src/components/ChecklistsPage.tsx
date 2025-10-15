@@ -11,12 +11,12 @@ import { Plus, CheckCircle, Clock, AlertTriangle, TrendingUp, Play, Edit, Trash2
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ChecklistsPage: React.FC = () => {
+const ChecklistsPage: React.FC = (: any) => {
   const navigate = useNavigate();
-  const [templates, setTemplates] = useState([]);
-  const [todaysChecklists, setTodaysChecklists] = useState({ executions: [], pending_templates: [] });
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [todaysChecklists, setTodaysChecklists] = useState<any>({ executions: [], pending_templates: [] });
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();
@@ -60,7 +60,7 @@ const ChecklistsPage: React.FC = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: any) => {
     switch (status) {
       case 'completed':
         return <Badge className="bg-green-500">Completed</Badge>;

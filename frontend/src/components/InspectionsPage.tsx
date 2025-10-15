@@ -23,13 +23,13 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const InspectionsPage: React.FC = () => {
+const InspectionsPage: React.FC = (: any) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [templates, setTemplates] = useState([]);
-  const [executions, setExecutions] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [executions, setExecutions] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();
@@ -67,11 +67,11 @@ const InspectionsPage: React.FC = () => {
     }
   };
 
-  const handleStartInspection = (templateId) => {
+  const handleStartInspection = (templateId: any) => {
     navigate(`/inspections/execute/${templateId}`);
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: any) => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -80,7 +80,7 @@ const InspectionsPage: React.FC = () => {
     });
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: any) => {
     switch (status) {
       case 'completed':
         return <Badge className="bg-green-500">Completed</Badge>;

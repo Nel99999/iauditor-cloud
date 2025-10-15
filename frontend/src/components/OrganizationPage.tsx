@@ -120,29 +120,29 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
   );
 };
 
-const OrganizationPage: React.FC = () => {
+const OrganizationPage: React.FC = (: any) => {
   const { user } = useAuth();
-  const [hierarchy, setHierarchy] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [expandedNodes, setExpandedNodes] = useState({});
+  const [hierarchy, setHierarchy] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [expandedNodes, setExpandedNodes] = useState<any>({});
   
   // Dialog states
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showUsersDialog, setShowUsersDialog] = useState(false);
-  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showUsersDialog, setShowUsersDialog] = useState<boolean>(false);
+  const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   
   // Form states
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [unitUsers, setUnitUsers] = useState([]);
-  const [formData, setFormData] = useState({
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [unitUsers, setUnitUsers] = useState<any[]>([]);
+  const [formData, setFormData] = useState<any>({
     name: '',
     description: '',
     level: 1,
     parent_id: null,
   });
-  const [inviteData, setInviteData] = useState({
+  const [inviteData, setInviteData] = useState<any>({
     email: '',
     unit_id: '',
     role: 'viewer',
@@ -173,20 +173,20 @@ const OrganizationPage: React.FC = () => {
     }
   };
 
-  const toggleNode = (nodeId) => {
+  const toggleNode = (nodeId: any) => {
     setExpandedNodes(prev => ({
       ...prev,
       [nodeId]: !prev[nodeId]
     }));
   };
 
-  const handleCreateRoot: React.FC = () => {
+  const handleCreateRoot: React.FC = (: any) => {
     setFormData({ name: '', description: '', level: 1, parent_id: null });
     setSelectedNode(null);
     setShowCreateDialog(true);
   };
 
-  const handleAddChild = (parentNode) => {
+  const handleAddChild = (parentNode: any) => {
     setFormData({
       name: '',
       description: '',
@@ -197,7 +197,7 @@ const OrganizationPage: React.FC = () => {
     setShowCreateDialog(true);
   };
 
-  const handleEdit = (node) => {
+  const handleEdit = (node: any) => {
     setFormData({
       name: node.name,
       description: node.description || '',
@@ -257,7 +257,7 @@ const OrganizationPage: React.FC = () => {
     }
   };
 
-  const handleInviteUser: React.FC = () => {
+  const handleInviteUser: React.FC = (: any) => {
     setInviteData({ email: '', unit_id: selectedNode?.id || '', role: 'viewer' });
     setShowInviteDialog(true);
   };

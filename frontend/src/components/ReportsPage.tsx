@@ -26,13 +26,13 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ReportsPage: React.FC = () => {
-  const [overview, setOverview] = useState(null);
-  const [trends, setTrends] = useState(null);
-  const [loading, setLoading] = useState(true);
+const ReportsPage: React.FC = (: any) => {
+  const [overview, setOverview] = useState<any>(null);
+  const [trends, setTrends] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedDays, setSelectedDays] = useState(30);
-  const [showCustomReportDialog, setShowCustomReportDialog] = useState(false);
-  const [customReport, setCustomReport] = useState({
+  const [showCustomReportDialog, setShowCustomReportDialog] = useState<boolean>(false);
+  const [customReport, setCustomReport] = useState<any>({
     name: '',
     collections: [],
     fields: [],
@@ -98,7 +98,7 @@ const ReportsPage: React.FC = () => {
     }
   };
 
-  const exportData = (format) => {
+  const exportData = (format: any) => {
     // Demo export functionality
     alert(`Exporting data as ${format.toUpperCase()}... (This would integrate with backend)`);
   };
