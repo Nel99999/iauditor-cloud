@@ -397,7 +397,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
       </div>
 
       {/* Mobile/Tablet Adaptive Navigation */}
-      <AdaptiveNav items={MOBILE_NAV_ITEMS} />
+      <AdaptiveNav items={MOBILE_NAV_ITEMS as any} />
 
       {/* Global Search Modal */}
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
