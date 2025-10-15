@@ -164,6 +164,16 @@ function App() {
               }
             />
             <Route
+              path="/users/approvals"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <UserApprovalPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/roles"
               element={
                 <ProtectedRoute>
