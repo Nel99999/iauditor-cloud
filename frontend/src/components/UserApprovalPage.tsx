@@ -261,7 +261,6 @@ const UserApprovalPage: React.FC = () => {
 
           <DialogFooter>
             <Button
-              variant="outline"
               onClick={() => {
                 setShowDialog(false);
                 setSelectedUser(null);
