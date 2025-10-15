@@ -811,16 +811,16 @@ def test_phase7_checklists():
         if response.status_code == 200:
             checklists = response.json()
             if isinstance(checklists, list):
-                log_test(phase, "GET /checklists", True, 
+                log_test(phase, "GET /checklists/executions", True, 
                         f"- Found {len(checklists)} checklist(s)")
             else:
-                log_test(phase, "GET /checklists", False, 
+                log_test(phase, "GET /checklists/executions", False, 
                         "- Invalid response format")
         else:
-            log_test(phase, "GET /checklists", False, 
+            log_test(phase, "GET /checklists/executions", False, 
                     f"- Status: {response.status_code}")
     except Exception as e:
-        log_test(phase, "GET /checklists", False, f"- Exception: {str(e)}")
+        log_test(phase, "GET /checklists/executions", False, f"- Exception: {str(e)}")
 
 
 # ============================================================================
