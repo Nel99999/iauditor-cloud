@@ -361,6 +361,19 @@ def test_permission_check_endpoint():
             else:
                 print_test(f"  Failed to assign {action}: {assign_response.status_code} - {assign_response.text}", "warning")
         
+        # Verify assignments were successful
+        verify_response = requests.get(f"{BACKEND_URL}/permissions/roles/{master_role['id']}", headers=headers)
+        if verify_response.status_code == 200:
+            verified_perms = verify_response.json()
+            verified_perm_ids = [p["permission_id"] for p in verified_perms]
+            has_all_assigned = all(perm_id in verified_perm_ids for perm_id in new_perm_ids.values())
+            if has_all_assigned:
+                print_test("  Verified: All 3 permissions successfully assigned to master role", "pass")
+            else:
+                print_test("  Warning: Not all permissions were assigned", "warning")
+                missing = [action for action, perm_id in new_perm_ids.items() if perm_id not in verified_perm_ids]
+                print_test(f"  Missing: {missing}", "warning")
+        
         # Now test checking each of the 3 new permissions
         permissions_to_check = [
             {"resource_type": "user", "action": "invite", "scope": "organization"},
