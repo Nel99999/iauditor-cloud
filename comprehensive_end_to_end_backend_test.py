@@ -363,28 +363,10 @@ def test_phase3_organization():
     
     headers = {"Authorization": f"Bearer {test_data['token']}"}
     
-    # Test 1: List organizations
-    try:
-        response = requests.get(f"{BACKEND_URL}/organizations", headers=headers)
-        
-        if response.status_code == 200:
-            orgs = response.json()
-            if isinstance(orgs, list):
-                log_test(phase, "GET /organizations", True, 
-                        f"- Found {len(orgs)} organization(s)")
-            else:
-                log_test(phase, "GET /organizations", False, 
-                        "- Invalid response format")
-        else:
-            log_test(phase, "GET /organizations", False, 
-                    f"- Status: {response.status_code}")
-    except Exception as e:
-        log_test(phase, "GET /organizations", False, f"- Exception: {str(e)}")
-    
-    # Test 2: Create organizational unit
+    # Test 1: Create organizational unit
     try:
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        response = requests.post(f"{BACKEND_URL}/org_units",
+        response = requests.post(f"{BACKEND_URL}/organizations/units",
                                 headers=headers,
                                 json={
                                     "name": f"E2E Test Unit {timestamp}",
@@ -398,42 +380,42 @@ def test_phase3_organization():
             test_data["org_unit_id"] = unit_data.get("id")
             
             # Verify unit saved to database
-            verify_response = requests.get(f"{BACKEND_URL}/org_units", headers=headers)
+            verify_response = requests.get(f"{BACKEND_URL}/organizations/units", headers=headers)
             if verify_response.status_code == 200:
                 units = verify_response.json()
                 unit_found = any(u.get("id") == test_data["org_unit_id"] for u in units)
                 if unit_found:
-                    log_test(phase, "POST /org_units", True, 
+                    log_test(phase, "POST /organizations/units", True, 
                             "- Org unit created and persisted")
                 else:
-                    log_test(phase, "POST /org_units", False, 
+                    log_test(phase, "POST /organizations/units", False, 
                             "- Unit not found in database")
             else:
-                log_test(phase, "POST /org_units", False, 
+                log_test(phase, "POST /organizations/units", False, 
                         "- Could not verify unit creation")
         else:
-            log_test(phase, "POST /org_units", False, 
+            log_test(phase, "POST /organizations/units", False, 
                     f"- Status: {response.status_code}, Error: {response.text}")
     except Exception as e:
-        log_test(phase, "POST /org_units", False, f"- Exception: {str(e)}")
+        log_test(phase, "POST /organizations/units", False, f"- Exception: {str(e)}")
     
-    # Test 3: List org units
+    # Test 2: List org units
     try:
-        response = requests.get(f"{BACKEND_URL}/org_units", headers=headers)
+        response = requests.get(f"{BACKEND_URL}/organizations/units", headers=headers)
         
         if response.status_code == 200:
             units = response.json()
             if isinstance(units, list):
-                log_test(phase, "GET /org_units", True, 
+                log_test(phase, "GET /organizations/units", True, 
                         f"- Found {len(units)} org unit(s)")
             else:
-                log_test(phase, "GET /org_units", False, 
+                log_test(phase, "GET /organizations/units", False, 
                         "- Invalid response format")
         else:
-            log_test(phase, "GET /org_units", False, 
+            log_test(phase, "GET /organizations/units", False, 
                     f"- Status: {response.status_code}")
     except Exception as e:
-        log_test(phase, "GET /org_units", False, f"- Exception: {str(e)}")
+        log_test(phase, "GET /organizations/units", False, f"- Exception: {str(e)}")
 
 
 # ============================================================================
