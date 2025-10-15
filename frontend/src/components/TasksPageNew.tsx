@@ -93,16 +93,6 @@ const TasksPageNew: React.FC = () => {
     }
   };
 
-  const handleStatusChange = async (taskId: string, newStatus: string): Promise<void> => {
-    try {
-      const token = localStorage.getItem('access_token');
-      await axios.put(`${API}/tasks/${taskId}`, { status: newStatus }, { headers: { Authorization: `Bearer ${token}` } });
-      loadData();
-    } catch (err) {
-      alert('Failed to update task');
-    }
-  };
-
   const priorityColors: Record<string, string> = {
     low: 'bg-blue-500',
     medium: 'bg-yellow-500',
