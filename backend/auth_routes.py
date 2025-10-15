@@ -55,6 +55,10 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         # Initialize system roles for the new organization
         await initialize_system_roles(db, organization_id)
     
+    # Determine approval status
+    # Organization creators are auto-approved, others need approval
+    is_org_creator = organization_id is not None
+    
     # Create user
     user = User(
         email=user_data.email,
@@ -63,12 +67,23 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         auth_provider="local",
         organization_id=organization_id,
         role="master" if organization_id else "viewer",  # Organization creator gets master role
+        approval_status="approved" if is_org_creator else "pending",
+        is_active=True if is_org_creator else False,
+        invited=False,
+        registration_ip=None,  # TODO: Get from request
     )
     
     user_dict = user.model_dump()
     user_dict["created_at"] = user_dict["created_at"].isoformat()
     user_dict["updated_at"] = user_dict["updated_at"].isoformat()
-    user_dict["last_login"] = datetime.now(timezone.utc).isoformat()
+    user_dict["last_login"] = datetime.now(timezone.utc).isoformat() if is_org_creator else None
+    
+    # Set approval fields for org creators
+    if is_org_creator:
+        user_dict["approved_at"] = datetime.now(timezone.utc).isoformat()
+        user_dict["approved_by"] = None  # Self-approved
+        user_dict["approval_notes"] = "Organization creator - auto-approved"
+    
     await db.users.insert_one(user_dict)
     
     # Update organization owner if created
@@ -78,7 +93,22 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
             {"$set": {"owner_id": user.id}}
         )
     
-    # Create access token
+    # If user is pending approval, return different response
+    if not is_org_creator:
+        # Return success message without token (user needs approval)
+        return {
+            "access_token": "",
+            "token_type": "bearer",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "approval_status": "pending",
+                "message": "Registration successful. Your account is pending admin approval. You will receive an email once approved."
+            }
+        }
+    
+    # Create access token for org creators only
     access_token = create_access_token(data={"sub": user.id})
     
     # Return token and user data (without password hash)
