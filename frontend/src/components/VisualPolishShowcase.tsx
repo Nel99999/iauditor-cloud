@@ -12,7 +12,7 @@ import './VisualPolishShowcase.css';
 
 // Types
 interface ToastItem {
-  id: number;
+  id: string;
   type: string;
   message: string;
   duration: number;
@@ -23,11 +23,11 @@ const VisualPolishShowcase: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const addToast = (type: string, message: string): void => {
-    const id = Date.now();
+    const id = Date.now().toString();
     setToasts(prev => [...prev, { id, type, message, duration: 3000 }]);
   };
 
-  const removeToast = (id: number): void => {
+  const removeToast = (id: string): void => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
 
