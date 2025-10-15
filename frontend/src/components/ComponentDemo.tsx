@@ -4,9 +4,9 @@ import { Plus, Mail, Settings, User, Bell } from 'lucide-react';
 import './ComponentDemo.css';
 
 const ComponentDemo: React.FC = () => {
-  const { isOpen: isSheet1Open, open: openSheet1, close: closeSheet1 } = useBottomSheet();
-  const { isOpen: isSheet2Open, open: openSheet2, close: closeSheet2 } = useBottomSheet();
-  const { isOpen: isSheet3Open, open: openSheet3, close: closeSheet3 } = useBottomSheet();
+  const { isOpen: isSheet1Open, open: openSheet1, close: closeSheet1 } = useBottomSheet() as any;
+  const { isOpen: isSheet2Open, open: openSheet2, close: closeSheet2 } = useBottomSheet() as any;
+  const { isOpen: isSheet3Open, open: openSheet3, close: closeSheet3 } = useBottomSheet() as any;
 
   return (
     <div className="component-demo">
