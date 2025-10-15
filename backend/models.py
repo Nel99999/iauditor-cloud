@@ -60,7 +60,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     name: str
-    organization_name: Optional[str] = None
+    organization_name: str  # Required - users must create organization or use invitation
 
 
 class UserLogin(BaseModel):
