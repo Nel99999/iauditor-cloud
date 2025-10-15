@@ -37,7 +37,7 @@ def create_test_user(email, role="master"):
         register_data = {
             "email": email,
             "password": "TestPass123!",
-            "full_name": f"Test User {role.title()}",
+            "name": f"Test User {role.title()}",
             "organization_name": f"Test Org {datetime.now().strftime('%Y%m%d%H%M%S')}"
         }
         
