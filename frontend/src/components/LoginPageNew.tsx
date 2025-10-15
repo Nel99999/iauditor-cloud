@@ -21,7 +21,7 @@ const LoginPageNew: React.FC = () => {
     setError('');
     setLoading(true);
 
-    const result = await login(email, password);
+    const result = await (login as any)(email, password);
     
     if (result.success) {
       navigate(ROUTES.DASHBOARD);
