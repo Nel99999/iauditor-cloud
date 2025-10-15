@@ -29,7 +29,7 @@ interface TimeTrackingPanelProps {
   taskTitle: string;
 }
 
-const TimeTrackingPanel: React.FC<TimeTrackingPanelProps> = ({ taskId, taskTitle }) => {
+const TimeTrackingPanel: React.FC<TimeTrackingPanelProps> = ({ taskId }) => {
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
   const [activeTimer, setActiveTimer] = useState<TimeEntry | null>(null);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
