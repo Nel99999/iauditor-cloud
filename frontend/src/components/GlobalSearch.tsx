@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Search, X, FileText, CheckSquare, Users, Folder, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Types
 interface SearchResult {
