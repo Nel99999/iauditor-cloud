@@ -257,6 +257,9 @@ async def accept_invitation(
     
     # Create user account
     hashed_password = bcrypt.hashpw(acceptance.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    # Get role details to store role code instead of ID
+    role = await db.roles.find_one({"id": invitation["role_id"]})
+    role_code = role["code"] if role else invitation["role_id"]
     
     user_dict = {
         "id": str(uuid.uuid4()),
@@ -264,7 +267,7 @@ async def accept_invitation(
         "name": acceptance.name,
         "password_hash": hashed_password,
         "organization_id": invitation["organization_id"],
-        "role": invitation["role_id"],
+        "role": role_code,  # Store role CODE, not UUID
         "is_active": True,
         "approval_status": "approved",  # Invited users are pre-approved
         "invited": True,  # Mark as invited
