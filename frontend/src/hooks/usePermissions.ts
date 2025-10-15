@@ -118,7 +118,7 @@ export const usePermissions = (): UsePermissionsReturn => {
    * Get user's role level
    */
   const getRoleLevel = (): number => {
-    return (ROLE_LEVELS as any)[user?.role] || 999;
+    return (ROLE_LEVELS as any)[user?.role || ''] || 999;
   };
 
   /**
