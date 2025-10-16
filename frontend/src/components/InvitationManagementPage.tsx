@@ -138,17 +138,17 @@ const InvitationManagementPage = () => {
   // const _otherInvitations = invitations.filter((i: any) => i.status !== 'pending');
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Invitation Management</h1>
-          <p className="text-slate-600 dark:text-slate-400">Send and track user invitations (7-day expiration)</p>
-        </div>
+    <ModernPageWrapper 
+      title="Invitations" 
+      subtitle="Manage user invitations"
+      actions={
         <Button onClick={() => setShowInviteDialog(true)}>
           <Send className="h-4 w-4 mr-2" />
           Send Invitation
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
       <Tabs defaultValue="pending">
         <TabsList>
