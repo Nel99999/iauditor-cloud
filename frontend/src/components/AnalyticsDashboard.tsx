@@ -67,7 +67,7 @@ const AnalyticsDashboard = () => {
 
       // Format status data for pie chart
       if (statusRes.data.breakdown) {
-        setTasksByStatus(Object.entries(...).map(([status, count]: [string, any]) => ({
+        setTasksByStatus(Object.entries(statusRes.data.breakdown).map(([status, count]: [string, any]) => ({
           name: status.replace('_', ' ').toUpperCase(),
           value: count
         })));
@@ -75,7 +75,7 @@ const AnalyticsDashboard = () => {
 
       // Format priority data for bar chart
       if (priorityRes.data.breakdown) {
-        setTasksByPriority(Object.entries(...).map(([priority, count]: [string, any]) => ({
+        setTasksByPriority(Object.entries(priorityRes.data.breakdown).map(([priority, count]: [string, any]) => ({
           name: priority.toUpperCase(),
           count: count
         })));
