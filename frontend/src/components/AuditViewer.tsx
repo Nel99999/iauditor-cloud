@@ -14,10 +14,10 @@ const API = `${BACKEND_URL}/api`;
 
 const AuditViewer: React.FC = () => {
   const { user } = useAuth();
-  const [logs, setLogs] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [stats, setStats] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
   
   const [filters, setFilters] = useState({
     action: '',
@@ -48,7 +48,7 @@ const AuditViewer: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setLogs(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load audit logs:', err);
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ const AuditViewer: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStats(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load stats:', err);
     }
   };

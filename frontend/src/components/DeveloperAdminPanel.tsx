@@ -33,16 +33,16 @@ const TEST_CREDENTIALS = [
 const DeveloperAdminPanel: React.FC = () => {
   const { user } = useAuth();
   const { isDeveloper } = usePermissions();
-  const [users, setUsers] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showPasswords, setShowPasswords] = useState({});
-  const [showAllPasswords, setShowAllPasswords] = useState(false);
-  const [copiedId, setCopiedId] = useState(null);
-  const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
-  const [resetUser, setResetUser] = useState(null);
+  const [users, setUsers] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
+  const [permissions, setPermissions] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showPasswords, setShowPasswords] = useState<any>({});
+  const [showAllPasswords, setShowAllPasswords] = useState<boolean>(false);
+  const [copiedId, setCopiedId] = useState<any | null>(null);
+  const [resetPasswordDialog, setResetPasswordDialog] = useState<boolean>(false);
+  const [resetUser, setResetUser] = useState<any | null>(null);
   const [newPassword, setNewPassword] = useState('Test123!');
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const DeveloperAdminPanel: React.FC = () => {
       setUsers(usersRes.data);
       setRoles(rolesRes.data);
       setPermissions(permsRes.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load data:', err);
     } finally {
       setLoading(false);
@@ -104,7 +104,7 @@ const DeveloperAdminPanel: React.FC = () => {
       document.execCommand('copy');
       setCopiedId(text);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Copy failed. Text: ' + text);
     }
     
@@ -123,7 +123,7 @@ const DeveloperAdminPanel: React.FC = () => {
       setResetUser(null);
       setNewPassword('Test123!');
       loadData();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to reset password');
     }
   };

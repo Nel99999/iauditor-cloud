@@ -5,7 +5,7 @@ import { Sun, Moon, Check, X, AlertCircle } from 'lucide-react';
 
 const DesignSystemShowcase: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
 
   return (
     <div style={{

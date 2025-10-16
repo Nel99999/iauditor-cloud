@@ -23,10 +23,10 @@ const API = `${BACKEND_URL}/api`;
 
 const DelegationManager: React.FC = () => {
   const { user } = useAuth();
-  const [delegations, setDelegations] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [delegations, setDelegations] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   
   const [formData, setFormData] = useState({
     delegate_id: '',
@@ -49,7 +49,7 @@ const DelegationManager: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDelegations(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load delegations:', err);
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ const DelegationManager: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data.filter(u => u.id !== user?.id)); // Exclude self
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load users:', err);
     }
   };
@@ -78,7 +78,7 @@ const DelegationManager: React.FC = () => {
       resetForm();
       loadDelegations();
       alert('Delegation created successfully!');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to create delegation:', err);
       alert(err.response?.data?.detail || 'Failed to create delegation');
     }
@@ -94,7 +94,7 @@ const DelegationManager: React.FC = () => {
       });
       loadDelegations();
       alert('Delegation revoked successfully!');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to revoke delegation:', err);
       alert(err.response?.data?.detail || 'Failed to revoke delegation');
     }

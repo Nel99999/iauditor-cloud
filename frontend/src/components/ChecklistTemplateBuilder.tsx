@@ -25,7 +25,7 @@ const ChecklistTemplateBuilder: React.FC = () => {
     scheduled_time: '',
     items: [],
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (isEdit) loadTemplate();
@@ -35,7 +35,7 @@ const ChecklistTemplateBuilder: React.FC = () => {
     try {
       const response = await axios.get(`${API}/checklists/templates/${templateId}`);
       setTemplate(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to load template');
       navigate('/checklists');
     }
@@ -80,7 +80,7 @@ const ChecklistTemplateBuilder: React.FC = () => {
         await axios.post(`${API}/checklists/templates`, template);
       }
       navigate('/checklists');
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to save template');
     } finally {
       setLoading(false);

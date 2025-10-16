@@ -26,7 +26,7 @@ const EnhancedSettingsPage: React.FC = () => {
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   const { t, i18n } = useTranslation();
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
   // Profile
@@ -71,16 +71,16 @@ const EnhancedSettingsPage: React.FC = () => {
     analytics: false,
     third_party: false
   });
-  const [exportingData, setExportingData] = useState(false);
-  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [exportingData, setExportingData] = useState<boolean>(false);
+  const [deletingAccount, setDeletingAccount] = useState<boolean>(false);
   
   // API Settings
   const [apiSettings, setApiSettings] = useState({
     sendgrid_api_key: '',
     sendgrid_configured: false
   });
-  const [testingEmail, setTestingEmail] = useState(false);
-  const [emailTestResult, setEmailTestResult] = useState(null);
+  const [testingEmail, setTestingEmail] = useState<boolean>(false);
+  const [emailTestResult, setEmailTestResult] = useState<any | null>(null);
   
   // Twilio Settings
   const [twilioSettings, setTwilioSettings] = useState({
@@ -90,16 +90,16 @@ const EnhancedSettingsPage: React.FC = () => {
     whatsapp_number: '',
     twilio_configured: false
   });
-  const [testingTwilio, setTestingTwilio] = useState(false);
-  const [twilioTestResult, setTwilioTestResult] = useState(null);
+  const [testingTwilio, setTestingTwilio] = useState<boolean>(false);
+  const [twilioTestResult, setTwilioTestResult] = useState<any | null>(null);
   
   // Test SMS/WhatsApp
-  const [testSMSPhone, setTestSMSPhone] = useState('');
-  const [testWhatsAppPhone, setTestWhatsAppPhone] = useState('');
-  const [sendingSMS, setSendingSMS] = useState(false);
-  const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
-  const [smsTestResult, setSmsTestResult] = useState(null);
-  const [whatsappTestResult, setWhatsappTestResult] = useState(null);
+  const [testSMSPhone, setTestSMSPhone] = useState<string>('');
+  const [testWhatsAppPhone, setTestWhatsAppPhone] = useState<string>('');
+  const [sendingSMS, setSendingSMS] = useState<boolean>(false);
+  const [sendingWhatsApp, setSendingWhatsApp] = useState<boolean>(false);
+  const [smsTestResult, setSmsTestResult] = useState<any | null>(null);
+  const [whatsappTestResult, setWhatsappTestResult] = useState<any | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -129,7 +129,7 @@ const EnhancedSettingsPage: React.FC = () => {
         whatsapp_number: twilio.data.whatsapp_number || '',
         twilio_configured: twilio.data.twilio_configured || false
       });
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load preferences:', err);
     }
   };
@@ -146,7 +146,7 @@ const EnhancedSettingsPage: React.FC = () => {
       await axios.put(`${API}/users/${user.id}`, profileData);
       setUser({ ...user, ...profileData });
       showMessage('success', 'Profile updated successfully!');
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', err.response?.data?.detail || 'Failed to update profile');
     } finally {
       setLoading(false);
@@ -167,7 +167,7 @@ const EnhancedSettingsPage: React.FC = () => {
       });
       showMessage('success', 'Password updated successfully!');
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', err.response?.data?.detail || 'Failed to update password');
     } finally {
       setLoading(false);
@@ -189,7 +189,7 @@ const EnhancedSettingsPage: React.FC = () => {
       setUser({ ...user, picture: response.data.picture_url });
       showMessage('success', 'Photo uploaded successfully!');
       window.location.reload();
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', err.response?.data?.detail || 'Failed to upload photo');
     } finally {
       setLoading(false);
@@ -202,7 +202,7 @@ const EnhancedSettingsPage: React.FC = () => {
       await axios.put(`${API}/users/regional`, regionalPrefs);
       i18n.changeLanguage(regionalPrefs.language);
       showMessage('success', 'Regional settings saved!');
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', 'Failed to save regional settings');
     } finally {
       setLoading(false);
@@ -214,7 +214,7 @@ const EnhancedSettingsPage: React.FC = () => {
     try {
       await axios.put(`${API}/users/privacy`, privacyPrefs);
       showMessage('success', 'Privacy settings saved!');
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', 'Failed to save privacy settings');
     } finally {
       setLoading(false);
@@ -226,7 +226,7 @@ const EnhancedSettingsPage: React.FC = () => {
     try {
       await axios.put(`${API}/users/security-prefs`, securityPrefs);
       showMessage('success', 'Security settings saved!');
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', 'Failed to save security settings');
     } finally {
       setLoading(false);
@@ -238,7 +238,7 @@ const EnhancedSettingsPage: React.FC = () => {
     try {
       await axios.put(`${API}/users/settings`, notificationPrefs);
       showMessage('success', 'Notification preferences saved!');
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', 'Failed to save preferences');
     } finally {
       setLoading(false);
@@ -251,7 +251,7 @@ const EnhancedSettingsPage: React.FC = () => {
       await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
       showMessage('success', 'SendGrid API key saved!');
       loadAllPreferences();
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', 'Failed to save API key');
     } finally {
       setLoading(false);
@@ -264,7 +264,7 @@ const EnhancedSettingsPage: React.FC = () => {
     try {
       const response = await axios.post(`${API}/settings/email/test`);
       setEmailTestResult({ success: true, message: response.data.message });
-    } catch (err) {
+    } catch (err: unknown) {
       setEmailTestResult({ success: false, message: err.response?.data?.detail || 'Test failed' });
     } finally {
       setTestingEmail(false);
@@ -282,7 +282,7 @@ const EnhancedSettingsPage: React.FC = () => {
       });
       showMessage('success', 'Twilio settings saved successfully!');
       loadAllPreferences();
-    } catch (err) {
+    } catch (err: unknown) {
       showMessage('error', err.response?.data?.detail || 'Failed to save Twilio settings');
     } finally {
       setLoading(false);
@@ -299,7 +299,7 @@ const EnhancedSettingsPage: React.FC = () => {
         message: `Connected to ${response.data.data.friendly_name}`,
         account_sid: response.data.data.account_sid
       });
-    } catch (err) {
+    } catch (err: unknown) {
       setTwilioTestResult({ 
         success: false, 
         message: err.response?.data?.detail || 'Connection failed' 
@@ -325,7 +325,7 @@ const EnhancedSettingsPage: React.FC = () => {
         success: true, 
         message: `SMS sent successfully! Message SID: ${response.data.message_sid}` 
       });
-    } catch (err) {
+    } catch (err: unknown) {
       setSmsTestResult({ 
         success: false, 
         message: err.response?.data?.detail || 'Failed to send SMS' 
@@ -351,7 +351,7 @@ const EnhancedSettingsPage: React.FC = () => {
         success: true, 
         message: `WhatsApp message sent successfully! Message SID: ${response.data.message_sid}` 
       });
-    } catch (err) {
+    } catch (err: unknown) {
       setWhatsappTestResult({ 
         success: false, 
         message: err.response?.data?.detail || 'Failed to send WhatsApp message' 
@@ -1089,7 +1089,7 @@ const EnhancedSettingsPage: React.FC = () => {
                       a.click();
                       
                       setMessage({ type: 'success', text: 'Data exported successfully!' });
-                    } catch (err) {
+                    } catch (err: unknown) {
                       setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to export data' });
                     } finally {
                       setExportingData(false);
@@ -1130,7 +1130,7 @@ const EnhancedSettingsPage: React.FC = () => {
                           });
                           setGdprConsents({ ...gdprConsents, marketing: checked });
                           setMessage({ type: 'success', text: 'Consent updated' });
-                        } catch (err) {
+                        } catch (err: unknown) {
                           setMessage({ type: 'error', text: 'Failed to update consent' });
                         }
                       }}
@@ -1157,7 +1157,7 @@ const EnhancedSettingsPage: React.FC = () => {
                           });
                           setGdprConsents({ ...gdprConsents, analytics: checked });
                           setMessage({ type: 'success', text: 'Consent updated' });
-                        } catch (err) {
+                        } catch (err: unknown) {
                           setMessage({ type: 'error', text: 'Failed to update consent' });
                         }
                       }}
@@ -1184,7 +1184,7 @@ const EnhancedSettingsPage: React.FC = () => {
                           });
                           setGdprConsents({ ...gdprConsents, third_party: checked });
                           setMessage({ type: 'success', text: 'Consent updated' });
-                        } catch (err) {
+                        } catch (err: unknown) {
                           setMessage({ type: 'error', text: 'Failed to update consent' });
                         }
                       }}
@@ -1244,7 +1244,7 @@ const EnhancedSettingsPage: React.FC = () => {
                       localStorage.removeItem('token');
                       localStorage.removeItem('access_token');
                       window.location.href = '/login';
-                    } catch (err) {
+                    } catch (err: unknown) {
                       setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to delete account' });
                     } finally {
                       setDeletingAccount(false);

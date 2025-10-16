@@ -34,7 +34,7 @@ const ChecklistsPage: React.FC = () => {
       setTemplates(templatesRes.data);
       setTodaysChecklists(todayRes.data);
       setStats(statsRes.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load checklists:', err);
     } finally {
       setLoading(false);
@@ -45,7 +45,7 @@ const ChecklistsPage: React.FC = () => {
     try {
       await axios.post(`${API}/checklists/executions?template_id=${templateId}`);
       loadData();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to start checklist:', err);
     }
   };
@@ -55,7 +55,7 @@ const ChecklistsPage: React.FC = () => {
     try {
       await axios.delete(`${API}/checklists/templates/${templateId}`);
       loadData();
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to delete template');
     }
   };

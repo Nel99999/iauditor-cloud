@@ -5,14 +5,14 @@ import { Users, Plus, Edit2, Trash2, X, Search, UserPlus, UserMinus } from 'luci
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
 const GroupsManagementPage: React.FC = () => {
-  const [groups, setGroups] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showMembersModal, setShowMembersModal] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [groups, setGroups] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showMembersModal, setShowMembersModal] = useState<boolean>(false);
+  const [selectedGroup, setSelectedGroup] = useState<any | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -32,7 +32,7 @@ const GroupsManagementPage: React.FC = () => {
       
       const response = await axios.get(`${API_BASE_URL}/api/groups`, { headers });
       setGroups(response.data.groups || []);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching groups:', err);
     } finally {
       setLoading(false);
@@ -46,7 +46,7 @@ const GroupsManagementPage: React.FC = () => {
       
       const response = await axios.get(`${API_BASE_URL}/api/users`, { headers });
       setAllUsers(response.data.users || []);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching users:', err);
     }
   };
@@ -62,7 +62,7 @@ const GroupsManagementPage: React.FC = () => {
       setShowCreateModal(false);
       setFormData({ name: '', description: '', type: 'team' });
       fetchGroups();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error creating group:', err);
       alert(err.response?.data?.detail || 'Failed to create group');
     }
@@ -84,7 +84,7 @@ const GroupsManagementPage: React.FC = () => {
       setSelectedGroup(null);
       setFormData({ name: '', description: '', type: 'team' });
       fetchGroups();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error updating group:', err);
       alert(err.response?.data?.detail || 'Failed to update group');
     }
@@ -99,7 +99,7 @@ const GroupsManagementPage: React.FC = () => {
       
       await axios.delete(`${API_BASE_URL}/api/groups/${groupId}`, { headers });
       fetchGroups();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error deleting group:', err);
       alert(err.response?.data?.detail || 'Failed to delete group');
     }
@@ -122,7 +122,7 @@ const GroupsManagementPage: React.FC = () => {
         { headers }
       );
       setSelectedGroup(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error adding member:', err);
       alert(err.response?.data?.detail || 'Failed to add member');
     }
@@ -144,7 +144,7 @@ const GroupsManagementPage: React.FC = () => {
         { headers }
       );
       setSelectedGroup(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error removing member:', err);
       alert(err.response?.data?.detail || 'Failed to remove member');
     }
@@ -171,7 +171,7 @@ const GroupsManagementPage: React.FC = () => {
       );
       setSelectedGroup(response.data);
       setShowMembersModal(true);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching group details:', err);
     }
   };

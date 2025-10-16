@@ -15,15 +15,15 @@ const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'
 
 const AnalyticsDashboard: React.FC = () => {
   const [period, setPeriod] = useState('week');
-  const [overview, setOverview] = useState(null);
-  const [taskTrends, setTaskTrends] = useState([]);
-  const [tasksByStatus, setTasksByStatus] = useState([]);
-  const [tasksByPriority, setTasksByPriority] = useState([]);
-  const [timeTrackingTrends, setTimeTrackingTrends] = useState([]);
-  const [userActivity, setUserActivity] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [overview, setOverview] = useState<any | null>(null);
+  const [taskTrends, setTaskTrends] = useState<any[]>([]);
+  const [tasksByStatus, setTasksByStatus] = useState<any[]>([]);
+  const [tasksByPriority, setTasksByPriority] = useState<any[]>([]);
+  const [timeTrackingTrends, setTimeTrackingTrends] = useState<any[]>([]);
+  const [userActivity, setUserActivity] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<any | null>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const fetchAnalyticsData = async (showRefresh = false) => {
     try {
@@ -95,7 +95,7 @@ const AnalyticsDashboard: React.FC = () => {
         setUserActivity(activityRes.data.most_active_users.slice(0, 5));
       }
 
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching analytics:', err);
       setError(err.response?.data?.detail || 'Failed to load analytics data');
     } finally {

@@ -5,10 +5,10 @@ import { Upload, Download, FileText, CheckCircle, XCircle, AlertCircle } from 'l
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
 const BulkImportPage: React.FC = () => {
-  const [file, setFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [validationResults, setValidationResults] = useState(null);
-  const [importResults, setImportResults] = useState(null);
+  const [file, setFile] = useState<any | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [validationResults, setValidationResults] = useState<any | null>(null);
+  const [importResults, setImportResults] = useState<any | null>(null);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -45,7 +45,7 @@ const BulkImportPage: React.FC = () => {
       );
 
       setValidationResults(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error validating file:', err);
       alert(err.response?.data?.detail || 'Failed to validate file');
     } finally {
@@ -83,7 +83,7 @@ const BulkImportPage: React.FC = () => {
       setImportResults(response.data);
       setFile(null);
       setValidationResults(null);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error importing users:', err);
       alert(err.response?.data?.detail || 'Failed to import users');
     } finally {

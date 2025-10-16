@@ -18,12 +18,12 @@ const ChecklistExecutionPage: React.FC = () => {
   const { user } = useAuth();
   const { executionId } = useParams();
   
-  const [execution, setExecution] = useState(null);
-  const [template, setTemplate] = useState(null);
-  const [items, setItems] = useState([]);
-  const [notes, setNotes] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [execution, setExecution] = useState<any | null>(null);
+  const [template, setTemplate] = useState<any | null>(null);
+  const [items, setItems] = useState<any[]>([]);
+  const [notes, setNotes] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [saving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     loadExecution();
@@ -39,7 +39,7 @@ const ChecklistExecutionPage: React.FC = () => {
       
       const templateRes = await axios.get(`${API}/checklists/templates/${execRes.data.template_id}`);
       setTemplate(templateRes.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load checklist:', err);
       alert('Failed to load checklist');
       navigate('/checklists');
@@ -72,7 +72,7 @@ const ChecklistExecutionPage: React.FC = () => {
       });
       alert('Checklist completed!');
       navigate('/checklists');
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to complete checklist');
     } finally {
       setSaving(false);
