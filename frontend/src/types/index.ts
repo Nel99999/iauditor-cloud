@@ -575,3 +575,225 @@ export interface GlobalSearchResponse {
   results: SearchResult[];
   total: number;
 }
+
+
+// ==================== Delegation Types ====================
+
+export interface Delegation {
+  id: string;
+  delegator_id: string;
+  delegator_name: string;
+  delegate_id: string;
+  delegate_name: string;
+  reason?: string;
+  valid_from: string;
+  valid_until: string;
+  workflow_types?: string[];
+  resource_types?: string[];
+  is_active: boolean;
+  organization_id: string;
+  created_at: string;
+}
+
+// ==================== Audit Types ====================
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  user_id: string;
+  user_name: string;
+  action: string;
+  resource_type: string;
+  resource_id: string;
+  result: 'success' | 'failure';
+  permission_checked?: string;
+  changes?: Record<string, any>;
+  organization_id: string;
+}
+
+export interface AuditStats {
+  total_logs: number;
+  failed_permissions: number;
+  top_users: Array<{ user_name: string; count: number }>;
+  actions: Record<string, number>;
+}
+
+export interface AuditFilters {
+  action: string;
+  resource_type: string;
+  result: string;
+  start_date: string;
+  end_date: string;
+  limit: number;
+  [key: string]: string | number;
+}
+
+// ==================== Analytics Types ====================
+
+export interface AnalyticsOverview {
+  metrics: {
+    total_tasks: number;
+    completed_tasks: number;
+    pending_tasks: number;
+    total_time_tracked: number;
+    active_users: number;
+    total_inspections: number;
+  };
+}
+
+export interface TaskTrendData {
+  name: string;
+  value: number;
+}
+
+export interface TaskStatusData {
+  name: string;
+  count: number;
+}
+
+export interface UserActivityData {
+  user_name: string;
+  tasks_completed: number;
+  hours_logged: number;
+  last_activity: string;
+}
+
+// ==================== Bulk Import Types ====================
+
+export interface BulkImportValidation {
+  total_count: number;
+  valid_count: number;
+  invalid_count: number;
+  is_valid: boolean;
+  errors?: Array<{ row: number; message: string }>;
+  preview?: Array<Record<string, any>>;
+}
+
+export interface BulkImportResult {
+  success_count: number;
+  failed_count: number;
+  failed_users?: Array<{ row: number; error: string }>;
+}
+
+// ==================== Settings Types ====================
+
+export interface EmailSettings {
+  sendgrid_api_key?: string;
+  from_email?: string;
+  from_name?: string;
+}
+
+export interface SMSSettings {
+  twilio_account_sid?: string;
+  twilio_auth_token?: string;
+  twilio_phone_number?: string;
+}
+
+export interface SecurityPreferences {
+  two_factor_enabled: boolean;
+  session_timeout: number;
+  ip_whitelist?: string[];
+}
+
+export interface RegionalPreferences {
+  language: string;
+  timezone: string;
+  date_format: string;
+  time_format: '12h' | '24h';
+  currency: string;
+}
+
+export interface PrivacyPreferences {
+  profile_visibility: 'public' | 'private' | 'team';
+  show_activity: boolean;
+  show_last_seen: boolean;
+}
+
+// ==================== Invitation Types ====================
+
+export interface Invitation {
+  id: string;
+  email: string;
+  role: UserRole;
+  status: 'pending' | 'accepted' | 'expired' | 'cancelled';
+  organization_id: string;
+  sent_by: string;
+  sent_by_name?: string;
+  sent_at: string;
+  expires_at: string;
+  accepted_at?: string;
+  token?: string;
+}
+
+// ==================== MFA Types ====================
+
+export interface MFASetup {
+  secret: string;
+  qr_code: string;
+  backup_codes: string[];
+}
+
+export interface MFAVerification {
+  code: string;
+  backup_code?: boolean;
+}
+
+// ==================== Workflow Designer Types ====================
+
+export interface FlowNode {
+  id: string;
+  type: 'start' | 'approval' | 'condition' | 'action' | 'end';
+  data: {
+    label: string;
+    approver_role?: string;
+    conditions?: Record<string, any>;
+    actions?: string[];
+  };
+  position: { x: number; y: number };
+}
+
+export interface FlowEdge {
+  id: string;
+  source: string;
+  target: string;
+  label?: string;
+  animated?: boolean;
+}
+
+// ==================== Role Management Types ====================
+
+export interface RoleFormData {
+  name: string;
+  code: string;
+  level: number;
+  color: string;
+  description?: string;
+  permissions: string[];
+}
+
+export interface PermissionGroup {
+  module: string;
+  permissions: Permission[];
+}
+
+// ==================== Developer Panel Types ====================
+
+export interface SystemInfo {
+  version: string;
+  environment: string;
+  database_status: string;
+  cache_status: string;
+  api_status: string;
+}
+
+export interface RoleMapping {
+  [key: string]: string;
+}
+
+export interface PermissionOverride {
+  user_id: string;
+  permission_id: string;
+  granted: boolean;
+  reason?: string;
+  created_at: string;
+}
