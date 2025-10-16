@@ -98,7 +98,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <OrganizationPageNew />
+                    <OrganizationPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
