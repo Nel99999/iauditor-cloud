@@ -224,10 +224,60 @@ def test_production_user_authentication():
             try:
                 error_data = response.json()
                 error_msg = error_data.get("detail", "Unknown error")
+                # Check if account is locked
+                if "locked" in error_msg.lower():
+                    record_test("Production User Authentication", False, f"Account temporarily locked (security measure) - {error_msg}")
+                else:
+                    record_test("Production User Authentication", False, f"Login failed - {error_msg}")
             except:
                 error_msg = response.text
-        record_test("Production User Authentication", False, f"Production user login failed (Status: {status}) - {error_msg}")
+                record_test("Production User Authentication", False, f"Login failed (Status: {status}) - {error_msg}")
+        else:
+            record_test("Production User Authentication", False, f"Login failed (Status: {status}) - Network timeout")
         return None
+
+def verify_production_data():
+    """Verify production data exists in database"""
+    print_section("PRODUCTION DATA VERIFICATION")
+    
+    try:
+        import asyncio
+        from motor.motor_asyncio import AsyncIOMotorClient
+        
+        async def check_data():
+            client = AsyncIOMotorClient('mongodb://localhost:27017')
+            db = client['operational_platform']
+            
+            # Find production user
+            prod_user = await db.users.find_one({'email': 'llewellyn@bluedawncapital.co.za'})
+            if prod_user:
+                org_id = prod_user.get('organization_id')
+                
+                # Check various data counts
+                units_count = await db.organization_units.count_documents({'organization_id': org_id})
+                inspections_count = await db.inspection_templates.count_documents({'organization_id': org_id})
+                checklists_count = await db.checklist_templates.count_documents({'organization_id': org_id})
+                invitations_count = await db.invitations.count_documents({'organization_id': org_id})
+                
+                record_test("Production User Data Exists", True, 
+                          f"User: {prod_user.get('name')} ({prod_user.get('email')}), Role: {prod_user.get('role')}")
+                record_test("Production Organization Units", True, f"Found {units_count} organizational units")
+                record_test("Production Inspection Templates", True, f"Found {inspections_count} inspection templates")
+                record_test("Production Checklist Templates", True, f"Found {checklists_count} checklist templates")
+                record_test("Production Invitations", True, f"Found {invitations_count} invitations")
+                
+                client.close()
+                return True
+            else:
+                record_test("Production User Data Exists", False, "Production user not found in database")
+                client.close()
+                return False
+        
+        return asyncio.run(check_data())
+        
+    except Exception as e:
+        record_test("Production Data Verification", False, f"Database check failed: {str(e)}")
+        return False
 
 def test_authentication_endpoints(token):
     """Test authentication-related endpoints"""
