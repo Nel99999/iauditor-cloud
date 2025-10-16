@@ -565,7 +565,7 @@ const GroupsManagementPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </ModernPageWrapper>
   );
 };
 
