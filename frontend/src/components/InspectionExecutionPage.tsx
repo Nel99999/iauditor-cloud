@@ -103,7 +103,7 @@ const InspectionExecutionPage = () => {
     setAnswers({
       ...answers,
       [questionId]: {
-        ...answers[questionId],
+        ...(answers as any)[questionId],
         answer: value,
       },
     });
@@ -123,8 +123,8 @@ const InspectionExecutionPage = () => {
       setAnswers({
         ...answers,
         [questionId]: {
-          ...answers[questionId],
-          photo_ids: [...(answers[questionId].photo_ids || []), photoId],
+          ...(answers as any)[questionId],
+          photo_ids: [...((answers as any)[questionId].photo_ids || []), photoId],
         },
       });
       

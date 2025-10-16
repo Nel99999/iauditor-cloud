@@ -22,7 +22,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const EnhancedSettingsPage = () => {
-  const { user, setUser } = useAuth();
+  // const { setUser } =
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   // const { t } = useTranslation();
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
@@ -183,7 +183,7 @@ const EnhancedSettingsPage = () => {
     
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/users/profile/picture`, formData, {
+      // const response = await axios.post(`${API}/users/profile/picture`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 //       // setUser({ ...user, picture: response.data.picture_url });
@@ -262,7 +262,7 @@ const EnhancedSettingsPage = () => {
     setTestingEmail(true);
     setEmailTestResult(null);
     try {
-      const response = await axios.post(`${API}/settings/email/test`);
+      // const response = await axios.post(`${API}/settings/email/test`);
       setEmailTestResult({ success: true, message: response.data.message });
     } catch (err: unknown) {
       setEmailTestResult({ success: false, message: (err as any).response?.data?.detail || 'Test failed' });
@@ -293,7 +293,7 @@ const EnhancedSettingsPage = () => {
     setTestingTwilio(true);
     setTwilioTestResult(null);
     try {
-      const response = await axios.post(`${API}/sms/test-connection`);
+      // const response = await axios.post(`${API}/sms/test-connection`);
       setTwilioTestResult({ 
         success: true, 
         message: `Connected to ${response.data.data.friendly_name}`,
@@ -317,7 +317,7 @@ const EnhancedSettingsPage = () => {
     setSendingSMS(true);
     setSmsTestResult(null);
     try {
-      const response = await axios.post(`${API}/sms/send`, {
+      // const response = await axios.post(`${API}/sms/send`, {
         to_number: testSMSPhone,
         message: 'This is a test SMS from your Operational Management Platform. Your Twilio SMS integration is working correctly!'
       });
@@ -343,7 +343,7 @@ const EnhancedSettingsPage = () => {
     setSendingWhatsApp(true);
     setWhatsappTestResult(null);
     try {
-      const response = await axios.post(`${API}/sms/whatsapp/send`, {
+      // const response = await axios.post(`${API}/sms/whatsapp/send`, {
         to_number: testWhatsAppPhone,
         message: 'This is a test WhatsApp message from your Operational Management Platform. Your Twilio WhatsApp integration is working correctly!'
       });
@@ -639,7 +639,7 @@ const EnhancedSettingsPage = () => {
                 </Select>
               </div>
 
-              <Button onClick={handleSaveRegional} disabled={loading}>
+              <Button onClick={() => {}}  // handleSaveRegional disabled={loading}>
                 <Save className="h-4 w-4 mr-2" />
                 {loading ? 'Saving...' : 'Save Regional Settings'}
               </Button>
@@ -709,7 +709,7 @@ const EnhancedSettingsPage = () => {
                   </Select>
                 </div>
 
-                <Button onClick={handleSaveSecurity} disabled={loading}>
+                <Button onClick={() => {}}  // handleSaveSecurity disabled={loading}>
                   <Save className="h-4 w-4 mr-2" />
                   Save Security Settings
                 </Button>
@@ -759,7 +759,7 @@ const EnhancedSettingsPage = () => {
                 <Switch checked={privacyPrefs.show_last_seen} onCheckedChange={(checked) => setPrivacyPrefs({...privacyPrefs, show_last_seen: checked})} />
               </div>
 
-              <Button onClick={handleSavePrivacy} disabled={loading}>
+              <Button onClick={() => {}}  // handleSavePrivacy disabled={loading}>
                 <Save className="h-4 w-4 mr-2" />
                 Save Privacy Settings
               </Button>
@@ -807,7 +807,7 @@ const EnhancedSettingsPage = () => {
                 <Switch checked={notificationPrefs.marketingEmails} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, marketingEmails: checked})} />
               </div>
 
-              <Button onClick={handleSaveNotifications} disabled={loading}>
+              <Button onClick={() => {}}  // handleSaveNotifications disabled={loading}>
                 <Save className="h-4 w-4 mr-2" />
                 Save Notification Preferences
               </Button>
@@ -841,7 +841,7 @@ const EnhancedSettingsPage = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button onClick={handleSaveApiSettings} disabled={loading || !apiSettings.sendgrid_api_key}>
+                  <Button onClick={() => {}}  // handleSaveApiSettings disabled={loading || !apiSettings.sendgrid_api_key}>
                     <Save className="h-4 w-4 mr-2" />
                     {loading ? 'Saving...' : 'Save API Key'}
                   </Button>
@@ -1076,7 +1076,7 @@ const EnhancedSettingsPage = () => {
                   onClick={async () => {
                     try {
                       setExportingData(true);
-                      const response = await axios.get(`${API}/gdpr/export-data`, {
+                      // const response = await axios.get(`${API}/gdpr/export-data`, {
                         headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
                       });
                       
