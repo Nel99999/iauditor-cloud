@@ -553,7 +553,7 @@ const ReportsPage = () => {
                     <SelectValue placeholder="Choose data source" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(...).map(([key, config]: [string, any]) => (
+                    {Object.entries(availableCollections).map(([key, config]: [string, any]) => (
                       <SelectItem key={key} value={key}>{config.name}</SelectItem>
                     ))}
                   </SelectContent>
