@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { ModernPageWrapper } from '@/design-system/components';
 import { Upload, Download, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
