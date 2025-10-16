@@ -1,4 +1,3 @@
-import React from 'react';
 import ModernTable from './ModernTable';
 
 export default {

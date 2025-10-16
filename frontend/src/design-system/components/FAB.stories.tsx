@@ -1,4 +1,3 @@
-import React from 'react';
 import FAB, { DefaultIcons } from './FAB';
 
 export default {
