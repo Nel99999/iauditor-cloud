@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +24,7 @@ const WorkflowDesigner = () => {
   const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [editingTemplate, setEditingTemplate] = useState<any | null>(null);
   

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -29,7 +29,7 @@ const InspectionsPage = () => {
   const [templates, setTemplates] = useState<any[]>([]);
   const [executions, setExecutions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();

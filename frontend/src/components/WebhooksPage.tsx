@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Webhook, Plus, Edit2, Trash2, X, Play, CheckCircle, XCircle, Clock } from 'lucide-react';
 
@@ -6,7 +6,7 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_
 
 const WebhooksPage = () => {
   const [webhooks, setWebhooks] = useState<Array<any>>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showLogsModal, setShowLogsModal] = useState<boolean>(false);

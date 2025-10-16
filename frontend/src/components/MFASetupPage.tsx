@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 const MFASetupPage = () => {
@@ -6,7 +6,7 @@ const MFASetupPage = () => {
   const [mfaStatus, setMfaStatus] = useState<any | null>(null);
   const [setupData, setSetupData] = useState<any | null>(null);
   const [verificationCode, setVerificationCode] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [_loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showBackupCodes, setShowBackupCodes] = useState<boolean>(false);
 

@@ -37,7 +37,7 @@ interface SubtasksPanelProps {
 const SubtasksPanel: React.FC<SubtasksPanelProps> = ({ taskId, onClose }) => {
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [stats, setStats] = useState<SubtaskStats | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [_loading, setLoading] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
   const [newSubtask, setNewSubtask] = useState<NewSubtaskData>({
     title: '',

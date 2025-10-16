@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,7 @@ const TasksPage = () => {
   const [stats, setStats] = useState<any>(null);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();

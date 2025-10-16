@@ -1,4 +1,3 @@
-import React from 'react';
 import DashboardHomeNew from './DashboardHomeNew';
 
 // Legacy DashboardHome component - re-exports DashboardHomeNew for backwards compatibility

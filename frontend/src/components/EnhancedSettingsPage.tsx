@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -26,7 +26,7 @@ const EnhancedSettingsPage = () => {
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   const { t, i18n } = useTranslation();
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [_loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
   // Profile

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,7 +20,7 @@ const InvitationManagementPage = () => {
   const { user } = useAuth();
   const [invitations, setInvitations] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [_loading, setLoading] = useState<boolean>(false);
   const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   const [inviteData, setInviteData] = useState({ email: '', role_id: '' });
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);

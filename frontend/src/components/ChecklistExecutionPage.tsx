@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -22,7 +22,7 @@ const ChecklistExecutionPage = () => {
   const [template, setTemplate] = useState<any | null>(null);
   const [items, setItems] = useState<any[]>([]);
   const [notes, setNotes] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {

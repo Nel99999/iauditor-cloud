@@ -1,4 +1,3 @@
-import React from 'react';
 import { BottomSheet, useBottomSheet, FAB, FABIcons, Button, Card, GlassCard, Input } from '@/design-system/components';
 import { Plus, Mail, Settings, User, Bell } from 'lucide-react';
 import './ComponentDemo.css';

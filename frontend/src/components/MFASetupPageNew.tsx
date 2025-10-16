@@ -1,4 +1,3 @@
-import React from 'react';
 import { ModernPageWrapper } from '@/design-system/components';
 import MFASetupPage from '@/components/MFASetupPage';
 

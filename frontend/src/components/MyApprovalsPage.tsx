@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +22,7 @@ const API = `${BACKEND_URL}/api`;
 const MyApprovalsPage = () => {
   const { user } = useAuth();
   const [approvals, setApprovals] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [selectedWorkflow, setSelectedWorkflow] = useState<any | null>(null);
   const [showActionDialog, setShowActionDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>('');

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -29,7 +29,7 @@ const API = `${BACKEND_URL}/api`;
 const ReportsPage = () => {
   const [overview, setOverview] = useState<any>(null);
   const [trends, setTrends] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [selectedDays, setSelectedDays] = useState(30);
   const [showCustomReportDialog, setShowCustomReportDialog] = useState<boolean>(false);
   const [customReport, setCustomReport] = useState<any>({

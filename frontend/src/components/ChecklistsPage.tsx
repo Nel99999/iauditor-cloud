@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,7 +16,7 @@ const ChecklistsPage = () => {
   const [templates, setTemplates] = useState<any[]>([]);
   const [todaysChecklists, setTodaysChecklists] = useState<any>({ executions: [], pending_templates: [] });
   const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Card, GlassCard, Input } from '@/design-system/components';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Check, X, AlertCircle } from 'lucide-react';
