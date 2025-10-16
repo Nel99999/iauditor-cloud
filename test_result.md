@@ -1548,7 +1548,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Comprehensive System Testing - All Aspects (New Protocol)"
+    - "Focused Backend Bug Verification - Post 90.9% Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
