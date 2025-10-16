@@ -81,17 +81,17 @@ const ChecklistsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Checklists</h1>
-          <p className="text-slate-600 dark:text-slate-400">Daily operational checklists</p>
-        </div>
+    <ModernPageWrapper 
+      title="Checklists" 
+      subtitle="Manage checklists and templates"
+      actions={
         <Button onClick={() => navigate('/checklists/templates/new')} data-testid="create-checklist-template-btn">
           <Plus className="h-4 w-4 mr-2" />
           New Template
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
