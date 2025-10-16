@@ -101,23 +101,29 @@ try:
         token = response_data.get("access_token")
         if not token:
             print(f"⚠️  Response: {response_data}")
-    elif register_response.status_code == 400 and "already exists" in register_response.text.lower():
-        # User already exists, try to login
-        print(f"✓ Test user already exists, attempting login...")
-        login_response = requests.post(
-            f"{BASE_URL}/auth/login",
-            json={
-                "email": test_email,
-                "password": test_password
-            },
-            timeout=10
-        )
-        if login_response.status_code == 200:
-            token = login_response.json().get("access_token")
-            print(f"✓ Logged in successfully")
+    elif register_response.status_code == 400:
+        response_text = register_response.text.lower()
+        if "already" in response_text or "registered" in response_text:
+            # User already exists, try to login
+            print(f"✓ Test user already exists, attempting login...")
+            login_response = requests.post(
+                f"{BASE_URL}/auth/login",
+                json={
+                    "email": test_email,
+                    "password": test_password
+                },
+                timeout=10
+            )
+            if login_response.status_code == 200:
+                token = login_response.json().get("access_token")
+                print(f"✓ Logged in successfully")
+            else:
+                print(f"❌ Login failed: {login_response.status_code}")
+                print(f"   Response: {login_response.text}")
+                token = None
         else:
-            print(f"❌ Login failed: {login_response.status_code}")
-            print(f"   Response: {login_response.text}")
+            print(f"❌ Registration failed: {register_response.status_code}")
+            print(f"   Response: {register_response.text}")
             token = None
     else:
         print(f"❌ Registration failed: {register_response.status_code}")
