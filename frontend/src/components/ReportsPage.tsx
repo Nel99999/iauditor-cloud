@@ -135,8 +135,9 @@ const ReportsPage = () => {
             Custom Report
           </Button>
         </div>
-      </div>
-
+      }
+    >
+      <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
