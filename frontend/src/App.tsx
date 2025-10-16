@@ -340,7 +340,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <GroupsManagementPageNew />
+                    <GroupsManagementPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -350,7 +350,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <BulkImportPageNew />
+                    <BulkImportPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -360,7 +360,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <WebhooksPageNew />
+                    <WebhooksPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
