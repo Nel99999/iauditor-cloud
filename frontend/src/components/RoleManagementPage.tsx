@@ -176,15 +176,15 @@ const RoleManagementPage = () => {
   };
 
   // const _groupPermissionsByResource = () => {
-    const grouped = {};
-    permissions.forEach((perm: any) => {
-      if (!grouped[perm.resource_type]) {
-        grouped[perm.resource_type] = [];
-      }
-      grouped[perm.resource_type].push(perm);
-    });
-    return grouped;
-  };
+  //   const grouped = {};
+  //   permissions.forEach((perm: any) => {
+  //     if (!grouped[perm.resource_type]) {
+  //       grouped[perm.resource_type] = [];
+  //     }
+  //     grouped[perm.resource_type].push(perm);
+  //   });
+  //   return grouped;
+  // };
 
   return (
     <div className="space-y-6">
