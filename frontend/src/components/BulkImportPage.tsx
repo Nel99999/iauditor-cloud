@@ -103,18 +103,11 @@ const BulkImportPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <Upload className="w-8 h-8 text-blue-600" />
-            Bulk User Import
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Import multiple users at once using a CSV file
-          </p>
-        </div>
+    <ModernPageWrapper 
+      title="Bulk Import" 
+      subtitle="Import users and data in bulk"
+    >
+      <div className="space-y-6">
 
         {/* Instructions Card */}
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
