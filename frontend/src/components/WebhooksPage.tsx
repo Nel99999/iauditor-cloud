@@ -209,25 +209,15 @@ const WebhooksPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <Webhook className="w-8 h-8 text-blue-600" />
-              Webhooks
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Configure webhooks to receive real-time event notifications
-            </p>
-          </div>
-
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
+    <ModernPageWrapper 
+      title="Webhooks" 
+      subtitle="Configure webhook integrations"
+      actions={
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
             Create Webhook
           </button>
         </div>
