@@ -13,7 +13,7 @@ import json
 from datetime import datetime
 
 # Backend URL
-BACKEND_URL = "https://auth-workflow-hub.preview.emergentagent.com/api"
+BACKEND_URL = "https://tsdevops.preview.emergentagent.com/api"
 
 # Test results
 test_results = []

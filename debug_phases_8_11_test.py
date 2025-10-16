@@ -9,7 +9,7 @@ import json
 import time
 from datetime import datetime
 
-BASE_URL = "https://auth-workflow-hub.preview.emergentagent.com/api"
+BASE_URL = "https://tsdevops.preview.emergentagent.com/api"
 
 class DebugTestSuite:
     def __init__(self):
