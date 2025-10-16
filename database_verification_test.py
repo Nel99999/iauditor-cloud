@@ -95,9 +95,12 @@ try:
         timeout=10
     )
     
-    if register_response.status_code == 201:
+    if register_response.status_code in [200, 201]:
         print(f"✓ Registered new test user: {test_email}")
-        token = register_response.json().get("access_token")
+        response_data = register_response.json()
+        token = response_data.get("access_token")
+        if not token:
+            print(f"⚠️  Response: {response_data}")
     elif register_response.status_code == 400 and "already exists" in register_response.text.lower():
         # User already exists, try to login
         print(f"✓ Test user already exists, attempting login...")
@@ -114,9 +117,11 @@ try:
             print(f"✓ Logged in successfully")
         else:
             print(f"❌ Login failed: {login_response.status_code}")
+            print(f"   Response: {login_response.text}")
             token = None
     else:
         print(f"❌ Registration failed: {register_response.status_code}")
+        print(f"   Response: {register_response.text}")
         token = None
         
 except Exception as e:
