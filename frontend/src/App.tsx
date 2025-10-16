@@ -70,13 +70,13 @@ function App() {
           <ThemeProvider>
           <RouteMiddleware>
           <Routes>
-            <Route path="/login" element={<LoginPageNew />} />
-            <Route path="/login-old" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPageNew />} />
-            <Route path="/demo" element={<ComponentDemo />} />
-            <Route path="/register-old" element={<RegisterPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPageNew />} />
-            <Route path="/reset-password" element={<ResetPasswordPageNew />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login-old" element={<LoginPageNew />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register-old" element={<RegisterPageNew />} />
+            <Route path="/component-demo" element={<ComponentDemo />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             
             {/* Design System Showcase - Public route for testing */}
             <Route path="/design-system" element={<DesignSystemShowcase />} />
