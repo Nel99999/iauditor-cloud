@@ -34,7 +34,7 @@ COLLECTIONS_TO_WIPE = [
 
 # Collections to selectively clean (keep production data)
 COLLECTIONS_TO_CLEAN = {
-    'users': {'user_id': PRODUCTION_USER_ID, 'email': PRODUCTION_USER_EMAIL},
+    'users': {'email': PRODUCTION_USER_EMAIL},
     'organizations': {'organization_id': PRODUCTION_ORG_ID},
     'organization_units': {'organization_id': PRODUCTION_ORG_ID},
     'organization_settings': {'organization_id': PRODUCTION_ORG_ID},
@@ -44,7 +44,7 @@ COLLECTIONS_TO_CLEAN = {
     'checklist_executions': {'organization_id': PRODUCTION_ORG_ID},
     'tasks': {'organization_id': PRODUCTION_ORG_ID},
     'invitations': {'organization_id': PRODUCTION_ORG_ID},
-    'user_preferences': {'user_id': PRODUCTION_USER_ID}
+    'user_preferences': {'organization_id': PRODUCTION_ORG_ID}
 }
 
 # System collections to completely wipe (will auto-recreate)
