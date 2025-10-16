@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,7 +15,7 @@ const API = `${BACKEND_URL}/api`;
 
 const ChecklistExecutionPage = () => {
   const navigate = useNavigate();
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const { executionId } = useParams();
   
   const [execution, setExecution] = useState<any | null>(null);
@@ -120,7 +119,7 @@ const ChecklistExecutionPage = () => {
                 <div className="flex items-start gap-4">
                   <Checkbox
                     checked={itemState.completed}
-                    onCheckedChange={(Boolean(checked)) => handleItemToggle(templateItem.id, checked)}
+                    onCheckedChange={(checked) => handleItemToggle(templateItem.id, checked)}
                     disabled={execution.status === 'completed'}
                     data-testid={`checklist-item-checkbox-${index}`}
                   />
