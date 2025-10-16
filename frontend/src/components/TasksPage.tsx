@@ -98,17 +98,17 @@ const TasksPage = () => {
   const grouped = groupByStatus(tasks);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Tasks</h1>
-          <p className="text-slate-600 dark:text-slate-400">Manage and track tasks</p>
-        </div>
+    <ModernPageWrapper 
+      title="Tasks" 
+      subtitle="Manage and track your tasks"
+      actions={
         <Button onClick={() => setShowCreateDialog(true)} data-testid="create-task-btn">
           <Plus className="h-4 w-4 mr-2" />
           New Task
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
