@@ -108,13 +108,11 @@ const MyApprovalsPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">My Approvals</h2>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">
-          Workflows pending your approval
-        </p>
-      </div>
+    <ModernPageWrapper 
+      title="My Approvals" 
+      subtitle="Review and approve pending items"
+    >
+      <div className="space-y-6">
 
       {loading ? (
         <div className="text-center py-12">
