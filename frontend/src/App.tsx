@@ -109,7 +109,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionsPageNew />
+                    <InspectionsPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -119,7 +119,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TemplateBuilderPageNew />
+                    <TemplateBuilderPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -129,7 +129,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TemplateBuilderPageNew />
+                    <TemplateBuilderPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
