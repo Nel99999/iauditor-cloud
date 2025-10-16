@@ -325,7 +325,8 @@ const MyApprovalsPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
