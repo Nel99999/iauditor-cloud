@@ -186,7 +186,7 @@ try:
         verify_response = requests.get(f"{BACKEND_URL}/users/me", headers=headers)
         if verify_response.status_code == 200:
             profile = verify_response.json()
-            if profile.get("full_name") == "Updated Test User":
+            if profile.get("name") == "Updated Test User":
                 record_test("Update User Profile", True, "Profile updated and verified")
             else:
                 record_test("Update User Profile", False, "Update not persisted")
