@@ -200,3 +200,105 @@ label {
   border-radius: var(--radius-lg) !important;
   border-left-width: 4px !important;
 }
+
+
+/* ========================================
+   DARK MODE VISIBILITY ENHANCEMENTS
+   Ensures all text has adequate contrast
+   ======================================== */
+
+:root {
+  --text-muted: oklch(75% 0.015 250);
+  --text-subtle: oklch(65% 0.015 250);
+}
+
+/* Override Tailwind gray/slate colors for better visibility in dark mode */
+.dark .text-gray-600,
+.dark .text-slate-600 {
+  color: var(--text-muted) !important;
+}
+
+.dark .text-gray-400,
+.dark .text-slate-400 {
+  color: var(--color-text-secondary) !important;
+}
+
+.dark .text-gray-500,
+.dark .text-slate-500 {
+  color: oklch(70% 0.015 250) !important;
+}
+
+/* Enhanced semantic colors for dark mode */
+.dark .text-green-600 {
+  color: oklch(75% 0.18 145) !important;
+}
+
+.dark .text-yellow-600,
+.dark .text-amber-600 {
+  color: oklch(80% 0.16 85) !important;
+}
+
+.dark .text-red-600 {
+  color: oklch(70% 0.22 25) !important;
+}
+
+.dark .text-blue-600 {
+  color: oklch(75% 0.18 230) !important;
+}
+
+/* Form placeholders visibility */
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--color-text-disabled);
+  opacity: 0.8;
+}
+
+/* Enhanced focus states */
+.dark *:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px oklch(70% 0.18 230 / 0.3);
+}
+
+/* Table visibility improvements */
+.dark table th {
+  color: var(--color-text-primary);
+  background: oklch(22% 0.02 250);
+}
+
+.dark table td {
+  color: var(--color-text-secondary);
+  border-color: oklch(30% 0.02 250);
+}
+
+/* Scrollbar visibility in dark mode */
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(45% 0.02 250);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(55% 0.02 250);
+}
+
+/* Improved selection highlight */
+.dark ::selection {
+  background-color: oklch(70% 0.18 230 / 0.4);
+  color: var(--color-text-primary);
+}
+
+/* Link visibility */
+.dark a:not(.ds-button) {
+  color: oklch(75% 0.20 230);
+}
+
+.dark a:not(.ds-button):hover {
+  color: oklch(80% 0.22 230);
+}
+
+/* Disabled elements - ensure visibility */
+.dark [disabled],
+.dark .disabled {
+  opacity: 0.5;
+  color: var(--color-text-disabled);
+}
+
