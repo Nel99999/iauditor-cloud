@@ -403,7 +403,8 @@ const InvitationManagementPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
