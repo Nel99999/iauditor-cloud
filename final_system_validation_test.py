@@ -343,7 +343,7 @@ def run_comprehensive_tests():
     if not token:
         print("\n❌ CRITICAL: Cannot proceed without authentication token")
         print("Please ensure valid credentials are available for the production organization")
-        return
+        return None
     
     print("\n" + "=" * 80)
     print("PHASE 1: API ENDPOINT VERIFICATION")
