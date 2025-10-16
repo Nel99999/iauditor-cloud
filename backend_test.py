@@ -72,7 +72,7 @@ try:
     test_user = {
         "email": f"testuser.{timestamp}@example.com",
         "password": "SecurePass123!",
-        "full_name": "Test User Backend",
+        "name": "Test User Backend",
         "organization_name": f"Test Org {timestamp}"
     }
     
