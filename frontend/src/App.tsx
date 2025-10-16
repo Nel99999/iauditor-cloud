@@ -69,9 +69,7 @@ function App() {
           <RouteMiddleware>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/login-old" element={<LoginPageNew />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/register-old" element={<RegisterPageNew />} />
             <Route path="/component-demo" element={<ComponentDemo />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
