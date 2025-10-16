@@ -20,13 +20,13 @@ const InspectionExecutionPage: React.FC = () => {
   const { user } = useAuth();
   const { templateId, executionId } = useParams();
   
-  const [template, setTemplate] = useState(null);
-  const [execution, setExecution] = useState(null);
-  const [answers, setAnswers] = useState({});
-  const [findings, setFindings] = useState('');
-  const [notes, setNotes] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [template, setTemplate] = useState<any | null>(null);
+  const [execution, setExecution] = useState<any | null>(null);
+  const [answers, setAnswers] = useState<any>({});
+  const [findings, setFindings] = useState<string>('');
+  const [notes, setNotes] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [saving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     if (executionId) {
@@ -63,7 +63,7 @@ const InspectionExecutionPage: React.FC = () => {
         };
       });
       setAnswers(initialAnswers);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to start inspection:', err);
       alert('Failed to start inspection');
       navigate('/inspections');
@@ -90,7 +90,7 @@ const InspectionExecutionPage: React.FC = () => {
       });
       setAnswers(loadedAnswers);
       setNotes(execRes.data.notes || '');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load execution:', err);
       alert('Failed to load inspection');
       navigate('/inspections');
@@ -129,7 +129,7 @@ const InspectionExecutionPage: React.FC = () => {
       });
       
       alert('Photo uploaded successfully!');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Photo upload failed:', err);
       alert('Failed to upload photo');
     }
@@ -143,7 +143,7 @@ const InspectionExecutionPage: React.FC = () => {
         notes,
       });
       alert('Progress saved!');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to save:', err);
       alert('Failed to save progress');
     } finally {
@@ -172,7 +172,7 @@ const InspectionExecutionPage: React.FC = () => {
       
       alert('Inspection completed!');
       navigate('/inspections');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to complete:', err);
       alert('Failed to complete inspection');
     } finally {

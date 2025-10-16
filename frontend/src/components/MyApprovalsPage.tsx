@@ -21,13 +21,13 @@ const API = `${BACKEND_URL}/api`;
 
 const MyApprovalsPage: React.FC = () => {
   const { user } = useAuth();
-  const [approvals, setApprovals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedWorkflow, setSelectedWorkflow] = useState(null);
-  const [showActionDialog, setShowActionDialog] = useState(false);
-  const [action, setAction] = useState('');
-  const [comments, setComments] = useState('');
-  const [processing, setProcessing] = useState(false);
+  const [approvals, setApprovals] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [selectedWorkflow, setSelectedWorkflow] = useState<any | null>(null);
+  const [showActionDialog, setShowActionDialog] = useState<boolean>(false);
+  const [action, setAction] = useState<string>('');
+  const [comments, setComments] = useState<string>('');
+  const [processing, setProcessing] = useState<boolean>(false);
 
   useEffect(() => {
     loadApprovals();
@@ -43,7 +43,7 @@ const MyApprovalsPage: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setApprovals(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load approvals:', err);
     } finally {
       setLoading(false);
@@ -70,7 +70,7 @@ const MyApprovalsPage: React.FC = () => {
       
       const actionText = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'changes requested';
       alert(`Workflow ${actionText} successfully!`);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to process approval:', err);
       alert(err.response?.data?.detail || 'Failed to process approval');
     } finally {

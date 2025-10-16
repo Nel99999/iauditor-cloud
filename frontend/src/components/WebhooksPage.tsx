@@ -5,14 +5,14 @@ import { Webhook, Plus, Edit2, Trash2, X, Play, CheckCircle, XCircle, Clock } fr
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
 const WebhooksPage: React.FC = () => {
-  const [webhooks, setWebhooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showLogsModal, setShowLogsModal] = useState(false);
-  const [selectedWebhook, setSelectedWebhook] = useState(null);
-  const [webhookLogs, setWebhookLogs] = useState([]);
-  const [testingWebhook, setTestingWebhook] = useState(null);
+  const [webhooks, setWebhooks] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showLogsModal, setShowLogsModal] = useState<boolean>(false);
+  const [selectedWebhook, setSelectedWebhook] = useState<any | null>(null);
+  const [webhookLogs, setWebhookLogs] = useState<any[]>([]);
+  const [testingWebhook, setTestingWebhook] = useState<any | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     url: '',
@@ -45,7 +45,7 @@ const WebhooksPage: React.FC = () => {
       
       const response = await axios.get(`${API_BASE_URL}/api/webhooks`, { headers });
       setWebhooks(response.data.webhooks || []);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching webhooks:', err);
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ const WebhooksPage: React.FC = () => {
       setShowCreateModal(false);
       setFormData({ name: '', url: '', events: [], secret: '', active: true });
       fetchWebhooks();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error creating webhook:', err);
       alert(err.response?.data?.detail || 'Failed to create webhook');
     }
@@ -85,7 +85,7 @@ const WebhooksPage: React.FC = () => {
       setSelectedWebhook(null);
       setFormData({ name: '', url: '', events: [], secret: '', active: true });
       fetchWebhooks();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error updating webhook:', err);
       alert(err.response?.data?.detail || 'Failed to update webhook');
     }
@@ -100,7 +100,7 @@ const WebhooksPage: React.FC = () => {
       
       await axios.delete(`${API_BASE_URL}/api/webhooks/${webhookId}`, { headers });
       fetchWebhooks();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error deleting webhook:', err);
       alert(err.response?.data?.detail || 'Failed to delete webhook');
     }
@@ -119,7 +119,7 @@ const WebhooksPage: React.FC = () => {
       );
       
       alert('Test webhook sent successfully!');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error testing webhook:', err);
       alert(err.response?.data?.detail || 'Failed to test webhook');
     } finally {
@@ -139,7 +139,7 @@ const WebhooksPage: React.FC = () => {
       );
       
       fetchWebhooks();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error toggling webhook:', err);
       alert(err.response?.data?.detail || 'Failed to toggle webhook');
     }
@@ -170,7 +170,7 @@ const WebhooksPage: React.FC = () => {
       setWebhookLogs(response.data.logs || []);
       setSelectedWebhook(webhook);
       setShowLogsModal(true);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error fetching webhook logs:', err);
       alert(err.response?.data?.detail || 'Failed to fetch webhook logs');
     }

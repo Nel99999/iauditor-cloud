@@ -32,15 +32,15 @@ const API = `${BACKEND_URL}/api`;
 
 const UserManagementPage: React.FC = () => {
   const { user } = useAuth();
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showInviteDialog, setShowInviteDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [inviteData, setInviteData] = useState({ email: '', role: 'viewer' });
-  const [editUserData, setEditUserData] = useState(null);
-  const [deleteUserData, setDeleteUserData] = useState(null);
+  const [editUserData, setEditUserData] = useState<any | null>(null);
+  const [deleteUserData, setDeleteUserData] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
 
@@ -53,7 +53,7 @@ const UserManagementPage: React.FC = () => {
       setLoading(true);
       const response = await axios.get(`${API}/users`);
       setUsers(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load users:', err);
     } finally {
       setLoading(false);
@@ -71,7 +71,7 @@ const UserManagementPage: React.FC = () => {
       setShowInviteDialog(false);
       setInviteData({ email: '', role: 'viewer' });
       loadUsers();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to send invitation');
     }
   };
@@ -169,7 +169,7 @@ const UserManagementPage: React.FC = () => {
         hour: '2-digit',
         minute: '2-digit'
       });
-    } catch (e) {
+    } catch (e: unknown) {
       return dateString;
     }
   };
@@ -403,7 +403,7 @@ const UserManagementPage: React.FC = () => {
                   setShowDeleteDialog(false);
                   setDeleteUserData(null);
                   loadUsers();
-                } catch (err) {
+                } catch (err: unknown) {
                   alert(err.response?.data?.detail || 'Failed to delete user');
                 } finally {
                   setLoading(false);
@@ -486,7 +486,7 @@ const UserManagementPage: React.FC = () => {
                   alert('User updated successfully!');
                   setShowEditDialog(false);
                   loadUsers();
-                } catch (err) {
+                } catch (err: unknown) {
                   alert(err.response?.data?.detail || 'Failed to update user');
                 }
               }}

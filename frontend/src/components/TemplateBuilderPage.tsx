@@ -39,7 +39,7 @@ const TemplateBuilderPage: React.FC = () => {
     require_photos: false,
     questions: [],
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (isEdit) {
@@ -51,7 +51,7 @@ const TemplateBuilderPage: React.FC = () => {
     try {
       const response = await axios.get(`${API}/inspections/templates/${templateId}`);
       setTemplate(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load template:', err);
       alert('Failed to load template');
       navigate('/inspections');
@@ -108,7 +108,7 @@ const TemplateBuilderPage: React.FC = () => {
         await axios.post(`${API}/inspections/templates`, template);
       }
       navigate('/inspections');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to save template:', err);
       alert('Failed to save template');
     } finally {

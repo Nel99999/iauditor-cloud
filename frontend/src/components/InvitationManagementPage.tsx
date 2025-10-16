@@ -18,13 +18,13 @@ const API = `${BACKEND_URL}/api`;
 
 const InvitationManagementPage: React.FC = () => {
   const { user } = useAuth();
-  const [invitations, setInvitations] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [invitations, setInvitations] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   const [inviteData, setInviteData] = useState({ email: '', role_id: '' });
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [deleteInvitation, setDeleteInvitation] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [deleteInvitation, setDeleteInvitation] = useState<any | null>(null);
 
   useEffect(() => {
     loadInvitations();
@@ -36,7 +36,7 @@ const InvitationManagementPage: React.FC = () => {
       setLoading(true);
       const response = await axios.get(`${API}/invitations`);
       setInvitations(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load invitations:', err);
     } finally {
       setLoading(false);
@@ -47,7 +47,7 @@ const InvitationManagementPage: React.FC = () => {
     try {
       const response = await axios.get(`${API}/roles`);
       setRoles(response.data.filter(r => r.is_system_role).sort((a, b) => a.level - b.level));
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load roles:', err);
     }
   };
@@ -60,7 +60,7 @@ const InvitationManagementPage: React.FC = () => {
       setShowInviteDialog(false);
       setInviteData({ email: '', role_id: '' });
       loadInvitations();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to send invitation');
     }
   };
@@ -71,7 +71,7 @@ const InvitationManagementPage: React.FC = () => {
         await axios.post(`${API}/invitations/${invitation.id}/resend`);
         alert('Invitation resent successfully! Expiration timer reset to 7 days.');
         loadInvitations();
-      } catch (err) {
+      } catch (err: unknown) {
         alert(err.response?.data?.detail || 'Failed to resend invitation');
       }
     }
@@ -86,7 +86,7 @@ const InvitationManagementPage: React.FC = () => {
       setShowDeleteDialog(false);
       setDeleteInvitation(null);
       loadInvitations();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to cancel invitation');
       setShowDeleteDialog(false);
       setDeleteInvitation(null);

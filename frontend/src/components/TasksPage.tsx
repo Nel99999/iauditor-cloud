@@ -33,7 +33,7 @@ const TasksPage: React.FC = () => {
       ]);
       setTasks(tasksRes.data);
       setStats(statsRes.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load tasks:', err);
     } finally {
       setLoading(false);
@@ -47,7 +47,7 @@ const TasksPage: React.FC = () => {
       setShowCreateDialog(false);
       setFormData({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
       loadData();
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to create task');
     }
   };
@@ -56,7 +56,7 @@ const TasksPage: React.FC = () => {
     try {
       await axios.put(`${API}/tasks/${taskId}`, { status: newStatus });
       loadData();
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to update task');
     }
   };

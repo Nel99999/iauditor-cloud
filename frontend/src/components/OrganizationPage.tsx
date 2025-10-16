@@ -166,7 +166,7 @@ const OrganizationPage: React.FC = () => {
       setExpandedNodes(expanded);
       
       setError('');
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err.response?.data?.detail || 'Failed to load organization hierarchy');
     } finally {
       setLoading(false);
@@ -216,7 +216,7 @@ const OrganizationPage: React.FC = () => {
     try {
       await axios.delete(`${API}/organizations/units/${node.id}`);
       loadHierarchy();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to delete unit');
     }
   };
@@ -227,7 +227,7 @@ const OrganizationPage: React.FC = () => {
       setUnitUsers(response.data);
       setSelectedNode(node);
       setShowUsersDialog(true);
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to load users');
     }
   };
@@ -238,7 +238,7 @@ const OrganizationPage: React.FC = () => {
       await axios.post(`${API}/organizations/units`, formData);
       setShowCreateDialog(false);
       loadHierarchy();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to create unit');
     }
   };
@@ -252,7 +252,7 @@ const OrganizationPage: React.FC = () => {
       });
       setShowEditDialog(false);
       loadHierarchy();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to update unit');
     }
   };
@@ -268,7 +268,7 @@ const OrganizationPage: React.FC = () => {
       await axios.post(`${API}/organizations/invitations`, inviteData);
       alert('Invitation sent successfully!');
       setShowInviteDialog(false);
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to send invitation');
     }
   };

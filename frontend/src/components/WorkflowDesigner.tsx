@@ -22,11 +22,11 @@ const API = `${BACKEND_URL}/api`;
 
 const WorkflowDesigner: React.FC = () => {
   const { user } = useAuth();
-  const [templates, setTemplates] = useState([]);
-  const [roles, setRoles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [editingTemplate, setEditingTemplate] = useState(null);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [roles, setRoles] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+  const [editingTemplate, setEditingTemplate] = useState<any | null>(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -58,7 +58,7 @@ const WorkflowDesigner: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTemplates(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load templates:', err);
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ const WorkflowDesigner: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRoles(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load roles:', err);
     }
   };
@@ -86,7 +86,7 @@ const WorkflowDesigner: React.FC = () => {
       setShowCreateDialog(false);
       resetForm();
       loadTemplates();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to create template:', err);
       alert('Failed to create workflow template');
     }
@@ -102,7 +102,7 @@ const WorkflowDesigner: React.FC = () => {
       setEditingTemplate(null);
       resetForm();
       loadTemplates();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to update template:', err);
       alert('Failed to update workflow template');
     }
@@ -117,7 +117,7 @@ const WorkflowDesigner: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       loadTemplates();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to delete template:', err);
       alert(err.response?.data?.detail || 'Failed to delete workflow template');
     }

@@ -15,11 +15,11 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const RoleManagementPage: React.FC = () => {
-  const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState([]);
-  const [rolePermissions, setRolePermissions] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [roles, setRoles] = useState<any[]>([]);
+  const [permissions, setPermissions] = useState<any[]>([]);
+  const [rolePermissions, setRolePermissions] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [newRole, setNewRole] = useState({ 
     name: '', 
     code: '', 
@@ -28,7 +28,7 @@ const RoleManagementPage: React.FC = () => {
     description: '',
     selectedPermissions: []
   });
-  const [matrixChanges, setMatrixChanges] = useState({});
+  const [matrixChanges, setMatrixChanges] = useState<any>({});
 
   useEffect(() => {
     loadRoles();
@@ -47,12 +47,12 @@ const RoleManagementPage: React.FC = () => {
         try {
           const perms = await axios.get(`${API}/roles/${role.id}/permissions`);
           permMap[role.id] = perms.data.map(p => p.permission_id);
-        } catch (err) {
+        } catch (err: unknown) {
           permMap[role.id] = [];
         }
       }
       setRolePermissions(permMap);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load roles:', err);
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ const RoleManagementPage: React.FC = () => {
     try {
       const response = await axios.get(`${API}/permissions`);
       setPermissions(response.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load permissions:', err);
     }
   };
@@ -92,7 +92,7 @@ const RoleManagementPage: React.FC = () => {
       setShowCreateDialog(false);
       setNewRole({ name: '', code: '', color: '#3b82f6', level: 11, description: '', selectedPermissions: [] });
       loadRoles();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to create role');
     }
   };
@@ -107,7 +107,7 @@ const RoleManagementPage: React.FC = () => {
         await axios.delete(`${API}/roles/${roleId}`);
         alert('Role deleted successfully!');
         loadRoles();
-      } catch (err) {
+      } catch (err: unknown) {
         alert(err.response?.data?.detail || 'Failed to delete role');
       }
     }
@@ -158,7 +158,7 @@ const RoleManagementPage: React.FC = () => {
       
       // Reload
       loadRoles();
-    } catch (err) {
+    } catch (err: unknown) {
       alert(err.response?.data?.detail || 'Failed to update permissions');
     }
   };

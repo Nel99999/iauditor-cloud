@@ -78,7 +78,7 @@ const ReportsPage: React.FC = () => {
       ]);
       setOverview(overviewRes.data);
       setTrends(trendsRes.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load reports:', err);
     } finally {
       setLoading(false);
@@ -93,7 +93,7 @@ const ReportsPage: React.FC = () => {
       alert('Custom report created successfully! (This is a demo - would integrate with backend)');
       setShowCustomReportDialog(false);
       setCustomReport({ name: '', collections: [], fields: [], filters: [], groupBy: '', sortBy: '' });
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to create custom report');
     }
   };

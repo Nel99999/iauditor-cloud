@@ -3,12 +3,12 @@ import { useAuth } from '../contexts/AuthContext';
 
 const MFASetupPage: React.FC = () => {
   const { token } = useAuth();
-  const [mfaStatus, setMfaStatus] = useState(null);
-  const [setupData, setSetupData] = useState(null);
-  const [verificationCode, setVerificationCode] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [mfaStatus, setMfaStatus] = useState<any | null>(null);
+  const [setupData, setSetupData] = useState<any | null>(null);
+  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [showBackupCodes, setShowBackupCodes] = useState(false);
+  const [showBackupCodes, setShowBackupCodes] = useState<boolean>(false);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
 
@@ -25,7 +25,7 @@ const MFASetupPage: React.FC = () => {
       });
       const data = await response.json();
       setMfaStatus(data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error fetching MFA status:', error);
     }
   };
@@ -52,7 +52,7 @@ const MFASetupPage: React.FC = () => {
         const error = await response.json();
         setMessage({ type: 'error', text: error.detail || 'Failed to setup MFA' });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setMessage({ type: 'error', text: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
@@ -87,7 +87,7 @@ const MFASetupPage: React.FC = () => {
         const error = await response.json();
         setMessage({ type: 'error', text: error.detail || 'Invalid verification code' });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setMessage({ type: 'error', text: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ const MFASetupPage: React.FC = () => {
         const error = await response.json();
         setMessage({ type: 'error', text: error.detail || 'Failed to disable MFA' });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setMessage({ type: 'error', text: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
@@ -148,7 +148,7 @@ const MFASetupPage: React.FC = () => {
         const error = await response.json();
         setMessage({ type: 'error', text: error.detail || 'Failed to regenerate backup codes' });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setMessage({ type: 'error', text: 'Network error. Please try again.' });
     } finally {
       setLoading(false);

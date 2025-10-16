@@ -47,7 +47,7 @@ const InspectionsPage: React.FC = () => {
       setTemplates(templatesRes.data);
       setExecutions(executionsRes.data);
       setStats(statsRes.data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to load inspections:', err);
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ const InspectionsPage: React.FC = () => {
     try {
       await axios.delete(`${API}/inspections/templates/${templateId}`);
       loadData();
-    } catch (err) {
+    } catch (err: unknown) {
       alert('Failed to delete template');
     }
   };
