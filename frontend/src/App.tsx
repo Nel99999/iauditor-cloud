@@ -139,7 +139,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionExecutionPageNew />
+                    <InspectionExecutionPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -149,7 +149,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionExecutionPageNew />
+                    <InspectionExecutionPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
