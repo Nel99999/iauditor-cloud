@@ -518,34 +518,43 @@ def test_error_handling(token):
     """Test error handling (401, 403, 404)"""
     print_section("ERROR HANDLING TESTS")
     
-    # Test 401 Unauthorized (no token)
+    # Test 401 Unauthorized (no token) - use a simple endpoint
     print_test("401 Unauthorized Handling")
-    response = make_request("GET", "/users")
-    if response and response.status_code == 401:
-        record_test("401 Unauthorized Handling", True, "Properly returns 401 without authentication")
-    else:
-        status = response.status_code if response else "No response"
-        record_test("401 Unauthorized Handling", False, f"Expected 401, got {status}")
+    try:
+        response = requests.get(f"{BACKEND_URL}/auth/me", timeout=10)
+        if response and response.status_code == 401:
+            record_test("401 Unauthorized Handling", True, "Properly returns 401 without authentication")
+        else:
+            status = response.status_code if response else "No response"
+            record_test("401 Unauthorized Handling", False, f"Expected 401, got {status}")
+    except:
+        record_test("401 Unauthorized Handling", False, "Request failed due to network issues")
     
     # Test 404 Not Found
     print_test("404 Not Found Handling")
-    headers = {"Authorization": f"Bearer {token}"}
-    response = make_request("GET", "/nonexistent-endpoint", headers=headers)
-    if response and response.status_code == 404:
-        record_test("404 Not Found Handling", True, "Properly returns 404 for non-existent endpoints")
-    else:
-        status = response.status_code if response else "No response"
-        record_test("404 Not Found Handling", False, f"Expected 404, got {status}")
+    try:
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(f"{BACKEND_URL}/nonexistent-endpoint-12345", headers=headers, timeout=10)
+        if response and response.status_code == 404:
+            record_test("404 Not Found Handling", True, "Properly returns 404 for non-existent endpoints")
+        else:
+            status = response.status_code if response else "No response"
+            record_test("404 Not Found Handling", False, f"Expected 404, got {status}")
+    except:
+        record_test("404 Not Found Handling", False, "Request failed due to network issues")
     
     # Test invalid token (403 or 401)
     print_test("Invalid Token Handling")
-    invalid_headers = {"Authorization": "Bearer invalid-token-12345"}
-    response = make_request("GET", "/users", headers=invalid_headers)
-    if response and response.status_code in [401, 403]:
-        record_test("Invalid Token Handling", True, f"Properly returns {response.status_code} for invalid token")
-    else:
-        status = response.status_code if response else "No response"
-        record_test("Invalid Token Handling", False, f"Expected 401/403, got {status}")
+    try:
+        invalid_headers = {"Authorization": "Bearer invalid-token-12345"}
+        response = requests.get(f"{BACKEND_URL}/auth/me", headers=invalid_headers, timeout=10)
+        if response and response.status_code in [401, 403]:
+            record_test("Invalid Token Handling", True, f"Properly returns {response.status_code} for invalid token")
+        else:
+            status = response.status_code if response else "No response"
+            record_test("Invalid Token Handling", False, f"Expected 401/403, got {status}")
+    except:
+        record_test("Invalid Token Handling", False, "Request failed due to network issues")
 
 def test_pagination_and_filtering(token):
     """Test pagination and filtering capabilities"""
