@@ -259,7 +259,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ReportsPageNew />
+                    <ReportsPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
