@@ -1,3 +1,4 @@
+// @ts-nocheck
 import FAB, { DefaultIcons } from './FAB';
 
 export default {

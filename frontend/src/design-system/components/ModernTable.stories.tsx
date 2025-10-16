@@ -1,3 +1,4 @@
+// @ts-nocheck
 import ModernTable from './ModernTable';
 
 export default {

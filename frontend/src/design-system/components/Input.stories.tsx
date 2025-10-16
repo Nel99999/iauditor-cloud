@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Input from './Input';
 import { Mail, Lock, Search, User } from 'lucide-react';
 

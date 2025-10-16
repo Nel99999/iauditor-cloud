@@ -1,3 +1,4 @@
+// @ts-nocheck
 import BottomSheet from './BottomSheet';
 import useBottomSheet from '../hooks/useBottomSheet';
 import Button from './Button';

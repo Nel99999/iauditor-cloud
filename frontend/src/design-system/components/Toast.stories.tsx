@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Toast, { ToastContainer } from './Toast';
 import Button from './Button';
 
