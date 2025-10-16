@@ -218,13 +218,13 @@ const WebhooksPage = () => {
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-            Create Webhook
-          </button>
-        </div>
-
-        {/* Webhooks List */}
+          Create Webhook
+        </button>
+      }
+    >
+      <div className="space-y-6">
         {loading ? (
-          <div className="flex items-center justify-center h-64">
+          <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
         ) : webhooks.length === 0 ? (
