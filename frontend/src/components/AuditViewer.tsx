@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const AuditViewer = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [logs, setLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

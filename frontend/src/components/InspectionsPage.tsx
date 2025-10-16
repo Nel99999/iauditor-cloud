@@ -24,7 +24,7 @@ const API = `${BACKEND_URL}/api`;
 
 const InspectionsPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]);
   const [executions, setExecutions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);

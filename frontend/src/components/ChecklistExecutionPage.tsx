@@ -15,7 +15,7 @@ const API = `${BACKEND_URL}/api`;
 
 const ChecklistExecutionPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { executionId } = useParams();
   
   const [execution, setExecution] = useState<any | null>(null);

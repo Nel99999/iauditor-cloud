@@ -21,7 +21,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const WorkflowDesigner = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

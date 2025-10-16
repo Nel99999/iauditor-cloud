@@ -20,7 +20,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const MyApprovalsPage = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [approvals, setApprovals] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedWorkflow, setSelectedWorkflow] = useState<any | null>(null);

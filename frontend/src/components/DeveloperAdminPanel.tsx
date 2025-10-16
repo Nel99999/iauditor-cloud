@@ -31,7 +31,7 @@ const TEST_CREDENTIALS = [
 ];
 
 const DeveloperAdminPanel = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { isDeveloper } = usePermissions();
   const [users, setUsers] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);

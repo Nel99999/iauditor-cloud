@@ -121,7 +121,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
 };
 
 const OrganizationPage = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [hierarchy, setHierarchy] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
