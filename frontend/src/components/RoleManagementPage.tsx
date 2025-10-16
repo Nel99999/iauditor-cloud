@@ -116,7 +116,7 @@ const RoleManagementPage = () => {
   const togglePermission = (roleId: string, permissionId: string) => {
     const key = `${roleId}-${permissionId}`;
     const currentPerms = rolePermissions[roleId] || [];
-    const hasPermission = currentPerms.includes(permissionId: string);
+    const hasPermission = currentPerms.includes(permissionId);
     
     setMatrixChanges(prev => ({
       ...prev,
@@ -168,7 +168,7 @@ const RoleManagementPage = () => {
     if (key in matrixChanges) {
       return matrixChanges[key];
     }
-    return (rolePermissions[roleId] || []).includes(permissionId: string);
+    return (rolePermissions[roleId] || []).includes(permissionId);
   };
 
   const hasChanges = (roleId: any) => {

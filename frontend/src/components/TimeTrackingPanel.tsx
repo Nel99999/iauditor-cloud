@@ -42,7 +42,7 @@ const TimeTrackingPanel: React.FC<TimeTrackingPanelProps> = ({ taskId }) => {
   });
 
   useEffect(() => {
-    if (taskId: string) {
+    if (taskId) {
       fetchTimeEntries();
       checkActiveTimer();
     }

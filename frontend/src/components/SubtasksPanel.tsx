@@ -49,7 +49,7 @@ const SubtasksPanel: React.FC<SubtasksPanelProps> = ({ taskId, onClose }) => {
   const token = localStorage.getItem('token') || localStorage.getItem('access_token');
 
   useEffect(() => {
-    if (taskId: string) {
+    if (taskId) {
       fetchSubtasks();
       fetchStats();
     }
