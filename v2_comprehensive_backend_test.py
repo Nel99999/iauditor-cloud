@@ -94,9 +94,16 @@ def make_request(method, endpoint, headers=None, data=None, params=None):
     """Make HTTP request with error handling"""
     try:
         url = f"{BACKEND_URL}{endpoint}"
-        response = requests.request(method, url, headers=headers, json=data, params=params, timeout=10)
+        response = requests.request(method, url, headers=headers, json=data, params=params, timeout=15)
         return response
+    except requests.exceptions.Timeout:
+        print_info(f"Request timeout for {method} {endpoint}")
+        return None
+    except requests.exceptions.ConnectionError:
+        print_info(f"Connection error for {method} {endpoint}")
+        return None
     except requests.exceptions.RequestException as e:
+        print_info(f"Request error for {method} {endpoint}: {str(e)}")
         return None
 
 def test_health_check():
