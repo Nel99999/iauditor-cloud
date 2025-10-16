@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Users, Plus, Edit2, Trash2, X, Search, UserPlus, UserMinus } from 'lucide-react';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import Button from './Button';
 import { Plus, Save, Trash2, Download } from 'lucide-react';

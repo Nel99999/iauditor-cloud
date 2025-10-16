@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import Card from './Card';
 import GlassCard from './GlassCard';

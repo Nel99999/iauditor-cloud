@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import Toast, { ToastContainer } from './Toast';
 import Button from './Button';
