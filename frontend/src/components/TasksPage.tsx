@@ -61,7 +61,7 @@ const TasksPage = () => {
     }
   };
 
-  const _getStatusBadge = (status: any) => {
+  // const _getStatusBadge = (status: any) => {
     const badges = {
       todo: <Badge variant="secondary">To Do</Badge>,
       in_progress: <Badge className="bg-blue-500">In Progress</Badge>,

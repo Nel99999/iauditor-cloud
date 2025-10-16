@@ -133,7 +133,7 @@ const InvitationManagementPage = () => {
   };
 
   const pendingInvitations = invitations.filter((i: any) => i.status === 'pending');
-  const _otherInvitations = invitations.filter((i: any) => i.status !== 'pending');
+  // const _otherInvitations = invitations.filter((i: any) => i.status !== 'pending');
 
   return (
     <div className="space-y-6">

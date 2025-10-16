@@ -24,7 +24,7 @@ const API = `${BACKEND_URL}/api`;
 const EnhancedSettingsPage = () => {
   const { user, setUser } = useAuth();
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
-  const { t, i18n } = useTranslation();
+  // const { t } = useTranslation();
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });

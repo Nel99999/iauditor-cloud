@@ -175,7 +175,7 @@ const RoleManagementPage = () => {
     return Object.keys(matrixChanges).some((key: any) => key.startsWith(`${roleId}-`));
   };
 
-  const _groupPermissionsByResource = () => {
+  // const _groupPermissionsByResource = () => {
     const grouped = {};
     permissions.forEach((perm: any) => {
       if (!grouped[perm.resource_type]) {
