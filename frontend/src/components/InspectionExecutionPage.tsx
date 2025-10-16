@@ -31,7 +31,7 @@ const InspectionExecutionPage = () => {
   useEffect(() => {
     if (executionId) {
       loadExecution();
-    } else if (templateId: string) {
+    } else if (templateId) {
       startNewInspection();
     }
   }, [templateId, executionId]);
