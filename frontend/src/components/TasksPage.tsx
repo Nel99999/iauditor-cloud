@@ -229,7 +229,8 @@ const TasksPage = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
