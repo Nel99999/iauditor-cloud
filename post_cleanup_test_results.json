@@ -1,12 +1,12 @@
 {
   "total_tests": 46,
-  "passed": 44,
-  "failed": 2,
+  "passed": 46,
+  "failed": 0,
   "tests": [
     {
       "name": "Database Count: users",
-      "passed": false,
-      "details": "Expected: 1, Actual: 2"
+      "passed": true,
+      "details": "Expected: 1, Actual: 1"
     },
     {
       "name": "Database Count: organization_units",
@@ -50,13 +50,13 @@
     },
     {
       "name": "No Test Users in Database",
-      "passed": false,
-      "details": "Found 1 test users"
+      "passed": true,
+      "details": "Clean database"
     },
     {
       "name": "System Roles Auto-Created",
       "passed": true,
-      "details": "Found 10 roles (expected 10+)"
+      "details": "Found 20 roles (expected 10+)"
     },
     {
       "name": "System Role: Master",
@@ -116,7 +116,7 @@
     {
       "name": "Role-Permission Mappings Created",
       "passed": true,
-      "details": "Found 106 role-permission mappings"
+      "details": "Found 212 role-permission mappings"
     },
     {
       "name": "Backend Health Check",
@@ -181,7 +181,7 @@
     {
       "name": "Test User Registration",
       "passed": true,
-      "details": "Created user: cleanup_verification_20251016133943@example.com"
+      "details": "Created user: cleanup_verification_20251016134030@example.com"
     },
     {
       "name": "Authenticated Access: User Profile",
