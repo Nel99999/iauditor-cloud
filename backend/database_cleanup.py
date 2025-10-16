@@ -90,7 +90,7 @@ async def verify_production_data(db):
     print("="*80)
     
     # Check user
-    user = await db.users.find_one({"user_id": PRODUCTION_USER_ID})
+    user = await db.users.find_one({"email": PRODUCTION_USER_EMAIL})
     if user:
         print(f"✅ Production User Found:")
         print(f"   Email: {user.get('email')}")
