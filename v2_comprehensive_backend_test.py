@@ -593,7 +593,7 @@ def main():
         return
     
     # Step 2: Authentication
-    token = authenticate_production_user()
+    token = authenticate_test_user()
     if not token:
         print_fail("Authentication failed. Cannot proceed with authenticated endpoint testing.")
         print_final_summary()
