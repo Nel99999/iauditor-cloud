@@ -496,7 +496,8 @@ const OrganizationPage = () => {
             </form>
           </DialogContent>
         </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
