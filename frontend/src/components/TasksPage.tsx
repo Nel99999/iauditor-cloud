@@ -159,7 +159,7 @@ const TasksPage = () => {
               <CardTitle className="capitalize">{status.replace('_', ' ')} ({grouped[status].length})</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {grouped[status].map((task) => (
+              {grouped[status].map((task: any) => (
                 <Card key={task.id} className="p-4 cursor-pointer hover:shadow-md transition-shadow">
                   <div className="space-y-2">
                     <h4 className="font-semibold">{task.title}</h4>

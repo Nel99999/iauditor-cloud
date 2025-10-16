@@ -241,10 +241,10 @@ const AnalyticsDashboard = () => {
                 <span className="text-xs text-gray-500 dark:text-gray-400">Time Tracked</span>
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {overview.metrics?.time_tracking?.total_hours?.toFixed(1) || 0}h
+                {overview.metrics?.time_tracking?.total_hours?.toFixed(1) as any || 0}h
               </div>
               <div className="text-sm text-blue-600 mt-1">
-                {overview.metrics?.time_tracking?.billable_hours?.toFixed(1) || 0}h billable
+                {overview.metrics?.time_tracking?.billable_hours?.toFixed(1) as any || 0}h billable
               </div>
             </div>
 
@@ -401,7 +401,7 @@ const AnalyticsDashboard = () => {
                     <tr key={index} className="border-b border-gray-200 dark:border-gray-700">
                       <td className="py-3 px-4 text-gray-900 dark:text-white">{user.user_name || 'N/A'}</td>
                       <td className="py-3 px-4 text-gray-900 dark:text-white">{user.tasks_completed || 0}</td>
-                      <td className="py-3 px-4 text-gray-900 dark:text-white">{user.hours_logged?.toFixed(1) || 0}h</td>
+                      <td className="py-3 px-4 text-gray-900 dark:text-white">{user.hours_logged?.toFixed(1) as any || 0}h</td>
                       <td className="py-3 px-4 text-gray-600 dark:text-gray-400">
                         {user.last_activity ? new Date(user.last_activity).toLocaleDateString() : 'N/A'}
                       </td>

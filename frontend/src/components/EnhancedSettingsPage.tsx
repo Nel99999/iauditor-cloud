@@ -144,27 +144,27 @@ const EnhancedSettingsPage = () => {
     setLoading(true);
     try {
       await axios.put(`${API}/users/${user.id}`, profileData);
-      setUser({ ...user, ...profileData });
-      showMessage('success', 'Profile updated successfully!');
-    } catch (err: unknown) {
-      showMessage('error', (err as any).response?.data?.detail || 'Failed to update profile');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePasswordChange = async (e: any) => {
-    e.preventDefault();
-    if (passwordData.new_password !== passwordData.confirm_password) {
-      showMessage('error', 'Passwords do not match');
-      return;
-    }
-    setLoading(true);
-    try {
-      await axios.put(`${API}/users/${user.id}/password`, {
-        current_password: passwordData.current_password,
-        new_password: passwordData.new_password
-      });
+//       // setUser({ ...user, ...profileData });
+//       showMessage('success', 'Profile updated successfully!');
+//     } catch (err: unknown) {
+//       showMessage('error', (err as any).response?.data?.detail || 'Failed to update profile');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+// 
+//   const handlePasswordChange = async (e: any) => {
+//     e.preventDefault();
+//     if (passwordData.new_password !== passwordData.confirm_password) {
+//       showMessage('error', 'Passwords do not match');
+//       return;
+//     }
+//     setLoading(true);
+//     try {
+//       await axios.put(`${API}/users/${user.id}/password`, {
+//         current_password: passwordData.current_password,
+//         new_password: passwordData.new_password
+//       });
       showMessage('success', 'Password updated successfully!');
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
     } catch (err: unknown) {
@@ -186,69 +186,69 @@ const EnhancedSettingsPage = () => {
       const response = await axios.post(`${API}/users/profile/picture`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setUser({ ...user, picture: response.data.picture_url });
-      showMessage('success', 'Photo uploaded successfully!');
-      window.location.reload();
-    } catch (err: unknown) {
-      showMessage('error', (err as any).response?.data?.detail || 'Failed to upload photo');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSaveRegional = async () => {
-    setLoading(true);
-    try {
-      await axios.put(`${API}/users/regional`, regionalPrefs);
-      i18n.changeLanguage(regionalPrefs.language);
-      showMessage('success', 'Regional settings saved!');
-    } catch (err: unknown) {
-      showMessage('error', 'Failed to save regional settings');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSavePrivacy = async () => {
-    setLoading(true);
-    try {
-      await axios.put(`${API}/users/privacy`, privacyPrefs);
-      showMessage('success', 'Privacy settings saved!');
-    } catch (err: unknown) {
-      showMessage('error', 'Failed to save privacy settings');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSaveSecurity = async () => {
-    setLoading(true);
-    try {
-      await axios.put(`${API}/users/security-prefs`, securityPrefs);
-      showMessage('success', 'Security settings saved!');
-    } catch (err: unknown) {
-      showMessage('error', 'Failed to save security settings');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSaveNotifications = async () => {
-    setLoading(true);
-    try {
-      await axios.put(`${API}/users/settings`, notificationPrefs);
-      showMessage('success', 'Notification preferences saved!');
-    } catch (err: unknown) {
-      showMessage('error', 'Failed to save preferences');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSaveApiSettings = async () => {
-    setLoading(true);
-    try {
-      await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
+//       // setUser({ ...user, picture: response.data.picture_url });
+//       showMessage('success', 'Photo uploaded successfully!');
+//       window.location.reload();
+//     } catch (err: unknown) {
+//       showMessage('error', (err as any).response?.data?.detail || 'Failed to upload photo');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+// 
+//   const handleSaveRegional = async () => {
+//     setLoading(true);
+//     try {
+//       await axios.put(`${API}/users/regional`, regionalPrefs);
+//       i18n.changeLanguage(regionalPrefs.language);
+//       showMessage('success', 'Regional settings saved!');
+//     } catch (err: unknown) {
+//       showMessage('error', 'Failed to save regional settings');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+// 
+//   const handleSavePrivacy = async () => {
+//     setLoading(true);
+//     try {
+//       await axios.put(`${API}/users/privacy`, privacyPrefs);
+//       showMessage('success', 'Privacy settings saved!');
+//     } catch (err: unknown) {
+//       showMessage('error', 'Failed to save privacy settings');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+// 
+//   const handleSaveSecurity = async () => {
+//     setLoading(true);
+//     try {
+//       await axios.put(`${API}/users/security-prefs`, securityPrefs);
+//       showMessage('success', 'Security settings saved!');
+//     } catch (err: unknown) {
+//       showMessage('error', 'Failed to save security settings');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+// 
+//   const handleSaveNotifications = async () => {
+//     setLoading(true);
+//     try {
+//       await axios.put(`${API}/users/settings`, notificationPrefs);
+//       showMessage('success', 'Notification preferences saved!');
+//     } catch (err: unknown) {
+//       showMessage('error', 'Failed to save preferences');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+// 
+//   const handleSaveApiSettings = async () => {
+//     setLoading(true);
+//     try {
+//       await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
       showMessage('success', 'SendGrid API key saved!');
       loadAllPreferences();
     } catch (err: unknown) {

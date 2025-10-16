@@ -564,7 +564,7 @@ const ReportsPage = () => {
                 <div>
                   <Label>Fields to Include</Label>
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    {availableCollections[customReport.collections[0]]?.fields.map((field: any) => (
+                    {availableCollections[customReport.collections[0]] || {}?.fields.map((field: any) => (
                       <label key={field} className="flex items-center space-x-2">
                         <input
                           type="checkbox"
@@ -633,7 +633,7 @@ const ReportsPage = () => {
                 <h4 className="font-medium mb-2">Report Preview</h4>
                 <p className="text-sm text-gray-600">
                   <strong>Name:</strong> {customReport.name || 'Untitled Report'}<br />
-                  <strong>Source:</strong> {customReport.collections[0] ? availableCollections[customReport.collections[0]]?.name : 'None selected'}<br />
+                  <strong>Source:</strong> {customReport.collections[0] ? availableCollections[customReport.collections[0]] || {}?.name : 'None selected'}<br />
                   <strong>Fields:</strong> {customReport.fields.length} selected<br />
                   <strong>Grouping:</strong> {customReport.groupBy || 'None'}<br />
                   <strong>Sorting:</strong> {customReport.sortBy || 'Default'}

@@ -60,10 +60,10 @@ const DesignSystemShowcase = () => {
           <Button variant="primary" size="sm">Small Primary</Button>
           <Button variant="primary" size="md">Medium Primary</Button>
           <Button variant="primary" size="lg">Large Primary</Button>
-          <Button variant="accent" size="md" icon={<Check size={18} />}>With Icon</Button>
+          <Button variant={"accent" as any} size="md" icon={<Check size={18} />}>With Icon</Button>
           <Button variant="secondary" size="md">Secondary</Button>
           <Button variant="ghost" size="md">Ghost</Button>
-          <Button variant="destructive" size="md" icon={<X size={18} />}>Destructive</Button>
+          <Button variant={"destructive" as any} size="md" icon={<X size={18} />}>Destructive</Button>
           <Button variant="primary" size="md" disabled>Disabled</Button>
           <Button variant="primary" size="md" loading>Loading</Button>
         </div>
