@@ -17,7 +17,14 @@ const ChecklistTemplateBuilder = () => {
   const { templateId } = useParams();
   const isEdit = !!templateId;
 
-  const [template, setTemplate] = useState({
+  const [template, setTemplate] = useState<{
+    name: string;
+    description: string;
+    category: string;
+    frequency: string;
+    scheduled_time: string;
+    items: Array<{text: string; required: boolean; order: number}>;
+  }>({
     name: '',
     description: '',
     category: 'daily',
