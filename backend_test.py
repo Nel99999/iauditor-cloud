@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 # Backend URL from environment
-BACKEND_URL = "https://userapproval-flow.preview.emergentagent.com/api"
+BACKEND_URL = "https://auth-workflow-hub.preview.emergentagent.com/api"
 
 class Colors:
     GREEN = '\033[92m'
