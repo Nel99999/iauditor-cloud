@@ -189,17 +189,17 @@ const RoleManagementPage = () => {
   // };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Role Management</h1>
-          <p className="text-slate-600 dark:text-slate-400">Manage roles and permissions</p>
-        </div>
+    <ModernPageWrapper 
+      title="Role Management" 
+      subtitle="Configure roles and access control"
+      actions={
         <Button onClick={() => setShowCreateDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Create Custom Role
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
       <Tabs defaultValue="roles" className="w-full">
         <TabsList>
