@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ModernPageWrapper } from '@/design-system/components';
 import { Users, Plus, Edit2, Trash2, X, Search, UserPlus, UserMinus } from 'lucide-react';
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
