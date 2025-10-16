@@ -370,7 +370,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <MFASetupPageNew />
+                    <MFASetupPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
