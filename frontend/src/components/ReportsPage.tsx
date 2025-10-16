@@ -110,13 +110,10 @@ const ReportsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Enhanced Header with Controls */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Reports & Analytics</h1>
-          <p className="text-slate-600 dark:text-slate-400">Comprehensive insights and custom reporting (Last {overview?.period_days || selectedDays} days)</p>
-        </div>
+    <ModernPageWrapper 
+      title="Reports" 
+      subtitle="View and generate reports"
+      actions={
         <div className="flex gap-2">
           <Select value={selectedDays.toString()} onValueChange={(val) => setSelectedDays(parseInt(val))}>
             <SelectTrigger className="w-32">
