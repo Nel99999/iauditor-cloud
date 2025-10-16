@@ -376,7 +376,8 @@ const TemplateBuilderPage = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
