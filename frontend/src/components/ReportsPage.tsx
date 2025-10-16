@@ -42,7 +42,7 @@ const ReportsPage = () => {
   });
   
   // Available collections and their fields for custom reports
-  const availableCollections = {
+  const availableCollections: {[key: string]: any} = {
     'inspection_executions': {
       name: 'Inspections',
       fields: ['status', 'score', 'passed', 'completed_at', 'template_name', 'location', 'inspector_name']

@@ -136,7 +136,7 @@ const OrganizationPage = () => {
   // Form states
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [unitUsers, setUnitUsers] = useState<any[]>([]);
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<{[key: string]: any}>({
     name: '',
     description: '',
     level: 1,

@@ -19,7 +19,7 @@ const AuditViewer = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{[key: string]: any}>({
     action: '',
     resource_type: '',
     result: '',

@@ -103,7 +103,7 @@ const EnhancedSettingsPage = () => {
 
   useEffect(() => {
     if (user) {
-      setProfileData({ name: user.name || '', phone: user.phone || '', bio: user.bio || '' });
+      setProfileData({ name: user?.name || "" || '', phone: user.phone || '', bio: user.bio || '' });
       loadAllPreferences();
     }
   }, [user]);
@@ -478,7 +478,7 @@ const EnhancedSettingsPage = () => {
                   </div>
                   <div>
                     <Label htmlFor="phone">Phone Number</Label>
-                    <PhoneInput value={profileData.phone} onChange={(value) => setProfileData({...profileData, phone: value})} defaultCountry="US" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                    <PhoneInput value={profileData?.phone || ""} onChange={(value) => setProfileData({...profileData, phone: value})} defaultCountry="US" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
                   </div>
                 </div>
 

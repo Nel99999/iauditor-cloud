@@ -10,7 +10,7 @@ const MFASetupPage = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showBackupCodes, setShowBackupCodes] = useState<boolean>(false);
 
-  const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     fetchMFAStatus();

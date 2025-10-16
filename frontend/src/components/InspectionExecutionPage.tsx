@@ -22,7 +22,7 @@ const InspectionExecutionPage = () => {
   
   const [template, setTemplate] = useState<any | null>(null);
   const [execution, setExecution] = useState<any | null>(null);
-  const [answers, setAnswers] = useState<any>({});
+  const [answers, setAnswers] = useState<{[key: string]: any}>({});
   const [findings, setFindings] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);

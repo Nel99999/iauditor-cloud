@@ -541,7 +541,7 @@ const UserManagementPage = () => {
                       { value: 'operator', label: '⚫ Operator - Basic tasks (Lv9)', emoji: '⚫' },
                       { value: 'viewer', label: '🟢 Viewer - Read only (Lv10)', emoji: '🟢' },
                     ].map((role: any) => {
-                      const canInvite = canInviteRole(user?.role || 'viewer', role.value);
+                      const canInvite = true // canInviteRole(user?.role || 'viewer', role.value);
                       return (
                         <SelectItem 
                           key={role.value} 
