@@ -278,7 +278,7 @@ try:
     }
     response = requests.post(f"{BACKEND_URL}/checklists/templates", json=template_data, headers=headers)
     
-    if response.status_code == 200:
+    if response.status_code in [200, 201]:
         template = response.json()
         if template.get("name") == template_data["name"]:
             template_id = template.get("id")
