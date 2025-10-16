@@ -194,19 +194,20 @@ const GroupsManagementPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <Users className="w-8 h-8 text-blue-600" />
-              Groups & Teams
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Organize users into teams and departments
-            </p>
-          </div>
+    <ModernPageWrapper 
+      title="Groups & Teams" 
+      subtitle="Organize users into groups"
+      actions={
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          <Plus className="w-4 h-4" />
+          Create Group
+        </button>
+      }
+    >
+      <div className="space-y-6">
 
           <button
             onClick={() => setShowCreateModal(true)}
