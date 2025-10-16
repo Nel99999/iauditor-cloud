@@ -89,7 +89,7 @@ try:
         json={
             "email": test_email,
             "password": test_password,
-            "full_name": "DB Verify Test User",
+            "name": "DB Verify Test User",
             "organization_name": "DB Verify Test Org"
         },
         timeout=10
