@@ -178,7 +178,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <RoleManagementPageNew />
+                    <RoleManagementPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -188,7 +188,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InvitationManagementPageNew />
+                    <InvitationManagementPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
