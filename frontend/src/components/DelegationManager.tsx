@@ -25,7 +25,7 @@ const DelegationManager = () => {
   const { user } = useAuth();
   const [delegations, setDelegations] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   
   const [formData, setFormData] = useState({

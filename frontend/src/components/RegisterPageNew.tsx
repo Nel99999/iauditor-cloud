@@ -29,7 +29,7 @@ const RegisterPageNew = () => {
   });
   const [createOrg, setCreateOrg] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

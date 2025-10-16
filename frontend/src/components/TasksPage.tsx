@@ -18,7 +18,7 @@ const TasksPage = () => {
   const [stats, setStats] = useState<any>(null);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();

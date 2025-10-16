@@ -33,7 +33,7 @@ const API = `${BACKEND_URL}/api`;
 const UserManagementPage = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);

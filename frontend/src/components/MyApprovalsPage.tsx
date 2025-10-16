@@ -22,7 +22,7 @@ const API = `${BACKEND_URL}/api`;
 const MyApprovalsPage = () => {
   const { user } = useAuth();
   const [approvals, setApprovals] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedWorkflow, setSelectedWorkflow] = useState<any | null>(null);
   const [showActionDialog, setShowActionDialog] = useState<boolean>(false);
   const [action, setAction] = useState<string>('');

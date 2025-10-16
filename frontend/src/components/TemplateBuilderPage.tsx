@@ -39,7 +39,7 @@ const TemplateBuilderPage = () => {
     require_photos: false,
     questions: [],
   });
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (isEdit) {

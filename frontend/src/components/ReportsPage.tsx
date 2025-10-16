@@ -29,7 +29,7 @@ const API = `${BACKEND_URL}/api`;
 const ReportsPage = () => {
   const [overview, setOverview] = useState<any>(null);
   const [trends, setTrends] = useState<any>(null);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedDays, setSelectedDays] = useState(30);
   const [showCustomReportDialog, setShowCustomReportDialog] = useState<boolean>(false);
   const [customReport, setCustomReport] = useState<any>({

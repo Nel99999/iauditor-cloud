@@ -53,7 +53,7 @@ const TasksPageNew = () => {
   const [stats, setStats] = useState<TaskStats | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   
   // BottomSheet for task details

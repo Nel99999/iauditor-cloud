@@ -21,7 +21,7 @@ const AnalyticsDashboard = () => {
   const [tasksByPriority, setTasksByPriority] = useState<any[]>([]);
   const [timeTrackingTrends, setTimeTrackingTrends] = useState<any[]>([]);
   const [userActivity, setUserActivity] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<any | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 

@@ -7,7 +7,7 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_
 const GroupsManagementPage = () => {
   const [groups, setGroups] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);

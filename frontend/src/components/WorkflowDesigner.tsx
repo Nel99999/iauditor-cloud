@@ -24,7 +24,7 @@ const WorkflowDesigner = () => {
   const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [editingTemplate, setEditingTemplate] = useState<any | null>(null);
   

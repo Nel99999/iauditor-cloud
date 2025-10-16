@@ -22,7 +22,7 @@ const ChecklistExecutionPage = () => {
   const [template, setTemplate] = useState<any | null>(null);
   const [items, setItems] = useState<any[]>([]);
   const [notes, setNotes] = useState<string>('');
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {

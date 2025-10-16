@@ -25,7 +25,7 @@ const ChecklistTemplateBuilder = () => {
     scheduled_time: '',
     items: [],
   });
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (isEdit) loadTemplate();

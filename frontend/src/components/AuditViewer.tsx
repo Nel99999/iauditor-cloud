@@ -16,7 +16,7 @@ const AuditViewer = () => {
   const { user } = useAuth();
   const [logs, setLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any | null>(null);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   
   const [filters, setFilters] = useState({

@@ -26,7 +26,7 @@ const EnhancedSettingsPage = () => {
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   const { t, i18n } = useTranslation();
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
   // Profile

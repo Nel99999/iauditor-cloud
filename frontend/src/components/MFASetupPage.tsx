@@ -6,7 +6,7 @@ const MFASetupPage = () => {
   const [mfaStatus, setMfaStatus] = useState<any | null>(null);
   const [setupData, setSetupData] = useState<any | null>(null);
   const [verificationCode, setVerificationCode] = useState<string>('');
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showBackupCodes, setShowBackupCodes] = useState<boolean>(false);
 

@@ -20,7 +20,7 @@ const InvitationManagementPage = () => {
   const { user } = useAuth();
   const [invitations, setInvitations] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
-  const [_loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   const [inviteData, setInviteData] = useState({ email: '', role_id: '' });
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);

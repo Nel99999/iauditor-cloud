@@ -29,7 +29,7 @@ const InspectionsPage = () => {
   const [templates, setTemplates] = useState<any[]>([]);
   const [executions, setExecutions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
-  const [_loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadData();
