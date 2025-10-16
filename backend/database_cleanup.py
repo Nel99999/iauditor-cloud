@@ -223,7 +223,7 @@ async def verify_cleanup(db):
     print("="*80)
     
     # Verify production user still exists
-    user = await db.users.find_one({"user_id": PRODUCTION_USER_ID})
+    user = await db.users.find_one({"email": PRODUCTION_USER_EMAIL})
     if user:
         print(f"✅ Production User Preserved:")
         print(f"   Email: {user.get('email')}")
