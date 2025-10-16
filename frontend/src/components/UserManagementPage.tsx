@@ -566,7 +566,8 @@ const UserManagementPage = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
