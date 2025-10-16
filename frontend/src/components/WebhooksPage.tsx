@@ -622,7 +622,7 @@ const WebhooksPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </ModernPageWrapper>
   );
 };
 
