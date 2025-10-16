@@ -15,9 +15,9 @@ import LoginPage from "@/components/LoginPage";
 import LoginPageNew from "@/components/LoginPageNew";
 import RegisterPage from "@/components/RegisterPage";
 import RegisterPageNew from "@/components/RegisterPageNew";
-import ForgotPasswordPageNew from "@/components/ForgotPasswordPageNew";
+import ForgotPasswordPage from "@/components/ForgotPasswordPage";
 import ComponentDemo from "@/components/ComponentDemo";
-import ResetPasswordPageNew from "@/components/ResetPasswordPageNew";
+import ResetPasswordPage from "@/components/ResetPasswordPage";
 import DashboardHomeNew from "@/components/DashboardHomeNew";
 // Refactored pages - removed wrapper pattern
 import OrganizationPage from "@/components/OrganizationPage";
