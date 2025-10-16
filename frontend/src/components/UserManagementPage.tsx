@@ -177,21 +177,17 @@ const UserManagementPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            User Management
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Manage users, roles, and permissions across your organization
-          </p>
-        </div>
+    <ModernPageWrapper 
+      title="User Management" 
+      subtitle="Manage system users and permissions"
+      actions={
         <Button onClick={() => setShowInviteDialog(true)} data-testid="invite-user-btn">
           <UserPlus className="h-4 w-4 mr-2" />
           Invite User
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
