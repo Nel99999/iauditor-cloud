@@ -18,7 +18,7 @@ interface ToastItem {
   duration: number;
 }
 
-const VisualPolishShowcase: React.FC = () => {
+const VisualPolishShowcase = () => {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -28,7 +28,7 @@ const VisualPolishShowcase: React.FC = () => {
   };
 
   const removeToast = (id: string): void => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts(prev => prev.filter((toast: any) => toast.id !== id));
   };
 
   const simulateLoading = (): void => {

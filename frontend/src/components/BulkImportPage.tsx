@@ -4,14 +4,14 @@ import { Upload, Download, FileText, CheckCircle, XCircle, AlertCircle } from 'l
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
-const BulkImportPage: React.FC = () => {
+const BulkImportPage = () => {
   const [file, setFile] = useState<any | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [validationResults, setValidationResults] = useState<any | null>(null);
   const [importResults, setImportResults] = useState<any | null>(null);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
+  const handleFileChange = (e: any) => {
+    const selectedFile = e.target.files![0];
     if (selectedFile && selectedFile.type === 'text/csv') {
       setFile(selectedFile);
       setValidationResults(null);
@@ -91,7 +91,7 @@ const BulkImportPage: React.FC = () => {
     }
   };
 
-  const downloadTemplate: React.FC = () => {
+  const downloadTemplate = () => {
     const csvContent = 'email,name,role\nexample@company.com,John Doe,viewer\ntest@company.com,Jane Smith,editor';
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -248,7 +248,7 @@ const BulkImportPage: React.FC = () => {
                   Validation Errors
                 </h3>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {validationResults.errors.map((error, index) => (
+                  {validationResults.errors.map((error: any, index: number) => (
                     <div
                       key={index}
                       className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm"
@@ -284,7 +284,7 @@ const BulkImportPage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {validationResults.preview.map((row, index) => (
+                      {validationResults.preview.map((row: any, index: number) => (
                         <tr
                           key={index}
                           className="border-b border-gray-200 dark:border-gray-700"
@@ -365,7 +365,7 @@ const BulkImportPage: React.FC = () => {
                   Failed Imports
                 </h3>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {importResults.failed_users.map((failure, index) => (
+                  {importResults.failed_users.map((failure: any, index: number) => (
                     <div
                       key={index}
                       className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm"

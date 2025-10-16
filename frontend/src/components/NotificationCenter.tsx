@@ -28,7 +28,7 @@ interface NotificationStats {
   unread_count: number;
 }
 
-const NotificationCenter: React.FC = () => {
+const NotificationCenter = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -73,7 +73,7 @@ const NotificationCenter: React.FC = () => {
       );
 
       // Update local state
-      setNotifications(notifications.map(n => 
+      setNotifications(notifications.map((n: any) => 
         n.id === notificationId ? { ...n, read: true } : n
       ));
       setUnreadCount(Math.max(0, unreadCount - 1));
@@ -94,7 +94,7 @@ const NotificationCenter: React.FC = () => {
       );
 
       // Update local state
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
+      setNotifications(notifications.map((n: any) => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (err) {
       console.error('Error marking all notifications as read:', err);
@@ -112,8 +112,8 @@ const NotificationCenter: React.FC = () => {
       );
 
       // Update local state
-      setNotifications(notifications.filter(n => n.id !== notificationId));
-      if (!notifications.find(n => n.id === notificationId)?.read) {
+      setNotifications(notifications.filter((n: any) => n.id !== notificationId));
+      if (!notifications.find((n: any) => n.id === notificationId)?.read) {
         setUnreadCount(Math.max(0, unreadCount - 1));
       }
     } catch (err) {

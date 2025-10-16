@@ -27,7 +27,7 @@ interface PendingUser {
   registration_ip?: string;
 }
 
-const UserApprovalPage: React.FC = () => {
+const UserApprovalPage = () => {
   const { toast } = useToast();
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [loading, setLoading] = useState(true);

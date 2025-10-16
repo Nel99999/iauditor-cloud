@@ -16,7 +16,7 @@ import { getInvitableRoles, canInviteRole, canDeleteInvitation } from '../utils/
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const InvitationManagementPage: React.FC = () => {
+const InvitationManagementPage = () => {
   const { user } = useAuth();
   const [invitations, setInvitations] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
@@ -46,7 +46,7 @@ const InvitationManagementPage: React.FC = () => {
   const loadRoles = async () => {
     try {
       const response = await axios.get(`${API}/roles`);
-      setRoles(response.data.filter(r => r.is_system_role).sort((a, b) => a.level - b.level));
+      setRoles(response.data.filter((r: any) => r.is_system_role).sort((a, b) => a.level - b.level));
     } catch (err: unknown) {
       console.error('Failed to load roles:', err);
     }
@@ -93,12 +93,12 @@ const InvitationManagementPage: React.FC = () => {
     }
   };
 
-  const checkDeletePermission = (invitation) => {
+  const checkDeletePermission = (invitation: any) => {
     // User can delete if they invited OR if they have higher role level
     return invitation.invited_by === user?.id || canDeleteInvitation(user?.role, invitation.invited_by_role, invitation.invited_by === user?.id ? 'self' : 'other');
   };
 
-  const getExpirationInfo = (expiresAt) => {
+  const getExpirationInfo = (expiresAt: any) => {
     const now = new Date();
     const expires = new Date(expiresAt);
     const daysLeft = Math.ceil((expires - now) / (1000 * 60 * 60 * 24));
@@ -116,7 +116,7 @@ const InvitationManagementPage: React.FC = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: any) => {
     const variants = {
       pending: { color: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
       accepted: { color: 'bg-green-100 text-green-800', text: 'Accepted' },
@@ -127,13 +127,13 @@ const InvitationManagementPage: React.FC = () => {
     return <Badge className={variant.color}>{variant.text}</Badge>;
   };
 
-  const getRoleInfo = (roleId) => {
-    const role = roles.find(r => r.id === roleId);
+  const getRoleInfo = (roleId: any) => {
+    const role = roles.find((r: any) => r.id === roleId);
     return role || { name: roleId, color: '#64748b' };
   };
 
-  const pendingInvitations = invitations.filter(i => i.status === 'pending');
-  const otherInvitations = invitations.filter(i => i.status !== 'pending');
+  const pendingInvitations = invitations.filter((i: any) => i.status === 'pending');
+  const otherInvitations = invitations.filter((i: any) => i.status !== 'pending');
 
   return (
     <div className="space-y-6">

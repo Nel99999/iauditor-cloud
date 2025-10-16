@@ -17,7 +17,7 @@ interface FormData {
   organizationName: string;
 }
 
-const RegisterPageNew: React.FC = () => {
+const RegisterPageNew = () => {
   const navigate = useNavigate();
   const { register, loginWithGoogle } = useAuth();
   const [formData, setFormData] = useState<FormData>({

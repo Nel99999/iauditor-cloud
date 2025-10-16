@@ -15,7 +15,7 @@ import { ArrowLeft, CheckCircle, Camera, Save, Send } from 'lucide-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const InspectionExecutionPage: React.FC = () => {
+const InspectionExecutionPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { templateId, executionId } = useParams();
@@ -166,7 +166,7 @@ const InspectionExecutionPage: React.FC = () => {
       setSaving(true);
       await axios.post(`${API}/inspections/executions/${execution.id}/complete`, {
         answers: Object.values(answers),
-        findings: findings.split('\n').filter(f => f.trim()),
+        findings: findings.split('\n').filter((f: any) => f.trim()),
         notes,
       });
       
@@ -180,7 +180,7 @@ const InspectionExecutionPage: React.FC = () => {
     }
   };
 
-  const getProgress: React.FC = () => {
+  const getProgress = () => {
     const totalQuestions = template?.questions.length || 0;
     const answeredQuestions = Object.values(answers).filter(
       (a) => a.answer !== null && a.answer !== ''
@@ -247,7 +247,7 @@ const InspectionExecutionPage: React.FC = () => {
               value={answer?.answer}
               onValueChange={(value) => handleAnswerChange(question.id, value)}
             >
-              {question.options?.map((option, idx) => (
+              {question.options?.map((option: any, idx: number) => (
                 <div key={idx} className="flex items-center space-x-2">
                   <RadioGroupItem value={option} id={`${question.id}-${idx}`} />
                   <Label htmlFor={`${question.id}-${idx}`}>{option}</Label>
@@ -263,8 +263,8 @@ const InspectionExecutionPage: React.FC = () => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  if (e.target.files[0]) {
-                    handlePhotoUpload(question.id, e.target.files[0]);
+                  if (e.target.files![0]) {
+                    handlePhotoUpload(question.id, e.target.files![0]);
                   }
                 }}
               />
@@ -343,7 +343,7 @@ const InspectionExecutionPage: React.FC = () => {
 
       {/* Questions */}
       <div className="space-y-4">
-        {template.questions.map((question, index) => renderQuestion(question, index))}
+        {template.questions.map((question: any, index: number) => renderQuestion(question, index))}
       </div>
 
       {/* Findings & Notes */}

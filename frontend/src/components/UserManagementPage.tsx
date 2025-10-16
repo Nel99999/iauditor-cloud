@@ -30,7 +30,7 @@ import { getInvitableRoles, canInviteRole } from '../utils/permissions';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const UserManagementPage: React.FC = () => {
+const UserManagementPage = () => {
   const { user } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -76,7 +76,7 @@ const UserManagementPage: React.FC = () => {
     }
   };
 
-  const handleSort = (column) => {
+  const handleSort = (column: any) => {
     if (sortBy === column) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
@@ -123,7 +123,7 @@ const UserManagementPage: React.FC = () => {
       }
     });
 
-  const getRoleBadgeStyle = (role) => {
+  const getRoleBadgeStyle = (role: any) => {
     switch (role) {
       case 'developer':
         return { backgroundColor: '#6366f1', color: 'white', borderColor: '#6366f1' }; // Indigo
@@ -150,7 +150,7 @@ const UserManagementPage: React.FC = () => {
     }
   };
 
-  const getInitials = (name) => {
+  const getInitials = (name: any) => {
     return name
       .split(' ')
       .map((n) => n[0])
@@ -158,7 +158,7 @@ const UserManagementPage: React.FC = () => {
       .toUpperCase();
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: any) => {
     if (!dateString || dateString === 'Recently') return 'Never';
     try {
       const date = new Date(dateString);
@@ -540,7 +540,7 @@ const UserManagementPage: React.FC = () => {
                       { value: 'inspector', label: '🟡 Inspector - Execute operations (Lv8)', emoji: '🟡' },
                       { value: 'operator', label: '⚫ Operator - Basic tasks (Lv9)', emoji: '⚫' },
                       { value: 'viewer', label: '🟢 Viewer - Read only (Lv10)', emoji: '🟢' },
-                    ].map(role => {
+                    ].map((role: any) => {
                       const canInvite = canInviteRole(user?.role || 'viewer', role.value);
                       return (
                         <SelectItem 

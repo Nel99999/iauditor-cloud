@@ -26,7 +26,7 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ReportsPage: React.FC = () => {
+const ReportsPage = () => {
   const [overview, setOverview] = useState<any>(null);
   const [trends, setTrends] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -553,7 +553,7 @@ const ReportsPage: React.FC = () => {
                     <SelectValue placeholder="Choose data source" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(availableCollections).map(([key, config]) => (
+                    {Object.entries(...).map(([key, config]: [string, any]) => (
                       <SelectItem key={key} value={key}>{config.name}</SelectItem>
                     ))}
                   </SelectContent>
@@ -578,7 +578,7 @@ const ReportsPage: React.FC = () => {
                             } else {
                               setCustomReport({
                                 ...customReport,
-                                fields: customReport.fields.filter(f => f !== field)
+                                fields: customReport.fields.filter((f: any) => f !== field)
                               });
                             }
                           }}

@@ -48,7 +48,7 @@ interface StatCard {
   color: string;
 }
 
-const TasksPageNew: React.FC = () => {
+const TasksPageNew = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<TaskStats | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
@@ -133,7 +133,7 @@ const TasksPageNew: React.FC = () => {
           { label: 'Total Tasks', value: stats?.total || 0, icon: Clock, color: 'blue' },
           { label: 'In Progress', value: stats?.in_progress || 0, icon: AlertTriangle, color: 'orange' },
           { label: 'Completed', value: stats?.completed || 0, icon: CheckCircle, color: 'green' },
-        ] as StatCard[]).map((stat, index) => {
+        ] as StatCard[]).map((stat: any, index: number) => {
           const Icon = stat.icon;
           return (
             <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
@@ -160,7 +160,7 @@ const TasksPageNew: React.FC = () => {
           </div>
         ) : (
           <div className="tasks-list">
-            {tasks.map((task, index) => {
+            {tasks.map((task: any, index: number) => {
               const StatusIcon = statusIcons[task.status] || Clock;
               return (
                 <motion.div

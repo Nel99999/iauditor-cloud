@@ -4,7 +4,7 @@ import { Webhook, Plus, Edit2, Trash2, X, Play, CheckCircle, XCircle, Clock } fr
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
-const WebhooksPage: React.FC = () => {
+const WebhooksPage = () => {
   const [webhooks, setWebhooks] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -145,7 +145,7 @@ const WebhooksPage: React.FC = () => {
     }
   };
 
-  const openEditModal = (webhook) => {
+  const openEditModal = (webhook: any) => {
     setSelectedWebhook(webhook);
     setFormData({
       name: webhook.name,
@@ -176,11 +176,11 @@ const WebhooksPage: React.FC = () => {
     }
   };
 
-  const toggleEvent = (event) => {
+  const toggleEvent = (event: any) => {
     if (formData.events.includes(event)) {
       setFormData({
         ...formData,
-        events: formData.events.filter(e => e !== event)
+        events: formData.events.filter((e: any) => e !== event)
       });
     } else {
       setFormData({
@@ -190,7 +190,7 @@ const WebhooksPage: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: any) => {
     switch (status) {
       case 'success':
         return 'text-green-600 dark:text-green-400';

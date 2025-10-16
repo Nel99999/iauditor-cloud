@@ -109,7 +109,7 @@ export const WithoutTitle = () => {
 export const WithForm = () => {
   const { isOpen, open, close } = useBottomSheet();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     alert('Form submitted!');
     close();
@@ -179,7 +179,7 @@ export const WithLongContent = () => (
       <p style={{ marginBottom: '16px' }}>
         This bottom sheet has a lot of content that requires scrolling.
       </p>
-      {Array.from({ length: 20 }).map((_, i) => (
+      {Array.from({ length: 20 }).map((_: any, i: number) => (
         <p key={i} style={{ marginBottom: '12px', padding: '8px', background: 'rgba(0,0,0,0.02)', borderRadius: '4px' }}>
           Content item {i + 1}
         </p>

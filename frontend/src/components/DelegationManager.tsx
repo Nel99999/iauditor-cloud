@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const DelegationManager: React.FC = () => {
+const DelegationManager = () => {
   const { user } = useAuth();
   const [delegations, setDelegations] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -62,7 +62,7 @@ const DelegationManager: React.FC = () => {
       const response = await axios.get(`${API}/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUsers(response.data.filter(u => u.id !== user?.id)); // Exclude self
+      setUsers(response.data.filter((u: any) => u.id !== user?.id)); // Exclude self
     } catch (err: unknown) {
       console.error('Failed to load users:', err);
     }
@@ -100,7 +100,7 @@ const DelegationManager: React.FC = () => {
     }
   };
 
-  const resetForm: React.FC = () => {
+  const resetForm = () => {
     const today = new Date().toISOString().split('T')[0];
     const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     
@@ -114,11 +114,11 @@ const DelegationManager: React.FC = () => {
     });
   };
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr: any) => {
     return new Date(dateStr).toLocaleDateString();
   };
 
-  const isActive = (delegation) => {
+  const isActive = (delegation: any) => {
     const now = new Date().toISOString();
     return delegation.active && 
            delegation.valid_from <= now && 
@@ -159,7 +159,7 @@ const DelegationManager: React.FC = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {delegations.map(delegation => (
+          {delegations.map((delegation: any) => (
             <Card key={delegation.id} className={!isActive(delegation) ? 'opacity-60' : ''}>
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -264,7 +264,7 @@ const DelegationManager: React.FC = () => {
                   <SelectValue placeholder="Select a user" />
                 </SelectTrigger>
                 <SelectContent>
-                  {users.map(u => (
+                  {users.map((u: any) => (
                     <SelectItem key={u.id} value={u.id}>
                       {u.name} ({u.email})
                     </SelectItem>

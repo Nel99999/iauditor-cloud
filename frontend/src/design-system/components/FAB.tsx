@@ -95,7 +95,7 @@ const FAB: React.FC<FABProps> = ({
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2 }}
             >
-              {actions.map((action, index) => (
+              {actions.map((action: any, index: number) => (
                 <motion.div
                   key={index}
                   className="fab-action-item"

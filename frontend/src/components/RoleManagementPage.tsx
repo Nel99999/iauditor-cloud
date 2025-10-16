@@ -14,7 +14,7 @@ import { Shield, Plus, Trash2, Lock, Save, Grid3x3 } from 'lucide-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const RoleManagementPage: React.FC = () => {
+const RoleManagementPage = () => {
   const [roles, setRoles] = useState<any[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
   const [rolePermissions, setRolePermissions] = useState<any>({});
@@ -46,7 +46,7 @@ const RoleManagementPage: React.FC = () => {
       for (const role of response.data) {
         try {
           const perms = await axios.get(`${API}/roles/${role.id}/permissions`);
-          permMap[role.id] = perms.data.map(p => p.permission_id);
+          permMap[role.id] = perms.data.map((p: any) => p.permission_id);
         } catch (err: unknown) {
           permMap[role.id] = [];
         }
@@ -82,7 +82,7 @@ const RoleManagementPage: React.FC = () => {
       // If permissions selected, assign them
       if (newRole.selectedPermissions.length > 0) {
         const createdRoles = await axios.get(`${API}/roles`);
-        const newRoleData = createdRoles.data.find(r => r.code === newRole.code);
+        const newRoleData = createdRoles.data.find((r: any) => r.code === newRole.code);
         if (newRoleData) {
           await axios.post(`${API}/roles/${newRoleData.id}/permissions/bulk`, newRole.selectedPermissions);
         }
@@ -130,7 +130,7 @@ const RoleManagementPage: React.FC = () => {
       const newPerms = [...currentPerms];
       
       // Apply changes
-      Object.keys(matrixChanges).forEach(key => {
+      Object.keys(matrixChanges).forEach((key: any) => {
         if (key.startsWith(`${roleId}-`)) {
           const permId = key.split('-')[1];
           const shouldHave = matrixChanges[key];
@@ -149,7 +149,7 @@ const RoleManagementPage: React.FC = () => {
       
       // Clear changes for this role
       const clearedChanges = {};
-      Object.keys(matrixChanges).forEach(key => {
+      Object.keys(matrixChanges).forEach((key: any) => {
         if (!key.startsWith(`${roleId}-`)) {
           clearedChanges[key] = matrixChanges[key];
         }
@@ -171,13 +171,13 @@ const RoleManagementPage: React.FC = () => {
     return (rolePermissions[roleId] || []).includes(permissionId);
   };
 
-  const hasChanges = (roleId) => {
-    return Object.keys(matrixChanges).some(key => key.startsWith(`${roleId}-`));
+  const hasChanges = (roleId: any) => {
+    return Object.keys(matrixChanges).some((key: any) => key.startsWith(`${roleId}-`));
   };
 
-  const groupPermissionsByResource: React.FC = () => {
+  const groupPermissionsByResource = () => {
     const grouped = {};
-    permissions.forEach(perm => {
+    permissions.forEach((perm: any) => {
       if (!grouped[perm.resource_type]) {
         grouped[perm.resource_type] = [];
       }
@@ -287,7 +287,7 @@ const RoleManagementPage: React.FC = () => {
                   <thead>
                     <tr className="bg-slate-100 border-b">
                       <th className="text-left p-3 font-semibold sticky left-0 bg-slate-100">Permission</th>
-                      {roles.sort((a, b) => a.level - b.level).map(role => (
+                      {roles.sort((a, b) => a.level - b.level).map((role: any) => (
                         <th key={role.id} className="p-2 text-center min-w-[100px]">
                           <div className="flex flex-col items-center gap-1">
                             <Badge 
@@ -305,7 +305,7 @@ const RoleManagementPage: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {permissions.map(perm => (
+                    {permissions.map((perm: any) => (
                       <tr key={perm.id} className="border-b hover:bg-slate-50">
                         <td className="p-3 sticky left-0 bg-white">
                           <div>
@@ -313,7 +313,7 @@ const RoleManagementPage: React.FC = () => {
                             <p className="text-xs text-slate-500">{perm.description}</p>
                           </div>
                         </td>
-                        {roles.sort((a, b) => a.level - b.level).map(role => (
+                        {roles.sort((a, b) => a.level - b.level).map((role: any) => (
                           <td key={role.id} className="p-2 text-center">
                             <Checkbox
                               checked={isPermissionChecked(role.id, perm.id)}
@@ -331,7 +331,7 @@ const RoleManagementPage: React.FC = () => {
               
               {/* Save buttons for custom roles only */}
               <div className="flex gap-2 flex-wrap mt-4">
-                {roles.filter(r => !r.is_system_role).map(role => (
+                {roles.filter((r: any) => !r.is_system_role).map((role: any) => (
                   hasChanges(role.id) && (
                     <Button
                       key={role.id}
@@ -345,7 +345,7 @@ const RoleManagementPage: React.FC = () => {
                 ))}
               </div>
 
-              {roles.filter(r => !r.is_system_role).length === 0 && (
+              {roles.filter((r: any) => !r.is_system_role).length === 0 && (
                 <p className="text-center text-slate-500 mt-4">
                   No custom roles to modify. System roles are locked and pre-configured.
                 </p>
@@ -421,7 +421,7 @@ const RoleManagementPage: React.FC = () => {
             <div>
               <Label>Select Permissions (Optional)</Label>
               <div className="border rounded-lg p-4 max-h-64 overflow-y-auto space-y-2">
-                {permissions.map(perm => (
+                {permissions.map((perm: any) => (
                   <div key={perm.id} className="flex items-center space-x-2">
                     <Checkbox
                       checked={newRole.selectedPermissions.includes(perm.id)}
@@ -434,7 +434,7 @@ const RoleManagementPage: React.FC = () => {
                         } else {
                           setNewRole({
                             ...newRole,
-                            selectedPermissions: newRole.selectedPermissions.filter(p => p !== perm.id)
+                            selectedPermissions: newRole.selectedPermissions.filter((p: any) => p !== perm.id)
                           });
                         }
                       }}

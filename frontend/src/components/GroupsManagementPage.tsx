@@ -4,7 +4,7 @@ import { Users, Plus, Edit2, Trash2, X, Search, UserPlus, UserMinus } from 'luci
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
-const GroupsManagementPage: React.FC = () => {
+const GroupsManagementPage = () => {
   const [groups, setGroups] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -150,7 +150,7 @@ const GroupsManagementPage: React.FC = () => {
     }
   };
 
-  const openEditModal = (group) => {
+  const openEditModal = (group: any) => {
     setSelectedGroup(group);
     setFormData({
       name: group.name,
@@ -176,12 +176,12 @@ const GroupsManagementPage: React.FC = () => {
     }
   };
 
-  const filteredGroups = groups.filter(group =>
+  const filteredGroups = groups.filter((group: any) =>
     group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     group.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const getGroupTypeColor = (type) => {
+  const getGroupTypeColor = (type: any) => {
     const colors = {
       team: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
       department: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
@@ -537,7 +537,7 @@ const GroupsManagementPage: React.FC = () => {
                   </h3>
                   <div className="space-y-2 max-h-60 overflow-y-auto">
                     {allUsers
-                      .filter(user => !selectedGroup.members?.some(m => m.user_id === user.id))
+                      .filter((user: any) => !selectedGroup.members?.some((m: any) => m.user_id === user.id))
                       .map((user) => (
                         <div
                           key={user.id}

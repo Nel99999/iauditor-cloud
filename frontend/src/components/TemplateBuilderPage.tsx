@@ -24,7 +24,7 @@ const QUESTION_TYPES = [
   { value: 'signature', label: 'Signature' },
 ];
 
-const TemplateBuilderPage: React.FC = () => {
+const TemplateBuilderPage = () => {
   const navigate = useNavigate();
   const { templateId } = useParams();
   const isEdit = !!templateId;
@@ -58,7 +58,7 @@ const TemplateBuilderPage: React.FC = () => {
     }
   };
 
-  const handleAddQuestion: React.FC = () => {
+  const handleAddQuestion = () => {
     setTemplate({
       ...template,
       questions: [
@@ -76,10 +76,10 @@ const TemplateBuilderPage: React.FC = () => {
     });
   };
 
-  const handleRemoveQuestion = (index) => {
+  const handleRemoveQuestion = (index: any) => {
     setTemplate({
       ...template,
-      questions: template.questions.filter((_, i) => i !== index),
+      questions: template.questions.filter((_: any, i: number) => i !== index),
     });
   };
 
@@ -264,7 +264,7 @@ const TemplateBuilderPage: React.FC = () => {
               <p>No questions yet. Click "Add Question" to get started.</p>
             </div>
           ) : (
-            template.questions.map((question, index) => (
+            template.questions.map((question: any, index: number) => (
               <Card key={index} className="border-2">
                 <CardContent className="pt-6 space-y-4">
                   <div className="flex items-start gap-4">

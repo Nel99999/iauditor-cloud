@@ -44,7 +44,7 @@ const ModernTable = <T extends Record<string, any>>({
         <table className="modern-table">
           <thead>
             <tr>
-              {columns.map((column, index) => (
+              {columns.map((column: any, index: number) => (
                 <th key={index} className="table-header">
                   {column.header}
                 </th>
@@ -52,7 +52,7 @@ const ModernTable = <T extends Record<string, any>>({
             </tr>
           </thead>
           <tbody>
-            {data.map((row, rowIndex) => (
+            {data.map((row: any, rowIndex: number) => (
               <motion.tr
                 key={rowIndex}
                 className="table-row"
@@ -62,7 +62,7 @@ const ModernTable = <T extends Record<string, any>>({
                 transition={{ delay: rowIndex * 0.05, duration: 0.3 }}
                 whileHover={{ backgroundColor: 'var(--color-neutral-100)' }}
               >
-                {columns.map((column, colIndex) => (
+                {columns.map((column: any, colIndex: number) => (
                   <td key={colIndex} className="table-cell">
                     {column.render ? column.render(row) : row[column.accessor as string]}
                   </td>

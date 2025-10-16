@@ -3,7 +3,7 @@ import { Button, Card, GlassCard, Input } from '@/design-system/components';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Sun, Moon, Check, X, AlertCircle } from 'lucide-react';
 
-const DesignSystemShowcase: React.FC = () => {
+const DesignSystemShowcase = () => {
   const { theme, toggleTheme } = useTheme();
   const [inputValue, setInputValue] = useState<string>('');
 

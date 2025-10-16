@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import ROUTES from '@/routing/routes.config';
 import './LoginPageNew.css';
 
-const LoginPageNew: React.FC = () => {
+const LoginPageNew = () => {
   const navigate = useNavigate();
   const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState<string>('');

@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const WorkflowDesigner: React.FC = () => {
+const WorkflowDesigner = () => {
   const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
@@ -123,7 +123,7 @@ const WorkflowDesigner: React.FC = () => {
     }
   };
 
-  const resetForm: React.FC = () => {
+  const resetForm = () => {
     setFormData({
       name: '',
       description: '',
@@ -143,7 +143,7 @@ const WorkflowDesigner: React.FC = () => {
     });
   };
 
-  const addStep: React.FC = () => {
+  const addStep = () => {
     setFormData({
       ...formData,
       steps: [...formData.steps, {
@@ -158,9 +158,9 @@ const WorkflowDesigner: React.FC = () => {
     });
   };
 
-  const removeStep = (index) => {
-    const newSteps = formData.steps.filter((_, i) => i !== index);
-    newSteps.forEach((step, i) => step.step_number = i + 1);
+  const removeStep = (index: any) => {
+    const newSteps = formData.steps.filter((_: any, i: number) => i !== index);
+    newSteps.forEach((step: any, i: number) => step.step_number = i + 1);
     setFormData({ ...formData, steps: newSteps });
   };
 
@@ -170,7 +170,7 @@ const WorkflowDesigner: React.FC = () => {
     setFormData({ ...formData, steps: newSteps });
   };
 
-  const openEditDialog = (template) => {
+  const openEditDialog = (template: any) => {
     setEditingTemplate(template);
     setFormData({
       name: template.name,
@@ -218,7 +218,7 @@ const WorkflowDesigner: React.FC = () => {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {templates.map(template => (
+          {templates.map((template: any) => (
             <Card key={template.id}>
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -270,7 +270,7 @@ const WorkflowDesigner: React.FC = () => {
                   <div className="border-t pt-3 mt-3">
                     <p className="text-xs font-semibold text-slate-700 mb-2">Approval Flow:</p>
                     <div className="space-y-2">
-                      {template.steps.map((step, idx) => (
+                      {template.steps.map((step: any, idx: number) => (
                         <div key={idx} className="flex items-center text-xs">
                           <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold mr-2">
                             {step.step_number}
@@ -360,7 +360,7 @@ const WorkflowDesigner: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                {formData.steps.map((step, index) => (
+                {formData.steps.map((step: any, index: number) => (
                   <Card key={index}>
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
@@ -398,7 +398,7 @@ const WorkflowDesigner: React.FC = () => {
                             </SelectTrigger>
                             <SelectContent>
                               {roles && roles.length > 0 ? (
-                                roles.map(role => (
+                                roles.map((role: any) => (
                                   <SelectItem key={role.code} value={role.code}>
                                     {role.name}
                                   </SelectItem>
@@ -464,7 +464,7 @@ const WorkflowDesigner: React.FC = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">No escalation</SelectItem>
-                            {roles && roles.length > 0 && roles.map(role => (
+                            {roles && roles.length > 0 && roles.map((role: any) => (
                               <SelectItem key={role.code} value={role.code}>
                                 {role.name}
                               </SelectItem>

@@ -21,7 +21,7 @@ import PhoneInput from 'react-phone-number-input';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const EnhancedSettingsPage: React.FC = () => {
+const EnhancedSettingsPage = () => {
   const { user, setUser } = useAuth();
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   const { t, i18n } = useTranslation();
@@ -175,7 +175,7 @@ const EnhancedSettingsPage: React.FC = () => {
   };
 
   const handlePhotoUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files![0];
     if (!file) return;
     
     const formData = new FormData();
@@ -522,7 +522,7 @@ const EnhancedSettingsPage: React.FC = () => {
                 <Label>Accent Color</Label>
                 <p className="text-sm text-muted-foreground mb-2">Choose your preferred accent color</p>
                 <div className="flex gap-2">
-                  {['#6366f1', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'].map(color => (
+                  {['#6366f1', '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'].map((color: any) => (
                     <button key={color} onClick={() => updateAccentColor(color)} className={`w-10 h-10 rounded-full border-2 ${accentColor === color ? 'border-slate-900 dark:border-white' : 'border-transparent'}`} style={{ backgroundColor: color }} />
                   ))}
                 </div>
@@ -534,7 +534,7 @@ const EnhancedSettingsPage: React.FC = () => {
                 <Label>View Density</Label>
                 <p className="text-sm text-muted-foreground mb-2">Adjust spacing and layout density</p>
                 <div className="flex gap-2">
-                  {['compact', 'comfortable', 'spacious'].map(density => (
+                  {['compact', 'comfortable', 'spacious'].map((density: any) => (
                     <Button key={density} variant={viewDensity === density ? 'default' : 'outline'} onClick={() => updateViewDensity(density)} className="flex-1">
                       {density.charAt(0).toUpperCase() + density.slice(1)}
                     </Button>
@@ -548,7 +548,7 @@ const EnhancedSettingsPage: React.FC = () => {
                 <Label>Font Size</Label>
                 <p className="text-sm text-muted-foreground mb-2">Adjust text size throughout the app</p>
                 <div className="flex gap-2">
-                  {['small', 'medium', 'large'].map(size => (
+                  {['small', 'medium', 'large'].map((size: any) => (
                     <Button key={size} variant={fontSize === size ? 'default' : 'outline'} onClick={() => updateFontSize(size)} className="flex-1">
                       {size.charAt(0).toUpperCase() + size.slice(1)}
                     </Button>
@@ -574,7 +574,7 @@ const EnhancedSettingsPage: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {languages.map(lang => (
+                    {languages.map((lang: any) => (
                       <SelectItem key={lang.code} value={lang.code}>
                         {lang.flag} {lang.name}
                       </SelectItem>
@@ -590,7 +590,7 @@ const EnhancedSettingsPage: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {timezones.map(tz => (
+                    {timezones.map((tz: any) => (
                       <SelectItem key={tz} value={tz}>{tz}</SelectItem>
                     ))}
                   </SelectContent>
@@ -632,7 +632,7 @@ const EnhancedSettingsPage: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {currencies.map(curr => (
+                    {currencies.map((curr: any) => (
                       <SelectItem key={curr} value={curr}>{curr}</SelectItem>
                     ))}
                   </SelectContent>

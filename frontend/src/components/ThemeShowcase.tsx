@@ -5,7 +5,7 @@ import { Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import './ThemeShowcase.css';
 
-const ThemeShowcase: React.FC = () => {
+const ThemeShowcase = () => {
   const { theme, toggleTheme } = useTheme();
 
   const setTheme = (newTheme: 'light' | 'dark'): void => {

@@ -23,7 +23,7 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const InspectionsPage: React.FC = () => {
+const InspectionsPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [templates, setTemplates] = useState<any[]>([]);

@@ -198,7 +198,7 @@ const TimeTrackingPanel: React.FC<TimeTrackingPanelProps> = ({ taskId }) => {
   };
 
   const totalTime = timeEntries.reduce((sum, entry) => sum + (entry.duration_minutes || 0), 0);
-  const billableTime = timeEntries.filter(e => e.is_billable).reduce((sum, entry) => sum + (entry.duration_minutes || 0), 0);
+  const billableTime = timeEntries.filter((e: any) => e.is_billable).reduce((sum, entry) => sum + (entry.duration_minutes || 0), 0);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">

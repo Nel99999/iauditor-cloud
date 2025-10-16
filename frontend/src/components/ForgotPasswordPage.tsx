@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle2, AlertCircle, ArrowLeft, Mail } from 'lucide-react';
 
-const ForgotPasswordPage: React.FC = () => {
+const ForgotPasswordPage = () => {
   const [email, setEmail] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);

@@ -190,7 +190,7 @@ const MentionInput: React.FC<MentionInputProps> = ({ value, onChange, placeholde
           ref={suggestionsRef}
           className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto"
         >
-          {suggestions.map((user, index) => (
+          {suggestions.map((user: any, index: number) => (
             <div
               key={user.id}
               onClick={() => insertMention(user)}

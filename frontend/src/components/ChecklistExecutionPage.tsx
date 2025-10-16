@@ -13,7 +13,7 @@ import { ArrowLeft, CheckCircle } from 'lucide-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ChecklistExecutionPage: React.FC = () => {
+const ChecklistExecutionPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { executionId } = useParams();
@@ -49,7 +49,7 @@ const ChecklistExecutionPage: React.FC = () => {
   };
 
   const handleItemToggle = (itemId, checked) => {
-    const newItems = items.map(item => 
+    const newItems = items.map((item: any) => 
       item.item_id === itemId 
         ? { ...item, completed: checked, completed_at: checked ? new Date().toISOString() : null }
         : item
@@ -57,9 +57,9 @@ const ChecklistExecutionPage: React.FC = () => {
     setItems(newItems);
   };
 
-  const getProgress: React.FC = () => {
+  const getProgress = () => {
     if (!items.length) return 0;
-    const completed = items.filter(i => i.completed).length;
+    const completed = items.filter((i: any) => i.completed).length;
     return (completed / items.length) * 100;
   };
 
@@ -110,8 +110,8 @@ const ChecklistExecutionPage: React.FC = () => {
       </Card>
 
       <div className="space-y-4">
-        {template.items.map((templateItem, index) => {
-          const itemState = items.find(i => i.item_id === templateItem.id) || { completed: false };
+        {template.items.map((templateItem: any, index: number) => {
+          const itemState = items.find((i: any) => i.item_id === templateItem.id) || { completed: false };
           
           return (
             <Card key={templateItem.id}>

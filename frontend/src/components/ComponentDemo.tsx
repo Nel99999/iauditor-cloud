@@ -3,7 +3,7 @@ import { BottomSheet, useBottomSheet, FAB, FABIcons, Button, Card, GlassCard, In
 import { Plus, Mail, Settings, User, Bell } from 'lucide-react';
 import './ComponentDemo.css';
 
-const ComponentDemo: React.FC = () => {
+const ComponentDemo = () => {
   const { isOpen: isSheet1Open, open: openSheet1, close: closeSheet1 } = useBottomSheet();
   const { isOpen: isSheet2Open, open: openSheet2, close: closeSheet2 } = useBottomSheet();
   const { isOpen: isSheet3Open, open: openSheet3, close: closeSheet3 } = useBottomSheet();
@@ -246,7 +246,7 @@ const ComponentDemo: React.FC = () => {
           </ul>
 
           <h4 style={{ marginTop: '24px', marginBottom: '12px' }}>Try scrolling:</h4>
-          {Array.from({ length: 10 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_: any, i: number) => (
             <p key={i} style={{ padding: '12px', background: 'rgba(0,0,0,0.02)', borderRadius: '4px', marginBottom: '8px' }}>
               Scrollable content item {i + 1}
             </p>

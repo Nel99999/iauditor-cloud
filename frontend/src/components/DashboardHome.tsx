@@ -2,7 +2,7 @@ import React from 'react';
 import DashboardHomeNew from './DashboardHomeNew';
 
 // Legacy DashboardHome component - re-exports DashboardHomeNew for backwards compatibility
-const DashboardHome: React.FC = () => {
+const DashboardHome = () => {
   return <DashboardHomeNew />;
 };
 

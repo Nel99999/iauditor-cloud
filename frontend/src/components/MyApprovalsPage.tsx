@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui/badge';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const MyApprovalsPage: React.FC = () => {
+const MyApprovalsPage = () => {
   const { user } = useAuth();
   const [approvals, setApprovals] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -84,7 +84,7 @@ const MyApprovalsPage: React.FC = () => {
     setShowActionDialog(true);
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: any) => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-700';
       case 'rejected': return 'bg-red-100 text-red-700';
@@ -95,12 +95,12 @@ const MyApprovalsPage: React.FC = () => {
     }
   };
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr: any) => {
     if (!dateStr) return 'N/A';
     return new Date(dateStr).toLocaleDateString() + ' ' + new Date(dateStr).toLocaleTimeString();
   };
 
-  const isOverdue = (dueDate) => {
+  const isOverdue = (dueDate: any) => {
     if (!dueDate) return false;
     return new Date(dueDate) < new Date();
   };
@@ -129,7 +129,7 @@ const MyApprovalsPage: React.FC = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {approvals.map(workflow => (
+          {approvals.map((workflow: any) => (
             <Card key={workflow.id} className={isOverdue(workflow.due_at) ? 'border-red-300 bg-red-50 dark:bg-red-950/20' : ''}>
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -225,7 +225,7 @@ const MyApprovalsPage: React.FC = () => {
                   <div className="mt-4 pt-4 border-t">
                     <p className="text-xs font-semibold text-slate-700 mb-2">Previous Steps:</p>
                     <div className="space-y-2">
-                      {workflow.steps_completed.map((step, idx) => (
+                      {workflow.steps_completed.map((step: any, idx: number) => (
                         <div key={idx} className="flex items-start gap-2 text-xs">
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center text-white ${
                             step.action === 'approve' ? 'bg-green-500' :

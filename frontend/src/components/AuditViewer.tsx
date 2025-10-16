@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const AuditViewer: React.FC = () => {
+const AuditViewer = () => {
   const { user } = useAuth();
   const [logs, setLogs] = useState<any[]>([]);
   const [stats, setStats] = useState<any | null>(null);
@@ -38,7 +38,7 @@ const AuditViewer: React.FC = () => {
       const token = localStorage.getItem('access_token');
       const params = new URLSearchParams();
       
-      Object.keys(customFilters).forEach(key => {
+      Object.keys(customFilters).forEach((key: any) => {
         if (customFilters[key]) {
           params.append(key, customFilters[key]);
         }
@@ -71,12 +71,12 @@ const AuditViewer: React.FC = () => {
     setFilters({ ...filters, [key]: value });
   };
 
-  const applyFilters: React.FC = () => {
+  const applyFilters = () => {
     loadLogs(filters);
     setShowFilters(false);
   };
 
-  const clearFilters: React.FC = () => {
+  const clearFilters = () => {
     const clearedFilters = {
       action: '',
       resource_type: '',
@@ -89,10 +89,10 @@ const AuditViewer: React.FC = () => {
     loadLogs(clearedFilters);
   };
 
-  const exportLogs: React.FC = () => {
+  const exportLogs = () => {
     const csvContent = [
       ['Timestamp', 'User', 'Action', 'Resource Type', 'Resource ID', 'Result'].join(','),
-      ...logs.map(log => [
+      ...logs.map((log: any) => [
         log.timestamp,
         log.user_name,
         log.action,
@@ -110,11 +110,11 @@ const AuditViewer: React.FC = () => {
     link.click();
   };
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr: any) => {
     return new Date(dateStr).toLocaleString();
   };
 
-  const getResultIcon = (result) => {
+  const getResultIcon = (result: any) => {
     switch (result) {
       case 'granted':
       case 'success':
@@ -127,7 +127,7 @@ const AuditViewer: React.FC = () => {
     }
   };
 
-  const getResultColor = (result) => {
+  const getResultColor = (result: any) => {
     switch (result) {
       case 'granted':
       case 'success':
@@ -309,7 +309,7 @@ const AuditViewer: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {logs.map((log, idx) => (
+              {logs.map((log: any, idx: number) => (
                 <div
                   key={log.id || idx}
                   className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"

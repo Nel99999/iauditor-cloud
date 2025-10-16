@@ -2,7 +2,7 @@ import React from 'react';
 import { ModernPageWrapper } from '@/design-system/components';
 import MFASetupPage from '@/components/MFASetupPage';
 
-const MFASetupPageNew: React.FC = () => {
+const MFASetupPageNew = () => {
   return (
     <ModernPageWrapper title="MFA Setup" subtitle="Configure multi-factor authentication">
       <MFASetupPage />

@@ -30,7 +30,7 @@ const TEST_CREDENTIALS = [
   { role: 'viewer', email: 'viewer@test.com', password: 'View123!', description: 'Read-only access' },
 ];
 
-const DeveloperAdminPanel: React.FC = () => {
+const DeveloperAdminPanel = () => {
   const { user } = useAuth();
   const { isDeveloper } = usePermissions();
   const [users, setUsers] = useState<any[]>([]);
@@ -69,14 +69,14 @@ const DeveloperAdminPanel: React.FC = () => {
     }
   };
 
-  const togglePasswordVisibility = (userId) => {
+  const togglePasswordVisibility = (userId: any) => {
     setShowPasswords(prev => ({
       ...prev,
       [userId]: !prev[userId]
     }));
   };
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text: any) => {
     // Try modern clipboard API first
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text)
@@ -92,7 +92,7 @@ const DeveloperAdminPanel: React.FC = () => {
     }
   };
 
-  const fallbackCopy = (text) => {
+  const fallbackCopy = (text: any) => {
     const textArea = document.createElement('textarea');
     textArea.value = text;
     textArea.style.position = 'fixed';
@@ -128,7 +128,7 @@ const DeveloperAdminPanel: React.FC = () => {
     }
   };
 
-  const getRoleBadgeStyle = (roleCode) => {
+  const getRoleBadgeStyle = (roleCode: any) => {
     const roleColors = {
       developer: '#6366f1',
       master: '#9333ea',
@@ -146,7 +146,7 @@ const DeveloperAdminPanel: React.FC = () => {
     return { backgroundColor: color, color: textColor };
   };
 
-  const getPasswordStatus = (u) => {
+  const getPasswordStatus = (u: any) => {
     // Check both password and password_hash fields
     const passwordField = u.password || u.password_hash;
     
@@ -163,7 +163,7 @@ const DeveloperAdminPanel: React.FC = () => {
     }
   };
 
-  const filteredUsers = users.filter(u =>
+  const filteredUsers = users.filter((u: any) =>
     u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -481,7 +481,7 @@ const DeveloperAdminPanel: React.FC = () => {
                   <div key={resource} className="border rounded-lg p-4">
                     <h3 className="font-semibold text-lg mb-2 capitalize">{resource}</h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {perms.map(perm => (
+                      {perms.map((perm: any) => (
                         <div key={perm.id} className="text-sm">
                           <code className="bg-slate-100 px-2 py-1 rounded">
                             {perm.action}.{perm.scope}

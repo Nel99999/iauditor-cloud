@@ -13,7 +13,7 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
-const AnalyticsDashboard: React.FC = () => {
+const AnalyticsDashboard = () => {
   const [period, setPeriod] = useState('week');
   const [overview, setOverview] = useState<any | null>(null);
   const [taskTrends, setTaskTrends] = useState<any[]>([]);
@@ -67,7 +67,7 @@ const AnalyticsDashboard: React.FC = () => {
 
       // Format status data for pie chart
       if (statusRes.data.breakdown) {
-        setTasksByStatus(Object.entries(statusRes.data.breakdown).map(([status, count]) => ({
+        setTasksByStatus(Object.entries(...).map(([status, count]: [string, any]) => ({
           name: status.replace('_', ' ').toUpperCase(),
           value: count
         })));
@@ -75,7 +75,7 @@ const AnalyticsDashboard: React.FC = () => {
 
       // Format priority data for bar chart
       if (priorityRes.data.breakdown) {
-        setTasksByPriority(Object.entries(priorityRes.data.breakdown).map(([priority, count]) => ({
+        setTasksByPriority(Object.entries(...).map(([priority, count]: [string, any]) => ({
           name: priority.toUpperCase(),
           count: count
         })));
@@ -318,7 +318,7 @@ const AnalyticsDashboard: React.FC = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {tasksByStatus.map((entry, index) => (
+                  {tasksByStatus.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -397,7 +397,7 @@ const AnalyticsDashboard: React.FC = () => {
               </thead>
               <tbody>
                 {userActivity.length > 0 ? (
-                  userActivity.map((user, index) => (
+                  userActivity.map((user: any, index: number) => (
                     <tr key={index} className="border-b border-gray-200 dark:border-gray-700">
                       <td className="py-3 px-4 text-gray-900 dark:text-white">{user.user_name || 'N/A'}</td>
                       <td className="py-3 px-4 text-gray-900 dark:text-white">{user.tasks_completed || 0}</td>

@@ -12,7 +12,7 @@ import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const ChecklistTemplateBuilder: React.FC = () => {
+const ChecklistTemplateBuilder = () => {
   const navigate = useNavigate();
   const { templateId } = useParams();
   const isEdit = !!templateId;
@@ -41,17 +41,17 @@ const ChecklistTemplateBuilder: React.FC = () => {
     }
   };
 
-  const handleAddItem: React.FC = () => {
+  const handleAddItem = () => {
     setTemplate({
       ...template,
       items: [...template.items, { text: '', required: true, order: template.items.length }],
     });
   };
 
-  const handleRemoveItem = (index) => {
+  const handleRemoveItem = (index: any) => {
     setTemplate({
       ...template,
-      items: template.items.filter((_, i) => i !== index),
+      items: template.items.filter((_: any, i: number) => i !== index),
     });
   };
 
@@ -183,7 +183,7 @@ const ChecklistTemplateBuilder: React.FC = () => {
           {template.items.length === 0 ? (
             <p className="text-center py-8 text-slate-500">No items yet. Click "Add Item" to get started.</p>
           ) : (
-            template.items.map((item, index) => (
+            template.items.map((item: any, index: number) => (
               <div key={index} className="flex gap-2">
                 <Input
                   value={item.text}

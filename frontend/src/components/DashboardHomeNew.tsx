@@ -68,7 +68,7 @@ interface Activity {
   icon: LucideIcon;
 }
 
-const DashboardHomeNew: React.FC = () => {
+const DashboardHomeNew = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -182,7 +182,7 @@ const DashboardHomeNew: React.FC = () => {
 
       {/* Quick Stats Grid */}
       <div className="stats-grid">
-        {quickStats.map((stat, index) => {
+        {quickStats.map((stat: any, index: number) => {
           const Icon = stat.icon;
           return (
             <motion.div
@@ -220,7 +220,7 @@ const DashboardHomeNew: React.FC = () => {
               <Button variant="ghost" size="sm">View All</Button>
             </div>
             <div className="activity-list">
-              {recentActivity.map((activity, index) => {
+              {recentActivity.map((activity: any, index: number) => {
                 const Icon = activity.icon;
                 return (
                   <motion.div

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-const MFASetupPage: React.FC = () => {
+const MFASetupPage = () => {
   const { token } = useAuth();
   const [mfaStatus, setMfaStatus] = useState<any | null>(null);
   const [setupData, setSetupData] = useState<any | null>(null);
@@ -239,7 +239,7 @@ const MFASetupPage: React.FC = () => {
                 Save these backup codes in a safe place. You can use them to access your account if you lose your authenticator device.
               </p>
               <div className="grid grid-cols-2 gap-2 mb-4 font-mono text-sm">
-                {setupData.backup_codes.map((code, index) => (
+                {setupData.backup_codes.map((code: any, index: number) => (
                   <div key={index} className="p-2 bg-white dark:bg-gray-800 rounded border">
                     {code}
                   </div>

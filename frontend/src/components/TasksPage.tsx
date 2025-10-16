@@ -13,7 +13,7 @@ import { Plus, ListTodo, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const TasksPage: React.FC = () => {
+const TasksPage = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
@@ -83,9 +83,9 @@ const TasksPage: React.FC = () => {
 
   const groupByStatus = (tasks: any) => {
     return {
-      todo: tasks.filter(t => t.status === 'todo'),
-      in_progress: tasks.filter(t => t.status === 'in_progress'),
-      completed: tasks.filter(t => t.status === 'completed'),
+      todo: tasks.filter((t: any) => t.status === 'todo'),
+      in_progress: tasks.filter((t: any) => t.status === 'in_progress'),
+      completed: tasks.filter((t: any) => t.status === 'completed'),
     };
   };
 
