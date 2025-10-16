@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Plus, Edit, Trash2, Play, GitBranch, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Play, GitBranch } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -108,7 +108,7 @@ const WorkflowDesigner = () => {
     }
   };
 
-  const handleDeleteTemplate = async (templateId) => {
+  const handleDeleteTemplate = async (templateId: string) => {
     if (!window.confirm('Are you sure you want to deactivate this workflow template?')) return;
     
     try {
@@ -164,7 +164,7 @@ const WorkflowDesigner = () => {
     setFormData({ ...formData, steps: newSteps });
   };
 
-  const updateStep = (index, field, value) => {
+  const updateStep = (index: number, field: string, value: any) => {
     const newSteps = [...formData.steps];
     newSteps[index][field] = value;
     setFormData({ ...formData, steps: newSteps });

@@ -52,7 +52,7 @@ const WebhooksPage = () => {
     }
   };
 
-  const handleCreateWebhook = async (e) => {
+  const handleCreateWebhook = async (e: any) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
@@ -69,7 +69,7 @@ const WebhooksPage = () => {
     }
   };
 
-  const handleUpdateWebhook = async (e) => {
+  const handleUpdateWebhook = async (e: any) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
@@ -91,7 +91,7 @@ const WebhooksPage = () => {
     }
   };
 
-  const handleDeleteWebhook = async (webhookId) => {
+  const handleDeleteWebhook = async (webhookId: string) => {
     if (!window.confirm('Are you sure you want to delete this webhook?')) return;
     
     try {
@@ -106,9 +106,9 @@ const WebhooksPage = () => {
     }
   };
 
-  const handleTestWebhook = async (webhookId) => {
+  const handleTestWebhook = async (webhookId: string) => {
     try {
-      setTestingWebhook(webhookId);
+      setTestingWebhook(webhookId: string);
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
       
@@ -127,7 +127,7 @@ const WebhooksPage = () => {
     }
   };
 
-  const handleToggleActive = async (webhook) => {
+  const handleToggleActive = async (webhook: any) => {
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
@@ -157,7 +157,7 @@ const WebhooksPage = () => {
     setShowEditModal(true);
   };
 
-  const openLogsModal = async (webhook) => {
+  const openLogsModal = async (webhook: any) => {
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
@@ -237,7 +237,7 @@ const WebhooksPage = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {webhooks.map((webhook) => (
+            {webhooks.map((webhook: any) => (
               <div
                 key={webhook.id}
                 className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
@@ -307,7 +307,7 @@ const WebhooksPage = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {webhook.events && webhook.events.map((event) => (
+                  {webhook.events && webhook.events.map((event: string) => (
                     <span
                       key={event}
                       className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs"
@@ -395,7 +395,7 @@ const WebhooksPage = () => {
                     Events to Subscribe *
                   </label>
                   <div className="grid grid-cols-2 gap-2">
-                    {availableEvents.map((event) => (
+                    {availableEvents.map((event: string) => (
                       <label
                         key={event}
                         className="flex items-center gap-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900"
@@ -512,7 +512,7 @@ const WebhooksPage = () => {
                     Events to Subscribe *
                   </label>
                   <div className="grid grid-cols-2 gap-2">
-                    {availableEvents.map((event) => (
+                    {availableEvents.map((event: string) => (
                       <label
                         key={event}
                         className="flex items-center gap-2 p-3 border border-gray-300 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900"

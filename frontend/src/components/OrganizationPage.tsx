@@ -102,7 +102,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
       
       {isExpanded && hasChildren && (
         <div className="ml-4 border-l-2 border-slate-200 dark:border-slate-700">
-          {node.children.map((child) => (
+          {node.children.map((child: any) => (
             <OrganizationNode
               key={child.id}
               node={child}
@@ -208,7 +208,7 @@ const OrganizationPage = () => {
     setShowEditDialog(true);
   };
 
-  const handleDelete = async (node) => {
+  const handleDelete = async (node: any) => {
     if (!window.confirm(`Are you sure you want to delete "${node.name}"?`)) {
       return;
     }
@@ -221,7 +221,7 @@ const OrganizationPage = () => {
     }
   };
 
-  const handleViewUsers = async (node) => {
+  const handleViewUsers = async (node: any) => {
     try {
       const response = await axios.get(`${API}/organizations/units/${node.id}/users`);
       setUnitUsers(response.data);
@@ -232,7 +232,7 @@ const OrganizationPage = () => {
     }
   };
 
-  const handleSubmitCreate = async (e) => {
+  const handleSubmitCreate = async (e: any) => {
     e.preventDefault();
     try {
       await axios.post(`${API}/organizations/units`, formData);
@@ -243,7 +243,7 @@ const OrganizationPage = () => {
     }
   };
 
-  const handleSubmitEdit = async (e) => {
+  const handleSubmitEdit = async (e: any) => {
     e.preventDefault();
     try {
       await axios.put(`${API}/organizations/units/${selectedNode.id}`, {
@@ -262,7 +262,7 @@ const OrganizationPage = () => {
     setShowInviteDialog(true);
   };
 
-  const handleSubmitInvite = async (e) => {
+  const handleSubmitInvite = async (e: any) => {
     e.preventDefault();
     try {
       await axios.post(`${API}/organizations/invitations`, inviteData);

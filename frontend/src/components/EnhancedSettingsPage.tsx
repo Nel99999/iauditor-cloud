@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Settings, User, Shield, Bell, Building2, Save, Upload, Eye, EyeOff, Key, CheckCircle, XCircle, Moon, Sun, Globe, Lock, Clock, AlertTriangle } from 'lucide-react';
+import { Settings, User, Shield, Bell, Building2, Save, Upload, Key, CheckCircle, XCircle, Moon, Sun, Globe, Lock, AlertTriangle } from 'lucide-react';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 
@@ -134,12 +134,12 @@ const EnhancedSettingsPage = () => {
     }
   };
 
-  const showMessage = (type, text) => {
+  const showMessage = (type: string, text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage({ type: '', text: '' }), 5000);
   };
 
-  const handleUpdateProfile = async (e) => {
+  const handleUpdateProfile = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -153,7 +153,7 @@ const EnhancedSettingsPage = () => {
     }
   };
 
-  const handlePasswordChange = async (e) => {
+  const handlePasswordChange = async (e: any) => {
     e.preventDefault();
     if (passwordData.new_password !== passwordData.confirm_password) {
       showMessage('error', 'Passwords do not match');
@@ -174,7 +174,7 @@ const EnhancedSettingsPage = () => {
     }
   };
 
-  const handlePhotoUpload = async (e) => {
+  const handlePhotoUpload = async (e: any) => {
     const file = e.target.files![0];
     if (!file) return;
     

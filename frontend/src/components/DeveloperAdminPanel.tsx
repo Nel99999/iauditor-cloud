@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Eye, EyeOff, Search, Copy, CheckCircle, Lock, Key, Database, RefreshCw, AlertCircle } from 'lucide-react';
+import { Shield, Eye, EyeOff, Search, Copy, CheckCircle, Lock, Key, Database, RefreshCw } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -435,7 +435,7 @@ const DeveloperAdminPanel = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {roles.sort((a, b) => a.level - b.level).map((role) => (
+                  {roles.sort((a: any, b: any) => a.level - b.level).map((role) => (
                     <TableRow key={role.id}>
                       <TableCell>
                         <Badge style={{ backgroundColor: role.color, color: role.code === 'viewer' ? 'black' : 'white' }}>

@@ -41,7 +41,7 @@ const ChecklistsPage = () => {
     }
   };
 
-  const handleStartChecklist = async (templateId) => {
+  const handleStartChecklist = async (templateId: string) => {
     try {
       await axios.post(`${API}/checklists/executions?template_id=${templateId}`);
       loadData();
@@ -50,7 +50,7 @@ const ChecklistsPage = () => {
     }
   };
 
-  const handleDeleteTemplate = async (templateId) => {
+  const handleDeleteTemplate = async (templateId: string) => {
     if (!window.confirm('Delete this template?')) return;
     try {
       await axios.delete(`${API}/checklists/templates/${templateId}`);
@@ -168,7 +168,7 @@ const ChecklistsPage = () => {
             ))}
 
             {/* Active checklists */}
-            {todaysChecklists.executions?.map((execution) => (
+            {todaysChecklists.executions?.map((execution: any) => (
               <Card
                 key={execution.id}
                 className="cursor-pointer hover:shadow-lg transition-shadow"

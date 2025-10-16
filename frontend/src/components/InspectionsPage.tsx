@@ -54,7 +54,7 @@ const InspectionsPage = () => {
     }
   };
 
-  const handleDeleteTemplate = async (templateId) => {
+  const handleDeleteTemplate = async (templateId: string) => {
     if (!window.confirm('Are you sure you want to delete this template?')) {
       return;
     }
@@ -278,7 +278,7 @@ const InspectionsPage = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  {executions.map((execution) => (
+                  {executions.map((execution: any) => (
                     <div
                       key={execution.id}
                       className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"

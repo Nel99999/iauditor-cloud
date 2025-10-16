@@ -85,7 +85,7 @@ const ReportsPage = () => {
     }
   };
 
-  const handleCustomReportCreate = async (e) => {
+  const handleCustomReportCreate = async (e: any) => {
     e.preventDefault();
     try {
       // This would typically send to backend for report generation
@@ -564,12 +564,12 @@ const ReportsPage = () => {
                 <div>
                   <Label>Fields to Include</Label>
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    {availableCollections[customReport.collections[0]]?.fields.map((field) => (
+                    {availableCollections[customReport.collections[0]]?.fields.map((field: any) => (
                       <label key={field} className="flex items-center space-x-2">
                         <input
                           type="checkbox"
                           checked={customReport.fields.includes(field)}
-                          onChange={(e) => {
+                          onChange={(e: any) => {
                             if (e.target.checked) {
                               setCustomReport({
                                 ...customReport,

@@ -246,7 +246,7 @@ const NotificationCenter = () => {
                         {notification.title}
                       </p>
                       <button
-                        onClick={(e) => {
+                        onClick={(e: any) => {
                           e.stopPropagation();
                           deleteNotification(notification.id);
                         }}

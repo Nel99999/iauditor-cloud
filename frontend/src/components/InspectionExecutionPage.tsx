@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CheckCircle, Camera, Save, Send } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Camera, Save } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -31,7 +31,7 @@ const InspectionExecutionPage = () => {
   useEffect(() => {
     if (executionId) {
       loadExecution();
-    } else if (templateId) {
+    } else if (templateId: string) {
       startNewInspection();
     }
   }, [templateId, executionId]);
@@ -99,7 +99,7 @@ const InspectionExecutionPage = () => {
     }
   };
 
-  const handleAnswerChange = (questionId, value) => {
+  const handleAnswerChange = (questionId: string, value: any) => {
     setAnswers({
       ...answers,
       [questionId]: {
@@ -109,7 +109,7 @@ const InspectionExecutionPage = () => {
     });
   };
 
-  const handlePhotoUpload = async (questionId, file) => {
+  const handlePhotoUpload = async (questionId: string, file: File) => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -154,7 +154,7 @@ const InspectionExecutionPage = () => {
   const handleComplete = async () => {
     // Validate required questions
     const unansweredRequired = template.questions.filter(
-      (q) => q.required && !answers[q.id]?.answer
+      (q: any) => q.required && !answers[q.id]?.answer
     );
 
     if (unansweredRequired.length > 0) {
@@ -188,7 +188,7 @@ const InspectionExecutionPage = () => {
     return totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
   };
 
-  const renderQuestion = (question, index) => {
+  const renderQuestion = (question: any, index: number) => {
     const answer = answers[question.id];
 
     return (
@@ -262,7 +262,7 @@ const InspectionExecutionPage = () => {
               <Input
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
+                onChange={(e: any) => {
                   if (e.target.files![0]) {
                     handlePhotoUpload(question.id, e.target.files![0]);
                   }
@@ -270,7 +270,7 @@ const InspectionExecutionPage = () => {
               />
               {answer?.photo_ids?.length > 0 && (
                 <div className="flex gap-2">
-                  {answer.photo_ids.map((photoId) => (
+                  {answer.photo_ids.map((photoId: string) => (
                     <Badge key={photoId} variant="secondary">
                       <Camera className="h-3 w-3 mr-1" />
                       Photo uploaded

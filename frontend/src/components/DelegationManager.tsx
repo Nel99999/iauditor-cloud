@@ -84,7 +84,7 @@ const DelegationManager = () => {
     }
   };
 
-  const handleRevokeDelegation = async (delegationId) => {
+  const handleRevokeDelegation = async (delegationId: string) => {
     if (!window.confirm('Are you sure you want to revoke this delegation?')) return;
     
     try {

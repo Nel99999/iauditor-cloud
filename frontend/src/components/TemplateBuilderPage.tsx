@@ -83,7 +83,7 @@ const TemplateBuilderPage = () => {
     });
   };
 
-  const handleQuestionChange = (index, field, value) => {
+  const handleQuestionChange = (index: number, field: string, value: any) => {
     const newQuestions = [...template.questions];
     newQuestions[index] = { ...newQuestions[index], [field]: value };
     setTemplate({ ...template, questions: newQuestions });

@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { CheckCircle2, XCircle, AlertCircle, Clock, FileText, User, Calendar, MessageSquare } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertCircle, Clock, FileText, User, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -78,7 +78,7 @@ const MyApprovalsPage = () => {
     }
   };
 
-  const openActionDialog = (workflow, actionType) => {
+  const openActionDialog = (workflow: any, actionType: string) => {
     setSelectedWorkflow(workflow);
     setAction(actionType);
     setShowActionDialog(true);

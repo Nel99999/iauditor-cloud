@@ -48,7 +48,7 @@ const ChecklistExecutionPage = () => {
     }
   };
 
-  const handleItemToggle = (itemId, checked) => {
+  const handleItemToggle = (itemId: string, checked: boolean) => {
     const newItems = items.map((item: any) => 
       item.item_id === itemId 
         ? { ...item, completed: checked, completed_at: checked ? new Date().toISOString() : null }

@@ -51,7 +51,7 @@ const GroupsManagementPage = () => {
     }
   };
 
-  const handleCreateGroup = async (e) => {
+  const handleCreateGroup = async (e: any) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
@@ -68,7 +68,7 @@ const GroupsManagementPage = () => {
     }
   };
 
-  const handleUpdateGroup = async (e) => {
+  const handleUpdateGroup = async (e: any) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
@@ -90,7 +90,7 @@ const GroupsManagementPage = () => {
     }
   };
 
-  const handleDeleteGroup = async (groupId) => {
+  const handleDeleteGroup = async (groupId: string) => {
     if (!window.confirm('Are you sure you want to delete this group?')) return;
     
     try {
@@ -105,7 +105,7 @@ const GroupsManagementPage = () => {
     }
   };
 
-  const handleAddMember = async (userId) => {
+  const handleAddMember = async (userId: string) => {
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
@@ -128,7 +128,7 @@ const GroupsManagementPage = () => {
     }
   };
 
-  const handleRemoveMember = async (userId) => {
+  const handleRemoveMember = async (userId: string) => {
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
@@ -160,7 +160,7 @@ const GroupsManagementPage = () => {
     setShowEditModal(true);
   };
 
-  const openMembersModal = async (group) => {
+  const openMembersModal = async (group: any) => {
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
@@ -241,7 +241,7 @@ const GroupsManagementPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGroups.map((group) => (
+            {filteredGroups.map((group: any) => (
               <div
                 key={group.id}
                 className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow"
@@ -496,7 +496,7 @@ const GroupsManagementPage = () => {
                   </h3>
                   <div className="space-y-2">
                     {selectedGroup.members && selectedGroup.members.length > 0 ? (
-                      selectedGroup.members.map((member) => (
+                      selectedGroup.members.map((member: any) => (
                         <div
                           key={member.user_id}
                           className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"

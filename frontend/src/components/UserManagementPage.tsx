@@ -25,7 +25,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UserPlus, Search, Mail, Shield, Eye, Trash2, Edit, Lock } from 'lucide-react';
-import { getInvitableRoles, canInviteRole } from '../utils/permissions';
+
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -60,7 +60,7 @@ const UserManagementPage = () => {
     }
   };
 
-  const handleInvite = async (e) => {
+  const handleInvite = async (e: any) => {
     e.preventDefault();
     try {
       await axios.post(`${API}/users/invite`, {
@@ -92,7 +92,7 @@ const UserManagementPage = () => {
         u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.role.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       let aVal, bVal;
       
       switch (sortBy) {
@@ -153,7 +153,7 @@ const UserManagementPage = () => {
   const getInitials = (name: any) => {
     return name
       .split(' ')
-      .map((n) => n[0])
+      .map((n: any) => n[0])
       .join('')
       .toUpperCase();
   };

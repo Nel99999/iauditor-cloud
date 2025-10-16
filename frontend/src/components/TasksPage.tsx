@@ -40,7 +40,7 @@ const TasksPage = () => {
     }
   };
 
-  const handleCreate = async (e) => {
+  const handleCreate = async (e: any) => {
     e.preventDefault();
     try {
       await axios.post(`${API}/tasks`, formData);
@@ -61,7 +61,7 @@ const TasksPage = () => {
     }
   };
 
-  const getStatusBadge = (status: any) => {
+  const _getStatusBadge = (status: any) => {
     const badges = {
       todo: <Badge variant="secondary">To Do</Badge>,
       in_progress: <Badge className="bg-blue-500">In Progress</Badge>,

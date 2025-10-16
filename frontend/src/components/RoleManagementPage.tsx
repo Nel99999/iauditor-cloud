@@ -42,7 +42,7 @@ const RoleManagementPage = () => {
       setRoles(response.data);
       
       // Load permissions for each role
-      const permMap = {};
+      const permMap: { [key: string]: any } = {};
       for (const role of response.data) {
         try {
           const perms = await axios.get(`${API}/roles/${role.id}/permissions`);
@@ -68,7 +68,7 @@ const RoleManagementPage = () => {
     }
   };
 
-  const handleCreateRole = async (e) => {
+  const handleCreateRole = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await axios.post(`${API}/roles`, {
@@ -97,7 +97,7 @@ const RoleManagementPage = () => {
     }
   };
 
-  const handleDeleteRole = async (roleId, isSystemRole) => {
+  const handleDeleteRole = async (roleId: string, isSystemRole: boolean) => {
     if (isSystemRole) {
       alert('Cannot delete system roles');
       return;
@@ -113,10 +113,10 @@ const RoleManagementPage = () => {
     }
   };
 
-  const togglePermission = (roleId, permissionId) => {
+  const togglePermission = (roleId: string, permissionId: string) => {
     const key = `${roleId}-${permissionId}`;
     const currentPerms = rolePermissions[roleId] || [];
-    const hasPermission = currentPerms.includes(permissionId);
+    const hasPermission = currentPerms.includes(permissionId: string);
     
     setMatrixChanges(prev => ({
       ...prev,
@@ -124,7 +124,7 @@ const RoleManagementPage = () => {
     }));
   };
 
-  const saveRolePermissions = async (roleId) => {
+  const saveRolePermissions = async (roleId: string) => {
     try {
       const currentPerms = rolePermissions[roleId] || [];
       const newPerms = [...currentPerms];
@@ -163,19 +163,19 @@ const RoleManagementPage = () => {
     }
   };
 
-  const isPermissionChecked = (roleId, permissionId) => {
+  const isPermissionChecked = (roleId: string, permissionId: string) => {
     const key = `${roleId}-${permissionId}`;
     if (key in matrixChanges) {
       return matrixChanges[key];
     }
-    return (rolePermissions[roleId] || []).includes(permissionId);
+    return (rolePermissions[roleId] || []).includes(permissionId: string);
   };
 
   const hasChanges = (roleId: any) => {
     return Object.keys(matrixChanges).some((key: any) => key.startsWith(`${roleId}-`));
   };
 
-  const groupPermissionsByResource = () => {
+  const _groupPermissionsByResource = () => {
     const grouped = {};
     permissions.forEach((perm: any) => {
       if (!grouped[perm.resource_type]) {
@@ -287,7 +287,7 @@ const RoleManagementPage = () => {
                   <thead>
                     <tr className="bg-slate-100 border-b">
                       <th className="text-left p-3 font-semibold sticky left-0 bg-slate-100">Permission</th>
-                      {roles.sort((a, b) => a.level - b.level).map((role: any) => (
+                      {roles.sort((a: any, b: any) => a.level - b.level).map((role: any) => (
                         <th key={role.id} className="p-2 text-center min-w-[100px]">
                           <div className="flex flex-col items-center gap-1">
                             <Badge 
@@ -313,7 +313,7 @@ const RoleManagementPage = () => {
                             <p className="text-xs text-slate-500">{perm.description}</p>
                           </div>
                         </td>
-                        {roles.sort((a, b) => a.level - b.level).map((role: any) => (
+                        {roles.sort((a: any, b: any) => a.level - b.level).map((role: any) => (
                           <td key={role.id} className="p-2 text-center">
                             <Checkbox
                               checked={isPermissionChecked(role.id, perm.id)}
@@ -369,7 +369,7 @@ const RoleManagementPage = () => {
                 <Input
                   id="name"
                   value={newRole.name}
-                  onChange={(e) => setNewRole({ ...newRole, name: e.target.value })}
+                  onChange={(e: any) => setNewRole({ ...newRole, name: e.target.value })}
                   required
                 />
               </div>
@@ -378,7 +378,7 @@ const RoleManagementPage = () => {
                 <Input
                   id="code"
                   value={newRole.code}
-                  onChange={(e) => setNewRole({ ...newRole, code: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
+                  onChange={(e: any) => setNewRole({ ...newRole, code: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
                   placeholder="e.g., custom_role"
                   required
                 />
@@ -392,7 +392,7 @@ const RoleManagementPage = () => {
                   id="color"
                   type="color"
                   value={newRole.color}
-                  onChange={(e) => setNewRole({ ...newRole, color: e.target.value })}
+                  onChange={(e: any) => setNewRole({ ...newRole, color: e.target.value })}
                 />
               </div>
               <div>
@@ -402,7 +402,7 @@ const RoleManagementPage = () => {
                   type="number"
                   min="11"
                   value={newRole.level}
-                  onChange={(e) => setNewRole({ ...newRole, level: parseInt(e.target.value) })}
+                  onChange={(e: any) => setNewRole({ ...newRole, level: parseInt(e.target.value) })}
                   required
                 />
               </div>
@@ -413,7 +413,7 @@ const RoleManagementPage = () => {
               <Input
                 id="description"
                 value={newRole.description}
-                onChange={(e) => setNewRole({ ...newRole, description: e.target.value })}
+                onChange={(e: any) => setNewRole({ ...newRole, description: e.target.value })}
                 required
               />
             </div>

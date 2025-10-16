@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Mail, Send, Trash2, RotateCw, Clock, AlertCircle, Lock } from 'lucide-react';
-import { getInvitableRoles, canInviteRole, canDeleteInvitation } from '../utils/permissions';
+
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -46,13 +46,13 @@ const InvitationManagementPage = () => {
   const loadRoles = async () => {
     try {
       const response = await axios.get(`${API}/roles`);
-      setRoles(response.data.filter((r: any) => r.is_system_role).sort((a, b) => a.level - b.level));
+      setRoles(response.data.filter((r: any) => r.is_system_role).sort((a: any, b: any) => a.level - b.level));
     } catch (err: unknown) {
       console.error('Failed to load roles:', err);
     }
   };
 
-  const handleSendInvitation = async (e) => {
+  const handleSendInvitation = async (e: any) => {
     e.preventDefault();
     try {
       await axios.post(`${API}/invitations`, inviteData);
@@ -65,7 +65,7 @@ const InvitationManagementPage = () => {
     }
   };
 
-  const handleResend = async (invitation) => {
+  const handleResend = async (invitation: any) => {
     if (window.confirm(`Resend invitation to ${invitation.email}? This will reset the 7-day expiration.`)) {
       try {
         await axios.post(`${API}/invitations/${invitation.id}/resend`);
@@ -133,7 +133,7 @@ const InvitationManagementPage = () => {
   };
 
   const pendingInvitations = invitations.filter((i: any) => i.status === 'pending');
-  const otherInvitations = invitations.filter((i: any) => i.status !== 'pending');
+  const _otherInvitations = invitations.filter((i: any) => i.status !== 'pending');
 
   return (
     <div className="space-y-6">
@@ -182,7 +182,7 @@ const InvitationManagementPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {pendingInvitations.map((invitation) => {
+                    {pendingInvitations.map((invitation: any) => {
                       const roleInfo = getRoleInfo(invitation.role_id);
                       const expInfo = getExpirationInfo(invitation.expires_at);
                       const canDelete = checkDeletePermission(invitation);
@@ -272,7 +272,7 @@ const InvitationManagementPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {invitations.map((invitation) => {
+                    {invitations.map((invitation: any) => {
                       const roleInfo = getRoleInfo(invitation.role_id);
                       return (
                         <TableRow key={invitation.id}>
