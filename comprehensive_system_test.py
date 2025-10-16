@@ -76,17 +76,11 @@ def log_warning(message):
 
 def get_auth_token():
     """Get authentication token for testing"""
-    # Try to login with existing user
-    # We'll need to use a test user or get credentials
     print("\n🔐 Attempting to authenticate...")
     
-    # For now, we'll try to register a test user or login
-    # Since we're testing with real data, we need valid credentials
-    # Let's try to get a user from the database first
-    
-    # Option 1: Try to login with a known test user
+    # Use the test user we created
     login_data = {
-        "email": "test@llewellyn.com",
+        "email": "testuser@llewellyn.com",
         "password": "TestPassword123!"
     }
     
@@ -94,28 +88,13 @@ def get_auth_token():
         response = requests.post(f"{API_BASE}/auth/login", json=login_data)
         if response.status_code == 200:
             token = response.json().get("access_token")
-            print(f"✅ Authenticated successfully")
+            print(f"✅ Authenticated successfully as {login_data['email']}")
             return token
+        else:
+            print(f"❌ Login failed: HTTP {response.status_code}")
+            print(f"   Response: {response.text}")
     except Exception as e:
-        print(f"⚠️  Login failed: {e}")
-    
-    # Option 2: Register a new test user in the organization
-    print("⚠️  Attempting to register test user...")
-    register_data = {
-        "email": f"test.{datetime.now().strftime('%Y%m%d%H%M%S')}@llewellyn.com",
-        "password": "TestPassword123!",
-        "name": "Test User",
-        "organization_id": ORG_ID
-    }
-    
-    try:
-        response = requests.post(f"{API_BASE}/auth/register", json=register_data)
-        if response.status_code in [200, 201]:
-            token = response.json().get("access_token")
-            print(f"✅ Registered and authenticated successfully")
-            return token
-    except Exception as e:
-        print(f"❌ Registration failed: {e}")
+        print(f"❌ Login exception: {e}")
     
     return None
 
