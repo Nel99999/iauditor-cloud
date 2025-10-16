@@ -13,7 +13,13 @@ const WebhooksPage = () => {
   const [selectedWebhook, setSelectedWebhook] = useState<any | null>(null);
   const [webhookLogs, setWebhookLogs] = useState<any[]>([]);
   const [testingWebhook, setTestingWebhook] = useState<any | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    url: string;
+    events: string[];
+    secret: string;
+    active: boolean;
+  }>({
     name: '',
     url: '',
     events: [],
