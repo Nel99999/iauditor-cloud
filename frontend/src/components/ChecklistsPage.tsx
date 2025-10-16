@@ -282,7 +282,8 @@ const ChecklistsPage = () => {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
