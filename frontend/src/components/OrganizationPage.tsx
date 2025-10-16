@@ -284,21 +284,17 @@ const OrganizationPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white" data-testid="org-title">
-            Organization Structure
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Manage your organizational hierarchy and teams
-          </p>
-        </div>
+    <ModernPageWrapper 
+      title="Organization" 
+      subtitle="Manage organizational structure"
+      actions={
         <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
           <Plus className="h-4 w-4 mr-2" />
           Create Profile
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
         {error && (
           <Alert variant="destructive" className="mb-6">
