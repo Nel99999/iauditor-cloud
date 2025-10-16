@@ -311,7 +311,8 @@ const InspectionsPage = () => {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
