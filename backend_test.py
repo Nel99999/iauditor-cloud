@@ -230,7 +230,7 @@ try:
     }
     response = requests.post(f"{BACKEND_URL}/organizations/units", json=unit_data, headers=headers)
     
-    if response.status_code == 200:
+    if response.status_code in [200, 201]:
         unit = response.json()
         if unit.get("name") == unit_data["name"]:
             unit_id = unit.get("id")
