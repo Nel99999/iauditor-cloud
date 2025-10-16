@@ -176,7 +176,7 @@ print_test("2.3 - PUT /users/profile (Update Profile)")
 try:
     headers = {"Authorization": f"Bearer {user_token}"}
     update_data = {
-        "full_name": "Updated Test User",
+        "name": "Updated Test User",
         "phone": "+1234567890"
     }
     response = requests.put(f"{BACKEND_URL}/users/profile", json=update_data, headers=headers)
