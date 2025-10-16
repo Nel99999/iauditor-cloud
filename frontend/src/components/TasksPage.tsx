@@ -62,14 +62,14 @@ const TasksPage = () => {
   };
 
   // const _getStatusBadge = (status: any) => {
-    const badges = {
-      todo: <Badge variant="secondary">To Do</Badge>,
-      in_progress: <Badge className="bg-blue-500">In Progress</Badge>,
-      completed: <Badge className="bg-green-500">Completed</Badge>,
-      blocked: <Badge variant="destructive">Blocked</Badge>,
-    };
-    return badges[status] || <Badge>{status}</Badge>;
-  };
+  //   const badges = {
+  //     todo: <Badge variant="secondary">To Do</Badge>,
+  //     in_progress: <Badge className="bg-blue-500">In Progress</Badge>,
+  //     completed: <Badge className="bg-green-500">Completed</Badge>,
+  //     blocked: <Badge variant="destructive">Blocked</Badge>,
+  //   };
+  //   return badges[status] || <Badge>{status}</Badge>;
+  // };
 
   const getPriorityBadge = (priority: any) => {
     const badges = {
