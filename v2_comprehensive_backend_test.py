@@ -121,41 +121,70 @@ def test_health_check():
         record_test("Backend Health Check", False, f"Backend not accessible (Status: {status})")
         return False
 
-def authenticate_production_user():
-    """Authenticate with production user llewellyn@bluedawncapital.co.za"""
-    print_test("Production User Authentication")
+def authenticate_test_user():
+    """Create and authenticate with a test user for comprehensive testing"""
+    print_test("Test User Registration & Authentication")
     
-    login_data = {
-        "email": "llewellyn@bluedawncapital.co.za",
-        "password": "Master@123"
+    # First, try to register a new test user
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    test_email = f"v2test_{timestamp}@example.com"
+    
+    register_data = {
+        "email": test_email,
+        "password": "Master@123",
+        "name": "V2 Test User",
+        "organization_name": "V2 Test Organization"
     }
     
-    response = make_request("POST", "/auth/login", data=login_data)
+    response = make_request("POST", "/auth/register", data=register_data)
     
     if response and response.status_code == 200:
         try:
             data = response.json()
             token = data.get("access_token")
             if token:
-                record_test("Production User Login", True, f"Successfully authenticated user: {login_data['email']}")
+                record_test("Test User Registration & Login", True, f"Successfully created and authenticated user: {test_email}")
                 return token
             else:
-                record_test("Production User Login", False, "No access token in response")
+                record_test("Test User Registration & Login", False, "No access token in registration response")
                 return None
         except:
-            record_test("Production User Login", False, "Invalid JSON response")
+            record_test("Test User Registration & Login", False, "Invalid JSON response from registration")
             return None
     else:
-        status = response.status_code if response else "No response"
-        error_msg = ""
-        if response:
+        # If registration fails, try to login with existing test user
+        print_test("Fallback: Login with existing test user")
+        login_data = {
+            "email": "v2test@example.com",
+            "password": "Master@123"
+        }
+        
+        response = make_request("POST", "/auth/login", data=login_data)
+        
+        if response and response.status_code == 200:
             try:
-                error_data = response.json()
-                error_msg = error_data.get("detail", "Unknown error")
+                data = response.json()
+                token = data.get("access_token")
+                if token:
+                    record_test("Fallback Test User Login", True, f"Successfully authenticated existing user: {login_data['email']}")
+                    return token
+                else:
+                    record_test("Fallback Test User Login", False, "No access token in login response")
+                    return None
             except:
-                error_msg = response.text
-        record_test("Production User Login", False, f"Login failed (Status: {status}) - {error_msg}")
-        return None
+                record_test("Fallback Test User Login", False, "Invalid JSON response from login")
+                return None
+        else:
+            status = response.status_code if response else "No response"
+            error_msg = ""
+            if response:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", "Unknown error")
+                except:
+                    error_msg = response.text
+            record_test("Authentication Failed", False, f"Both registration and login failed (Status: {status}) - {error_msg}")
+            return None
 
 def test_authentication_endpoints(token):
     """Test authentication-related endpoints"""
