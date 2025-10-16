@@ -29,7 +29,24 @@ const TemplateBuilderPage = () => {
   const { templateId } = useParams();
   const isEdit = !!templateId;
 
-  const [template, setTemplate] = useState({
+  const [template, setTemplate] = useState<{
+    name: string;
+    description: string;
+    category: string;
+    scoring_enabled: boolean;
+    pass_percentage: number;
+    require_gps: boolean;
+    require_photos: boolean;
+    questions: Array<{
+      question_text: string;
+      question_type: string;
+      required: boolean;
+      options: string[];
+      scoring_enabled: boolean;
+      pass_score: number | null;
+      order: number;
+    }>;
+  }>({
     name: '',
     description: '',
     category: 'safety',
