@@ -394,21 +394,21 @@ def test_operational_features(token):
         status = response.status_code if response else "No response"
         record_test("Reports Overview", False, f"Failed to get reports overview (Status: {status})")
     
-    # Test /api/approvals
-    print_test("Approval Workflows")
-    response = make_request("GET", "/approvals", headers=headers)
+    # Test /api/users/pending-approvals (User Approval System)
+    print_test("User Approval System")
+    response = make_request("GET", "/users/pending-approvals", headers=headers)
     if response and response.status_code == 200:
         try:
             approvals_data = response.json()
             if isinstance(approvals_data, list):
-                record_test("Approval Workflows", True, f"Found {len(approvals_data)} approvals")
+                record_test("User Approval System", True, f"Found {len(approvals_data)} pending user approvals")
             else:
-                record_test("Approval Workflows", False, "Response is not a list")
+                record_test("User Approval System", False, "Response is not a list")
         except:
-            record_test("Approval Workflows", False, "Invalid JSON response")
+            record_test("User Approval System", False, "Invalid JSON response")
     else:
         status = response.status_code if response else "No response"
-        record_test("Approval Workflows", False, f"Failed to get approvals (Status: {status})")
+        record_test("User Approval System", False, f"Failed to get user approvals (Status: {status})")
 
 def test_additional_features(token):
     """Test additional feature endpoints"""
