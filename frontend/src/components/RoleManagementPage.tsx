@@ -462,7 +462,8 @@ const RoleManagementPage = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
