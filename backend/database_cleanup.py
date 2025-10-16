@@ -19,9 +19,8 @@ MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'operational_platform')
 
 # Target production data to KEEP
-PRODUCTION_USER_ID = "e9522a08-754c-4643-9e76-94a99abf8566"
-PRODUCTION_ORG_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"
 PRODUCTION_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
+PRODUCTION_ORG_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"
 
 # Collections to completely wipe (test data only)
 COLLECTIONS_TO_WIPE = [
