@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import {
   Activity, TrendingUp, Users, CheckSquare, Clock, Award,
-  Calendar, Download, Filter, RefreshCw
+  Download, RefreshCw
 } from 'lucide-react';
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
@@ -58,7 +58,7 @@ const AnalyticsDashboard: React.FC = () => {
       
       // Format task trends data for charts
       if (trendsRes.data.trends) {
-        setTaskTrends(trendsRes.data.trends.map(item => ({
+        setTaskTrends(trendsRes.data.trends.map((item: any) => ({
           date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           created: item.created || 0,
           completed: item.completed || 0
@@ -83,7 +83,7 @@ const AnalyticsDashboard: React.FC = () => {
 
       // Format time tracking trends
       if (timeRes.data.trends) {
-        setTimeTrackingTrends(timeRes.data.trends.map(item => ({
+        setTimeTrackingTrends(timeRes.data.trends.map((item: any) => ({
           date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           hours: item.total_hours || 0,
           billable: item.billable_hours || 0
@@ -108,11 +108,11 @@ const AnalyticsDashboard: React.FC = () => {
     fetchAnalyticsData();
   }, [period]);
 
-  const handleRefresh: React.FC = () => {
+  const handleRefresh = () => {
     fetchAnalyticsData(true);
   };
 
-  const exportData: React.FC = () => {
+  const exportData = () => {
     const exportData = {
       period,
       generated_at: new Date().toISOString(),
