@@ -38,9 +38,15 @@ def calculate_completion_percentage(items: List[dict]) -> float:
 async def get_checklist_templates(
     request: Request,
     category: Optional[str] = None,
+    show_inactive: bool = False,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get all checklist templates for organization"""
+    """Get all checklist templates for organization
+    
+    Args:
+        category: Filter by category (optional)
+        show_inactive: If True, includes inactive templates. Default False (active only)
+    """
     user = await get_current_user(request, db)
     
     if not user.get("organization_id"):
@@ -49,7 +55,9 @@ async def get_checklist_templates(
             detail="User not associated with an organization",
         )
     
-    query = {"organization_id": user["organization_id"], "is_active": True}
+    query = {"organization_id": user["organization_id"]}
+    if not show_inactive:
+        query["is_active"] = True
     if category:
         query["category"] = category
     
