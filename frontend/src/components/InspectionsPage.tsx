@@ -101,21 +101,17 @@ const InspectionsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Inspections
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Manage inspection templates and executions
-          </p>
-        </div>
+    <ModernPageWrapper 
+      title="Inspections" 
+      subtitle="Manage inspections and audits"
+      actions={
         <Button onClick={() => navigate('/inspections/templates/new')} data-testid="create-template-btn">
           <Plus className="h-4 w-4 mr-2" />
           New Template
         </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6">
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
