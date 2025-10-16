@@ -638,7 +638,7 @@ def main():
         print_final_summary()
         return
     
-    # Step 3: Test all endpoint categories
+    # Step 4: Test all endpoint categories
     test_authentication_endpoints(token)
     test_core_management_endpoints(token)
     test_operational_features(token)
