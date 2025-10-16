@@ -380,7 +380,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <SettingsPage />
+                    <EnhancedSettingsPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
