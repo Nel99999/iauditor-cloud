@@ -60,7 +60,7 @@ async def startup_db_client():
     try:
         # MongoDB connection
         mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-        db_name = os.environ.get('DB_NAME', 'operations_db')
+        db_name = os.environ.get('DB_NAME', 'operational_platform')  # Fixed: Use correct default
         client = AsyncIOMotorClient(mongo_url)
         db = client[db_name]
         
