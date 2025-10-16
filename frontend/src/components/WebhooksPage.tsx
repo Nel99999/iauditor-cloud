@@ -108,7 +108,7 @@ const WebhooksPage = () => {
 
   const handleTestWebhook = async (webhookId: string) => {
     try {
-      setTestingWebhook(webhookId: string);
+      setTestingWebhook(webhookId);
       const token = localStorage.getItem('token') || localStorage.getItem('access_token');
       const headers = { Authorization: `Bearer ${token}` };
       
