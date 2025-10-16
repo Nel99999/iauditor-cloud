@@ -70,9 +70,14 @@ async def build_unit_path(unit_id: str, db: AsyncIOMotorDatabase) -> str:
 @router.get("/units")
 async def get_organization_units(
     request: Request,
+    show_inactive: bool = False,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get all organization units for current user's organization"""
+    """Get all organization units for current user's organization
+    
+    Args:
+        show_inactive: If True, includes inactive units. Default False (active only)
+    """
     user = await get_current_user(request, db)
     
     if not user.get("organization_id"):
@@ -81,8 +86,13 @@ async def get_organization_units(
             detail="User not associated with an organization",
         )
     
+    # Build query - show all or active only
+    query = {"organization_id": user["organization_id"]}
+    if not show_inactive:
+        query["is_active"] = True
+    
     units = await db.organization_units.find(
-        {"organization_id": user["organization_id"], "is_active": True},
+        query,
         {"_id": 0}
     ).to_list(1000)
     
