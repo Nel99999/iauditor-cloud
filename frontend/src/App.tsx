@@ -229,7 +229,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistExecutionPageNew />
+                    <ChecklistExecutionPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
