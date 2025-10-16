@@ -300,7 +300,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <MyApprovalsPageNew />
+                    <MyApprovalsPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
