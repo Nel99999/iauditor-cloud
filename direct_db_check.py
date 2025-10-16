@@ -70,7 +70,7 @@ async def check_database():
         
         # Permissions count
         perms_count = await db.permissions.count_documents({})
-        print(f("🔐 Permissions: {perms_count}")
+        print(f"🔐 Permissions: {perms_count}")
         if perms_count == 26:
             print("   ✅ CORRECT: 26 permissions found")
         else:
