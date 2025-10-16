@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-
+import { useTranslation } from 'react-i18next';
 import { usePermissions } from '../hooks/usePermissions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const EnhancedSettingsPage = () => {
-  // const { setUser } =
+  const { user, setUser } = useAuth();
   const { theme, toggleTheme, accentColor, updateAccentColor, viewDensity, updateViewDensity, fontSize, updateFontSize } = useTheme();
   // const { t } = useTranslation();
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
@@ -145,27 +145,27 @@ const EnhancedSettingsPage = () => {
     setLoading(true);
     try {
       await axios.put(`${API}/users/${user.id}`, profileData);
-//       // setUser({ ...user, ...profileData });
-//       showMessage('success', 'Profile updated successfully!');
-//     } catch (err: unknown) {
-//       showMessage('error', (err as any).response?.data?.detail || 'Failed to update profile');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-// 
-//   const handlePasswordChange = async (e: any) => {
-//     e.preventDefault();
-//     if (passwordData.new_password !== passwordData.confirm_password) {
-//       showMessage('error', 'Passwords do not match');
-//       return;
-//     }
-//     setLoading(true);
-//     try {
-//       await axios.put(`${API}/users/${user.id}/password`, {
-//         current_password: passwordData.current_password,
-//         new_password: passwordData.new_password
-//       });
+      setUser({ ...user, ...profileData });
+      showMessage('success', 'Profile updated successfully!');
+    } catch (err: unknown) {
+      showMessage('error', (err as any).response?.data?.detail || 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async (e: any) => {
+    e.preventDefault();
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      showMessage('error', 'Passwords do not match');
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/${user.id}/password`, {
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password
+      });
       showMessage('success', 'Password updated successfully!');
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
     } catch (err: unknown) {
@@ -184,72 +184,72 @@ const EnhancedSettingsPage = () => {
     
     setLoading(true);
     try {
-      // const response = await axios.post(`${API}/users/profile/picture`, formData, {
+      const response = await axios.post(`${API}/users/profile/picture`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-//       // setUser({ ...user, picture: response.data.picture_url });
-//       showMessage('success', 'Photo uploaded successfully!');
-//       window.location.reload();
-//     } catch (err: unknown) {
-//       showMessage('error', (err as any).response?.data?.detail || 'Failed to upload photo');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-// 
-//   const handleSaveRegional = async () => {
-//     setLoading(true);
-//     try {
-//       await axios.put(`${API}/users/regional`, regionalPrefs);
-//       i18n.changeLanguage(regionalPrefs.language);
-//       showMessage('success', 'Regional settings saved!');
-//     } catch (err: unknown) {
-//       showMessage('error', 'Failed to save regional settings');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-// 
-//   const handleSavePrivacy = async () => {
-//     setLoading(true);
-//     try {
-//       await axios.put(`${API}/users/privacy`, privacyPrefs);
-//       showMessage('success', 'Privacy settings saved!');
-//     } catch (err: unknown) {
-//       showMessage('error', 'Failed to save privacy settings');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-// 
-//   const handleSaveSecurity = async () => {
-//     setLoading(true);
-//     try {
-//       await axios.put(`${API}/users/security-prefs`, securityPrefs);
-//       showMessage('success', 'Security settings saved!');
-//     } catch (err: unknown) {
-//       showMessage('error', 'Failed to save security settings');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-// 
-//   const handleSaveNotifications = async () => {
-//     setLoading(true);
-//     try {
-//       await axios.put(`${API}/users/settings`, notificationPrefs);
-//       showMessage('success', 'Notification preferences saved!');
-//     } catch (err: unknown) {
-//       showMessage('error', 'Failed to save preferences');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-// 
-//   const handleSaveApiSettings = async () => {
-//     setLoading(true);
-//     try {
-//       await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
+      setUser({ ...user, picture: response.data.picture_url });
+      showMessage('success', 'Photo uploaded successfully!');
+      window.location.reload();
+    } catch (err: unknown) {
+      showMessage('error', (err as any).response?.data?.detail || 'Failed to upload photo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveRegional = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/regional`, regionalPrefs);
+      i18n.changeLanguage(regionalPrefs.language);
+      showMessage('success', 'Regional settings saved!');
+    } catch (err: unknown) {
+      showMessage('error', 'Failed to save regional settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSavePrivacy = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/privacy`, privacyPrefs);
+      showMessage('success', 'Privacy settings saved!');
+    } catch (err: unknown) {
+      showMessage('error', 'Failed to save privacy settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveSecurity = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/security-prefs`, securityPrefs);
+      showMessage('success', 'Security settings saved!');
+    } catch (err: unknown) {
+      showMessage('error', 'Failed to save security settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/settings`, notificationPrefs);
+      showMessage('success', 'Notification preferences saved!');
+    } catch (err: unknown) {
+      showMessage('error', 'Failed to save preferences');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveApiSettings = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
       showMessage('success', 'SendGrid API key saved!');
       loadAllPreferences();
     } catch (err: unknown) {
@@ -263,7 +263,7 @@ const EnhancedSettingsPage = () => {
     setTestingEmail(true);
     setEmailTestResult(null);
     try {
-      // const response = await axios.post(`${API}/settings/email/test`);
+      const response = await axios.post(`${API}/settings/email/test`);
       setEmailTestResult({ success: true, message: response.data.message });
     } catch (err: unknown) {
       setEmailTestResult({ success: false, message: (err as any).response?.data?.detail || 'Test failed' });
@@ -294,7 +294,7 @@ const EnhancedSettingsPage = () => {
     setTestingTwilio(true);
     setTwilioTestResult(null);
     try {
-      // const response = await axios.post(`${API}/sms/test-connection`);
+      const response = await axios.post(`${API}/sms/test-connection`);
       setTwilioTestResult({ 
         success: true, 
         message: `Connected to ${response.data.data.friendly_name}`,
@@ -318,7 +318,7 @@ const EnhancedSettingsPage = () => {
     setSendingSMS(true);
     setSmsTestResult(null);
     try {
-      // const response = await axios.post(`${API}/sms/send`, {
+      const response = await axios.post(`${API}/sms/send`, {
         to_number: testSMSPhone,
         message: 'This is a test SMS from your Operational Management Platform. Your Twilio SMS integration is working correctly!'
       });
@@ -344,7 +344,7 @@ const EnhancedSettingsPage = () => {
     setSendingWhatsApp(true);
     setWhatsappTestResult(null);
     try {
-      // const response = await axios.post(`${API}/sms/whatsapp/send`, {
+      const response = await axios.post(`${API}/sms/whatsapp/send`, {
         to_number: testWhatsAppPhone,
         message: 'This is a test WhatsApp message from your Operational Management Platform. Your Twilio WhatsApp integration is working correctly!'
       });
@@ -640,7 +640,7 @@ const EnhancedSettingsPage = () => {
                 </Select>
               </div>
 
-              <Button onClick={() => {}}  // handleSaveRegional disabled={loading}>
+              <Button onClick={handleSaveRegional} disabled={loading}>
                 <Save className="h-4 w-4 mr-2" />
                 {loading ? 'Saving...' : 'Save Regional Settings'}
               </Button>
@@ -710,7 +710,7 @@ const EnhancedSettingsPage = () => {
                   </Select>
                 </div>
 
-                <Button onClick={() => {}}  // handleSaveSecurity disabled={loading}>
+                <Button onClick={handleSaveSecurity} disabled={loading}>
                   <Save className="h-4 w-4 mr-2" />
                   Save Security Settings
                 </Button>
@@ -760,7 +760,7 @@ const EnhancedSettingsPage = () => {
                 <Switch checked={privacyPrefs.show_last_seen} onCheckedChange={(checked) => setPrivacyPrefs({...privacyPrefs, show_last_seen: checked})} />
               </div>
 
-              <Button onClick={() => {}}  // handleSavePrivacy disabled={loading}>
+              <Button onClick={handleSavePrivacy} disabled={loading}>
                 <Save className="h-4 w-4 mr-2" />
                 Save Privacy Settings
               </Button>
@@ -808,7 +808,7 @@ const EnhancedSettingsPage = () => {
                 <Switch checked={notificationPrefs.marketingEmails} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, marketingEmails: checked})} />
               </div>
 
-              <Button onClick={() => {}}  // handleSaveNotifications disabled={loading}>
+              <Button onClick={handleSaveNotifications} disabled={loading}>
                 <Save className="h-4 w-4 mr-2" />
                 Save Notification Preferences
               </Button>
@@ -842,7 +842,7 @@ const EnhancedSettingsPage = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button onClick={() => {}}  // handleSaveApiSettings disabled={loading || !apiSettings.sendgrid_api_key}>
+                  <Button onClick={handleSaveApiSettings} disabled={loading || !apiSettings.sendgrid_api_key}>
                     <Save className="h-4 w-4 mr-2" />
                     {loading ? 'Saving...' : 'Save API Key'}
                   </Button>
@@ -1077,7 +1077,7 @@ const EnhancedSettingsPage = () => {
                   onClick={async () => {
                     try {
                       setExportingData(true);
-                      // const response = await axios.get(`${API}/gdpr/export-data`, {
+                      const response = await axios.get(`${API}/gdpr/export-data`, {
                         headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
                       });
                       
