@@ -628,7 +628,10 @@ def main():
         print_fail("Backend health check failed. Cannot proceed with testing.")
         return
     
-    # Step 2: Authentication
+    # Step 2: Test Production User Authentication (as requested)
+    production_token = test_production_user_authentication()
+    
+    # Step 3: Get test user authentication for comprehensive testing
     token = authenticate_test_user()
     if not token:
         print_fail("Authentication failed. Cannot proceed with authenticated endpoint testing.")
