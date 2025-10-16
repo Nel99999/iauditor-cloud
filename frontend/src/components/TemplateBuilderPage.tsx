@@ -135,25 +135,23 @@ const TemplateBuilderPage = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" onClick={() => navigate('/inspections')}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            {isEdit ? 'Edit Template' : 'Create Template'}
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            {isEdit ? 'Update inspection template' : 'Build a new inspection template'}
-          </p>
+    <ModernPageWrapper 
+      title={isEdit ? 'Edit Template' : 'Template Builder'} 
+      subtitle={isEdit ? 'Update inspection template' : 'Build inspection templates'}
+      actions={
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/inspections')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+          <Button onClick={handleSave} disabled={loading} data-testid="save-template-btn">
+            <Save className="h-4 w-4 mr-2" />
+            {loading ? 'Saving...' : 'Save Template'}
+          </Button>
         </div>
-        <Button onClick={handleSave} disabled={loading} data-testid="save-template-btn">
-          <Save className="h-4 w-4 mr-2" />
-          {loading ? 'Saving...' : 'Save Template'}
-        </Button>
-      </div>
+      }
+    >
+      <div className="space-y-6 max-w-4xl">
 
       {/* Basic Info */}
       <Card>
