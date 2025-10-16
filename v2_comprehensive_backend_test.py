@@ -186,6 +186,42 @@ def authenticate_test_user():
             record_test("Authentication Failed", False, f"Both registration and login failed (Status: {status}) - {error_msg}")
             return None
 
+def test_production_user_authentication():
+    """Test production user authentication as requested"""
+    print_test("Production User Authentication Check")
+    
+    login_data = {
+        "email": "llewellyn@bluedawncapital.co.za",
+        "password": "Master@123"
+    }
+    
+    response = make_request("POST", "/auth/login", data=login_data)
+    
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            token = data.get("access_token")
+            if token:
+                record_test("Production User Authentication", True, f"Production user can authenticate: {login_data['email']}")
+                return token
+            else:
+                record_test("Production User Authentication", False, "No access token in response")
+                return None
+        except:
+            record_test("Production User Authentication", False, "Invalid JSON response")
+            return None
+    else:
+        status = response.status_code if response else "No response"
+        error_msg = ""
+        if response:
+            try:
+                error_data = response.json()
+                error_msg = error_data.get("detail", "Unknown error")
+            except:
+                error_msg = response.text
+        record_test("Production User Authentication", False, f"Production user login failed (Status: {status}) - {error_msg}")
+        return None
+
 def test_authentication_endpoints(token):
     """Test authentication-related endpoints"""
     print_section("AUTHENTICATION & USER ENDPOINTS")
