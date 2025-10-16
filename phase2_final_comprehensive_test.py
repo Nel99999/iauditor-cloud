@@ -13,7 +13,7 @@ import json
 from datetime import datetime
 
 # Backend URL
-BACKEND_URL = "https://typescript-complete-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://userapproval-flow.preview.emergentagent.com/api"
 
 # Test results
 test_results = []

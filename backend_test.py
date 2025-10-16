@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Use the production URL from frontend/.env
-BASE_URL = "https://typescript-complete-1.preview.emergentagent.com/api"
+BASE_URL = "https://userapproval-flow.preview.emergentagent.com/api"
 
 class BackendHealthChecker:
     def __init__(self):

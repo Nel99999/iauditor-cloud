@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 
 # Backend URL from environment
-BACKEND_URL = "https://typescript-complete-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://userapproval-flow.preview.emergentagent.com/api"
 
 class TestResults:
     def __init__(self):
