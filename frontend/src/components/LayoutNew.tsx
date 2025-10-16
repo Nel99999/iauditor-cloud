@@ -307,7 +307,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                 {menuItems.map((section: any, sectionIndex: number) => (
                   <div key={sectionIndex} className="nav-section">
                     <div className="nav-section-title">{section.section}</div>
-                    {section.items.map((item) => {
+                    {section.items.map((item: any) => {
                       const Icon = item.icon;
                       const active = isActive(item.path);
                       

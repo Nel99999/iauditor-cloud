@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 const MFASetupPage = () => {
-  const { token } = useAuth();
+  // const { token } = useAuth();
   const [mfaStatus, setMfaStatus] = useState<any | null>(null);
   const [setupData, setSetupData] = useState<any | null>(null);
   const [verificationCode, setVerificationCode] = useState<string>('');

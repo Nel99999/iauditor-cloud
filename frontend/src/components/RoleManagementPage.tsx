@@ -424,12 +424,12 @@ const RoleManagementPage = () => {
                 {permissions.map((perm: any) => (
                   <div key={perm.id} className="flex items-center space-x-2">
                     <Checkbox
-                      checked={newRole.selectedPermissions.includes(perm.id)}
+                      checked={newRole.selectedPermissions as any.includes(perm.id)}
                       onCheckedChange={(checked) => {
                         if (checked) {
                           setNewRole({
                             ...newRole,
-                            selectedPermissions: [...newRole.selectedPermissions, perm.id]
+                            selectedPermissions as any: [...newRole.selectedPermissions, perm.id]
                           });
                         } else {
                           setNewRole({

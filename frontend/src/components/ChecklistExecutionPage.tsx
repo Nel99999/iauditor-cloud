@@ -119,7 +119,7 @@ const ChecklistExecutionPage = () => {
                 <div className="flex items-start gap-4">
                   <Checkbox
                     checked={itemState.completed}
-                    onCheckedChange={(checked) => handleItemToggle(templateItem.id, checked)}
+                    onCheckedChange={(Boolean(checked)) => handleItemToggle(templateItem.id, checked)}
                     disabled={execution.status === 'completed'}
                     data-testid={`checklist-item-checkbox-${index}`}
                   />

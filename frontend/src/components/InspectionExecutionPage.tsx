@@ -54,7 +54,7 @@ const InspectionExecutionPage = () => {
       
       // Initialize answers
       const initialAnswers = {};
-      templateRes.data.questions.forEach((q) => {
+      templateRes.data.questions.forEach((q: any) => {
         initialAnswers[q.id] = {
           question_id: q.id,
           answer: q.question_type === 'yes_no' ? null : '',
@@ -85,7 +85,7 @@ const InspectionExecutionPage = () => {
       
       // Load existing answers
       const loadedAnswers = {};
-      execRes.data.answers.forEach((ans) => {
+      execRes.data.answers.forEach((ans: any) => {
         loadedAnswers[ans.question_id] = ans;
       });
       setAnswers(loadedAnswers);

@@ -101,7 +101,7 @@ const InvitationManagementPage = () => {
   const getExpirationInfo = (expiresAt: any) => {
     const now = new Date();
     const expires = new Date(expiresAt);
-    const daysLeft = Math.ceil((expires - now) / (1000 * 60 * 60 * 24));
+    const daysLeft = Math.ceil((expires - now.getTime()) / (1000 * 60 * 60 * 24));
     
     if (daysLeft < 0) {
       return { text: 'Expired', variant: 'destructive', daysLeft: 0 };

@@ -150,7 +150,7 @@ const ChecklistsPage = () => {
         <TabsContent value="today">
           <div className="space-y-4">
             {/* Pending checklists to start */}
-            {todaysChecklists.pending_templates?.map((template) => (
+            {todaysChecklists.pending_templates?.map((template: any) => (
               <Card key={template.id} className="border-2 border-dashed">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
