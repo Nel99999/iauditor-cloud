@@ -656,7 +656,8 @@ const ReportsPage = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
