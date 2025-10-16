@@ -148,23 +148,16 @@ async def clean_selective_collections(db):
         count_before = await db[collection_name].count_documents({})
         
         # Build delete query (everything NOT matching production data)
-        if 'user_id' in filter_fields:
-            delete_query = {"user_id": {"$ne": filter_fields['user_id']}}
-        elif 'email' in filter_fields:
+        if 'email' in filter_fields:
             delete_query = {"email": {"$ne": filter_fields['email']}}
+            keep_query = {"email": filter_fields['email']}
         elif 'organization_id' in filter_fields:
             delete_query = {"organization_id": {"$ne": filter_fields['organization_id']}}
+            keep_query = {"organization_id": filter_fields['organization_id']}
         else:
             continue
         
         # Count documents to keep
-        if 'user_id' in filter_fields:
-            keep_query = {"user_id": filter_fields['user_id']}
-        elif 'email' in filter_fields:
-            keep_query = {"email": filter_fields['email']}
-        elif 'organization_id' in filter_fields:
-            keep_query = {"organization_id": filter_fields['organization_id']}
-        
         count_to_keep = await db[collection_name].count_documents(keep_query)
         
         # Delete non-production data
