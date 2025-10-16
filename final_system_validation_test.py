@@ -437,7 +437,10 @@ if __name__ == "__main__":
     results = run_comprehensive_tests()
     
     # Exit with appropriate code
-    if results['failed'] == 0:
+    if results is None:
+        print("\n❌ TESTS COULD NOT RUN - CHECK AUTHENTICATION")
+        exit(1)
+    elif results['failed'] == 0:
         print("\n🎉 ALL TESTS PASSED!")
         exit(0)
     else:
