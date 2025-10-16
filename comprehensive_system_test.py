@@ -30,8 +30,9 @@ API_BASE = f"{BACKEND_URL}/api"
 ORG_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"
 
 # Expected baseline counts
+# Note: User count is 3 because we created a test user for authentication
 EXPECTED_COUNTS = {
-    "users": 2,
+    "users": 3,  # 2 original + 1 test user (testuser@llewellyn.com)
     "roles": 12,
     "inspection_templates": 7,
     "inspection_executions": 13,
