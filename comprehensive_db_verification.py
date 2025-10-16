@@ -156,47 +156,52 @@ try:
 except Exception as e:
     test_result("Backend Health Check", False, f"Error: {str(e)}")
 
-# Authenticate with existing user
-test_email = "test@example.com"  # Using existing user from operational_platform
-test_password = "password123"  # Common test password
+# Create a fresh test user with known credentials
+test_email = "dbverify_comprehensive@example.com"
+test_password = "TestPass123!"
 
-print("Attempting to authenticate with existing user from operational_platform...")
+print("Creating fresh test user for verification...")
 token = None
 
 try:
-    login_response = requests.post(
-        f"{BASE_URL}/auth/login",
+    register_response = requests.post(
+        f"{BASE_URL}/auth/register",
         json={
             "email": test_email,
-            "password": test_password
+            "password": test_password,
+            "name": "DB Verify Comprehensive Test",
+            "organization_name": "DB Verify Comprehensive Org"
         },
         timeout=10
     )
     
-    if login_response.status_code == 200:
-        token = login_response.json().get("access_token")
-        print(f"✓ Logged in successfully as {test_email}")
-        test_result("User Authentication", True, f"Successfully authenticated as {test_email}")
-    else:
-        print(f"⚠️  Login failed with status {login_response.status_code}")
-        print(f"   Trying alternative authentication...")
-        
-        # Try with a different user
-        alt_email = "llewellyn@bluedawncapital.co.za"
-        alt_password = "password"
-        
-        alt_login = requests.post(
+    if register_response.status_code in [200, 201]:
+        response_data = register_response.json()
+        token = response_data.get("access_token")
+        user_data = response_data.get("user", {})
+        print(f"✓ Created and authenticated as {test_email}")
+        test_result(
+            "User Authentication",
+            True,
+            f"User: {user_data.get('email')}, Role: {user_data.get('role')}, Approval: {user_data.get('approval_status')}"
+        )
+    elif register_response.status_code == 400 and "already" in register_response.text.lower():
+        # User exists, try to login
+        print(f"✓ User exists, attempting login...")
+        login_response = requests.post(
             f"{BASE_URL}/auth/login",
-            json={"email": alt_email, "password": alt_password},
+            json={"email": test_email, "password": test_password},
             timeout=10
         )
         
-        if alt_login.status_code == 200:
-            token = alt_login.json().get("access_token")
-            print(f"✓ Logged in successfully as {alt_email}")
-            test_result("User Authentication", True, f"Successfully authenticated as {alt_email}")
+        if login_response.status_code == 200:
+            token = login_response.json().get("access_token")
+            print(f"✓ Logged in successfully")
+            test_result("User Authentication", True, f"Successfully authenticated as {test_email}")
         else:
-            test_result("User Authentication", False, "Could not authenticate with existing users")
+            test_result("User Authentication", False, f"Login failed: {login_response.status_code}")
+    else:
+        test_result("User Authentication", False, f"Registration failed: {register_response.status_code}")
             
 except Exception as e:
     test_result("User Authentication", False, f"Error: {str(e)}")
