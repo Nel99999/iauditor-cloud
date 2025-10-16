@@ -385,7 +385,7 @@ const BulkImportPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </ModernPageWrapper>
   );
 };
 
