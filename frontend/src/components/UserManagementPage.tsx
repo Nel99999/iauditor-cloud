@@ -72,7 +72,7 @@ const UserManagementPage: React.FC = () => {
       setInviteData({ email: '', role: 'viewer' });
       loadUsers();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to send invitation');
+      alert((err as any).response?.data?.detail || 'Failed to send invitation');
     }
   };
 
@@ -404,7 +404,7 @@ const UserManagementPage: React.FC = () => {
                   setDeleteUserData(null);
                   loadUsers();
                 } catch (err: unknown) {
-                  alert(err.response?.data?.detail || 'Failed to delete user');
+                  alert((err as any).response?.data?.detail || 'Failed to delete user');
                 } finally {
                   setLoading(false);
                 }
@@ -487,7 +487,7 @@ const UserManagementPage: React.FC = () => {
                   setShowEditDialog(false);
                   loadUsers();
                 } catch (err: unknown) {
-                  alert(err.response?.data?.detail || 'Failed to update user');
+                  alert((err as any).response?.data?.detail || 'Failed to update user');
                 }
               }}
             >

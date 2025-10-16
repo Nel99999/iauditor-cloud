@@ -65,7 +65,7 @@ const WebhooksPage: React.FC = () => {
       fetchWebhooks();
     } catch (err: unknown) {
       console.error('Error creating webhook:', err);
-      alert(err.response?.data?.detail || 'Failed to create webhook');
+      alert((err as any).response?.data?.detail || 'Failed to create webhook');
     }
   };
 
@@ -87,7 +87,7 @@ const WebhooksPage: React.FC = () => {
       fetchWebhooks();
     } catch (err: unknown) {
       console.error('Error updating webhook:', err);
-      alert(err.response?.data?.detail || 'Failed to update webhook');
+      alert((err as any).response?.data?.detail || 'Failed to update webhook');
     }
   };
 
@@ -102,7 +102,7 @@ const WebhooksPage: React.FC = () => {
       fetchWebhooks();
     } catch (err: unknown) {
       console.error('Error deleting webhook:', err);
-      alert(err.response?.data?.detail || 'Failed to delete webhook');
+      alert((err as any).response?.data?.detail || 'Failed to delete webhook');
     }
   };
 
@@ -121,7 +121,7 @@ const WebhooksPage: React.FC = () => {
       alert('Test webhook sent successfully!');
     } catch (err: unknown) {
       console.error('Error testing webhook:', err);
-      alert(err.response?.data?.detail || 'Failed to test webhook');
+      alert((err as any).response?.data?.detail || 'Failed to test webhook');
     } finally {
       setTestingWebhook(null);
     }
@@ -141,7 +141,7 @@ const WebhooksPage: React.FC = () => {
       fetchWebhooks();
     } catch (err: unknown) {
       console.error('Error toggling webhook:', err);
-      alert(err.response?.data?.detail || 'Failed to toggle webhook');
+      alert((err as any).response?.data?.detail || 'Failed to toggle webhook');
     }
   };
 
@@ -172,7 +172,7 @@ const WebhooksPage: React.FC = () => {
       setShowLogsModal(true);
     } catch (err: unknown) {
       console.error('Error fetching webhook logs:', err);
-      alert(err.response?.data?.detail || 'Failed to fetch webhook logs');
+      alert((err as any).response?.data?.detail || 'Failed to fetch webhook logs');
     }
   };
 

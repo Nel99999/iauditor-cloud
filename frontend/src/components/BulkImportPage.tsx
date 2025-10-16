@@ -47,7 +47,7 @@ const BulkImportPage: React.FC = () => {
       setValidationResults(response.data);
     } catch (err: unknown) {
       console.error('Error validating file:', err);
-      alert(err.response?.data?.detail || 'Failed to validate file');
+      alert((err as any).response?.data?.detail || 'Failed to validate file');
     } finally {
       setUploading(false);
     }
@@ -85,7 +85,7 @@ const BulkImportPage: React.FC = () => {
       setValidationResults(null);
     } catch (err: unknown) {
       console.error('Error importing users:', err);
-      alert(err.response?.data?.detail || 'Failed to import users');
+      alert((err as any).response?.data?.detail || 'Failed to import users');
     } finally {
       setUploading(false);
     }

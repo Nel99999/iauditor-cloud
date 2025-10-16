@@ -72,7 +72,7 @@ const MyApprovalsPage: React.FC = () => {
       alert(`Workflow ${actionText} successfully!`);
     } catch (err: unknown) {
       console.error('Failed to process approval:', err);
-      alert(err.response?.data?.detail || 'Failed to process approval');
+      alert((err as any).response?.data?.detail || 'Failed to process approval');
     } finally {
       setProcessing(false);
     }

@@ -119,7 +119,7 @@ const WorkflowDesigner: React.FC = () => {
       loadTemplates();
     } catch (err: unknown) {
       console.error('Failed to delete template:', err);
-      alert(err.response?.data?.detail || 'Failed to delete workflow template');
+      alert((err as any).response?.data?.detail || 'Failed to delete workflow template');
     }
   };
 

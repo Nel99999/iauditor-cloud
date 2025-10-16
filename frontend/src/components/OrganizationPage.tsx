@@ -167,7 +167,7 @@ const OrganizationPage: React.FC = () => {
       
       setError('');
     } catch (err: unknown) {
-      setError(err.response?.data?.detail || 'Failed to load organization hierarchy');
+      setError((err as any).response?.data?.detail || 'Failed to load organization hierarchy');
     } finally {
       setLoading(false);
     }
@@ -217,7 +217,7 @@ const OrganizationPage: React.FC = () => {
       await axios.delete(`${API}/organizations/units/${node.id}`);
       loadHierarchy();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to delete unit');
+      alert((err as any).response?.data?.detail || 'Failed to delete unit');
     }
   };
 
@@ -239,7 +239,7 @@ const OrganizationPage: React.FC = () => {
       setShowCreateDialog(false);
       loadHierarchy();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to create unit');
+      alert((err as any).response?.data?.detail || 'Failed to create unit');
     }
   };
 
@@ -253,7 +253,7 @@ const OrganizationPage: React.FC = () => {
       setShowEditDialog(false);
       loadHierarchy();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to update unit');
+      alert((err as any).response?.data?.detail || 'Failed to update unit');
     }
   };
 
@@ -269,7 +269,7 @@ const OrganizationPage: React.FC = () => {
       alert('Invitation sent successfully!');
       setShowInviteDialog(false);
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to send invitation');
+      alert((err as any).response?.data?.detail || 'Failed to send invitation');
     }
   };
 

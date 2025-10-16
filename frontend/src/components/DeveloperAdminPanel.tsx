@@ -124,7 +124,7 @@ const DeveloperAdminPanel: React.FC = () => {
       setNewPassword('Test123!');
       loadData();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to reset password');
+      alert((err as any).response?.data?.detail || 'Failed to reset password');
     }
   };
 

@@ -93,7 +93,7 @@ const RoleManagementPage: React.FC = () => {
       setNewRole({ name: '', code: '', color: '#3b82f6', level: 11, description: '', selectedPermissions: [] });
       loadRoles();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to create role');
+      alert((err as any).response?.data?.detail || 'Failed to create role');
     }
   };
 
@@ -108,7 +108,7 @@ const RoleManagementPage: React.FC = () => {
         alert('Role deleted successfully!');
         loadRoles();
       } catch (err: unknown) {
-        alert(err.response?.data?.detail || 'Failed to delete role');
+        alert((err as any).response?.data?.detail || 'Failed to delete role');
       }
     }
   };
@@ -159,7 +159,7 @@ const RoleManagementPage: React.FC = () => {
       // Reload
       loadRoles();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to update permissions');
+      alert((err as any).response?.data?.detail || 'Failed to update permissions');
     }
   };
 

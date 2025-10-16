@@ -97,7 +97,7 @@ const AnalyticsDashboard: React.FC = () => {
 
     } catch (err: unknown) {
       console.error('Error fetching analytics:', err);
-      setError(err.response?.data?.detail || 'Failed to load analytics data');
+      setError((err as any).response?.data?.detail || 'Failed to load analytics data');
     } finally {
       setLoading(false);
       setRefreshing(false);

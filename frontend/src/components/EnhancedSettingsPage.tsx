@@ -147,7 +147,7 @@ const EnhancedSettingsPage: React.FC = () => {
       setUser({ ...user, ...profileData });
       showMessage('success', 'Profile updated successfully!');
     } catch (err: unknown) {
-      showMessage('error', err.response?.data?.detail || 'Failed to update profile');
+      showMessage('error', (err as any).response?.data?.detail || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -168,7 +168,7 @@ const EnhancedSettingsPage: React.FC = () => {
       showMessage('success', 'Password updated successfully!');
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
     } catch (err: unknown) {
-      showMessage('error', err.response?.data?.detail || 'Failed to update password');
+      showMessage('error', (err as any).response?.data?.detail || 'Failed to update password');
     } finally {
       setLoading(false);
     }
@@ -190,7 +190,7 @@ const EnhancedSettingsPage: React.FC = () => {
       showMessage('success', 'Photo uploaded successfully!');
       window.location.reload();
     } catch (err: unknown) {
-      showMessage('error', err.response?.data?.detail || 'Failed to upload photo');
+      showMessage('error', (err as any).response?.data?.detail || 'Failed to upload photo');
     } finally {
       setLoading(false);
     }
@@ -265,7 +265,7 @@ const EnhancedSettingsPage: React.FC = () => {
       const response = await axios.post(`${API}/settings/email/test`);
       setEmailTestResult({ success: true, message: response.data.message });
     } catch (err: unknown) {
-      setEmailTestResult({ success: false, message: err.response?.data?.detail || 'Test failed' });
+      setEmailTestResult({ success: false, message: (err as any).response?.data?.detail || 'Test failed' });
     } finally {
       setTestingEmail(false);
     }
@@ -283,7 +283,7 @@ const EnhancedSettingsPage: React.FC = () => {
       showMessage('success', 'Twilio settings saved successfully!');
       loadAllPreferences();
     } catch (err: unknown) {
-      showMessage('error', err.response?.data?.detail || 'Failed to save Twilio settings');
+      showMessage('error', (err as any).response?.data?.detail || 'Failed to save Twilio settings');
     } finally {
       setLoading(false);
     }
@@ -302,7 +302,7 @@ const EnhancedSettingsPage: React.FC = () => {
     } catch (err: unknown) {
       setTwilioTestResult({ 
         success: false, 
-        message: err.response?.data?.detail || 'Connection failed' 
+        message: (err as any).response?.data?.detail || 'Connection failed' 
       });
     } finally {
       setTestingTwilio(false);
@@ -328,7 +328,7 @@ const EnhancedSettingsPage: React.FC = () => {
     } catch (err: unknown) {
       setSmsTestResult({ 
         success: false, 
-        message: err.response?.data?.detail || 'Failed to send SMS' 
+        message: (err as any).response?.data?.detail || 'Failed to send SMS' 
       });
     } finally {
       setSendingSMS(false);
@@ -354,7 +354,7 @@ const EnhancedSettingsPage: React.FC = () => {
     } catch (err: unknown) {
       setWhatsappTestResult({ 
         success: false, 
-        message: err.response?.data?.detail || 'Failed to send WhatsApp message' 
+        message: (err as any).response?.data?.detail || 'Failed to send WhatsApp message' 
       });
     } finally {
       setSendingWhatsApp(false);
@@ -1090,7 +1090,7 @@ const EnhancedSettingsPage: React.FC = () => {
                       
                       setMessage({ type: 'success', text: 'Data exported successfully!' });
                     } catch (err: unknown) {
-                      setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to export data' });
+                      setMessage({ type: 'error', text: (err as any).response?.data?.detail || 'Failed to export data' });
                     } finally {
                       setExportingData(false);
                     }
@@ -1245,7 +1245,7 @@ const EnhancedSettingsPage: React.FC = () => {
                       localStorage.removeItem('access_token');
                       window.location.href = '/login';
                     } catch (err: unknown) {
-                      setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to delete account' });
+                      setMessage({ type: 'error', text: (err as any).response?.data?.detail || 'Failed to delete account' });
                     } finally {
                       setDeletingAccount(false);
                     }

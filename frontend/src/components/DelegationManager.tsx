@@ -80,7 +80,7 @@ const DelegationManager: React.FC = () => {
       alert('Delegation created successfully!');
     } catch (err: unknown) {
       console.error('Failed to create delegation:', err);
-      alert(err.response?.data?.detail || 'Failed to create delegation');
+      alert((err as any).response?.data?.detail || 'Failed to create delegation');
     }
   };
 
@@ -96,7 +96,7 @@ const DelegationManager: React.FC = () => {
       alert('Delegation revoked successfully!');
     } catch (err: unknown) {
       console.error('Failed to revoke delegation:', err);
-      alert(err.response?.data?.detail || 'Failed to revoke delegation');
+      alert((err as any).response?.data?.detail || 'Failed to revoke delegation');
     }
   };
 

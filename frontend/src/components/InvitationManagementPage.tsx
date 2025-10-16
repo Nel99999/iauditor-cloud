@@ -61,7 +61,7 @@ const InvitationManagementPage: React.FC = () => {
       setInviteData({ email: '', role_id: '' });
       loadInvitations();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to send invitation');
+      alert((err as any).response?.data?.detail || 'Failed to send invitation');
     }
   };
 
@@ -72,7 +72,7 @@ const InvitationManagementPage: React.FC = () => {
         alert('Invitation resent successfully! Expiration timer reset to 7 days.');
         loadInvitations();
       } catch (err: unknown) {
-        alert(err.response?.data?.detail || 'Failed to resend invitation');
+        alert((err as any).response?.data?.detail || 'Failed to resend invitation');
       }
     }
   };
@@ -87,7 +87,7 @@ const InvitationManagementPage: React.FC = () => {
       setDeleteInvitation(null);
       loadInvitations();
     } catch (err: unknown) {
-      alert(err.response?.data?.detail || 'Failed to cancel invitation');
+      alert((err as any).response?.data?.detail || 'Failed to cancel invitation');
       setShowDeleteDialog(false);
       setDeleteInvitation(null);
     }

@@ -64,7 +64,7 @@ const GroupsManagementPage: React.FC = () => {
       fetchGroups();
     } catch (err: unknown) {
       console.error('Error creating group:', err);
-      alert(err.response?.data?.detail || 'Failed to create group');
+      alert((err as any).response?.data?.detail || 'Failed to create group');
     }
   };
 
@@ -86,7 +86,7 @@ const GroupsManagementPage: React.FC = () => {
       fetchGroups();
     } catch (err: unknown) {
       console.error('Error updating group:', err);
-      alert(err.response?.data?.detail || 'Failed to update group');
+      alert((err as any).response?.data?.detail || 'Failed to update group');
     }
   };
 
@@ -101,7 +101,7 @@ const GroupsManagementPage: React.FC = () => {
       fetchGroups();
     } catch (err: unknown) {
       console.error('Error deleting group:', err);
-      alert(err.response?.data?.detail || 'Failed to delete group');
+      alert((err as any).response?.data?.detail || 'Failed to delete group');
     }
   };
 
@@ -124,7 +124,7 @@ const GroupsManagementPage: React.FC = () => {
       setSelectedGroup(response.data);
     } catch (err: unknown) {
       console.error('Error adding member:', err);
-      alert(err.response?.data?.detail || 'Failed to add member');
+      alert((err as any).response?.data?.detail || 'Failed to add member');
     }
   };
 
@@ -146,7 +146,7 @@ const GroupsManagementPage: React.FC = () => {
       setSelectedGroup(response.data);
     } catch (err: unknown) {
       console.error('Error removing member:', err);
-      alert(err.response?.data?.detail || 'Failed to remove member');
+      alert((err as any).response?.data?.detail || 'Failed to remove member');
     }
   };
 
