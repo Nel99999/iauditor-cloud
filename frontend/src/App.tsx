@@ -239,7 +239,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TasksPageNew />
+                    <TasksPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
