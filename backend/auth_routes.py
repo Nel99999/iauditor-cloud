@@ -539,28 +539,63 @@ async def reset_password(
         if org_settings and org_settings.get("sendgrid_api_key"):
             email_service = EmailService(
                 api_key=org_settings["sendgrid_api_key"],
-                from_email=org_settings.get("sendgrid_from_email", "noreply@yourapp.com"),
+                from_email=org_settings.get("sendgrid_from_email", "noreply@opsplatform.com"),
                 from_name=org_settings.get("sendgrid_from_name", "Operations Platform")
             )
             
             html_content = f"""
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #333;">Password Changed Successfully</h2>
-                <p>Hi {user['name']},</p>
-                <p>Your password has been changed successfully.</p>
-                <p style="color: #666; font-size: 14px;">
-                    If you didn't make this change, please contact support immediately.
-                </p>
-            </div>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                    .success-box {{ background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>✅ Password Changed Successfully</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {user['name']},</p>
+                        <p>Your password has been changed successfully.</p>
+                        
+                        <div class="success-box">
+                            <strong>✓ Security Update:</strong> Your account password was reset on {datetime.now(timezone.utc).strftime('%B %d, %Y at %H:%M UTC')}
+                        </div>
+                        
+                        <p style="color: #666; font-size: 14px; margin-top: 20px;">
+                            If you didn't make this change, please contact support immediately at support@opsplatform.com
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>This is an automated message from Operations Platform. Please do not reply.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
             """
             
-            email_service.send_email(
+            success = email_service.send_email(
                 to_email=user["email"],
-                subject="Password Changed Successfully",
+                subject="Password Changed Successfully - Operations Platform",
                 html_content=html_content
             )
+            
+            if success:
+                print(f"✅ Password change confirmation email sent to {user['email']}")
+            else:
+                print(f"⚠️ Failed to send password change confirmation to {user['email']}")
+                
     except Exception as e:
-        print(f"Failed to send password confirmation email: {str(e)}")
+        print(f"❌ Exception while sending password confirmation email: {str(e)}")
+        import traceback
+        traceback.print_exc()
     
     return {"message": "Password has been reset successfully. You can now login with your new password"}
     
