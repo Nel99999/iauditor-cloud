@@ -85,6 +85,7 @@ const UserManagementPage = () => {
       setShowInviteDialog(false);
       setInviteData({ email: '', role: 'viewer' });
       loadUsers();
+      loadPendingInvites(); // Refresh pending invites count
     } catch (err: unknown) {
       alert((err as any).response?.data?.detail || 'Failed to send invitation');
     }
