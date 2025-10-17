@@ -4,7 +4,7 @@ All endpoints require 'developer' role
 """
 from fastapi import APIRouter, HTTPException, Depends, Request, Body
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from typing import Dict, List, Any, Optional, Annotated
+from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone
 import os
 import psutil
@@ -20,7 +20,7 @@ from auth_utils import get_current_user
 router = APIRouter(prefix="/developer", tags=["Developer"])
 
 
-async def get_db(request: Request) -> AsyncIOMotorDatabase:
+def get_db(request: Request):
     """Dependency to get database from request state"""
     return request.app.state.db
 
