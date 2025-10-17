@@ -592,7 +592,7 @@ async def get_active_sessions(
 async def delete_session(
     session_id: str,
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Force logout a user by deleting their session"""
     try:
