@@ -133,7 +133,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
       </div>
       
       {isExpanded && hasChildren && (
-        <div className="ml-4 border-l-2 border-slate-200 dark:border-slate-700">
+        <div className="relative">
           {node.children.map((child: any) => (
             <OrganizationNode
               key={child.id}
@@ -144,6 +144,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
               onViewUsers={onViewUsers}
               expandedNodes={expandedNodes}
               toggleNode={toggleNode}
+              depth={depth + 1}
             />
           ))}
         </div>
