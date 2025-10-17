@@ -292,17 +292,17 @@ const PermissionMatrixTable = () => {
                         return (
                           <th 
                             key={role.id} 
-                            className="text-center p-2 font-semibold border-r"
+                            className={`text-center p-1 border-r ${isCustomRole ? '' : 'font-semibold'}`}
                             style={{ 
-                              minWidth: '45px', 
-                              maxWidth: '60px',
-                              width: '50px',
+                              minWidth: '32px', 
+                              maxWidth: '42px',
+                              width: '35px',
                               color: isCustomRole ? '#b91c1c' : 'inherit',
-                              fontWeight: isCustomRole ? '700' : '600'
+                              fontWeight: isCustomRole ? '900' : '600'
                             }}
                             title={ROLE_ABBREV[role.code]?.full || role.name}
                           >
-                            <div className="text-xs truncate">
+                            <div className="text-xs truncate px-1">
                               {ROLE_ABBREV[role.code]?.abbrev || role.code.substring(0, 7).toUpperCase()}
                             </div>
                           </th>
