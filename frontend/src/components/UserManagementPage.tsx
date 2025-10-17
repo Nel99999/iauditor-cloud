@@ -45,9 +45,11 @@ const UserManagementPage = () => {
   const [deleteUserData, setDeleteUserData] = useState<any | null>(null);
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [pendingInvitesCount, setPendingInvitesCount] = useState<number>(0);
 
   useEffect(() => {
     loadUsers();
+    loadPendingInvites();
   }, []);
 
   const loadUsers = async () => {
@@ -59,6 +61,16 @@ const UserManagementPage = () => {
       console.error('Failed to load users:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadPendingInvites = async () => {
+    try {
+      const response = await axios.get(`${API}/invitations/pending`);
+      setPendingInvitesCount(response.data.length || 0);
+    } catch (err: unknown) {
+      console.error('Failed to load pending invites:', err);
+      setPendingInvitesCount(0);
     }
   };
 
