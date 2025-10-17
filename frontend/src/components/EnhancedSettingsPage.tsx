@@ -79,7 +79,9 @@ const EnhancedSettingsPage = () => {
   // API Settings
   const [apiSettings, setApiSettings] = useState({
     sendgrid_api_key: '',
-    sendgrid_configured: false
+    sendgrid_configured: false,
+    sendgrid_from_email: '',
+    sendgrid_from_name: ''
   });
   const [testingEmail, setTestingEmail] = useState<boolean>(false);
   const [emailTestResult, setEmailTestResult] = useState<any | null>(null);
