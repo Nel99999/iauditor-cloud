@@ -126,7 +126,7 @@ const BulkImportPage = () => {
             <p className="text-sm text-blue-800 dark:text-blue-300">
               <strong>Required columns:</strong> email, name, role
               <br />
-              <strong>Valid roles:</strong> viewer, editor, supervisor, manager, developer, master
+              <strong>Valid roles:</strong> viewer, operator, inspector, supervisor, manager, team_lead, operations_manager, admin, master, developer
             </p>
           </div>
 
