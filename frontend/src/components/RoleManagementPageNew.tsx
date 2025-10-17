@@ -302,13 +302,19 @@ const RoleManagementPage = () => {
                                 <Eye className="h-4 w-4 mr-1" />
                                 View
                               </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleDeleteRole(role.id)}
+                              <PermissionGuard 
+                                anyPermissions={['role.delete.organization']}
+                                minLevel={2}
+                                tooltipMessage="No permission to delete roles"
                               >
-                                <Trash2 className="h-4 w-4 text-red-500" />
-                              </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => handleDeleteRole(role.id)}
+                                >
+                                  <Trash2 className="h-4 w-4 text-red-500" />
+                                </Button>
+                              </PermissionGuard>
                             </div>
                           </div>
                         </CardContent>
