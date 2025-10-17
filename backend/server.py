@@ -176,7 +176,7 @@ api_router.include_router(sms_router)
 api_router.include_router(approval_router)
 api_router.include_router(user_context_router)
 api_router.include_router(session_router)
-# api_router.include_router(developer_router)
+api_router.include_router(developer_router)
 
 app.include_router(api_router)
 
