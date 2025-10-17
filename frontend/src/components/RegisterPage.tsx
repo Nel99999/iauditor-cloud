@@ -160,7 +160,7 @@ const RegisterPage = () => {
                 data-testid="create-org-checkbox"
               />
               <Label htmlFor="createOrg" className="text-sm font-normal cursor-pointer">
-                I want to create an organization
+                I want to create a <strong className="font-bold">NEW</strong> Profile
               </Label>
             </div>
 
