@@ -366,7 +366,10 @@ const OrganizationPage = () => {
                   return (
                     <React.Fragment key={level}>
                       {idx > 0 && <ChevronRight className="h-5 w-5 text-muted-foreground" />}
-                      <Badge className={`${colors.bg} text-white px-3 py-1.5 text-sm font-semibold`}>
+                      <Badge 
+                        style={{ backgroundColor: colors.hex, color: 'white' }}
+                        className="px-3 py-1.5 text-sm font-semibold"
+                      >
                         {colors.name}
                       </Badge>
                     </React.Fragment>
