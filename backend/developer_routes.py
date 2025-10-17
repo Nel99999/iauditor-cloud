@@ -630,8 +630,8 @@ async def clear_cache(_: dict = Depends(require_developer)):
 
 @router.post("/actions/impersonate")
 async def impersonate_user(
-    request: Request,
     user_id: str = Body(..., embed=True),
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Generate a temporary token to impersonate a user"""
@@ -639,7 +639,6 @@ async def impersonate_user(
         from jose import jwt
         from datetime import timedelta
         
-        db = request.app.state.db
         user = await db.users.find_one({"id": user_id})
         
         if not user:
