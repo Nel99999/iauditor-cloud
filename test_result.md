@@ -192,7 +192,7 @@ backend:
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "User Management Page Integration - Move Pending Approvals into User Management as Tab 2, add Pending Invites as Tab 3, implement full RBAC with role hierarchy checks, permission-based access (no hardcoded roles)"
+user_problem_statement: "Bulk Import RBAC Comprehensive Fixes - Remove hardcoded role checks, add permission-based access, implement role hierarchy validation, fix role name mismatches, enhance error handling, full testing"
 
   - task: "User Management Page Integration - Frontend Testing (3 Tabs with RBAC)"
     implemented: true
