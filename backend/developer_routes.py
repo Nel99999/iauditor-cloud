@@ -566,7 +566,7 @@ async def get_frontend_logs(
 @router.get("/sessions/active")
 async def get_active_sessions(
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Get all active user sessions"""
     try:
