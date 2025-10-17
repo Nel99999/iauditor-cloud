@@ -25,17 +25,18 @@ const LEVEL_NAMES = {
   5: 'Brand'
 };
 
-// Unified color configuration matching Role Management pattern
+// Unified color configuration - hex values for inline styles
 const LEVEL_COLORS = {
-  1: { bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-500', name: 'Profile' },
-  2: { bg: 'bg-green-500', text: 'text-green-500', border: 'border-green-500', name: 'Organisation' },
-  3: { bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-500', name: 'Company' },
-  4: { bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-500', name: 'Branch' },
-  5: { bg: 'bg-pink-500', text: 'text-pink-500', border: 'border-pink-500', name: 'Brand' }
+  1: { hex: '#3b82f6', bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-500', name: 'Profile' },
+  2: { hex: '#22c55e', bg: 'bg-green-500', text: 'text-green-500', border: 'border-green-500', name: 'Organisation' },
+  3: { hex: '#a855f7', bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-500', name: 'Company' },
+  4: { hex: '#f97316', bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-500', name: 'Branch' },
+  5: { hex: '#ec4899', bg: 'bg-pink-500', text: 'text-pink-500', border: 'border-pink-500', name: 'Brand' }
 };
 
 const getLevelColors = (level: number) => {
   return LEVEL_COLORS[level] || { 
+    hex: '#6b7280',
     bg: 'bg-gray-500', 
     text: 'text-gray-500', 
     border: 'border-gray-500', 
