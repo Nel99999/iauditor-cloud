@@ -65,7 +65,16 @@ const RegisterPage = () => {
     );
 
     if (result.success) {
-      navigate('/dashboard');
+      // Check if user is pending approval
+      if (result.user?.approval_status === 'pending') {
+        // Show success message and redirect to login with info message
+        setError('');
+        alert('Registration successful! Your profile is pending Developer approval. You will receive an email once approved.');
+        navigate('/login');
+      } else {
+        // Normal flow (shouldn't happen with new workflow, but keep for safety)
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error || 'Registration failed');
     }
