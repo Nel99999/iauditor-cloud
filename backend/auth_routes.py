@@ -379,8 +379,17 @@ async def forgot_password(
         from email_service import EmailService
         import os
         
-        # Get frontend URL from environment or default
-        frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
+        # Get frontend URL from environment or construct from backend URL
+        frontend_url = os.environ.get("FRONTEND_URL")
+        if not frontend_url:
+            # Try to construct from REACT_APP_BACKEND_URL or default
+            backend_url = os.environ.get("REACT_APP_BACKEND_URL", "")
+            if backend_url:
+                # Remove /api if present and use as frontend URL
+                frontend_url = backend_url.replace("/api", "")
+            else:
+                frontend_url = "https://typescript-fixes-4.preview.emergentagent.com"
+        
         reset_link = f"{frontend_url}/reset-password?token={reset_token}"
         
         # Get organization's email settings
@@ -391,44 +400,70 @@ async def forgot_password(
         if org_settings and org_settings.get("sendgrid_api_key"):
             email_service = EmailService(
                 api_key=org_settings["sendgrid_api_key"],
-                from_email=org_settings.get("sendgrid_from_email", "noreply@yourapp.com"),
+                from_email=org_settings.get("sendgrid_from_email", "noreply@opsplatform.com"),
                 from_name=org_settings.get("sendgrid_from_name", "Operations Platform")
             )
             
             # Send password reset email
             html_content = f"""
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #333;">Password Reset Request</h2>
-                <p>Hi {user['name']},</p>
-                <p>We received a request to reset your password. Click the button below to create a new password:</p>
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="{reset_link}" 
-                       style="background-color: #3b82f6; color: white; padding: 12px 30px; 
-                              text-decoration: none; border-radius: 5px; display: inline-block;">
-                        Reset Password
-                    </a>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .button {{ display: inline-block; background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                    .warning {{ background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🔒 Password Reset Request</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {user['name']},</p>
+                        <p>We received a request to reset your password. Click the button below to create a new password:</p>
+                        
+                        <div style="text-align: center;">
+                            <a href="{reset_link}" class="button">Reset Password</a>
+                        </div>
+                        
+                        <p>Or copy and paste this link into your browser:</p>
+                        <p style="background: #f5f5f5; padding: 10px; word-break: break-all; border-radius: 5px;">{reset_link}</p>
+                        
+                        <div class="warning">
+                            <strong>⏰ Important:</strong> This link will expire in <strong>1 hour</strong>. 
+                            If you didn't request a password reset, you can safely ignore this email.
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <p>This is an automated message from Operations Platform. Please do not reply.</p>
+                    </div>
                 </div>
-                <p>Or copy and paste this link into your browser:</p>
-                <p style="background: #f5f5f5; padding: 10px; word-break: break-all;">{reset_link}</p>
-                <p style="color: #666; font-size: 14px;">
-                    This link will expire in 1 hour. If you didn't request a password reset, 
-                    you can safely ignore this email.
-                </p>
-                <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-                <p style="color: #999; font-size: 12px;">
-                    This is an automated message, please do not reply.
-                </p>
-            </div>
+            </body>
+            </html>
             """
             
-            email_service.send_email(
+            success = email_service.send_email(
                 to_email=user["email"],
-                subject="Password Reset Request",
+                subject="Password Reset Request - Operations Platform",
                 html_content=html_content
             )
+            
+            if success:
+                print(f"✅ Password reset email sent successfully to {user['email']}")
+            else:
+                print(f"⚠️ Failed to send password reset email to {user['email']}")
+                
     except Exception as e:
         # Log error but don't fail the request
-        print(f"Failed to send password reset email: {str(e)}")
+        print(f"❌ Exception while sending password reset email: {str(e)}")
+        import traceback
+        traceback.print_exc()
     
     return {
         "message": "If this email is registered, a password reset link has been sent"
