@@ -366,27 +366,15 @@ const UserManagementPageNew = () => {
               Active Users ({users.length})
             </TabsTrigger>
             
-            <PermissionGuard
-              permission="user.approve.organization"
-              showDisabled={true}
-              tooltipMessage="You don't have permission to view pending approvals"
-            >
-              <TabsTrigger value="pending-approvals" disabled={!canViewApprovals}>
-                Pending Approvals ({pendingApprovals.length})
-                {!canViewApprovals && <Lock className="h-3 w-3 ml-2" />}
-              </TabsTrigger>
-            </PermissionGuard>
+            <TabsTrigger value="pending-approvals" disabled={!canViewApprovals}>
+              Pending Approvals ({pendingApprovals.length})
+              {!canViewApprovals && <Lock className="h-3 w-3 ml-2" />}
+            </TabsTrigger>
 
-            <PermissionGuard
-              permission="invitation.read.organization"
-              showDisabled={true}
-              tooltipMessage="You don't have permission to view invitations"
-            >
-              <TabsTrigger value="pending-invites" disabled={!canViewInvites}>
-                Pending Invites ({pendingInvites.length})
-                {!canViewInvites && <Lock className="h-3 w-3 ml-2" />}
-              </TabsTrigger>
-            </PermissionGuard>
+            <TabsTrigger value="pending-invites" disabled={!canViewInvites}>
+              Pending Invites ({pendingInvites.length})
+              {!canViewInvites && <Lock className="h-3 w-3 ml-2" />}
+            </TabsTrigger>
           </TabsList>
 
           {/* TAB 1: Active Users */}
