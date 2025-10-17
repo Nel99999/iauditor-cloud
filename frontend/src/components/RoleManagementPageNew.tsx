@@ -554,7 +554,7 @@ const RoleManagementPage = () => {
               <Button 
                 onClick={() => {
                   setShowPermissionsDialog(false);
-                  setActiveTab('matrix');
+                  setTimeout(() => setActiveTab('matrix'), 100);
                 }}
               >
                 <Grid3x3 className="h-4 w-4 mr-2" />
