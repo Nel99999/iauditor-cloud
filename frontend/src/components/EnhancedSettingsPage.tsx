@@ -252,11 +252,15 @@ const EnhancedSettingsPage = () => {
   const handleSaveApiSettings = async () => {
     setLoading(true);
     try {
-      await axios.post(`${API}/settings/email`, { sendgrid_api_key: apiSettings.sendgrid_api_key });
-      showMessage('success', 'SendGrid API key saved!');
+      await axios.post(`${API}/settings/email`, { 
+        sendgrid_api_key: apiSettings.sendgrid_api_key,
+        sendgrid_from_email: apiSettings.sendgrid_from_email,
+        sendgrid_from_name: apiSettings.sendgrid_from_name
+      });
+      showMessage('success', 'SendGrid settings saved successfully!');
       loadAllPreferences();
     } catch (err: unknown) {
-      showMessage('error', 'Failed to save API key');
+      showMessage('error', 'Failed to save SendGrid settings');
     } finally {
       setLoading(false);
     }
