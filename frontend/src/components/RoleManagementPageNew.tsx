@@ -246,7 +246,7 @@ const RoleManagementPage = () => {
           </Card>
         </TabsContent>
 
-        {/* Custom Roles Tab - Compact Table */}
+        {/* Custom Roles Tab - Card Grid (same as System Roles) */}
         <TabsContent value="custom" className="space-y-4">
           <Card>
             <CardHeader>
@@ -269,53 +269,59 @@ const RoleManagementPage = () => {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                   {customRoles.map((role) => {
                     const color = getRoleColor(role.level);
                     const permCount = rolePermissions[role.id]?.length || 0;
                     
                     return (
-                      <Card key={role.id} className="border">
-                        <CardContent className="p-4">
+                      <Card key={role.id} className={`border-2 ${color.border} hover:shadow-lg transition-shadow`}>
+                        <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 flex-1">
-                              <Badge 
-                                style={{ backgroundColor: color.hex, color: 'white' }}
-                                className="font-semibold text-xs px-2 py-1"
-                              >
-                                Level {role.level}
-                              </Badge>
-                              <div className="flex-1">
-                                <h4 className="font-semibold">{role.name}</h4>
-                                <p className="text-sm text-muted-foreground">{role.code}</p>
-                              </div>
-                              <Badge variant="outline" className={color.text}>
-                                {permCount} permissions
-                              </Badge>
-                            </div>
-                            <div className="flex gap-2">
+                            <Badge 
+                              style={{ backgroundColor: color.hex, color: 'white' }}
+                              className="font-semibold text-xs px-2 py-1"
+                            >
+                              Level {role.level}
+                            </Badge>
+                            <Edit className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <CardTitle className="text-lg mt-2">{role.name}</CardTitle>
+                          <CardDescription className="text-xs">{role.code}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="text-sm text-muted-foreground">
+                            {role.description || 'Custom role with specific permissions'}
+                          </div>
+                          <div className="flex items-center justify-between pt-2 border-t">
+                            <span className="text-xs text-muted-foreground">Permissions</span>
+                            <Badge variant="outline" className={color.text}>
+                              {permCount} assigned
+                            </Badge>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex-1"
+                              onClick={() => handleViewPermissions(role)}
+                            >
+                              <Eye className="h-3 w-3 mr-2" />
+                              View
+                            </Button>
+                            <PermissionGuard 
+                              anyPermissions={['role.delete.organization']}
+                              minLevel={2}
+                              tooltipMessage="No permission to delete roles"
+                            >
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => handleViewPermissions(role)}
+                                onClick={() => handleDeleteRole(role.id)}
                               >
-                                <Eye className="h-4 w-4 mr-1" />
-                                View
+                                <Trash2 className="h-4 w-4 text-red-500" />
                               </Button>
-                              <PermissionGuard 
-                                anyPermissions={['role.delete.organization']}
-                                minLevel={2}
-                                tooltipMessage="No permission to delete roles"
-                              >
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => handleDeleteRole(role.id)}
-                                >
-                                  <Trash2 className="h-4 w-4 text-red-500" />
-                                </Button>
-                              </PermissionGuard>
-                            </div>
+                            </PermissionGuard>
                           </div>
                         </CardContent>
                       </Card>
