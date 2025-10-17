@@ -66,6 +66,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { hasPermission, hasAnyPermission, hasRoleLevel } = usePermissions();
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [swipeProgress, setSwipeProgress] = useState<number>(0);
