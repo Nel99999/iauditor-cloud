@@ -15,7 +15,7 @@ from datetime import datetime
 # Configuration
 BACKEND_URL = "https://typescript-fixes-4.preview.emergentagent.com/api"
 PRODUCTION_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
-PRODUCTION_USER_PASSWORD = "your_password_here"  # Will be provided
+PRODUCTION_USER_PASSWORD = "TestPassword123!"  # Set for testing
 PRODUCTION_ORG_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"
 
 # Test results tracking
