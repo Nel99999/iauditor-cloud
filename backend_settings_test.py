@@ -12,7 +12,7 @@ from datetime import datetime
 # Configuration
 BASE_URL = "https://devflow-hub-3.preview.emergentagent.com/api"
 PRODUCTION_EMAIL = "llewellyn@bluedawncapital.co.za"
-PRODUCTION_PASSWORD = "password123"  # Will need to be updated if different
+PRODUCTION_PASSWORD = "TestPassword123!"
 
 # Test results tracking
 test_results = []
