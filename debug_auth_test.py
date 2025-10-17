@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test auth endpoints to see where the issue is
-base_url = "https://devflow-hub-3.preview.emergentagent.com"
+base_url = "https://userperm-hub.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

@@ -11,7 +11,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://devflow-hub-3.preview.emergentagent.com/api"
+BACKEND_URL = "https://userperm-hub.preview.emergentagent.com/api"
 PRODUCTION_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
 PRODUCTION_USER_PASSWORD = "TestPassword123!"
 PRODUCTION_ORG_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"

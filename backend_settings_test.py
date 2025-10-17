@@ -10,7 +10,7 @@ import io
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://devflow-hub-3.preview.emergentagent.com/api"
+BASE_URL = "https://userperm-hub.preview.emergentagent.com/api"
 PRODUCTION_EMAIL = "llewellyn@bluedawncapital.co.za"
 PRODUCTION_PASSWORD = "TestPassword123!"
 

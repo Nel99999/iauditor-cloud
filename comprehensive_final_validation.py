@@ -10,7 +10,7 @@ import requests
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://devflow-hub-3.preview.emergentagent.com')
+BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://userperm-hub.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 PROD_ORG_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"
 
