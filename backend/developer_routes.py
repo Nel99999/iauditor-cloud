@@ -368,13 +368,12 @@ async def get_collections(
 
 @router.post("/database/query")
 async def execute_database_query(
-    request: Request,
     query_request: DatabaseQueryRequest,
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Execute database query with safety limits"""
     try:
-        db = request.app.state.db
         collection = db[query_request.collection]
         
         operation = query_request.operation.lower()
