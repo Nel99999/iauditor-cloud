@@ -487,6 +487,27 @@ const RoleManagementPage = () => {
                 </Alert>
               )}
 
+              {/* Custom Role Notice - can edit in matrix */}
+              {!(selectedRole.is_system_role || selectedRole.is_system) && (
+                <Alert className="border-green-200 bg-green-50">
+                  <Info className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-sm text-green-900">
+                    Custom role permissions can be edited in the Permission Matrix.
+                    {' '}
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-green-600 font-semibold"
+                      onClick={() => {
+                        setShowPermissionsDialog(false);
+                        setTimeout(() => setActiveTab('matrix'), 100);
+                      }}
+                    >
+                      Go to Permission Matrix →
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* Permissions List - Grouped by Resource */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
