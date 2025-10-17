@@ -360,25 +360,17 @@ const OrganizationPage = () => {
                 5-level organizational structure
               </div>
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge className={`${LEVEL_CONFIG[1].color} px-3 py-1.5 text-sm font-semibold`}>
-                  {LEVEL_CONFIG[1].name}
-                </Badge>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                <Badge className={`${LEVEL_CONFIG[2].color} px-3 py-1.5 text-sm font-semibold`}>
-                  {LEVEL_CONFIG[2].name}
-                </Badge>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                <Badge className={`${LEVEL_CONFIG[3].color} px-3 py-1.5 text-sm font-semibold`}>
-                  {LEVEL_CONFIG[3].name}
-                </Badge>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                <Badge className={`${LEVEL_CONFIG[4].color} px-3 py-1.5 text-sm font-semibold`}>
-                  {LEVEL_CONFIG[4].name}
-                </Badge>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                <Badge className={`${LEVEL_CONFIG[5].color} px-3 py-1.5 text-sm font-semibold`}>
-                  {LEVEL_CONFIG[5].name}
-                </Badge>
+                {[1, 2, 3, 4, 5].map((level, idx) => {
+                  const colors = getLevelColors(level);
+                  return (
+                    <React.Fragment key={level}>
+                      {idx > 0 && <ChevronRight className="h-5 w-5 text-muted-foreground" />}
+                      <Badge className={`${colors.bg} text-white px-3 py-1.5 text-sm font-semibold`}>
+                        {colors.name}
+                      </Badge>
+                    </React.Fragment>
+                  );
+                })}
               </div>
             </CardDescription>
           </CardHeader>
