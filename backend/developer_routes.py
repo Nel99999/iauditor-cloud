@@ -590,13 +590,12 @@ async def get_active_sessions(
 
 @router.delete("/sessions/{session_id}")
 async def delete_session(
-    request: Request,
     session_id: str,
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Force logout a user by deleting their session"""
     try:
-        db = request.app.state.db
         result = await db.sessions.delete_one({"id": session_id})
         
         return {
