@@ -25,7 +25,6 @@ import {
   Mail,
   Shield,
   Upload,
-  CheckCircle,
   CheckCircle2,
   GitBranch,
   UserCheck,
