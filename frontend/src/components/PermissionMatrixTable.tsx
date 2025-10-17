@@ -38,7 +38,7 @@ const PermissionMatrixTable = () => {
   const [saving, setSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterResource, setFilterResource] = useState('all');
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['inspection', 'task', 'user']));
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadMatrix();
