@@ -129,6 +129,29 @@
   box-shadow: var(--shadow-glow-blue);
 }
 
+.nav-item--disabled {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: var(--typography-size-base);
+  font-weight: var(--typography-weight-medium);
+  border-radius: var(--radius-md);
+  width: 100%;
+  text-align: left;
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.nav-item--disabled:hover {
+  opacity: 0.5;
+}
+
 .active-indicator {
   position: absolute;
   left: 0;
