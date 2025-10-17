@@ -878,7 +878,7 @@ const EnhancedSettingsPage = () => {
                 <div className="flex gap-2">
                   <Button onClick={handleSaveApiSettings} disabled={loading || !apiSettings.sendgrid_api_key}>
                     <Save className="h-4 w-4 mr-2" />
-                    {loading ? 'Saving...' : 'Save API Key'}
+                    {loading ? 'Saving...' : 'Save Settings'}
                   </Button>
                   <Button variant="outline" onClick={handleTestEmail} disabled={testingEmail || !apiSettings.sendgrid_configured}>
                     <Key className="h-4 w-4 mr-2" />
