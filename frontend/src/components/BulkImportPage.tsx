@@ -93,7 +93,7 @@ const BulkImportPage = () => {
   };
 
   const downloadTemplate = () => {
-    const csvContent = 'email,name,role\nexample@company.com,John Doe,viewer\ntest@company.com,Jane Smith,editor';
+    const csvContent = 'email,name,role\nexample@company.com,John Doe,viewer\ntest@company.com,Jane Smith,operator\nmanager@company.com,Bob Manager,manager';
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
