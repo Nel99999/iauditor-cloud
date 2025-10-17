@@ -395,64 +395,158 @@ const RoleManagementPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* View Permissions Dialog */}
+      {/* View Permissions Dialog - Redesigned */}
       <Dialog open={showPermissionsDialog} onOpenChange={setShowPermissionsDialog}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>
-              {selectedRole?.name} - Permissions
-            </DialogTitle>
-            <DialogDescription>
-              {selectedRole?.is_system ? 'System role permissions (read-only)' : 'Manage permissions for this role'}
-            </DialogDescription>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Shield className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">
+                  {selectedRole?.name}
+                </DialogTitle>
+                <DialogDescription className="mt-1">
+                  {selectedRole?.is_system_role || selectedRole?.is_system 
+                    ? 'System role with predefined permissions' 
+                    : 'Custom role permissions'}
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
           
           {selectedRole && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-2 p-4 bg-muted rounded-lg">
+            <div className="flex-1 overflow-y-auto space-y-4 py-2">
+              {/* Role Info Card */}
+              <div className="grid grid-cols-3 gap-3 p-4 bg-muted/50 rounded-lg border">
                 <div>
-                  <p className="text-sm text-muted-foreground">Role Code</p>
-                  <p className="font-semibold">{selectedRole.code}</p>
+                  <p className="text-xs text-muted-foreground mb-1">Role Code</p>
+                  <p className="font-semibold text-sm">{selectedRole.code}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Level</p>
-                  <p className="font-semibold">Level {selectedRole.level}</p>
+                  <p className="text-xs text-muted-foreground mb-1">Hierarchy Level</p>
+                  <Badge 
+                    style={{ 
+                      backgroundColor: getRoleColor(selectedRole.level).hex, 
+                      color: 'white' 
+                    }}
+                    className="font-semibold"
+                  >
+                    Level {selectedRole.level}
+                  </Badge>
                 </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-muted-foreground">Permissions Assigned</p>
-                  <p className="font-semibold">{rolePermissions[selectedRole.id]?.length || 0} / {permissions.length}</p>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Permissions</p>
+                  <p className="font-semibold text-sm">
+                    {rolePermissions[selectedRole.id]?.length || 0} / {permissions.length}
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Assigned Permissions</Label>
-                <div className="grid grid-cols-1 gap-2 max-h-96 overflow-y-auto border rounded-lg p-4">
-                  {permissions
-                    .filter(p => rolePermissions[selectedRole.id]?.includes(p.id))
-                    .map((perm) => (
-                      <div key={perm.id} className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{perm.name}</p>
-                          <p className="text-xs text-muted-foreground">{perm.resource}.{perm.action}.{perm.scope}</p>
+              {/* System Role Notice for Developer */}
+              {(selectedRole.is_system_role || selectedRole.is_system) && (
+                <Alert className="border-blue-200 bg-blue-50">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-sm text-blue-900">
+                    {selectedRole.code === 'developer' 
+                      ? 'As a Developer, you can modify system role permissions in the Permission Matrix.'
+                      : 'System role permissions are pre-configured and cannot be modified by most users.'}
+                    {' '}
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-blue-600 font-semibold"
+                      onClick={() => {
+                        setShowPermissionsDialog(false);
+                        setActiveTab('matrix');
+                      }}
+                    >
+                      Go to Permission Matrix →
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* Permissions List - Grouped by Resource */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">Assigned Permissions</Label>
+                  <Badge variant="secondary" className="text-xs">
+                    {rolePermissions[selectedRole.id]?.length || 0} total
+                  </Badge>
+                </div>
+                
+                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+                  {(() => {
+                    const assignedPerms = permissions.filter(p => 
+                      rolePermissions[selectedRole.id]?.includes(p.id)
+                    );
+                    
+                    // Group by resource type
+                    const grouped = assignedPerms.reduce((acc, perm) => {
+                      const resource = perm.resource || 'other';
+                      if (!acc[resource]) acc[resource] = [];
+                      acc[resource].push(perm);
+                      return acc;
+                    }, {});
+                    
+                    if (Object.keys(grouped).length === 0) {
+                      return (
+                        <div className="text-center py-8 text-muted-foreground border rounded-lg bg-muted/30">
+                          <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No permissions assigned to this role</p>
+                        </div>
+                      );
+                    }
+                    
+                    return Object.entries(grouped).map(([resource, perms]) => (
+                      <div key={resource} className="border rounded-lg overflow-hidden">
+                        <div className="bg-muted/70 px-3 py-2 border-b">
+                          <h4 className="text-sm font-semibold capitalize">
+                            {resource} ({perms.length})
+                          </h4>
+                        </div>
+                        <div className="p-2 space-y-1">
+                          {perms.map((perm) => (
+                            <div 
+                              key={perm.id} 
+                              className="flex items-start gap-2 p-2 rounded hover:bg-muted/50 transition-colors"
+                            >
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium leading-tight">
+                                  {perm.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {perm.resource}.{perm.action}.{perm.scope}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
-                  
-                  {rolePermissions[selectedRole.id]?.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      No permissions assigned to this role
-                    </p>
-                  )}
+                    ));
+                  })()}
                 </div>
               </div>
             </div>
           )}
 
-          <DialogFooter>
+          <DialogFooter className="border-t pt-4">
             <Button variant="outline" onClick={() => setShowPermissionsDialog(false)}>
               Close
             </Button>
+            {(selectedRole?.is_system_role || selectedRole?.is_system) && (
+              <Button 
+                onClick={() => {
+                  setShowPermissionsDialog(false);
+                  setActiveTab('matrix');
+                }}
+              >
+                <Grid3x3 className="h-4 w-4 mr-2" />
+                Open Permission Matrix
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
