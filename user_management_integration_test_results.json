@@ -8,79 +8,79 @@
       "name": "Test 1.1: GET /api/users",
       "status": "passed",
       "details": "Returned 1 users",
-      "timestamp": "2025-10-17T15:27:56.328357"
+      "timestamp": "2025-10-17T15:28:36.043528"
     },
     {
       "name": "Test 1.2: GET /api/users/pending-approvals",
       "status": "passed",
       "details": "Returned 0 pending approvals (may be empty)",
-      "timestamp": "2025-10-17T15:27:56.367322"
+      "timestamp": "2025-10-17T15:28:36.081541"
     },
     {
       "name": "Test 1.3: POST /api/users/{user_id}/approve - Permission Check",
       "status": "passed",
       "details": "Permission check passed (404 user not found is expected)",
-      "timestamp": "2025-10-17T15:27:56.401600"
+      "timestamp": "2025-10-17T15:28:36.118474"
     },
     {
       "name": "Test 1.4: POST /api/users/{user_id}/reject - Permission Check",
       "status": "passed",
       "details": "Permission check passed (404 user not found is expected)",
-      "timestamp": "2025-10-17T15:27:56.440251"
+      "timestamp": "2025-10-17T15:28:36.153315"
     },
     {
       "name": "Test 1.5: POST /api/users/invite",
       "status": "passed",
-      "details": "Invitation created for test_invite_20251017152756@example.com",
-      "timestamp": "2025-10-17T15:27:56.524386"
+      "details": "Invitation created for test_invite_20251017152836@example.com",
+      "timestamp": "2025-10-17T15:28:36.229392"
     },
     {
       "name": "Test 2.1: GET /api/invitations/pending",
       "status": "failed",
       "details": "Permission denied: You don't have permission to view invitations",
-      "timestamp": "2025-10-17T15:27:56.561525"
+      "timestamp": "2025-10-17T15:28:36.262921"
     },
     {
       "name": "Test 2.2: POST /api/invitations/{invite_id}/resend",
       "status": "skipped",
       "details": "No pending invitations to resend",
-      "timestamp": "2025-10-17T15:27:56.562277"
+      "timestamp": "2025-10-17T15:28:36.263755"
     },
     {
       "name": "Test 2.3: DELETE /api/invitations/{invite_id}",
       "status": "failed",
       "details": "Permission denied: You don't have permission to cancel invitations",
-      "timestamp": "2025-10-17T15:27:56.608200"
+      "timestamp": "2025-10-17T15:28:36.302604"
     },
     {
       "name": "Test 2.4: Verify Permission Checks (No Token)",
       "status": "passed",
       "details": "Correctly returns 401 Unauthorized without token",
-      "timestamp": "2025-10-17T15:27:56.641707"
+      "timestamp": "2025-10-17T15:28:36.338830"
     },
     {
       "name": "Test 2.5: GET /api/invitations",
       "status": "passed",
-      "details": "Returned 10 total invitations",
-      "timestamp": "2025-10-17T15:27:56.674911"
+      "details": "Returned 12 total invitations",
+      "timestamp": "2025-10-17T15:28:36.373949"
     },
     {
       "name": "Test 3.1: Verify New Permissions Exist",
       "status": "passed",
       "details": "All 4 required permissions found",
-      "timestamp": "2025-10-17T15:27:56.711489"
+      "timestamp": "2025-10-17T15:28:36.412059"
     },
     {
       "name": "Test 3.2: Check Role-Permission Assignment",
       "status": "passed",
-      "details": "Role permissions: developer: 26 permissions, master: 1 permissions, admin: 18 permissions",
-      "timestamp": "2025-10-17T15:27:56.914869"
+      "details": "Role permissions: developer: 29 permissions, master: 4 permissions, admin: 21 permissions",
+      "timestamp": "2025-10-17T15:28:36.585169"
     },
     {
       "name": "Test 3.3: Test Hierarchy Enforcement",
       "status": "passed",
       "details": "User has permission to invite master role (developer level)",
-      "timestamp": "2025-10-17T15:27:56.983033"
+      "timestamp": "2025-10-17T15:28:36.655970"
     }
   ]
 }
