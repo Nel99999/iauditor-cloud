@@ -96,6 +96,14 @@ async def get_organization_units(
         {"_id": 0}
     ).to_list(1000)
     
+    # Calculate user count for each unit
+    for unit in units:
+        user_count = await db.users.count_documents({
+            "org_unit_id": unit["id"],
+            "is_active": True
+        })
+        unit["user_count"] = user_count
+    
     return units
 
 
