@@ -86,10 +86,15 @@ const ChecklistsPage = () => {
       title="Checklists" 
       subtitle="Manage checklists and templates"
       actions={
-        <Button onClick={() => navigate('/checklists/templates/new')} data-testid="create-checklist-template-btn">
-          <Plus className="h-4 w-4 mr-2" />
-          New Template
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['checklist.create.organization', 'checklist.create.own']}
+          tooltipMessage="No permission to create checklist templates"
+        >
+          <Button onClick={() => navigate('/checklists/templates/new')} data-testid="create-checklist-template-btn">
+            <Plus className="h-4 w-4 mr-2" />
+            New Template
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
