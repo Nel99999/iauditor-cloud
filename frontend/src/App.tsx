@@ -21,7 +21,7 @@ import DashboardHomeNew from "@/components/DashboardHomeNew";
 import OrganizationPage from "@/components/OrganizationPage";
 import UserManagementPage from "@/components/UserManagementPage";
 import UserApprovalPage from "@/components/UserApprovalPage";
-import RoleManagementPage from "@/components/RoleManagementPage";
+import RoleManagementPage from "@/components/RoleManagementPageNew";
 import InvitationManagementPage from "@/components/InvitationManagementPage";
 import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
 import EnhancedSettingsPage from "@/components/EnhancedSettingsPage";
