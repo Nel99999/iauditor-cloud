@@ -439,6 +439,7 @@ const OrganizationPage = () => {
                     onViewUsers={handleViewUsers}
                     expandedNodes={expandedNodes}
                     toggleNode={toggleNode}
+                    depth={0}
                   />
                 ))}
               </div>
