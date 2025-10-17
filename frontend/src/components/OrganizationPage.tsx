@@ -80,8 +80,9 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
         
         {/* Equal Width Color Bar with Labels and Hover Effect */}
         <div 
-          className={`${colors.bg} text-white px-4 py-2 rounded-md w-80 flex items-center justify-between text-sm font-semibold 
-            hover:opacity-90 transition-opacity cursor-default shadow-sm`}
+          style={{ backgroundColor: colors.hex, color: 'white' }}
+          className="px-4 py-2 rounded-md w-80 flex items-center justify-between text-sm font-semibold 
+            hover:opacity-90 transition-opacity cursor-default shadow-sm"
           title={`${colors.name} level organizational unit`}
         >
           <span>{colors.name}</span>
