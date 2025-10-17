@@ -214,13 +214,19 @@ const WebhooksPage = () => {
       title="Webhooks" 
       subtitle="Configure webhook integrations"
       actions={
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+        <PermissionGuard 
+          anyPermissions={['webhook.manage.organization']}
+          minLevel={3}
+          tooltipMessage="No permission to create webhooks"
         >
-          <Plus className="w-4 h-4" />
-          Create Webhook
-        </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Create Webhook
+          </button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
