@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Lock } from 'lucide-react';
@@ -61,12 +62,12 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   tooltipMessage = 'Insufficient Permissions',
   customFallback,
 }) => {
+  const { user } = useAuth();
   const {
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
     hasRoleLevel,
-    user,
   } = usePermissions();
 
   // Check if user meets permission requirements
