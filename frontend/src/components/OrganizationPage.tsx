@@ -329,7 +329,19 @@ const OrganizationPage = () => {
           <CardHeader>
             <CardTitle>Hierarchy Tree</CardTitle>
             <CardDescription>
-              5-level organizational structure: Profile → Organisation → Company → Branch → Brand
+              <div className="text-base font-bold mt-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge className="bg-blue-500 text-white px-3 py-1.5">Profile</Badge>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <Badge className="bg-green-500 text-white px-3 py-1.5">Organisation</Badge>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <Badge className="bg-purple-500 text-white px-3 py-1.5">Company</Badge>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <Badge className="bg-orange-500 text-white px-3 py-1.5">Branch</Badge>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <Badge className="bg-pink-500 text-white px-3 py-1.5">Brand</Badge>
+                </div>
+              </div>
             </CardDescription>
           </CardHeader>
           <CardContent>
