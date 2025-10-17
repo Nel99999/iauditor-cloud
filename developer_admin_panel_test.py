@@ -14,7 +14,7 @@ from typing import Dict, Any, List
 # Configuration
 BACKEND_URL = "https://userperm-hub.preview.emergentagent.com/api"
 PROD_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
-PROD_USER_PASSWORD = "Llewellyn@123"  # Will need to be provided
+PROD_USER_PASSWORD = "TestPassword123!"  # Production password
 
 class Colors:
     GREEN = '\033[92m'
