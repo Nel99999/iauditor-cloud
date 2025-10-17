@@ -294,13 +294,13 @@ const PermissionMatrixTable = () => {
                             key={role.id} 
                             className="text-center border-r"
                             style={{ 
-                              minWidth: '32px', 
-                              maxWidth: '42px',
-                              width: '35px',
-                              padding: '4px 2px',
+                              minWidth: '16px', 
+                              maxWidth: '20px',
+                              width: '18px',
+                              padding: '2px 1px',
                               color: isCustomRole ? '#991b1b' : 'inherit',
                               fontWeight: isCustomRole ? 'bold' : 'normal',
-                              fontSize: '0.75rem'
+                              fontSize: '0.65rem'
                             }}
                             title={`${ROLE_ABBREV[role.code]?.full || role.name} ${isCustomRole ? '(CUSTOM)' : '(SYSTEM)'}`}
                           >
@@ -311,10 +311,12 @@ const PermissionMatrixTable = () => {
                                 display: 'block',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
+                                whiteSpace: 'nowrap',
+                                fontSize: '0.65rem',
+                                lineHeight: '1'
                               }}
                             >
-                              {ROLE_ABBREV[role.code]?.abbrev || role.code.substring(0, 7).toUpperCase()}
+                              {ROLE_ABBREV[role.code]?.abbrev?.substring(0, 3) || role.code.substring(0, 3).toUpperCase()}
                             </span>
                           </th>
                         );
