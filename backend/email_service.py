@@ -6,9 +6,44 @@ from typing import Optional
 class EmailService:
     """Email service using SendGrid"""
     
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, from_email: Optional[str] = None, from_name: Optional[str] = None):
         self.api_key = api_key or os.environ.get('SENDGRID_API_KEY')
+        self.from_email = from_email or 'noreply@opsplatform.com'
+        self.from_name = from_name or 'Operations Platform'
         self.client = SendGridAPIClient(self.api_key) if self.api_key else None
+    
+    def send_email(
+        self,
+        to_email: str,
+        subject: str,
+        html_content: str,
+        from_email: Optional[str] = None,
+        from_name: Optional[str] = None
+    ) -> bool:
+        """Send a generic email using SendGrid"""
+        if not self.client:
+            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            return False
+        
+        try:
+            # Use provided from_email/from_name or fall back to instance defaults
+            sender_email = from_email or self.from_email
+            sender_name = from_name or self.from_name
+            
+            message = Mail(
+                from_email=Email(sender_email, sender_name),
+                to_emails=To(to_email),
+                subject=subject,
+                html_content=Content("text/html", html_content)
+            )
+            
+            response = self.client.send(message)
+            print(f"✅ Email sent successfully to {to_email} - Status: {response.status_code}")
+            return response.status_code in [200, 201, 202]
+            
+        except Exception as e:
+            print(f"❌ Failed to send email to {to_email}: {str(e)}")
+            return False
     
     def send_invitation_email(
         self,
