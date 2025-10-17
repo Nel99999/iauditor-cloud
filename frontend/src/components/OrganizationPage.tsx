@@ -149,8 +149,6 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
             </Tooltip>
           </div>
         </TooltipProvider>
-          </Button>
-        </div>
       </div>
       
       {isExpanded && hasChildren && (
