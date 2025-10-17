@@ -129,13 +129,6 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           path: '/users',
           anyPermissions: ['user.read.organization', 'user.read.all'],
         },
-        ...(['master', 'admin', 'developer'].includes(user?.role || '') ? [{
-          name: 'Pending Approvals',
-          icon: CheckCircle,
-          path: '/users/approvals',
-          badge: 'NEW',
-          permission: 'approval.manage.organization',
-        }] : []),
         {
           name: 'Roles',
           icon: Shield,
