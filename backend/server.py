@@ -47,6 +47,7 @@ from sms_routes import router as sms_router
 from approval_routes import router as approval_router
 from user_context_routes import router as user_context_router
 from session_routes import router as session_router
+from developer_routes import router as developer_router
 
 
 ROOT_DIR = Path(__file__).parent
