@@ -336,7 +336,7 @@ async def test_email(
 @router.get("/database/collections")
 async def get_collections(
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Get list of all database collections"""
     try:
