@@ -750,8 +750,8 @@ async def get_webhooks(
 @router.post("/webhooks/test")
 async def test_webhook(
     webhook_request: WebhookTestRequest,
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(require_developer)
+    _: dict = Depends(require_developer),
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Send a test webhook event"""
     import httpx
