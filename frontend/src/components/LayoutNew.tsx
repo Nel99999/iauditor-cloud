@@ -433,7 +433,19 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
               <div className="sidebar-footer">
                 <div className="user-profile">
                   <div className="user-avatar">
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                    {user?.picture ? (
+                      <img 
+                        src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
+                        alt={user?.name || 'User'}
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.parentElement.textContent = user?.name?.charAt(0).toUpperCase() || 'U';
+                        }}
+                      />
+                    ) : (
+                      user?.name?.charAt(0).toUpperCase() || 'U'
+                    )}
                   </div>
                   <div className="user-info">
                     <p className="user-name">{user?.name || 'User'}</p>
