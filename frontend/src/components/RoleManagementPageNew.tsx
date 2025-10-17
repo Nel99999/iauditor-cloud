@@ -198,7 +198,10 @@ const RoleManagementPage = () => {
                       <Card key={role.id} className={`border-2 ${color.border} hover:shadow-lg transition-shadow`}>
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between">
-                            <Badge className={`${color.bg} text-white`}>
+                            <Badge 
+                              style={{ backgroundColor: color.hex, color: 'white' }}
+                              className="font-semibold text-xs px-2 py-1"
+                            >
                               Level {role.level}
                             </Badge>
                             <Lock className="h-4 w-4 text-muted-foreground" />
