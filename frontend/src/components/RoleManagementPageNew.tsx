@@ -41,6 +41,9 @@ const RoleManagementPage = () => {
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [showPermissionsDialog, setShowPermissionsDialog] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<any | null>(null);
+  const [permissionSearch, setPermissionSearch] = useState<string>('');
+  const [expandedPermSections, setExpandedPermSections] = useState<Set<string>>(new Set(['inspection', 'task', 'user']));
+  const [activeTab, setActiveTab] = useState<string>('system');
   const [newRole, setNewRole] = useState({ 
     name: '', 
     code: '', 
