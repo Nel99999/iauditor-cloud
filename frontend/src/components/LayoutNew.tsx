@@ -40,6 +40,8 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import './LayoutNew.css';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 // Types
 interface MenuItem {
   name: string;
