@@ -350,7 +350,90 @@ async def reject_user(
         "ip_address": None
     })
     
-    # TODO: Send rejection email to user
+    # Send rejection email to user
+    try:
+        from email_service import EmailService
+        import os
+        
+        # Get organization's email settings
+        org_settings = await db.organization_settings.find_one(
+            {"organization_id": user.get("organization_id")}
+        )
+        
+        # Try to use org settings, fallback to environment variable
+        sendgrid_key = None
+        if org_settings and org_settings.get("sendgrid_api_key"):
+            sendgrid_key = org_settings["sendgrid_api_key"]
+        else:
+            sendgrid_key = os.environ.get("SENDGRID_API_KEY")
+        
+        if sendgrid_key:
+            email_service = EmailService(
+                api_key=sendgrid_key,
+                from_email="noreply@opsplatform.com",
+                from_name="Operations Platform"
+            )
+            
+            # Get organization name
+            org = await db.organizations.find_one({"id": user.get("organization_id")})
+            org_name = org.get("name", "Operations Platform") if org else "Operations Platform"
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                    .warning-box {{ background: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Profile Registration Update</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {user['name']},</p>
+                        <p>We regret to inform you that your profile registration for <strong>{org_name}</strong> was not approved at this time.</p>
+                        
+                        <div class="warning-box">
+                            <strong>Reason:</strong><br>
+                            {rejection_notes}
+                        </div>
+                        
+                        <p>If you believe this was a mistake or would like more information, please contact your administrator or support team.</p>
+                        
+                        <p>You're welcome to register again if your circumstances have changed or if you can address the concerns noted above.</p>
+                    </div>
+                    <div class="footer">
+                        <p>This is an automated email from Operations Platform. Please do not reply.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            success = email_service.send_email(
+                to_email=user["email"],
+                subject=f"Profile Registration Update - {org_name}",
+                html_content=html_content
+            )
+            
+            if success:
+                print(f"✅ Rejection email sent successfully to {user['email']}")
+            else:
+                print(f"⚠️ Failed to send rejection email to {user['email']}")
+        else:
+            print(f"⚠️ No SendGrid API key configured - cannot send rejection email")
+            
+    except Exception as e:
+        print(f"❌ Exception while sending rejection email: {str(e)}")
+        import traceback
+        traceback.print_exc()
     
     return {
         "message": f"User {user['email']} has been rejected",
