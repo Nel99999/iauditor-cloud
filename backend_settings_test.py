@@ -125,20 +125,12 @@ def test_profile_update(token):
     print("="*80)
     
     try:
-        # Get current profile
+        # Get current profile (use /users/me endpoint)
         get_response = requests.get(
-            f"{BASE_URL}/users/profile",
+            f"{BASE_URL}/users/me",
             headers={"Authorization": f"Bearer {token}"},
             timeout=10
         )
-        
-        if get_response.status_code == 404:
-            # Try /users/me instead
-            get_response = requests.get(
-                f"{BASE_URL}/users/me",
-                headers={"Authorization": f"Bearer {token}"},
-                timeout=10
-            )
         
         if get_response.status_code != 200:
             log_test("Get Profile", "FAIL", f"Status {get_response.status_code}")
