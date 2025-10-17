@@ -226,7 +226,6 @@ async def get_environment_info(_: dict = Depends(require_developer)):
 
 @router.post("/test/api")
 async def test_api_endpoint(
-    request: Request,
     test_request: APITestRequest,
     _: dict = Depends(require_developer)
 ):
