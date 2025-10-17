@@ -59,30 +59,30 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     # Initialize system roles for the new organization
     await initialize_system_roles(db, organization_id)
     
-    # Organization creators are auto-approved as Master
-    # This is secure because they control their own organization
+    # NEW WORKFLOW: All self-registrations require Developer approval
+    # Only invited users are auto-approved
     
-    # Create user
+    # Create user with PENDING status
     user = User(
         email=user_data.email,
         name=user_data.name,
         password_hash=get_password_hash(user_data.password),
         auth_provider="local",
         organization_id=organization_id,
-        role="master",  # Organization creator gets master role
-        approval_status="approved",  # Auto-approved
-        is_active=True,
-        invited=False,
+        role="viewer",  # Default role, can be changed by Developer upon approval
+        approval_status="pending",  # Requires Developer approval
+        is_active=False,  # Inactive until approved
+        invited=False,  # Self-registration
         registration_ip=None,  # TODO: Get from request
     )
     
     user_dict = user.model_dump()
     user_dict["created_at"] = user_dict["created_at"].isoformat()
     user_dict["updated_at"] = user_dict["updated_at"].isoformat()
-    user_dict["last_login"] = datetime.now(timezone.utc).isoformat()
-    user_dict["approved_at"] = datetime.now(timezone.utc).isoformat()
-    user_dict["approved_by"] = None  # Self-approved
-    user_dict["approval_notes"] = "Organization creator - auto-approved"
+    user_dict["last_login"] = None  # No login until approved
+    user_dict["approved_at"] = None
+    user_dict["approved_by"] = None
+    user_dict["approval_notes"] = "Awaiting Developer approval for new profile creation"
     
     await db.users.insert_one(user_dict)
     
@@ -92,15 +92,107 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         {"$set": {"owner_id": user.id}}
     )
     
-    # Create access token
-    access_token = create_access_token(data={"sub": user.id})
+    # Send "Registration Pending" email to user
+    try:
+        from email_service import EmailService
+        
+        # Get organization email settings (may not exist yet for new org)
+        org_settings = await db.organization_settings.find_one(
+            {"organization_id": organization_id}
+        )
+        
+        # Try to use org settings, fallback to environment variable
+        sendgrid_key = None
+        if org_settings and org_settings.get("sendgrid_api_key"):
+            sendgrid_key = org_settings["sendgrid_api_key"]
+        else:
+            # Try environment variable as fallback
+            import os
+            sendgrid_key = os.environ.get("SENDGRID_API_KEY")
+        
+        if sendgrid_key:
+            email_service = EmailService(
+                api_key=sendgrid_key,
+                from_email="noreply@opsplatform.com",
+                from_name="Operations Platform"
+            )
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                    .info-box {{ background: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>✅ Profile Creation Request Received!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {user_data.name},</p>
+                        <p>Thank you for creating your profile with <strong>{user_data.organization_name}</strong>!</p>
+                        
+                        <div class="info-box">
+                            <strong>ℹ️ Account Status:</strong> Your profile is currently <strong>pending approval</strong>. 
+                            A Developer will review your registration and you'll receive an email once your account is approved.
+                        </div>
+                        
+                        <p>This review process typically takes 24-48 hours. You'll receive an email notification once your profile is approved and you can start using the platform.</p>
+                        
+                        <p><strong>What happens next?</strong></p>
+                        <ul>
+                            <li>A Developer will review your profile creation request</li>
+                            <li>You'll receive an approval email with login instructions</li>
+                            <li>You can then access your account and start using the platform</li>
+                        </ul>
+                        
+                        <p>If you have any questions, please contact support.</p>
+                    </div>
+                    <div class="footer">
+                        <p>This is an automated email from Operations Platform. Please do not reply.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            success = email_service.send_email(
+                to_email=user_data.email,
+                subject="Profile Creation Request Received - Pending Developer Approval",
+                html_content=html_content
+            )
+            
+            if success:
+                print(f"✅ Registration pending email sent to {user_data.email}")
+            else:
+                print(f"⚠️ Failed to send registration pending email to {user_data.email}")
+        else:
+            print(f"⚠️ No SendGrid API key configured - cannot send registration email")
+            
+    except Exception as e:
+        print(f"❌ Exception while sending registration pending email: {str(e)}")
+        import traceback
+        traceback.print_exc()
     
-    # Return token and user data (without password hash)
-    user_response = user.model_dump()
-    user_response.pop("password_hash", None)
-    user_response["last_login"] = user_dict["last_login"]
-    
-    return Token(access_token=access_token, user=user_response)
+    # Return response WITHOUT token (user cannot login until approved)
+    # Return a special response indicating pending status
+    return Token(
+        access_token="",  # No token until approved
+        user={
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "approval_status": "pending",
+            "message": "Registration successful! Your profile is pending Developer approval. You will receive an email once approved."
+        }
+    )
 
 
 
