@@ -577,17 +577,15 @@ const RoleManagementPage = () => {
             <Button variant="outline" onClick={() => setShowPermissionsDialog(false)}>
               Close
             </Button>
-            {(selectedRole?.is_system_role || selectedRole?.is_system) && (
-              <Button 
-                onClick={() => {
-                  setShowPermissionsDialog(false);
-                  setTimeout(() => setActiveTab('matrix'), 100);
-                }}
-              >
-                <Grid3x3 className="h-4 w-4 mr-2" />
-                Open Permission Matrix
-              </Button>
-            )}
+            <Button 
+              onClick={() => {
+                setShowPermissionsDialog(false);
+                setTimeout(() => setActiveTab('matrix'), 100);
+              }}
+            >
+              <Grid3x3 className="h-4 w-4 mr-2" />
+              Open Permission Matrix
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
