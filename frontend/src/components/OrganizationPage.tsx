@@ -39,6 +39,22 @@ const LEVEL_COLORS = {
   5: 'bg-pink-50 text-pink-700'
 };
 
+const LEVEL_BADGE_COLORS = {
+  1: 'bg-blue-500 text-white',
+  2: 'bg-green-500 text-white',
+  3: 'bg-purple-500 text-white',
+  4: 'bg-orange-500 text-white',
+  5: 'bg-pink-500 text-white'
+};
+
+const LEVEL_BAR_COLORS = {
+  1: 'bg-blue-500 text-white',
+  2: 'bg-green-500 text-white',
+  3: 'bg-purple-500 text-white',
+  4: 'bg-orange-500 text-white',
+  5: 'bg-pink-500 text-white'
+};
+
 const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, onViewUsers, expandedNodes, toggleNode }) => {
   const hasChildren = node.children && node.children.length > 0;
   const isExpanded = expandedNodes[node.id];
