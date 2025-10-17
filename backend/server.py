@@ -45,6 +45,8 @@ from analytics_routes import router as analytics_router
 from gdpr_routes import router as gdpr_router
 from sms_routes import router as sms_router
 from approval_routes import router as approval_router
+from user_context_routes import router as user_context_router
+from session_routes import router as session_router
 
 
 ROOT_DIR = Path(__file__).parent
