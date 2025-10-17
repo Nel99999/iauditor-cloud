@@ -106,10 +106,15 @@ const InspectionsPage = () => {
       title="Inspections" 
       subtitle="Manage inspections and audits"
       actions={
-        <Button onClick={() => navigate('/inspections/templates/new')} data-testid="create-template-btn">
-          <Plus className="h-4 w-4 mr-2" />
-          New Template
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['inspection.create.organization', 'inspection.create.own']}
+          tooltipMessage="No permission to create inspection templates"
+        >
+          <Button onClick={() => navigate('/inspections/templates/new')} data-testid="create-template-btn">
+            <Plus className="h-4 w-4 mr-2" />
+            New Template
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
