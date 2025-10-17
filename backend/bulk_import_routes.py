@@ -53,20 +53,29 @@ def parse_csv_file(file_content: str) -> tuple:
 
 # ==================== ENDPOINTS ====================
 
-@router.post("/users/preview")
-async def preview_user_import(
+@router.post("/validate")
+async def validate_bulk_import(
     file: UploadFile = File(...),
     request: Request = None,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Preview CSV import without actually importing"""
+    """Validate CSV file for bulk user import - Requires user.create.organization permission"""
     user = await get_current_user(request, db)
     
-    # Check admin permission
-    if user["role"] not in ["admin", "master", "developer"]:
+    # Check permission (not hardcoded role)
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        user["id"],
+        "user",
+        "create",
+        "organization"
+    )
+    
+    if not has_permission:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only admins can import users"
+            detail="You don't have permission to import users"
         )
     
     # Validate file type
@@ -89,6 +98,13 @@ async def preview_user_import(
             detail=f"Failed to parse CSV: {error}"
         )
     
+    # Get current user's role level for hierarchy check
+    current_user_role = await db.roles.find_one({
+        "code": user.get("role"),
+        "organization_id": user["organization_id"]
+    })
+    current_level = current_user_role.get("level", 999) if current_user_role else 999
+    
     # Validate rows
     valid_rows = []
     invalid_rows = []
@@ -96,6 +112,20 @@ async def preview_user_import(
     
     for i, row in enumerate(rows, start=2):  # Start at 2 (1 is header)
         is_valid, errors = validate_csv_row(row, i)
+        
+        # Additional role hierarchy check
+        role_code = row.get("role", "viewer").lower()
+        target_role = await db.roles.find_one({
+            "code": role_code,
+            "organization_id": user["organization_id"]
+        })
+        
+        if target_role:
+            target_level = target_role.get("level", 999)
+            # Can only import users with equal or lower authority (higher level number)
+            if current_level > target_level:
+                errors.append(f"Cannot import {role_code} role (higher authority than your role)")
+                is_valid = False
         
         # Check if email already exists
         email = row.get("email", "").lower().strip()
@@ -120,7 +150,7 @@ async def preview_user_import(
                 "row": i,
                 "email": email,
                 "name": row.get("name"),
-                "role": row.get("role", "viewer").lower(),
+                "role": role_code,
                 "group": row.get("group", "")
             })
         else:
@@ -131,10 +161,11 @@ async def preview_user_import(
             })
     
     return {
-        "total_rows": len(rows),
-        "valid_rows": len(valid_rows),
-        "invalid_rows": len(invalid_rows),
-        "duplicate_emails": len(duplicate_emails),
+        "is_valid": len(invalid_rows) == 0,
+        "total_count": len(rows),
+        "valid_count": len(valid_rows),
+        "invalid_count": len(invalid_rows),
+        "duplicate_count": len(duplicate_emails),
         "preview": valid_rows[:10],  # Show first 10
         "errors": invalid_rows[:20],  # Show first 20 errors
         "duplicates": duplicate_emails[:20]
