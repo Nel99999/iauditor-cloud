@@ -39,7 +39,12 @@ async def get_email_settings(
     }, {"_id": 0})
     
     if not settings:
-        return {"sendgrid_configured": False, "sendgrid_api_key": ""}
+        return {
+            "sendgrid_configured": False, 
+            "sendgrid_api_key": "",
+            "sendgrid_from_email": "",
+            "sendgrid_from_name": ""
+        }
     
     # Mask API key for security
     api_key = settings.get("sendgrid_api_key", "")
@@ -47,7 +52,9 @@ async def get_email_settings(
     
     return {
         "sendgrid_configured": bool(api_key),
-        "sendgrid_api_key": masked_key
+        "sendgrid_api_key": masked_key,
+        "sendgrid_from_email": settings.get("sendgrid_from_email", ""),
+        "sendgrid_from_name": settings.get("sendgrid_from_name", "")
     }
 
 
