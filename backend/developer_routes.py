@@ -83,12 +83,11 @@ class QuickActionRequest(BaseModel):
 
 @router.get("/health")
 async def get_system_health(
-    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Get comprehensive system health information"""
     try:
-        db = request.app.state.db
         
         # System metrics
         cpu_percent = psutil.cpu_percent(interval=1)
