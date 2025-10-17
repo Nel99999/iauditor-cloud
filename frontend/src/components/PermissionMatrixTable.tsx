@@ -302,7 +302,7 @@ const PermissionMatrixTable = () => {
                   </thead>
                   <tbody>
                     {filteredResources.map((resource, idx) => (
-                      <React.Fragment key={resource}>
+                      <Fragment key={resource}>
                         {/* Resource Header Row */}
                         <tr className="bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800">
                           <td 
