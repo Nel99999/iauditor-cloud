@@ -84,7 +84,7 @@ class QuickActionRequest(BaseModel):
 @router.get("/health")
 async def get_system_health(
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: Annotated[AsyncIOMotorDatabase, Depends(get_db)] = None
 ):
     """Get comprehensive system health information"""
     try:
