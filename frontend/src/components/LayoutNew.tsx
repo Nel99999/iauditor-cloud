@@ -375,6 +375,30 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                     {section.items.map((item: any) => {
                       const Icon = item.icon;
                       const active = isActive(item.path);
+                      const hasAccess = canAccessMenuItem(item);
+                      
+                      // If no access, show greyed out with tooltip
+                      if (!hasAccess) {
+                        return (
+                          <TooltipProvider key={item.path}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="nav-item nav-item--disabled">
+                                  <Icon size={20} />
+                                  <span>{item.name}</span>
+                                  <Lock size={14} className="ml-auto opacity-50" />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent side="right">
+                                <div className="flex items-center gap-2">
+                                  <Lock className="h-3 w-3" />
+                                  <span>Permission Required</span>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        );
+                      }
                       
                       return (
                         <motion.button
@@ -386,6 +410,11 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                         >
                           <Icon size={20} />
                           <span>{item.name}</span>
+                          {item.badge && (
+                            <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                              {item.badge}
+                            </span>
+                          )}
                           {active && (
                             <motion.div
                               className="active-indicator"
