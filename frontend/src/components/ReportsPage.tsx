@@ -131,10 +131,15 @@ const ReportsPage = () => {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button onClick={() => setShowCustomReportDialog(true)} data-testid="create-custom-report-btn">
-            <Plus className="h-4 w-4 mr-2" />
-            Custom Report
-          </Button>
+          <PermissionGuard 
+            anyPermissions={['report.create.organization']}
+            tooltipMessage="No permission to create custom reports"
+          >
+            <Button onClick={() => setShowCustomReportDialog(true)} data-testid="create-custom-report-btn">
+              <Plus className="h-4 w-4 mr-2" />
+              Custom Report
+            </Button>
+          </PermissionGuard>
         </div>
       }
     >
