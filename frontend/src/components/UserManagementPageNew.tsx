@@ -698,14 +698,21 @@ const UserManagementPageNew = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="viewer">Viewer</SelectItem>
-                    <SelectItem value="operator">Operator</SelectItem>
-                    <SelectItem value="inspector">Inspector</SelectItem>
-                    <SelectItem value="supervisor">Supervisor</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
+                    {/* Show roles based on current user's level - can only invite equal or lower */}
+                    {getRoleLevel() <= 10 && <SelectItem value="viewer">Viewer</SelectItem>}
+                    {getRoleLevel() <= 9 && <SelectItem value="operator">Operator</SelectItem>}
+                    {getRoleLevel() <= 8 && <SelectItem value="inspector">Inspector</SelectItem>}
+                    {getRoleLevel() <= 7 && <SelectItem value="supervisor">Supervisor</SelectItem>}
+                    {getRoleLevel() <= 6 && <SelectItem value="manager">Manager</SelectItem>}
+                    {getRoleLevel() <= 5 && <SelectItem value="team_lead">Team Lead</SelectItem>}
+                    {getRoleLevel() <= 4 && <SelectItem value="operations_manager">Operations Manager</SelectItem>}
+                    {getRoleLevel() <= 3 && <SelectItem value="admin">Admin</SelectItem>}
+                    {getRoleLevel() <= 2 && <SelectItem value="master">Master</SelectItem>}
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  You can only invite users with equal or lower role levels
+                </p>
               </div>
             </div>
             <DialogFooter className="mt-4">
