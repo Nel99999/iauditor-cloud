@@ -1,7 +1,7 @@
 import requests
 import io
 
-BASE_URL = "https://userperm-hub.preview.emergentagent.co.za/api"
+BASE_URL = "https://userperm-hub.preview.emergentagent.com/api"
 
 # Login
 response = requests.post(
