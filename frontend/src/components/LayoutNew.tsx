@@ -275,6 +275,34 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
 
   const isActive = (path: string): boolean => location.pathname === path || location.pathname.startsWith(path + '/');
 
+  /**
+   * Check if user can access a menu item
+   */
+  const canAccessMenuItem = (item: MenuItem): boolean => {
+    // Check permission
+    if (item.permission) {
+      const [resource, action, scope] = item.permission.split('.');
+      if (!hasPermission(resource, action, scope)) return false;
+    }
+
+    // Check any permissions
+    if (item.anyPermissions && item.anyPermissions.length > 0) {
+      if (!hasAnyPermission(item.anyPermissions)) return false;
+    }
+
+    // Check role level
+    if (item.minLevel !== undefined) {
+      if (!hasRoleLevel(item.minLevel)) return false;
+    }
+
+    // Check specific roles
+    if (item.roles && item.roles.length > 0) {
+      if (!item.roles.includes(user?.role || '')) return false;
+    }
+
+    return true;
+  };
+
   const handleLogout = async (): Promise<void> => {
     await logout();
     navigate('/login');
