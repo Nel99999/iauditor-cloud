@@ -24,7 +24,7 @@ import UserApprovalPage from "@/components/UserApprovalPage";
 import RoleManagementPage from "@/components/RoleManagementPageNew";
 import InvitationManagementPage from "@/components/InvitationManagementPage";
 import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
-import EnhancedSettingsPage from "@/components/EnhancedSettingsPage";
+import ModernSettingsPage from "@/components/ModernSettingsPage";
 import MFASetupPage from "@/components/MFASetupPage";
 import InspectionsPage from "@/components/InspectionsPage";
 import TemplateBuilderPage from "@/components/TemplateBuilderPage";
