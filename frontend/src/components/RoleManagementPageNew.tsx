@@ -11,8 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Shield, Plus, Trash2, Lock, Save, Grid3x3, Eye, Edit, CheckCircle, Crown, Users } from 'lucide-react';
+import { Shield, Plus, Trash2, Lock, Save, Grid3x3, Eye, Edit, CheckCircle, Crown, Users, Info, ChevronDown, ChevronRight, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import PermissionMatrixTable from './PermissionMatrixTable';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
