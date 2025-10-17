@@ -278,7 +278,7 @@ async def test_api_endpoint(
 async def test_email(
     email_request: EmailTestRequest,
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Send test email using SendGrid"""
     try:
