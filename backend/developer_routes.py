@@ -33,13 +33,24 @@ logger = logging.getLogger(__name__)
 # SECURITY MIDDLEWARE
 # ============================================================================
 
-async def require_developer(current_user: dict = Depends(get_current_user)):
-    """Ensure only developer role can access these endpoints"""
+async def get_current_developer(request: Request, db = Depends(get_db)):
+    """Get current user and ensure they have developer role"""
+    from auth_utils import get_current_user
+    
+    current_user = await get_current_user(request, db)
+    
+    if not current_user:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated"
+        )
+    
     if current_user.get("role") != "developer":
         raise HTTPException(
             status_code=403,
             detail="Developer role required for this operation"
         )
+    
     return current_user
 
 
