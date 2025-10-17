@@ -144,8 +144,8 @@ const RoleManagementPage = () => {
     setShowPermissionsDialog(true);
   };
 
-  const systemRoles = roles.filter(r => r.is_system);
-  const customRoles = roles.filter(r => !r.is_system);
+  const systemRoles = roles.filter(r => r.is_system_role || r.is_system);
+  const customRoles = roles.filter(r => !r.is_system_role && !r.is_system);
 
   const getRoleColor = (level: number) => {
     return ROLE_COLORS[level] || { bg: 'bg-gray-500', text: 'text-gray-500', border: 'border-gray-500' };
