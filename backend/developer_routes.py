@@ -3,6 +3,7 @@ Developer-only routes for system administration and debugging
 All endpoints require 'developer' role
 """
 from fastapi import APIRouter, HTTPException, Depends, Request, Body
+from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone
 import os
@@ -17,6 +18,11 @@ from pydantic import BaseModel
 from auth_routes import get_current_user
 
 router = APIRouter(prefix="/developer", tags=["Developer"])
+
+
+def get_db(request: Request) -> AsyncIOMotorDatabase:
+    """Dependency to get database from request state"""
+    return request.app.state.db
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
