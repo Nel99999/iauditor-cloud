@@ -751,7 +751,7 @@ async def get_webhooks(
 async def test_webhook(
     webhook_request: WebhookTestRequest,
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Send a test webhook event"""
     import httpx
