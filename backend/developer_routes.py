@@ -278,7 +278,7 @@ async def test_api_endpoint(
 async def test_email(
     email_request: EmailTestRequest,
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Send test email using SendGrid"""
     try:
@@ -336,7 +336,7 @@ async def test_email(
 @router.get("/database/collections")
 async def get_collections(
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Get list of all database collections"""
     try:
@@ -370,7 +370,7 @@ async def get_collections(
 async def execute_database_query(
     query_request: DatabaseQueryRequest,
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Execute database query with safety limits"""
     try:
@@ -566,7 +566,7 @@ async def get_frontend_logs(
 @router.get("/sessions/active")
 async def get_active_sessions(
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Get all active user sessions"""
     try:
@@ -592,7 +592,7 @@ async def get_active_sessions(
 async def delete_session(
     session_id: str,
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Force logout a user by deleting their session"""
     try:
@@ -632,7 +632,7 @@ async def clear_cache(current_user: dict = Depends(require_developer)):
 async def impersonate_user(
     user_id: str = Body(..., embed=True),
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Generate a temporary token to impersonate a user"""
     try:
@@ -683,7 +683,7 @@ async def impersonate_user(
 @router.get("/metrics/performance")
 async def get_performance_metrics(
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Get performance metrics from audit logs"""
     try:
@@ -728,7 +728,7 @@ async def get_performance_metrics(
 @router.get("/webhooks")
 async def get_webhooks(
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Get all configured webhooks"""
     try:
@@ -751,7 +751,7 @@ async def get_webhooks(
 async def test_webhook(
     webhook_request: WebhookTestRequest,
     current_user: dict = Depends(require_developer),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    db = Depends(get_db)
 ):
     """Send a test webhook event"""
     import httpx
