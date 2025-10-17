@@ -727,12 +727,11 @@ async def get_performance_metrics(
 
 @router.get("/webhooks")
 async def get_webhooks(
-    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Get all configured webhooks"""
     try:
-        db = request.app.state.db
         webhooks = await db.webhooks.find({}).to_list(length=1000)
         
         for webhook in webhooks:
