@@ -199,13 +199,18 @@ const GroupsManagementPage = () => {
       title="Groups & Teams" 
       subtitle="Organize users into groups"
       actions={
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        <PermissionGuard 
+          anyPermissions={['group.create.organization']}
+          tooltipMessage="No permission to create groups"
         >
-          <Plus className="w-4 h-4" />
-          Create Group
-        </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            <Plus className="w-4 h-4" />
+            Create Group
+          </button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
