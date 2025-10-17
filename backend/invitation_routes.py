@@ -165,8 +165,24 @@ async def get_pending_invitations(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get all pending invitations for the organization"""
+    """Get all pending invitations for the organization - Requires invitation.read.organization permission"""
     current_user = await get_current_user(request, db)
+    
+    # Check permission
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        current_user["id"],
+        "invitation",
+        "read",
+        "organization"
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to view invitations"
+        )
     
     invitations = await db.invitations.find({
         "organization_id": current_user["organization_id"],
