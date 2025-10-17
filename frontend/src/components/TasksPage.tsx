@@ -103,10 +103,15 @@ const TasksPage = () => {
       title="Tasks" 
       subtitle="Manage and track your tasks"
       actions={
-        <Button onClick={() => setShowCreateDialog(true)} data-testid="create-task-btn">
-          <Plus className="h-4 w-4 mr-2" />
-          New Task
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['task.create.organization', 'task.create.own']}
+          tooltipMessage="No permission to create tasks"
+        >
+          <Button onClick={() => setShowCreateDialog(true)} data-testid="create-task-btn">
+            <Plus className="h-4 w-4 mr-2" />
+            New Task
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
