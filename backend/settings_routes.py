@@ -14,6 +14,8 @@ def get_db(request: Request) -> AsyncIOMotorDatabase:
 
 class EmailSettings(BaseModel):
     sendgrid_api_key: str
+    sendgrid_from_email: str = ""
+    sendgrid_from_name: str = ""
 
 
 @router.get("/email")
