@@ -30,6 +30,7 @@ interface Role {
 interface AuthResponse {
   success: boolean;
   error?: string;
+  user?: User;
 }
 
 interface AuthContextType {
