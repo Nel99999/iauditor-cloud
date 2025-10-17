@@ -271,7 +271,10 @@ const RoleManagementPage = () => {
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4 flex-1">
-                              <Badge className={`${color.bg} text-white`}>
+                              <Badge 
+                                style={{ backgroundColor: color.hex, color: 'white' }}
+                                className="font-semibold text-xs px-2 py-1"
+                              >
                                 Level {role.level}
                               </Badge>
                               <div className="flex-1">
