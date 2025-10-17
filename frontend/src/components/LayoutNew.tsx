@@ -442,7 +442,9 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                         className="w-full h-full object-cover rounded-full"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement.textContent = user?.name?.charAt(0).toUpperCase() || 'U';
+                          if (e.currentTarget.parentElement) {
+                            e.currentTarget.parentElement.textContent = user?.name?.charAt(0).toUpperCase() || 'U';
+                          }
                         }}
                       />
                     ) : (
