@@ -682,12 +682,11 @@ async def impersonate_user(
 
 @router.get("/metrics/performance")
 async def get_performance_metrics(
-    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Get performance metrics from audit logs"""
     try:
-        db = request.app.state.db
         
         # Get recent audit logs
         recent_logs = await db.audit_logs.find({}).sort("timestamp", -1).limit(1000).to_list(length=1000)
