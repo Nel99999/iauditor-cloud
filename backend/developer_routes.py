@@ -20,7 +20,7 @@ from auth_routes import get_current_user
 router = APIRouter(prefix="/developer", tags=["Developer"])
 
 
-def get_db(request: Request) -> AsyncIOMotorDatabase:
+def get_db(request: Request):
     """Dependency to get database from request state"""
     return request.app.state.db
 
