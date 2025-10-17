@@ -97,15 +97,20 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
         {/* Action Buttons with Simple Title Tooltips */}
         <div className="flex gap-1 ml-auto">
           {node.level < 5 && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => onAddChild(node)}
-              data-testid={`add-child-${node.id}`}
-              title={`Add child ${getLevelColors(node.level + 1)?.name || 'unit'}`}
+            <PermissionGuard 
+              anyPermissions={['organization.create.organization', 'organization.update.organization']}
+              tooltipMessage="No permission to add organizational units"
             >
-              <Plus className="h-4 w-4" />
-            </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => onAddChild(node)}
+                data-testid={`add-child-${node.id}`}
+                title={`Add child ${getLevelColors(node.level + 1)?.name || 'unit'}`}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </PermissionGuard>
           )}
           
           <Button
