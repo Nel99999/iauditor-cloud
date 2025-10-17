@@ -277,8 +277,8 @@ async def test_api_endpoint(
 @router.post("/test/email")
 async def test_email(
     email_request: EmailTestRequest,
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(require_developer)
+    _: dict = Depends(require_developer),
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Send test email using SendGrid"""
     try:
