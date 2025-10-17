@@ -210,13 +210,7 @@ const UserManagementPageNew = () => {
     if (!currentUser) return false;
     
     const currentLevel = getRoleLevel();
-    // Get target user's role level (need to look up in ROLE_LEVELS)
-    const ROLE_LEVELS: any = {
-      developer: 1, master: 2, admin: 3, operations_manager: 4,
-      team_lead: 5, manager: 6, supervisor: 7, inspector: 8,
-      operator: 9, viewer: 10
-    };
-    const targetLevel = ROLE_LEVELS[targetUser.role] || 999;
+    const targetLevel = (ROLE_LEVELS as any)[targetUser.role] || 999;
     
     // Can manage if current level is lower (higher authority) than target
     return currentLevel < targetLevel;
