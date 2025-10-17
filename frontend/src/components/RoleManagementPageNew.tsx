@@ -163,10 +163,16 @@ const RoleManagementPage = () => {
       title="Role Management"
       subtitle="Configure roles and access control"
       actions={
-        <Button onClick={() => setShowCreateDialog(true)} size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Create Custom Role
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['role.create.organization']}
+          minLevel={2}
+          tooltipMessage="No permission to create custom roles"
+        >
+          <Button onClick={() => setShowCreateDialog(true)} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Custom Role
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
