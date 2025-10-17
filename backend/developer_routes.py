@@ -276,8 +276,8 @@ async def test_api_endpoint(
 
 @router.post("/test/email")
 async def test_email(
-    request: Request,
     email_request: EmailTestRequest,
+    db: AsyncIOMotorDatabase = Depends(get_db),
     _: dict = Depends(require_developer)
 ):
     """Send test email using SendGrid"""
@@ -285,7 +285,6 @@ async def test_email(
         from email_service import EmailService
         
         # Get settings from database
-        db = request.app.state.db
         settings = await db.settings.find_one({}) or {}
         
         api_key = settings.get('sendgrid_api_key') or os.environ.get('SENDGRID_API_KEY')
