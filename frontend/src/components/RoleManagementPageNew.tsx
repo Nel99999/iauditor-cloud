@@ -305,21 +305,7 @@ const RoleManagementPage = () => {
 
         {/* Permission Matrix Tab */}
         <TabsContent value="matrix" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Permission Matrix</CardTitle>
-              <CardDescription>
-                View and manage permissions for all roles in a single view
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <Grid3x3 className="h-12 w-12 mx-auto mb-4" />
-                <p>Permission matrix view coming soon</p>
-                <p className="text-sm mt-2">Use "View Permissions" on individual roles for now</p>
-              </div>
-            </CardContent>
-          </Card>
+          <PermissionMatrixTable />
         </TabsContent>
       </Tabs>
 
