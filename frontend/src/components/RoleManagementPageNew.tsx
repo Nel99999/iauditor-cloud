@@ -472,7 +472,7 @@ const RoleManagementPage = () => {
                       className="p-0 h-auto text-blue-600 font-semibold"
                       onClick={() => {
                         setShowPermissionsDialog(false);
-                        setActiveTab('matrix');
+                        setTimeout(() => setActiveTab('matrix'), 100);
                       }}
                     >
                       Go to Permission Matrix →
