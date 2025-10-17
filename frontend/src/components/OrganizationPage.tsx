@@ -118,25 +118,35 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
             <Users className="h-4 w-4" />
           </Button>
           
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onEdit(node)}
-            data-testid={`edit-${node.id}`}
-            title={`Edit ${node.name}`}
+          <PermissionGuard 
+            anyPermissions={['organization.update.organization']}
+            tooltipMessage="No permission to edit organizational units"
           >
-            <Pencil className="h-4 w-4" />
-          </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => onEdit(node)}
+              data-testid={`edit-${node.id}`}
+              title={`Edit ${node.name}`}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </PermissionGuard>
           
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(node)}
-            data-testid={`delete-${node.id}`}
-            title={`Delete ${node.name}`}
+          <PermissionGuard 
+            anyPermissions={['organization.delete.organization']}
+            tooltipMessage="No permission to delete organizational units"
           >
-            <Trash2 className="h-4 w-4 text-red-600" />
-          </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => onDelete(node)}
+              data-testid={`delete-${node.id}`}
+              title={`Delete ${node.name}`}
+            >
+              <Trash2 className="h-4 w-4 text-red-600" />
+            </Button>
+          </PermissionGuard>
         </div>
       </div>
       
