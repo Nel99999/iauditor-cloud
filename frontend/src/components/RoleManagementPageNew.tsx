@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Shield, Plus, Trash2, Lock, Save, Grid3x3, Eye, Edit, CheckCircle, Crown, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import PermissionMatrixTable from './PermissionMatrixTable';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
