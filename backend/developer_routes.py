@@ -632,7 +632,7 @@ async def clear_cache(current_user: dict = Depends(require_developer)):
 async def impersonate_user(
     user_id: str = Body(..., embed=True),
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Generate a temporary token to impersonate a user"""
     try:
