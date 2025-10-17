@@ -356,10 +356,16 @@ const OrganizationPage = () => {
       title="Organization" 
       subtitle="Manage organizational structure"
       actions={
-        <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
-          <Plus className="h-4 w-4 mr-2" />
-          Create Profile
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['organization.create.organization']}
+          minLevel={2}
+          tooltipMessage="No permission to create root organizational units"
+        >
+          <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Profile
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
