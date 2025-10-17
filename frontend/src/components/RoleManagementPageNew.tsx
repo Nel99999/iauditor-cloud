@@ -177,7 +177,7 @@ const RoleManagementPage = () => {
     >
       <div className="space-y-6">
 
-      <Tabs defaultValue="system" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="system">System Roles</TabsTrigger>
           <TabsTrigger value="custom">Custom Roles</TabsTrigger>
