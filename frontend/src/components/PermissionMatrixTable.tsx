@@ -287,17 +287,27 @@ const PermissionMatrixTable = () => {
                   <thead className="bg-slate-100 dark:bg-slate-800 sticky top-0">
                     <tr>
                       <th className="text-left p-3 font-semibold w-64 border-r">Permission</th>
-                      {roles.map(role => (
-                        <th 
-                          key={role.id} 
-                          className="text-center p-2 font-semibold border-r min-w-[50px]"
-                          title={ROLE_ABBREV[role.code]?.full || role.name}
-                        >
-                          <div className="text-xs">
-                            {ROLE_ABBREV[role.code]?.abbrev || role.code.substring(0, 3).toUpperCase()}
-                          </div>
-                        </th>
-                      ))}
+                      {roles.map(role => {
+                        const isCustomRole = !role.is_system_role && !role.is_system;
+                        return (
+                          <th 
+                            key={role.id} 
+                            className="text-center p-2 font-semibold border-r"
+                            style={{ 
+                              minWidth: '45px', 
+                              maxWidth: '60px',
+                              width: '50px',
+                              color: isCustomRole ? '#b91c1c' : 'inherit',
+                              fontWeight: isCustomRole ? '700' : '600'
+                            }}
+                            title={ROLE_ABBREV[role.code]?.full || role.name}
+                          >
+                            <div className="text-xs truncate">
+                              {ROLE_ABBREV[role.code]?.abbrev || role.code.substring(0, 7).toUpperCase()}
+                            </div>
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody>
