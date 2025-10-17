@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { usePermissions } from '@/hooks/usePermissions';
+import { PermissionGuard } from '@/components/PermissionGuard';
 import { ModernPageWrapper } from '@/design-system/components';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
