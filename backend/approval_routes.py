@@ -149,7 +149,112 @@ async def approve_user(
         "ip_address": None
     })
     
-    # TODO: Send approval email to user
+    # Send approval email to user
+    try:
+        from email_service import EmailService
+        import os
+        
+        # Get organization's email settings
+        org_settings = await db.organization_settings.find_one(
+            {"organization_id": user.get("organization_id")}
+        )
+        
+        # Try to use org settings, fallback to environment variable
+        sendgrid_key = None
+        if org_settings and org_settings.get("sendgrid_api_key"):
+            sendgrid_key = org_settings["sendgrid_api_key"]
+        else:
+            sendgrid_key = os.environ.get("SENDGRID_API_KEY")
+        
+        if sendgrid_key:
+            email_service = EmailService(
+                api_key=sendgrid_key,
+                from_email="noreply@opsplatform.com",
+                from_name="Operations Platform"
+            )
+            
+            # Get frontend URL
+            frontend_url = os.environ.get("FRONTEND_URL")
+            if not frontend_url:
+                backend_url = os.environ.get("REACT_APP_BACKEND_URL", "")
+                if backend_url:
+                    frontend_url = backend_url.replace("/api", "")
+                else:
+                    frontend_url = "https://typescript-fixes-4.preview.emergentagent.com"
+            
+            login_url = f"{frontend_url}/login"
+            
+            # Get organization name
+            org = await db.organizations.find_one({"id": user.get("organization_id")})
+            org_name = org.get("name", "Operations Platform") if org else "Operations Platform"
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
+                    .button {{ display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+                    .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
+                    .success-box {{ background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🎉 Profile Approved!</h1>
+                    </div>
+                    <div class="content">
+                        <p>Hi {user['name']},</p>
+                        <p>Great news! Your profile for <strong>{org_name}</strong> has been approved by a Developer.</p>
+                        
+                        <div class="success-box">
+                            <strong>✅ You can now log in and start using the platform!</strong>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <a href="{login_url}" class="button">Log In Now</a>
+                        </div>
+                        
+                        <p><strong>Your account details:</strong></p>
+                        <ul>
+                            <li><strong>Email:</strong> {user['email']}</li>
+                            <li><strong>Organization:</strong> {org_name}</li>
+                            <li><strong>Approved by:</strong> {current_user.get('name', 'Developer')}</li>
+                        </ul>
+                        
+                        <p>If you have any questions or need assistance getting started, please contact your administrator.</p>
+                        
+                        <p>Welcome aboard!</p>
+                    </div>
+                    <div class="footer">
+                        <p>This is an automated email from Operations Platform. Please do not reply.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            success = email_service.send_email(
+                to_email=user["email"],
+                subject=f"Profile Approved - Welcome to {org_name}!",
+                html_content=html_content
+            )
+            
+            if success:
+                print(f"✅ Approval email sent successfully to {user['email']}")
+            else:
+                print(f"⚠️ Failed to send approval email to {user['email']}")
+        else:
+            print(f"⚠️ No SendGrid API key configured - cannot send approval email")
+            
+    except Exception as e:
+        print(f"❌ Exception while sending approval email: {str(e)}")
+        import traceback
+        traceback.print_exc()
     
     return {
         "message": f"User {user['email']} has been approved",
