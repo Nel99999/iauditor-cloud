@@ -351,22 +351,76 @@ const OrganizationPage = () => {
           <CardHeader>
             <CardTitle>Hierarchy Tree</CardTitle>
             <CardDescription>
-              <div className="text-base font-bold mt-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className="bg-blue-500 text-white px-3 py-1.5">Profile</Badge>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  <Badge className="bg-green-500 text-white px-3 py-1.5">Organisation</Badge>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  <Badge className="bg-purple-500 text-white px-3 py-1.5">Company</Badge>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  <Badge className="bg-orange-500 text-white px-3 py-1.5">Branch</Badge>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  <Badge className="bg-pink-500 text-white px-3 py-1.5">Brand</Badge>
-                </div>
+              <div className="text-sm text-muted-foreground mb-3">
+                5-level organizational structure
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge className={`${LEVEL_CONFIG[1].color} px-3 py-1.5 text-sm font-semibold`}>
+                  {LEVEL_CONFIG[1].name}
+                </Badge>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                <Badge className={`${LEVEL_CONFIG[2].color} px-3 py-1.5 text-sm font-semibold`}>
+                  {LEVEL_CONFIG[2].name}
+                </Badge>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                <Badge className={`${LEVEL_CONFIG[3].color} px-3 py-1.5 text-sm font-semibold`}>
+                  {LEVEL_CONFIG[3].name}
+                </Badge>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                <Badge className={`${LEVEL_CONFIG[4].color} px-3 py-1.5 text-sm font-semibold`}>
+                  {LEVEL_CONFIG[4].name}
+                </Badge>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                <Badge className={`${LEVEL_CONFIG[5].color} px-3 py-1.5 text-sm font-semibold`}>
+                  {LEVEL_CONFIG[5].name}
+                </Badge>
               </div>
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Quick Stats Summary */}
+            {hierarchy.length > 0 && (
+              <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg flex gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-blue-500" />
+                  <span className="font-semibold">{hierarchy.length}</span>
+                  <span className="text-muted-foreground">units</span>
+                </div>
+                <span className="text-muted-foreground">•</span>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-green-500" />
+                  <span className="font-semibold">
+                    {hierarchy.reduce((sum, node) => {
+                      const countNode = (n: any): number => {
+                        let count = n.user_count || 0;
+                        if (n.children) {
+                          n.children.forEach((child: any) => {
+                            count += countNode(child);
+                          });
+                        }
+                        return count;
+                      };
+                      return sum + countNode(node);
+                    }, 0)}
+                  </span>
+                  <span className="text-muted-foreground">total users</span>
+                </div>
+                <span className="text-muted-foreground">•</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">
+                    {Math.max(...hierarchy.map((n: any) => {
+                      const getMaxDepth = (node: any, depth: number): number => {
+                        if (!node.children || node.children.length === 0) return depth;
+                        return Math.max(...node.children.map((c: any) => getMaxDepth(c, depth + 1)));
+                      };
+                      return getMaxDepth(n, 1);
+                    }))}
+                  </span>
+                  <span className="text-muted-foreground">levels deep</span>
+                </div>
+              </div>
+            )}
+            
             {hierarchy.length === 0 ? (
               <div className="text-center py-12 text-slate-500" data-testid="empty-hierarchy">
                 <Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
