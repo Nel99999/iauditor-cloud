@@ -31,28 +31,13 @@ const LEVEL_NAMES = {
   5: 'Brand'
 };
 
-const LEVEL_COLORS = {
-  1: 'bg-blue-50 text-blue-700',
-  2: 'bg-green-50 text-green-700',
-  3: 'bg-purple-50 text-purple-700',
-  4: 'bg-orange-50 text-orange-700',
-  5: 'bg-pink-50 text-pink-700'
-};
-
-const LEVEL_BADGE_COLORS = {
-  1: 'bg-blue-500 text-white',
-  2: 'bg-green-500 text-white',
-  3: 'bg-purple-500 text-white',
-  4: 'bg-orange-500 text-white',
-  5: 'bg-pink-500 text-white'
-};
-
-const LEVEL_BAR_COLORS = {
-  1: 'bg-blue-500 text-white',
-  2: 'bg-green-500 text-white',
-  3: 'bg-purple-500 text-white',
-  4: 'bg-orange-500 text-white',
-  5: 'bg-pink-500 text-white'
+// Unified color configuration for badges and bars
+const LEVEL_CONFIG = {
+  1: { color: 'bg-blue-500 text-white', name: 'Profile' },
+  2: { color: 'bg-green-500 text-white', name: 'Organisation' },
+  3: { color: 'bg-purple-500 text-white', name: 'Company' },
+  4: { color: 'bg-orange-500 text-white', name: 'Branch' },
+  5: { color: 'bg-pink-500 text-white', name: 'Brand' }
 };
 
 const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, onViewUsers, expandedNodes, toggleNode }) => {
