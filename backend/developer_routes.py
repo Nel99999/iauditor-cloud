@@ -15,7 +15,7 @@ import subprocess
 from pydantic import BaseModel
 
 # Import auth dependencies
-from auth_routes import get_current_user
+from auth_utils import get_current_user
 
 router = APIRouter(prefix="/developer", tags=["Developer"])
 
