@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { PermissionGuard } from '@/components/PermissionGuard';
 import { ModernPageWrapper } from '@/design-system/components';
 import { Webhook, Plus, Edit2, Trash2, X, Play, CheckCircle, XCircle, Clock } from 'lucide-react';
 
