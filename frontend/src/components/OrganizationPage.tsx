@@ -157,7 +157,16 @@ const OrganizationPage = () => {
   const [hierarchy, setHierarchy] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [expandedNodes, setExpandedNodes] = useState<any>({});
+  
+  // Persistent expand/collapse state with localStorage
+  const [expandedNodes, setExpandedNodes] = useState<any>(() => {
+    try {
+      const saved = localStorage.getItem('org_hierarchy_expanded');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   
   // Dialog states
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
