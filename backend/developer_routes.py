@@ -682,8 +682,8 @@ async def impersonate_user(
 
 @router.get("/metrics/performance")
 async def get_performance_metrics(
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(require_developer)
+    _: dict = Depends(require_developer),
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Get performance metrics from audit logs"""
     try:
