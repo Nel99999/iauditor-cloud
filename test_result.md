@@ -210,12 +210,12 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
-  run_ui: true
+  test_sequence: 2
+  run_ui: false
 
 test_plan:
   current_focus:
-    - "Developer Admin Panel - Full DevOps Dashboard (10 Tabs) Frontend Testing"
+    - "User Management Integration - Backend API Testing (Pending Approvals Tab 2, Pending Invites Tab 3, RBAC with Permissions)"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
