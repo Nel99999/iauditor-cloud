@@ -98,7 +98,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, o
               variant="ghost"
               onClick={() => onAddChild(node)}
               data-testid={`add-child-${node.id}`}
-              title={`Add child ${LEVEL_CONFIG[node.level + 1]?.name || 'unit'}`}
+              title={`Add child ${getLevelColors(node.level + 1)?.name || 'unit'}`}
             >
               <Plus className="h-4 w-4" />
             </Button>
