@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 import uuid
 
-BASE_URL = "https://tsdevops.preview.emergentagent.com/api"
+BASE_URL = "https://typescript-fixes-4.preview.emergentagent.com/api"
 
 class ComprehensiveRetest:
     def __init__(self):

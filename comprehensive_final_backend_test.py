@@ -116,7 +116,7 @@ import uuid
 import csv
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://tsdevops.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://typescript-fixes-4.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 class ComprehensiveFinalBackendTester:
