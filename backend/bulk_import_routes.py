@@ -33,7 +33,7 @@ def validate_csv_row(row: dict, row_number: int) -> tuple:
         errors.append(f"Row {row_number}: Invalid email format")
     
     # Role validation
-    valid_roles = ["admin", "manager", "supervisor", "inspector", "viewer"]
+    valid_roles = ["viewer", "operator", "inspector", "supervisor", "manager", "team_lead", "operations_manager", "admin", "master", "developer"]
     role = row.get("role", "viewer").lower()
     if role and role not in valid_roles:
         errors.append(f"Row {row_number}: Invalid role. Must be one of: {', '.join(valid_roles)}")
