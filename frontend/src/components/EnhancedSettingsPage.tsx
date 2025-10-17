@@ -829,7 +829,7 @@ const EnhancedSettingsPage = () => {
                 <div>
                   <Label>SendGrid API Key</Label>
                   <p className="text-xs text-muted-foreground mb-2">
-                    Required for sending invitation emails. Get your API key from{' '}
+                    Required for sending emails. Get your API key from{' '}
                     <a href="https://app.sendgrid.com/settings/api_keys" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">SendGrid Dashboard</a>
                   </p>
                   <div className="flex gap-2">
@@ -840,6 +840,33 @@ const EnhancedSettingsPage = () => {
                       </Badge>
                     )}
                   </div>
+                </div>
+
+                <div>
+                  <Label>SendGrid Sender Email</Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Email address to use as sender for all outgoing emails. Must be verified in{' '}
+                    <a href="https://app.sendgrid.com/settings/sender_auth/senders" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">SendGrid Sender Authentication</a>
+                  </p>
+                  <Input 
+                    type="email" 
+                    placeholder="noreply@yourdomain.com" 
+                    value={apiSettings.sendgrid_from_email || ''} 
+                    onChange={(e) => setApiSettings({...apiSettings, sendgrid_from_email: e.target.value})} 
+                  />
+                </div>
+
+                <div>
+                  <Label>SendGrid Sender Name (Optional)</Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Display name for the sender (e.g., "Operations Platform")
+                  </p>
+                  <Input 
+                    type="text" 
+                    placeholder="Operations Platform" 
+                    value={apiSettings.sendgrid_from_name || ''} 
+                    onChange={(e) => setApiSettings({...apiSettings, sendgrid_from_name: e.target.value})} 
+                  />
                 </div>
 
                 <div className="flex gap-2">
