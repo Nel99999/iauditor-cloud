@@ -130,10 +130,38 @@ async def test_email_settings(
             detail="SendGrid API key not configured"
         )
     
-    email_service = EmailService(settings["sendgrid_api_key"])
+    if not settings.get("sendgrid_from_email"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="SendGrid sender email not configured. Please add a verified sender email address."
+        )
     
-    # Test connection
-    if email_service.test_connection():
-        return {"success": True, "message": "SendGrid connection successful"}
+    # Initialize email service with configured sender
+    email_service = EmailService(
+        api_key=settings["sendgrid_api_key"],
+        from_email=settings.get("sendgrid_from_email", "noreply@opsplatform.com"),
+        from_name=settings.get("sendgrid_from_name", "Operations Platform")
+    )
+    
+    # Send test email
+    success = email_service.send_email(
+        to_email=current_user["email"],
+        subject="✅ SendGrid Test Email - Configuration Successful",
+        html_content=f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #10b981;">🎉 SendGrid Configuration Test Successful!</h2>
+            <p>Hi {current_user.get('name', 'there')},</p>
+            <p>Your SendGrid configuration is working correctly!</p>
+            <ul>
+                <li><strong>Sender Email:</strong> {settings.get("sendgrid_from_email")}</li>
+                <li><strong>Sender Name:</strong> {settings.get("sendgrid_from_name", "Operations Platform")}</li>
+            </ul>
+            <p>All email notifications are now operational and ready to use.</p>
+        </div>
+        """
+    )
+    
+    if success:
+        return {"success": True, "message": f"Test email sent successfully to {current_user['email']}"}
     else:
-        return {"success": False, "message": "SendGrid connection failed"}
+        return {"success": False, "message": "Failed to send test email. Check your SendGrid sender verification."}
