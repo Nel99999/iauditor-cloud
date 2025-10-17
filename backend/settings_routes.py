@@ -75,15 +75,24 @@ async def update_email_settings(
             detail="Only Master and Developer roles can update email settings"
         )
     
+    # Prepare update data
+    update_data = {
+        "sendgrid_api_key": settings.sendgrid_api_key,
+        "updated_by": current_user["id"],
+        "updated_at": uuid.uuid4().hex
+    }
+    
+    # Add optional fields if provided
+    if settings.sendgrid_from_email:
+        update_data["sendgrid_from_email"] = settings.sendgrid_from_email
+    if settings.sendgrid_from_name:
+        update_data["sendgrid_from_name"] = settings.sendgrid_from_name
+    
     # Upsert settings
     await db.organization_settings.update_one(
         {"organization_id": current_user["organization_id"]},
         {
-            "$set": {
-                "sendgrid_api_key": settings.sendgrid_api_key,
-                "updated_by": current_user["id"],
-                "updated_at": uuid.uuid4().hex
-            },
+            "$set": update_data,
             "$setOnInsert": {
                 "id": str(uuid.uuid4()),
                 "organization_id": current_user["organization_id"]
