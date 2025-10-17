@@ -1,0 +1,122 @@
+{
+  "total": 23,
+  "passed": 20,
+  "failed": 3,
+  "tests": [
+    {
+      "name": "Authentication - Login with production user",
+      "passed": true,
+      "details": "User: Llewellyn Nel (llewellyn@bluedawncapital.co.za), Role: developer"
+    },
+    {
+      "name": "Test 1.1 - user.create.organization permission exists",
+      "passed": true,
+      "details": "Permission ID: 78217138-0e83-4e37-8cff-c77b68f9124f, Name: None"
+    },
+    {
+      "name": "Test 1.2 - Permissions list returned",
+      "passed": true,
+      "details": "Total permissions: 52"
+    },
+    {
+      "name": "Test 2.1 - Validate endpoint returns 200",
+      "passed": true,
+      "details": "Total: 5, Valid: 4, Invalid: 1"
+    },
+    {
+      "name": "Test 2.2 - Valid count correct",
+      "passed": false,
+      "details": "Expected: 3, Got: 4"
+    },
+    {
+      "name": "Test 2.3 - Invalid count correct",
+      "passed": false,
+      "details": "Expected: 2, Got: 1"
+    },
+    {
+      "name": "Test 2.4 - Errors array present",
+      "passed": true,
+      "details": "Errors count: 1"
+    },
+    {
+      "name": "Test 3.1 - Developer can import same level (developer)",
+      "passed": true,
+      "details": "Valid: 1, Invalid: 0"
+    },
+    {
+      "name": "Test 3.2 - Developer can import lower level roles",
+      "passed": true,
+      "details": "Valid: 2, Invalid: 0"
+    },
+    {
+      "name": "Test 4.1 - Duplicate email detected",
+      "passed": true,
+      "details": "Duplicates: 1, Invalid: 1"
+    },
+    {
+      "name": "Test 4.2 - Duplicates array present",
+      "passed": true,
+      "details": "Duplicates: [{'row': 2, 'email': 'llewellyn@bluedawncapital.co.za', 'message': 'Email already exists in organization'}]"
+    },
+    {
+      "name": "Test 5.1 - Import endpoint returns 200",
+      "passed": true,
+      "details": "Imported: 2, Failed: 0"
+    },
+    {
+      "name": "Test 5.2 - Users imported successfully",
+      "passed": true,
+      "details": "Expected: 2, Got: 2"
+    },
+    {
+      "name": "Test 5.3 - No failed imports",
+      "passed": true,
+      "details": "Failed: 0"
+    },
+    {
+      "name": "Test 5.4 - Imported users appear in database",
+      "passed": true,
+      "details": "Found 2 out of 2 imported users"
+    },
+    {
+      "name": "Test 6.1 - Invalid token returns 401",
+      "passed": true,
+      "details": "Status: 401"
+    },
+    {
+      "name": "Test 6.2 - Developer user has permission",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Test 7.1 - Developer can import all role levels",
+      "passed": true,
+      "details": "Imported: 3, Failed: 0"
+    },
+    {
+      "name": "Test 7.2 - No hierarchy violations",
+      "passed": true,
+      "details": "All roles imported successfully"
+    },
+    {
+      "name": "Test 8.1 - Invalid file format rejected",
+      "passed": true,
+      "details": "Status: 400, Message: Only CSV files are supported"
+    },
+    {
+      "name": "Test 8.2 - Empty file handled",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Test 8.3 - Malformed CSV handled",
+      "passed": false,
+      "details": "Status: 500"
+    },
+    {
+      "name": "Test 8.4 - Missing columns handled",
+      "passed": true,
+      "details": "Status: 200"
+    }
+  ]
+}
