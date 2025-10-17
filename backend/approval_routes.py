@@ -169,8 +169,8 @@ async def approve_user(
         if sendgrid_key:
             email_service = EmailService(
                 api_key=sendgrid_key,
-                from_email="noreply@opsplatform.com",
-                from_name="Operations Platform"
+                from_email=org_settings.get("sendgrid_from_email", "noreply@opsplatform.com") if org_settings else "noreply@opsplatform.com",
+                from_name=org_settings.get("sendgrid_from_name", "Operations Platform") if org_settings else "Operations Platform"
             )
             
             # Get frontend URL
@@ -370,8 +370,8 @@ async def reject_user(
         if sendgrid_key:
             email_service = EmailService(
                 api_key=sendgrid_key,
-                from_email="noreply@opsplatform.com",
-                from_name="Operations Platform"
+                from_email=org_settings.get("sendgrid_from_email", "noreply@opsplatform.com") if org_settings else "noreply@opsplatform.com",
+                from_name=org_settings.get("sendgrid_from_name", "Operations Platform") if org_settings else "Operations Platform"
             )
             
             # Get organization name
