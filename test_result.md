@@ -192,7 +192,7 @@ backend:
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Developer Admin Panel - Full DevOps Dashboard Frontend Testing - Comprehensive testing of all 10 tabs with production developer user"
+user_problem_statement: "User Management Page Integration - Move Pending Approvals into User Management as Tab 2, add Pending Invites as Tab 3, implement full RBAC with role hierarchy checks, permission-based access (no hardcoded roles)"
 
 frontend:
   - task: "Developer Admin Panel - Full DevOps Dashboard (10 Tabs) Frontend Testing"
