@@ -193,18 +193,23 @@ const OrganizationPage = () => {
     loadHierarchy();
   }, []);
 
+  // Persist expanded nodes to localStorage
+  useEffect(() => {
+    localStorage.setItem('org_hierarchy_expanded', JSON.stringify(expandedNodes));
+  }, [expandedNodes]);
+
   const loadHierarchy = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API}/organizations/hierarchy`);
       setHierarchy(response.data);
       
-      // Auto-expand root nodes
-      const expanded = {};
-      response.data.forEach((node: any) => {
-        expanded[node.id] = true;
-      });
-      setExpandedNodes(expanded);
+      // Only auto-expand if no saved state exists
+      const saved = localStorage.getItem('org_hierarchy_expanded');
+      if (!saved) {
+        // First time: Don't auto-expand anything (only Profile level visible)
+        setExpandedNodes({});
+      }
       
       setError('');
     } catch (err: unknown) {
