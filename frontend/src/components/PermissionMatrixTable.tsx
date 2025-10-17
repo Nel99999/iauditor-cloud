@@ -382,7 +382,7 @@ const PermissionMatrixTable = () => {
                             </tr>
                           );
                         })}
-                      </React.Fragment>
+                      </Fragment>
                     ))}
                   </tbody>
                 </table>
