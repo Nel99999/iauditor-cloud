@@ -40,100 +40,96 @@ const LEVEL_CONFIG = {
   5: { color: 'bg-pink-500 text-white', name: 'Brand' }
 };
 
-const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, onViewUsers, expandedNodes, toggleNode }) => {
+const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, onViewUsers, expandedNodes, toggleNode, depth = 0 }) => {
   const hasChildren = node.children && node.children.length > 0;
   const isExpanded = expandedNodes[node.id];
   const userCount = node.user_count || 0;
 
   return (
-    <div className="ml-4">
-      <div className="flex items-center gap-3 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg px-2 transition-colors">
-        {hasChildren && (
+    <div className="relative">
+      {/* Visual connection line */}
+      {depth > 0 && (
+        <div className="absolute left-2 top-0 bottom-0 w-px bg-slate-300 dark:bg-slate-600" />
+      )}
+      
+      <div 
+        className="flex items-center gap-3 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg px-2 transition-colors"
+        style={{ marginLeft: `${depth * 24}px` }}
+      >
+        {hasChildren ? (
           <button
             onClick={() => toggleNode(node.id)}
-            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded z-10"
             data-testid={`toggle-node-${node.id}`}
+            title={isExpanded ? "Collapse" : "Expand"}
           >
             {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </button>
+        ) : (
+          <div className="w-6" />
         )}
-        {!hasChildren && <div className="w-6" />}
         
         <Building2 className="h-4 w-4 text-slate-600" />
         
         <span className="font-medium w-48" data-testid={`node-name-${node.id}`}>{node.name}</span>
         
-        {/* Equal Width Color Bar with Labels */}
+        {/* Equal Width Color Bar with Labels and Hover Effect */}
         <div 
-          className={`px-4 py-2 rounded-md w-80 flex items-center justify-between text-sm font-semibold ${LEVEL_BAR_COLORS[node.level]}`}
+          className={`px-4 py-2 rounded-md w-80 flex items-center justify-between text-sm font-semibold 
+            ${LEVEL_CONFIG[node.level].color} hover:opacity-90 transition-opacity cursor-default shadow-sm`}
+          title={`${LEVEL_CONFIG[node.level].name} level organizational unit`}
         >
-          <span>{LEVEL_NAMES[node.level]}</span>
+          <span>{LEVEL_CONFIG[node.level].name}</span>
           <span className="opacity-90">Level {node.level}</span>
-          <span className="opacity-90">{userCount} users</span>
+          <Badge variant="secondary" className="bg-white/20 text-white border-white/30 text-xs">
+            {userCount} users
+          </Badge>
         </div>
         
-        {/* Action Buttons with Tooltips */}
-        <TooltipProvider>
-          <div className="flex gap-1 ml-auto">
-            {node.level < 5 && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => onAddChild(node)}
-                    data-testid={`add-child-${node.id}`}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add child {LEVEL_NAMES[node.level + 1]}</TooltipContent>
-              </Tooltip>
-            )}
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onViewUsers(node)}
-                  data-testid={`view-users-${node.id}`}
-                >
-                  <Users className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>View assigned users</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onEdit(node)}
-                  data-testid={`edit-${node.id}`}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit {node.name}</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onDelete(node)}
-                  data-testid={`delete-${node.id}`}
-                >
-                  <Trash2 className="h-4 w-4 text-red-600" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete {node.name}</TooltipContent>
-            </Tooltip>
-          </div>
-        </TooltipProvider>
+        {/* Action Buttons with Simple Title Tooltips */}
+        <div className="flex gap-1 ml-auto">
+          {node.level < 5 && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => onAddChild(node)}
+              data-testid={`add-child-${node.id}`}
+              title={`Add child ${LEVEL_CONFIG[node.level + 1]?.name || 'unit'}`}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          )}
+          
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onViewUsers(node)}
+            data-testid={`view-users-${node.id}`}
+            title="View assigned users"
+          >
+            <Users className="h-4 w-4" />
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onEdit(node)}
+            data-testid={`edit-${node.id}`}
+            title={`Edit ${node.name}`}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => onDelete(node)}
+            data-testid={`delete-${node.id}`}
+            title={`Delete ${node.name}`}
+          >
+            <Trash2 className="h-4 w-4 text-red-600" />
+          </Button>
+        </div>
       </div>
       
       {isExpanded && hasChildren && (
