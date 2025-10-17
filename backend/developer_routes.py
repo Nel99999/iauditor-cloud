@@ -370,7 +370,7 @@ async def get_collections(
 async def execute_database_query(
     query_request: DatabaseQueryRequest,
     current_user: dict = Depends(require_developer),
-    db = Depends(get_db)
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Execute database query with safety limits"""
     try:
