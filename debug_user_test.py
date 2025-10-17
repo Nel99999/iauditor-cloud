@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test user creation and settings update
-base_url = "https://typescript-fixes-4.preview.emergentagent.com"
+base_url = "https://devflow-hub-3.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

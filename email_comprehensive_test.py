@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://typescript-fixes-4.preview.emergentagent.com/api"
+BACKEND_URL = "https://devflow-hub-3.preview.emergentagent.com/api"
 PRODUCTION_USER = {
     "email": "llewellyn@bluedawncapital.co.za",
     "password": "TestPassword123!",

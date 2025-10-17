@@ -480,7 +480,7 @@ async def forgot_password(
                 # Remove /api if present and use as frontend URL
                 frontend_url = backend_url.replace("/api", "")
             else:
-                frontend_url = "https://typescript-fixes-4.preview.emergentagent.com"
+                frontend_url = "https://devflow-hub-3.preview.emergentagent.com"
         
         reset_link = f"{frontend_url}/reset-password?token={reset_token}"
         

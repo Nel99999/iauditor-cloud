@@ -180,7 +180,7 @@ async def approve_user(
                 if backend_url:
                     frontend_url = backend_url.replace("/api", "")
                 else:
-                    frontend_url = "https://typescript-fixes-4.preview.emergentagent.com"
+                    frontend_url = "https://devflow-hub-3.preview.emergentagent.com"
             
             login_url = f"{frontend_url}/login"
             
