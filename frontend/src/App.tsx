@@ -19,8 +19,7 @@ import ResetPasswordPage from "@/components/ResetPasswordPage";
 import DashboardHomeNew from "@/components/DashboardHomeNew";
 // Refactored pages - removed wrapper pattern
 import OrganizationPage from "@/components/OrganizationPage";
-import UserManagementPage from "@/components/UserManagementPage";
-import UserApprovalPage from "@/components/UserApprovalPage";
+import UserManagementPageNew from "@/components/UserManagementPageNew";
 import RoleManagementPage from "@/components/RoleManagementPageNew";
 import InvitationManagementPage from "@/components/InvitationManagementPage";
 import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
