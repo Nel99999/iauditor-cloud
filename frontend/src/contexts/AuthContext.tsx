@@ -177,6 +177,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
       
       const { access_token, user: userData } = response.data;
+      
+      // Check if user is pending approval (no token will be provided)
+      if (userData.approval_status === 'pending' || !access_token) {
+        // Don't set token or user in context - user needs approval first
+        return { 
+          success: true,
+          user: userData  // Pass user data so RegisterPage can check approval_status
+        };
+      }
+      
+      // Normal flow (user is approved)
       localStorage.setItem('access_token', access_token);
       setToken(access_token);
       setUser(userData);
