@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button, GlassCard, AdaptiveNav, MOBILE_NAV_ITEMS } from '@/design-system/components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
+import { usePermissions } from '@/hooks/usePermissions';
 import NotificationCenter from '@/components/NotificationCenter';
 import GlobalSearch from '@/components/GlobalSearch';
 import {
@@ -33,8 +34,10 @@ import {
   ListTodo,
   Calendar,
   FolderOpen,
+  Lock,
   LucideIcon,
 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import './LayoutNew.css';
 
 // Types
