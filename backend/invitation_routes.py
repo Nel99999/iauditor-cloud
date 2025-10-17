@@ -392,8 +392,24 @@ async def cancel_invitation(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Cancel pending invitation"""
+    """Cancel pending invitation - Requires invitation.cancel.organization permission"""
     current_user = await get_current_user(request, db)
+    
+    # Check permission
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        current_user["id"],
+        "invitation",
+        "cancel",
+        "organization"
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to cancel invitations"
+        )
     
     result = await db.invitations.update_one(
         {
