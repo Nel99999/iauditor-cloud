@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { 
   Shield, Eye, EyeOff, Search, Copy, CheckCircle, Lock, Key, Database, RefreshCw,
   Activity, Cpu, HardDrive, Server, Mail, Code, Terminal, Zap, BarChart3,
-  Webhook, Users as UsersIcon, Clock, Download, Play, AlertCircle, CheckCircle2
+  Webhook, Users as UsersIcon, Clock, Download, Play, AlertCircle, CheckCircle2, X
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
