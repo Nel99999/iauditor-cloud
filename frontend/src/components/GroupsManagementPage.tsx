@@ -257,18 +257,28 @@ const GroupsManagementPage = () => {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => openEditModal(group)}
-                      className="p-2 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                    <PermissionGuard 
+                      anyPermissions={['group.update.organization']}
+                      tooltipMessage="No permission to edit groups"
                     >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteGroup(group.id)}
-                      className="p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                      <button
+                        onClick={() => openEditModal(group)}
+                        className="p-2 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    </PermissionGuard>
+                    <PermissionGuard 
+                      anyPermissions={['group.delete.organization']}
+                      tooltipMessage="No permission to delete groups"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <button
+                        onClick={() => handleDeleteGroup(group.id)}
+                        className="p-2 text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </PermissionGuard>
                   </div>
                 </div>
 
