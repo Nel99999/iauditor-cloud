@@ -631,8 +631,8 @@ async def clear_cache(_: dict = Depends(require_developer)):
 @router.post("/actions/impersonate")
 async def impersonate_user(
     user_id: str = Body(..., embed=True),
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(require_developer)
+    _: dict = Depends(require_developer),
+    db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Generate a temporary token to impersonate a user"""
     try:
