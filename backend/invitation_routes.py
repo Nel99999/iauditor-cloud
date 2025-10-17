@@ -310,8 +310,24 @@ async def resend_invitation(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Resend invitation email"""
+    """Resend invitation email - Requires invitation.resend.organization permission"""
     current_user = await get_current_user(request, db)
+    
+    # Check permission
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        current_user["id"],
+        "invitation",
+        "resend",
+        "organization"
+    )
+    
+    if not has_permission:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to resend invitations"
+        )
     
     invitation = await db.invitations.find_one({
         "id": invitation_id,
