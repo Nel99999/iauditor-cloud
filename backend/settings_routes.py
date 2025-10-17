@@ -75,14 +75,20 @@ async def update_email_settings(
             detail="Only Master and Developer roles can update email settings"
         )
     
-    # Prepare update data - always include all fields
+    # Check if API key is masked (contains "...") - if so, don't update it
+    is_masked_key = "..." in settings.sendgrid_api_key
+    
+    # Prepare update data
     update_data = {
-        "sendgrid_api_key": settings.sendgrid_api_key,
         "sendgrid_from_email": settings.sendgrid_from_email or "",
         "sendgrid_from_name": settings.sendgrid_from_name or "",
         "updated_by": current_user["id"],
         "updated_at": uuid.uuid4().hex
     }
+    
+    # Only update API key if it's not masked (user actually changed it)
+    if not is_masked_key and settings.sendgrid_api_key:
+        update_data["sendgrid_api_key"] = settings.sendgrid_api_key
     
     # Upsert settings
     await db.organization_settings.update_one(
