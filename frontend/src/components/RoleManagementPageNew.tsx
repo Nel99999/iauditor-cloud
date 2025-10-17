@@ -18,18 +18,18 @@ import PermissionMatrixTable from './PermissionMatrixTable';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Role level to color mapping
+// Role level to color mapping with hex values for inline styles
 const ROLE_COLORS = {
-  1: { bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-500' },
-  2: { bg: 'bg-red-500', text: 'text-red-500', border: 'border-red-500' },
-  3: { bg: 'bg-purple-600', text: 'text-purple-600', border: 'border-purple-600' },
-  4: { bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-500' },
-  5: { bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-500' },
-  6: { bg: 'bg-blue-600', text: 'text-blue-600', border: 'border-blue-600' },
-  7: { bg: 'bg-green-600', text: 'text-green-600', border: 'border-green-600' },
-  8: { bg: 'bg-yellow-500', text: 'text-yellow-500', border: 'border-yellow-500' },
-  9: { bg: 'bg-gray-500', text: 'text-gray-500', border: 'border-gray-500' },
-  10: { bg: 'bg-green-500', text: 'text-green-500', border: 'border-green-500' }
+  1: { bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-500', hex: '#a855f7' },
+  2: { bg: 'bg-red-500', text: 'text-red-500', border: 'border-red-500', hex: '#ef4444' },
+  3: { bg: 'bg-purple-600', text: 'text-purple-600', border: 'border-purple-600', hex: '#9333ea' },
+  4: { bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-500', hex: '#f97316' },
+  5: { bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-500', hex: '#3b82f6' },
+  6: { bg: 'bg-blue-600', text: 'text-blue-600', border: 'border-blue-600', hex: '#2563eb' },
+  7: { bg: 'bg-green-600', text: 'text-green-600', border: 'border-green-600', hex: '#16a34a' },
+  8: { bg: 'bg-yellow-500', text: 'text-yellow-500', border: 'border-yellow-500', hex: '#eab308' },
+  9: { bg: 'bg-gray-500', text: 'text-gray-500', border: 'border-gray-500', hex: '#6b7280' },
+  10: { bg: 'bg-green-500', text: 'text-green-500', border: 'border-green-500', hex: '#22c55e' }
 };
 
 const RoleManagementPage = () => {
