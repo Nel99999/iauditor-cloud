@@ -196,10 +196,15 @@ const UserManagementPage = () => {
       title="User Management" 
       subtitle="Manage system users and permissions"
       actions={
-        <Button onClick={() => setShowInviteDialog(true)} data-testid="invite-user-btn">
-          <UserPlus className="h-4 w-4 mr-2" />
-          Invite User
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['invitation.create.organization', 'user.create.organization']}
+          tooltipMessage="You don't have permission to invite users"
+        >
+          <Button onClick={() => setShowInviteDialog(true)} data-testid="invite-user-btn">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Invite User
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
