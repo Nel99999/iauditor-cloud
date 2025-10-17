@@ -46,6 +46,10 @@ interface MenuItem {
   icon: LucideIcon;
   path: string;
   badge?: string;
+  permission?: string;  // Required permission
+  anyPermissions?: string[];  // Any of these permissions
+  roles?: string[];  // Required roles
+  minLevel?: number;  // Required role level
 }
 
 interface MenuSection {
