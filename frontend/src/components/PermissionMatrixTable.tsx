@@ -289,29 +289,33 @@ const PermissionMatrixTable = () => {
                       <th className="text-left p-3 font-semibold w-64 border-r">Permission</th>
                       {roles.map(role => {
                         const isCustomRole = !role.is_system_role && !role.is_system;
-                        console.log(`Role: ${role.name}, isCustom: ${isCustomRole}, is_system_role: ${role.is_system_role}, is_system: ${role.is_system}`);
                         return (
                           <th 
                             key={role.id} 
-                            className={`text-center border-r ${isCustomRole ? 'p-1' : 'p-1 font-semibold'}`}
+                            className="text-center border-r"
                             style={{ 
                               minWidth: '32px', 
                               maxWidth: '42px',
                               width: '35px',
-                              color: isCustomRole ? '#b91c1c !important' : 'inherit',
-                              fontWeight: isCustomRole ? '900 !important' : '600'
+                              padding: '4px 2px',
+                              color: isCustomRole ? '#991b1b' : 'inherit',
+                              fontWeight: isCustomRole ? 'bold' : 'normal',
+                              fontSize: '0.75rem'
                             }}
-                            title={ROLE_ABBREV[role.code]?.full || role.name}
+                            title={`${ROLE_ABBREV[role.code]?.full || role.name} ${isCustomRole ? '(CUSTOM)' : '(SYSTEM)'}`}
                           >
-                            <div 
-                              className="text-xs truncate px-1"
+                            <span 
                               style={{
-                                color: isCustomRole ? '#b91c1c' : 'inherit',
-                                fontWeight: isCustomRole ? '900' : 'inherit'
+                                color: isCustomRole ? '#991b1b' : 'inherit',
+                                fontWeight: isCustomRole ? 'bold' : 'normal',
+                                display: 'block',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
                               }}
                             >
                               {ROLE_ABBREV[role.code]?.abbrev || role.code.substring(0, 7).toUpperCase()}
-                            </div>
+                            </span>
                           </th>
                         );
                       })}
