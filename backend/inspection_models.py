@@ -97,6 +97,16 @@ class InspectionTemplateUpdate(BaseModel):
     require_gps: Optional[bool] = None
     require_photos: Optional[bool] = None
     is_active: Optional[bool] = None
+    # V1 Enhancement fields
+    unit_ids: Optional[List[str]] = None
+    asset_type_ids: Optional[List[str]] = None
+    recurrence_rule: Optional[str] = None
+    auto_assign_logic: Optional[str] = None
+    assigned_inspector_ids: Optional[List[str]] = None
+    requires_competency: Optional[str] = None
+    estimated_duration_minutes: Optional[int] = None
+    auto_create_work_order_on_fail: Optional[bool] = None
+    work_order_priority: Optional[str] = None
 
 
 class InspectionAnswer(BaseModel):
