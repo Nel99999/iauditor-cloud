@@ -53,6 +53,73 @@ async def create_project(
     return project_dict
 
 
+@router.get("/stats/overview")
+async def get_project_stats(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get project statistics"""
+    user = await get_current_user(request, db)
+    
+    projects = await db.projects.find(
+        {"organization_id": user["organization_id"], "is_active": True},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    by_status = {}
+    for p in projects:
+        s = p.get("status", "planning")
+        by_status[s] = by_status.get(s, 0) + 1
+    
+    total_budget = sum(p.get("budget", 0) for p in projects)
+    total_cost = sum(p.get("actual_cost", 0) for p in projects)
+    
+    stats = ProjectStats(
+        total_projects=len(projects),
+        by_status=by_status,
+        total_budget=round(total_budget, 2),
+        total_actual_cost=round(total_cost, 2)
+    )
+    
+    return stats.model_dump()
+
+
+@router.get("/dashboard")
+async def get_project_dashboard(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get project portfolio dashboard"""
+    user = await get_current_user(request, db)
+    
+    projects = await db.projects.find(
+        {"organization_id": user["organization_id"], "is_active": True},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    # Calculate metrics
+    active_projects = [p for p in projects if p.get("status") == "active"]
+    on_hold = [p for p in projects if p.get("status") == "on_hold"]
+    completed = [p for p in projects if p.get("status") == "completed"]
+    
+    total_budget = sum(p.get("budget", 0) for p in projects)
+    total_spent = sum(p.get("actual_cost", 0) for p in projects)
+    
+    on_time = len([p for p in completed if p.get("actual_end") and p.get("planned_end") and p.get("actual_end") <= p.get("planned_end")])
+    on_time_pct = (on_time / len(completed) * 100) if completed else 0
+    
+    return {
+        "total_projects": len(projects),
+        "active": len(active_projects),
+        "on_hold": len(on_hold),
+        "completed": len(completed),
+        "total_budget": total_budget,
+        "total_spent": total_spent,
+        "variance": total_budget - total_spent,
+        "on_time_percentage": round(on_time_pct, 2)
+    }
+
+
 @router.get("")
 async def list_projects(
     request: Request,
