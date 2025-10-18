@@ -757,13 +757,13 @@ def test_verify_task_hours_updated(task_id):
     if response.status_code == 200:
         data = response.json()
         
-        hours_updated = (
-            data.get("actual_hours", 0) > 0 and
-            data.get("labor_cost", 0) > 0
-        )
+        actual_hours = data.get("actual_hours") or 0
+        labor_cost = data.get("labor_cost") or 0
+        
+        hours_updated = (actual_hours > 0 and labor_cost > 0)
         
         log_test("Verify hours and cost updated", hours_updated, 
-                f"Actual hours: {data.get('actual_hours')}, Labor cost: ${data.get('labor_cost')}")
+                f"Actual hours: {actual_hours}, Labor cost: ${labor_cost}")
         return True
     else:
         log_test("Verify hours and cost updated", False, f"Status: {response.status_code}")
