@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request, UploadFile, File
+from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorGridFSBucket
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
@@ -17,6 +18,7 @@ from inspection_models import (
     InspectionStats,
 )
 from auth_utils import get_current_user
+from pdf_generator_service import InspectionPDFGenerator
 import io
 
 router = APIRouter(prefix="/inspections", tags=["Inspections"])
