@@ -29,6 +29,7 @@ import InspectionsPage from "@/components/InspectionsPage";
 import TemplateBuilderPage from "@/components/TemplateBuilderPage";
 import EnhancedTemplateBuilderPage from "@/components/EnhancedTemplateBuilderPage";
 import InspectionExecutionPage from "@/components/InspectionExecutionPage";
+import EnhancedInspectionExecutionPage from "@/components/EnhancedInspectionExecutionPage";
 import ChecklistsPage from "@/components/ChecklistsPage";
 import ChecklistTemplateBuilderNew from "@/components/ChecklistTemplateBuilderNew";
 import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
