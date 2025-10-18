@@ -139,13 +139,15 @@ def test_phase1_permissions():
             
             module_permissions = {}
             for perm in permissions:
-                perm_name = perm.get('name', '')
-                # Extract module from permission name (e.g., 'asset.create.organization' -> 'asset')
-                if '.' in perm_name:
-                    module = perm_name.split('.')[0]
-                    if module not in module_permissions:
-                        module_permissions[module] = []
-                    module_permissions[module].append(perm_name)
+                # Permissions have resource_type, action, scope fields
+                resource_type = perm.get('resource_type', '')
+                action = perm.get('action', '')
+                scope = perm.get('scope', '')
+                
+                if resource_type:
+                    if resource_type not in module_permissions:
+                        module_permissions[resource_type] = []
+                    module_permissions[resource_type].append(f'{action}.{scope}')
             
             print(f"\n{BLUE}Module Permission Coverage:{RESET}")
             for module in expected_modules:
