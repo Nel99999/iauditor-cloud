@@ -222,6 +222,12 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           anyPermissions: ['task.read.own', 'task.read.organization'],
         },
         {
+          name: 'Assets',
+          icon: Package,
+          path: '/assets',
+          anyPermissions: ['asset.read.own', 'asset.read.organization'],
+        },
+        {
           name: 'Schedule',
           icon: Calendar,
           path: '/schedule',
