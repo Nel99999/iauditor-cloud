@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone, time
 import uuid
 
@@ -10,6 +10,15 @@ class ChecklistItem(BaseModel):
     text: str
     required: bool = True
     order: int = 0
+    # V1 Enhancement fields
+    photo_required: bool = False
+    min_photos: int = 0
+    max_photos: int = 10
+    signature_required: bool = False
+    conditional_logic: Optional[Dict[str, Any]] = None
+    help_text: Optional[str] = None
+    scoring_enabled: bool = False
+    pass_score: Optional[float] = None
 
 
 class ChecklistItemCreate(BaseModel):
