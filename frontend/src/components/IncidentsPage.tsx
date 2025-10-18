@@ -76,7 +76,11 @@ const IncidentsPage = () => {
             ) : (
               <div className="space-y-3">
                 {incidents.map((incident) => (
-                  <div key={incident.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div 
+                    key={incident.id} 
+                    className="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                    onClick={() => navigate(`/incidents/${incident.id}`)}
+                  >
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <AlertTriangle className="h-5 w-5 text-red-600" />
