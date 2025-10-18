@@ -46,6 +46,8 @@ import TrainingPage from "@/components/TrainingPage";
 import FinancialPage from "@/components/FinancialPage";
 import AnnouncementsPage from "@/components/AnnouncementsPage";
 import EmergenciesPage from "@/components/EmergenciesPage";
+import TeamChatPage from "@/components/TeamChatPage";
+import ContractorsPage from "@/components/ContractorsPage";
 import WorkOrderDetailPage from "@/components/WorkOrderDetailPage";
 import ProjectDetailPage from "@/components/ProjectDetailPage";
 import InventoryDetailPage from "@/components/InventoryDetailPage";
