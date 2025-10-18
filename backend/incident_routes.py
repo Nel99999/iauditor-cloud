@@ -153,36 +153,3 @@ async def create_corrective_action(
     
     return task
 
-
-@router.get("/stats")
-async def get_incident_stats(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get incident statistics"""
-    user = await get_current_user(request, db)
-    
-    incidents = await db.incidents.find(
-        {"organization_id": user["organization_id"]},
-        {"_id": 0}
-    ).to_list(10000)
-    
-    by_type = {}
-    by_severity = {}
-    for inc in incidents:
-        t = inc.get("incident_type", "unknown")
-        by_type[t] = by_type.get(t, 0) + 1
-        s = inc.get("severity", "unknown")
-        by_severity[s] = by_severity.get(s, 0) + 1
-    
-    month_start = datetime.now(timezone.utc).replace(day=1).isoformat()
-    this_month = len([i for i in incidents if i.get("created_at") >= month_start])
-    
-    stats = IncidentStats(
-        total_incidents=len(incidents),
-        by_type=by_type,
-        by_severity=by_severity,
-        this_month=this_month
-    )
-    
-    return stats.model_dump()
