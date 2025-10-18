@@ -475,11 +475,14 @@ async def unlock_account(
     """Unlock user account (Admin only)"""
     admin_user = await get_current_user(request, db)
     
-    # Check if admin has permission
-    if admin_user["role"] not in ["admin", "master", "developer"]:
+    # Check if admin has permission using database-driven RBAC
+    from auth_utils import check_permission
+    has_permission = await check_permission(admin_user, "user", "update", "organization", db)
+    
+    if not has_permission:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only admins can unlock accounts"
+            detail="You don't have permission to unlock accounts"
         )
     
     # Unlock account
