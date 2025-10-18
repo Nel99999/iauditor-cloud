@@ -14,6 +14,13 @@ class InspectionQuestion(BaseModel):
     scoring_enabled: bool = False
     pass_score: Optional[float] = None  # If scoring enabled
     order: int = 0
+    # Enhanced fields
+    photo_required: bool = False  # NEW: Require photo for this question
+    min_photos: int = 0  # NEW: Minimum photos required
+    max_photos: int = 10  # NEW: Maximum photos allowed
+    signature_required: bool = False  # NEW: Require signature
+    conditional_logic: Optional[Dict[str, Any]] = None  # NEW: {show_if: {question_id: value}}
+    help_text: Optional[str] = None  # NEW: Helper text for inspectors
 
 
 class InspectionQuestionCreate(BaseModel):
