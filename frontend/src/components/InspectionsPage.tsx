@@ -254,6 +254,17 @@ const InspectionsPage = () => {
                       <Button
                         size="sm"
                         variant="outline"
+                        onClick={() => {
+                          setSelectedTemplateForAnalytics(template);
+                          setShowAnalyticsDialog(true);
+                        }}
+                        title="View Analytics"
+                      >
+                        <BarChart3 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => navigate(`/inspections/templates/${template.id}`)}
                       >
                         <Eye className="h-4 w-4" />
