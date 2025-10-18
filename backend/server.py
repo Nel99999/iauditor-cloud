@@ -42,6 +42,8 @@ from incident_routes import router as incident_router
 from training_routes import router as training_router
 from financial_routes import router as financial_router
 from hr_routes import router as hr_router
+from chat_routes import router as chat_router
+from contractor_routes import router as contractor_router
 from emergency_routes import router as emergency_router
 from dashboard_enhanced_routes import router as dashboard_enhanced_router
 from project_routes import router as project_router
