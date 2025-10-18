@@ -36,6 +36,9 @@ from subtask_routes import router as subtask_router
 from attachment_routes import router as attachment_router
 from comment_routes import router as comment_router
 from asset_routes import router as asset_router
+from workorder_routes import router as workorder_router
+from inventory_routes import router as inventory_router
+from project_routes import router as project_router
 from group_routes import router as group_router
 from bulk_import_routes import router as bulk_import_router
 from webhook_routes import router as webhook_router
