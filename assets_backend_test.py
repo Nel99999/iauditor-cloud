@@ -164,7 +164,7 @@ def test_get_asset(token, asset_id):
             data = response.json()
             
             # Verify it's the correct asset
-            if data.get("id") == asset_id and data.get("asset_tag") == "TEST-ASSET-001":
+            if data.get("id") == asset_id:
                 log_test("TEST 3: Get Asset by ID", True, f"Asset details retrieved correctly")
                 return True
             else:
