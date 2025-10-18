@@ -800,7 +800,7 @@ const ModernSettingsPage = () => {
                         checked={gdprConsents.analytics}
                         onCheckedChange={async (checked) => {
                           try {
-                            await axios.post(`${API}/gdpr/consents`, {
+                            await axios.put(`${API}/gdpr/consent`, {
                               ...gdprConsents,
                               analytics: checked
                             });
