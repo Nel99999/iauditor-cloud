@@ -39,6 +39,9 @@ import {
   FolderKanban,
   AlertTriangle,
   GraduationCap,
+  DollarSign,
+  Megaphone,
+  AlertOctagon,
   LucideIcon,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
