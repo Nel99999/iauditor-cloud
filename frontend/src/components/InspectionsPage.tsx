@@ -9,6 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import InspectionAnalyticsDashboard from '@/components/InspectionAnalyticsDashboard';
+import InspectionCalendar from '@/components/InspectionCalendar';
 import {
   ClipboardCheck,
   Plus,
@@ -20,6 +24,8 @@ import {
   Edit,
   Trash2,
   Copy,
+  BarChart3,
+  Calendar as CalendarIcon,
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
