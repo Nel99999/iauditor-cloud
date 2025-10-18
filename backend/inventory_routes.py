@@ -214,20 +214,3 @@ async def adjust_stock(
     return await db.inventory_items.find_one({"id": item_id}, {"_id": 0})
 
 
-@router.get("/items/reorder")
-async def get_reorder_items(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get items below reorder point"""
-    user = await get_current_user(request, db)
-    
-    items = await db.inventory_items.find(
-        {"organization_id": user["organization_id"], "is_active": True},
-        {"_id": 0}
-    ).to_list(10000)
-    
-    reorder_items = [i for i in items if i.get("quantity_available", 0) <= i.get("reorder_point", 0)]
-    
-    return reorder_items
-
