@@ -474,15 +474,6 @@ function App() {
             />
 
             />
-
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <AssetFormPage />
-                  </LayoutNew>
-                </ProtectedRoute>
-              }
-            />
-
             <Route
               path="/schedule"
               element={
