@@ -127,6 +127,12 @@ def test_inspection_endpoints():
                     log_test("INSPECTION", "PUT /inspections/executions/{id}", "FAIL", f"Status: {response.status_code}")
             except Exception as e:
                 log_test("INSPECTION", "PUT /inspections/executions/{id}", "FAIL", str(e))
+        else:
+            log_test("INSPECTION", "GET /inspections/executions/{id}", "SKIP", "Could not create test execution")
+            log_test("INSPECTION", "PUT /inspections/executions/{id}", "SKIP", "Could not create test execution")
+    else:
+        log_test("INSPECTION", "GET /inspections/executions/{id}", "SKIP", "No templates available")
+        log_test("INSPECTION", "PUT /inspections/executions/{id}", "SKIP", "No templates available")
     
     # Test 3: DELETE /inspections/templates/{id}
     # Create a test template first
