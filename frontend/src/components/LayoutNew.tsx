@@ -256,10 +256,33 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           anyPermissions: ['incident.read.own', 'incident.read.organization'],
         },
         {
+          name: 'Training',
+          icon: GraduationCap,
+          path: '/training',
+          anyPermissions: ['training.read.own', 'training.read.organization'],
+        },
+        {
           name: 'Schedule',
           icon: Calendar,
           path: '/schedule',
           anyPermissions: ['schedule.read.own', 'schedule.read.organization'],
+        },
+      ],
+    },
+    {
+      section: 'Analytics',
+      items: [
+        {
+          name: 'Dashboards',
+          icon: BarChart3,
+          path: '/dashboards',
+          anyPermissions: ['dashboard.read.organization'],
+        },
+        {
+          name: 'Reports',
+          icon: FileText,
+          path: '/reports',
+          anyPermissions: ['report.read.own', 'report.read.organization'],
         },
       ],
     },
