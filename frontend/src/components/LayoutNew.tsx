@@ -43,7 +43,6 @@ import {
   Megaphone,
   AlertOctagon,
   MessageCircle,
-  Building2,
   LucideIcon,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
