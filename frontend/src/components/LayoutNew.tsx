@@ -34,6 +34,7 @@ import {
   Calendar,
   FolderOpen,
   Lock,
+  Package,
   LucideIcon,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
