@@ -114,6 +114,10 @@ class ChecklistItemCompletion(BaseModel):
     completed: bool
     notes: Optional[str] = None
     completed_at: Optional[datetime] = None
+    # V1 Enhancement fields
+    photo_ids: List[str] = []
+    signature_data: Optional[str] = None
+    score: Optional[float] = None
 
 
 class ChecklistExecution(BaseModel):
