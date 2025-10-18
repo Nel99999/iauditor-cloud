@@ -144,6 +144,19 @@ class ChecklistExecution(BaseModel):
     workflow_status: Optional[str] = None  # pending, in_progress, approved, rejected, cancelled
     workflow_template_id: Optional[str] = None
     requires_approval: bool = False
+    
+    # V1 Enhancement fields
+    asset_id: Optional[str] = None
+    asset_name: Optional[str] = None
+    unit_id: Optional[str] = None
+    unit_name: Optional[str] = None
+    shift: Optional[str] = None  # "day", "night", "swing"
+    started_by: Optional[str] = None
+    time_taken_minutes: Optional[int] = None
+    score: Optional[float] = None
+    passed: Optional[bool] = None
+    approved_by: Optional[str] = None
+    approved_at: Optional[datetime] = None
 
 
 class ChecklistExecutionUpdate(BaseModel):
