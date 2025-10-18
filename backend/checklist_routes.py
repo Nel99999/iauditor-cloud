@@ -488,7 +488,7 @@ async def complete_checklist(
             detail="Checklist not found",
         )
     
-    # Get template to check for workflow requirements
+    # Get template to check for workflow requirements and scoring
     template = await db.checklist_templates.find_one(
         {"id": execution["template_id"], "organization_id": user["organization_id"]}
     )
@@ -504,6 +504,16 @@ async def complete_checklist(
             item_dict["completed_at"] = datetime.now(timezone.utc).isoformat()
         items_dict.append(item_dict)
     
+    # Calculate score if scoring enabled
+    score, passed = calculate_checklist_score(template, items_dict)
+    
+    # Calculate duration
+    time_taken = None
+    if execution.get("started_at"):
+        started_at = datetime.fromisoformat(execution["started_at"])
+        completed_at = datetime.now(timezone.utc)
+        time_taken = int((completed_at - started_at).total_seconds() / 60)
+    
     update_data = {
         "status": "completed",
         "items": items_dict,
@@ -512,6 +522,9 @@ async def complete_checklist(
         "completed_by": user["id"],
         "completed_by_name": user["name"],
         "completed_at": datetime.now(timezone.utc).isoformat(),
+        "time_taken_minutes": time_taken,
+        "score": score,
+        "passed": passed,
     }
     
     await db.checklist_executions.update_one(
@@ -520,6 +533,24 @@ async def complete_checklist(
     )
     
     completed_execution = await db.checklist_executions.find_one({"id": execution_id}, {"_id": 0})
+    
+    # Auto-create work order if failed and template requires it
+    if template.get("auto_create_work_order_on_fail") and passed == False:
+        work_order = {
+            "id": str(uuid.uuid4()),
+            "organization_id": user["organization_id"],
+            "title": f"Corrective Action: {template['name']}",
+            "description": f"Checklist failed. Score: {score}%\nNotes: {completion_data.notes or 'No notes'}",
+            "priority": template.get("work_order_priority", "normal"),
+            "status": "pending",
+            "source_checklist_id": execution_id,
+            "asset_id": execution.get("asset_id"),
+            "unit_id": execution.get("unit_id"),
+            "created_by": user["id"],
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.work_orders.insert_one(work_order.copy())
     
     # Auto-start workflow if required
     if requires_approval and workflow_template_id:
