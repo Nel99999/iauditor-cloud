@@ -12,7 +12,7 @@ import sys
 # Configuration
 BASE_URL = "https://ops-control-center.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
-TEST_USER_PASSWORD = "Llewellyn@123"
+TEST_USER_PASSWORD = "TestPassword123!"
 
 # Test results tracking
 test_results = {
