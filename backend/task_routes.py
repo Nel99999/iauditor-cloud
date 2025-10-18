@@ -88,16 +88,6 @@ async def create_task(
     return task_dict
 
 
-@router.get("/stats/overview")
-
-@router.post("/templates", status_code=status.HTTP_201_CREATED)
-
-@router.get("/templates")
-
-@router.post("/from-template")
-
-@router.get("/analytics/overview")
-
 @router.get("/{task_id}")
 async def get_task(
     task_id: str,
@@ -232,6 +222,7 @@ async def add_comment(
     return {"message": "Comment added successfully", "comment": new_comment}
 
 
+@router.get("/stats/overview")
 async def get_task_stats(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
@@ -265,6 +256,7 @@ async def get_task_stats(
 
 # ==================== V1 ENHANCEMENT ENDPOINTS ====================
 
+@router.post("/templates", status_code=status.HTTP_201_CREATED)
 async def create_task_template(
     template_data: dict,
     request: Request,
@@ -295,6 +287,7 @@ async def create_task_template(
     return template_dict
 
 
+@router.get("/templates")
 async def get_task_templates(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
@@ -310,6 +303,7 @@ async def get_task_templates(
     return templates
 
 
+@router.post("/from-template")
 async def create_task_from_template(
     template_id: str,
     request: Request,
@@ -534,6 +528,7 @@ async def get_task_dependencies(
     }
 
 
+@router.get("/analytics/overview")
 async def get_task_analytics(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
