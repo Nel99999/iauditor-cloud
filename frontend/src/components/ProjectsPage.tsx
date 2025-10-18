@@ -46,8 +46,19 @@ const ProjectsPage = () => {
     return <Badge className={colors[status] || 'bg-slate-500'}>{status}</Badge>;
   };
 
+  const navigate = useNavigate();
+
   return (
-    <ModernPageWrapper title="Projects" subtitle="Project portfolio management">
+    <ModernPageWrapper 
+      title="Projects" 
+      subtitle="Project portfolio management"
+      actions={
+        <Button onClick={() => navigate('/projects/new')}>
+          <Plus className="h-4 w-4 mr-2" />
+          New Project
+        </Button>
+      }
+    >
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
