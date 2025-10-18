@@ -406,45 +406,154 @@ async def initialize_permissions(db: AsyncIOMotorDatabase):
     default_permissions = [
         # Inspection permissions
         {"resource_type": "inspection", "action": "create", "scope": "own", "description": "Create own inspections"},
-        {"resource_type": "inspection", "action": "create", "scope": "team", "description": "Create team inspections"},
+        {"resource_type": "inspection", "action": "create", "scope": "organization", "description": "Create inspections"},
         {"resource_type": "inspection", "action": "read", "scope": "own", "description": "View own inspections"},
-        {"resource_type": "inspection", "action": "read", "scope": "team", "description": "View team inspections"},
-        {"resource_type": "inspection", "action": "read", "scope": "all", "description": "View all inspections"},
+        {"resource_type": "inspection", "action": "read", "scope": "organization", "description": "View all inspections"},
         {"resource_type": "inspection", "action": "update", "scope": "own", "description": "Edit own inspections"},
+        {"resource_type": "inspection", "action": "update", "scope": "organization", "description": "Edit all inspections"},
         {"resource_type": "inspection", "action": "delete", "scope": "own", "description": "Delete own inspections"},
-        {"resource_type": "inspection", "action": "approve", "scope": "team", "description": "Approve team inspections"},
+        {"resource_type": "inspection", "action": "delete", "scope": "organization", "description": "Delete all inspections"},
+        
+        # Checklist permissions
+        {"resource_type": "checklist", "action": "create", "scope": "own", "description": "Create checklists"},
+        {"resource_type": "checklist", "action": "create", "scope": "organization", "description": "Create all checklists"},
+        {"resource_type": "checklist", "action": "read", "scope": "own", "description": "View own checklists"},
+        {"resource_type": "checklist", "action": "read", "scope": "organization", "description": "View all checklists"},
+        {"resource_type": "checklist", "action": "update", "scope": "own", "description": "Update own checklists"},
+        {"resource_type": "checklist", "action": "update", "scope": "organization", "description": "Update all checklists"},
+        {"resource_type": "checklist", "action": "delete", "scope": "organization", "description": "Delete checklists"},
         
         # Task permissions
         {"resource_type": "task", "action": "create", "scope": "own", "description": "Create tasks"},
+        {"resource_type": "task", "action": "create", "scope": "organization", "description": "Create all tasks"},
         {"resource_type": "task", "action": "read", "scope": "own", "description": "View own tasks"},
-        {"resource_type": "task", "action": "read", "scope": "team", "description": "View team tasks"},
+        {"resource_type": "task", "action": "read", "scope": "organization", "description": "View all tasks"},
         {"resource_type": "task", "action": "update", "scope": "own", "description": "Update own tasks"},
-        {"resource_type": "task", "action": "assign", "scope": "team", "description": "Assign tasks to team"},
+        {"resource_type": "task", "action": "update", "scope": "organization", "description": "Update all tasks"},
         {"resource_type": "task", "action": "delete", "scope": "own", "description": "Delete own tasks"},
+        {"resource_type": "task", "action": "delete", "scope": "organization", "description": "Delete all tasks"},
+        
+        # Asset permissions
+        {"resource_type": "asset", "action": "create", "scope": "organization", "description": "Create assets"},
+        {"resource_type": "asset", "action": "read", "scope": "own", "description": "View own assets"},
+        {"resource_type": "asset", "action": "read", "scope": "organization", "description": "View all assets"},
+        {"resource_type": "asset", "action": "update", "scope": "organization", "description": "Update assets"},
+        {"resource_type": "asset", "action": "delete", "scope": "organization", "description": "Delete assets"},
+        
+        # Work Order permissions
+        {"resource_type": "workorder", "action": "create", "scope": "own", "description": "Create work orders"},
+        {"resource_type": "workorder", "action": "create", "scope": "organization", "description": "Create all work orders"},
+        {"resource_type": "workorder", "action": "read", "scope": "own", "description": "View own work orders"},
+        {"resource_type": "workorder", "action": "read", "scope": "organization", "description": "View all work orders"},
+        {"resource_type": "workorder", "action": "update", "scope": "own", "description": "Update own work orders"},
+        {"resource_type": "workorder", "action": "update", "scope": "organization", "description": "Update all work orders"},
+        {"resource_type": "workorder", "action": "delete", "scope": "organization", "description": "Delete work orders"},
+        
+        # Inventory permissions
+        {"resource_type": "inventory", "action": "create", "scope": "organization", "description": "Create inventory items"},
+        {"resource_type": "inventory", "action": "read", "scope": "own", "description": "View inventory"},
+        {"resource_type": "inventory", "action": "read", "scope": "organization", "description": "View all inventory"},
+        {"resource_type": "inventory", "action": "update", "scope": "organization", "description": "Update inventory"},
+        {"resource_type": "inventory", "action": "delete", "scope": "organization", "description": "Delete inventory items"},
+        
+        # Project permissions
+        {"resource_type": "project", "action": "create", "scope": "organization", "description": "Create projects"},
+        {"resource_type": "project", "action": "read", "scope": "own", "description": "View own projects"},
+        {"resource_type": "project", "action": "read", "scope": "organization", "description": "View all projects"},
+        {"resource_type": "project", "action": "update", "scope": "own", "description": "Update own projects"},
+        {"resource_type": "project", "action": "update", "scope": "organization", "description": "Update all projects"},
+        {"resource_type": "project", "action": "delete", "scope": "organization", "description": "Delete projects"},
+        
+        # Incident permissions
+        {"resource_type": "incident", "action": "create", "scope": "organization", "description": "Report incidents"},
+        {"resource_type": "incident", "action": "read", "scope": "own", "description": "View own incidents"},
+        {"resource_type": "incident", "action": "read", "scope": "organization", "description": "View all incidents"},
+        {"resource_type": "incident", "action": "update", "scope": "organization", "description": "Update incidents"},
+        {"resource_type": "incident", "action": "investigate", "scope": "organization", "description": "Investigate incidents"},
+        
+        # Training permissions
+        {"resource_type": "training", "action": "create", "scope": "organization", "description": "Create training courses"},
+        {"resource_type": "training", "action": "read", "scope": "own", "description": "View own training"},
+        {"resource_type": "training", "action": "read", "scope": "organization", "description": "View all training"},
+        {"resource_type": "training", "action": "manage", "scope": "organization", "description": "Manage training"},
+        
+        # Financial permissions
+        {"resource_type": "financial", "action": "read", "scope": "organization", "description": "View financial data"},
+        {"resource_type": "financial", "action": "create", "scope": "organization", "description": "Create financial entries"},
+        {"resource_type": "financial", "action": "manage", "scope": "organization", "description": "Manage finances"},
+        
+        # Dashboard permissions
+        {"resource_type": "dashboard", "action": "read", "scope": "organization", "description": "View dashboards"},
+        
+        # Contractor permissions
+        {"resource_type": "contractor", "action": "create", "scope": "organization", "description": "Create contractors"},
+        {"resource_type": "contractor", "action": "read", "scope": "organization", "description": "View contractors"},
+        {"resource_type": "contractor", "action": "update", "scope": "organization", "description": "Update contractors"},
+        
+        # Emergency permissions
+        {"resource_type": "emergency", "action": "create", "scope": "organization", "description": "Declare emergencies"},
+        {"resource_type": "emergency", "action": "read", "scope": "organization", "description": "View emergencies"},
+        {"resource_type": "emergency", "action": "manage", "scope": "organization", "description": "Manage emergencies"},
+        
+        # Chat permissions
+        {"resource_type": "chat", "action": "read", "scope": "organization", "description": "Access team chat"},
+        {"resource_type": "chat", "action": "create", "scope": "organization", "description": "Send messages"},
+        
+        # Announcement permissions
+        {"resource_type": "announcement", "action": "create", "scope": "organization", "description": "Create announcements"},
+        {"resource_type": "announcement", "action": "read", "scope": "organization", "description": "View announcements"},
         
         # User permissions
         {"resource_type": "user", "action": "create", "scope": "organization", "description": "Create users"},
         {"resource_type": "user", "action": "read", "scope": "organization", "description": "View users"},
         {"resource_type": "user", "action": "update", "scope": "organization", "description": "Update users"},
         {"resource_type": "user", "action": "delete", "scope": "organization", "description": "Delete users"},
-        {"resource_type": "user", "action": "invite", "scope": "organization", "description": "Invite users to organization"},
-        {"resource_type": "user", "action": "approve", "scope": "organization", "description": "Approve pending user registrations"},
-        {"resource_type": "user", "action": "reject", "scope": "organization", "description": "Reject pending user registrations"},
+        {"resource_type": "user", "action": "invite", "scope": "organization", "description": "Invite users"},
+        {"resource_type": "user", "action": "approve", "scope": "organization", "description": "Approve users"},
         
         # Invitation permissions
         {"resource_type": "invitation", "action": "create", "scope": "organization", "description": "Send invitations"},
-        {"resource_type": "invitation", "action": "read", "scope": "organization", "description": "View pending invitations"},
-        {"resource_type": "invitation", "action": "cancel", "scope": "organization", "description": "Cancel pending invitations"},
-        {"resource_type": "invitation", "action": "resend", "scope": "organization", "description": "Resend invitation emails"},
+        {"resource_type": "invitation", "action": "read", "scope": "organization", "description": "View invitations"},
+        {"resource_type": "invitation", "action": "cancel", "scope": "organization", "description": "Cancel invitations"},
+        {"resource_type": "invitation", "action": "resend", "scope": "organization", "description": "Resend invitations"},
+        
+        # Role permissions
+        {"resource_type": "role", "action": "create", "scope": "organization", "description": "Create roles"},
+        {"resource_type": "role", "action": "read", "scope": "organization", "description": "View roles"},
+        {"resource_type": "role", "action": "update", "scope": "organization", "description": "Update roles"},
+        {"resource_type": "role", "action": "delete", "scope": "organization", "description": "Delete roles"},
+        
+        # Organization permissions
+        {"resource_type": "organization", "action": "create", "scope": "organization", "description": "Create organization units"},
+        {"resource_type": "organization", "action": "read", "scope": "organization", "description": "View organization"},
+        {"resource_type": "organization", "action": "update", "scope": "organization", "description": "Update organization"},
+        {"resource_type": "organization", "action": "delete", "scope": "organization", "description": "Delete organization units"},
         
         # Report permissions
         {"resource_type": "report", "action": "read", "scope": "own", "description": "View own reports"},
-        {"resource_type": "report", "action": "read", "scope": "all", "description": "View all reports"},
-        {"resource_type": "report", "action": "export", "scope": "all", "description": "Export reports"},
+        {"resource_type": "report", "action": "read", "scope": "organization", "description": "View all reports"},
+        {"resource_type": "report", "action": "create", "scope": "organization", "description": "Create reports"},
         
-        # API permissions (for developer role)
-        {"resource_type": "api", "action": "manage", "scope": "all", "description": "Manage API keys"},
-        {"resource_type": "webhook", "action": "manage", "scope": "all", "description": "Manage webhooks"},
+        # Settings permissions
+        {"resource_type": "settings", "action": "read", "scope": "organization", "description": "View settings"},
+        {"resource_type": "settings", "action": "update", "scope": "organization", "description": "Update settings"},
+        
+        # Webhook permissions
+        {"resource_type": "webhook", "action": "manage", "scope": "organization", "description": "Manage webhooks"},
+        
+        # Group permissions
+        {"resource_type": "group", "action": "create", "scope": "organization", "description": "Create groups"},
+        {"resource_type": "group", "action": "read", "scope": "organization", "description": "View groups"},
+        {"resource_type": "group", "action": "update", "scope": "organization", "description": "Update groups"},
+        {"resource_type": "group", "action": "delete", "scope": "organization", "description": "Delete groups"},
+        
+        # Workflow permissions
+        {"resource_type": "workflow", "action": "create", "scope": "organization", "description": "Create workflows"},
+        {"resource_type": "workflow", "action": "read", "scope": "organization", "description": "View workflows"},
+        {"resource_type": "workflow", "action": "update", "scope": "organization", "description": "Update workflows"},
+        
+        # Analytics permissions
+        {"resource_type": "analytics", "action": "read", "scope": "organization", "description": "View analytics"},
     ]
     
     # Insert permissions if they don't exist
