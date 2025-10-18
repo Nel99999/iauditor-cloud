@@ -40,6 +40,9 @@ from workorder_routes import router as workorder_router
 from inventory_routes import router as inventory_router
 from incident_routes import router as incident_router
 from training_routes import router as training_router
+from financial_routes import router as financial_router
+from hr_routes import router as hr_router
+from emergency_routes import router as emergency_router
 from dashboard_enhanced_routes import router as dashboard_enhanced_router
 from project_routes import router as project_router
 from group_routes import router as group_router
