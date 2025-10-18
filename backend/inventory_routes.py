@@ -161,3 +161,55 @@ async def get_inventory_stats(
     )
     
     return stats.model_dump()
+
+
+
+@router.post("/items/{item_id}/adjust")
+async def adjust_stock(
+    item_id: str,
+    adjustment_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Adjust stock levels"""
+    user = await get_current_user(request, db)
+    
+    item = await db.inventory_items.find_one({"id": item_id, "organization_id": user["organization_id"]})
+    if not item:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+    
+    adjustment = adjustment_data.get("adjustment", 0)
+    new_qty = item.get("quantity_on_hand", 0) + adjustment
+    new_available = new_qty - item.get("quantity_reserved", 0)
+    new_value = new_qty * item.get("unit_cost", 0)
+    
+    await db.inventory_items.update_one(
+        {"id": item_id},
+        {"$set": {
+            "quantity_on_hand": new_qty,
+            "quantity_available": new_available,
+            "total_value": new_value,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return await db.inventory_items.find_one({"id": item_id}, {"_id": 0})
+
+
+@router.get("/items/reorder")
+async def get_reorder_items(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get items below reorder point"""
+    user = await get_current_user(request, db)
+    
+    items = await db.inventory_items.find(
+        {"organization_id": user["organization_id"], "is_active": True},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    reorder_items = [i for i in items if i.get("quantity_available", 0) <= i.get("reorder_point", 0)]
+    
+    return reorder_items
+
