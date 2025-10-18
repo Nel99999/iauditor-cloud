@@ -4,300 +4,307 @@
     "test": "Login",
     "status": "PASS",
     "details": "User ID: e9522a08-754c-4643-9e76-94a99abf8566",
-    "timestamp": "2025-10-18T14:18:05.882291"
+    "timestamp": "2025-10-18T14:20:18.391923"
+  },
+  {
+    "group": "INSPECTION",
+    "test": "GET /inspections/executions/{id}",
+    "status": "SKIP",
+    "details": "Could not create test execution",
+    "timestamp": "2025-10-18T14:20:18.466971"
+  },
+  {
+    "group": "INSPECTION",
+    "test": "PUT /inspections/executions/{id}",
+    "status": "SKIP",
+    "details": "Could not create test execution",
+    "timestamp": "2025-10-18T14:20:18.466997"
   },
   {
     "group": "INSPECTION",
     "test": "DELETE /inspections/templates/{id}",
     "status": "PASS",
     "details": "Template deleted successfully",
-    "timestamp": "2025-10-18T14:18:06.122582"
+    "timestamp": "2025-10-18T14:20:18.568331"
   },
   {
     "group": "CHECKLIST",
     "test": "GET /checklists/executions/today",
     "status": "PASS",
-    "details": "Found 3 executions today",
-    "timestamp": "2025-10-18T14:18:06.165913"
-  },
-  {
-    "group": "CHECKLIST",
-    "test": "GET /checklists/executions/{id}",
-    "status": "PASS",
-    "details": "Retrieved execution 99905488-9860-4668-ab35-1a23f8ef2d2e",
-    "timestamp": "2025-10-18T14:18:06.287011"
+    "details": "Found 4 executions today",
+    "timestamp": "2025-10-18T14:20:18.626793"
   },
   {
     "group": "CHECKLIST",
     "test": "DELETE /checklists/templates/{id}",
     "status": "PASS",
     "details": "Template deleted successfully",
-    "timestamp": "2025-10-18T14:18:06.366709"
+    "timestamp": "2025-10-18T14:20:18.787512"
   },
   {
     "group": "TASK",
     "test": "PUT /tasks/{id}",
     "status": "PASS",
     "details": "Task updated successfully",
-    "timestamp": "2025-10-18T14:18:06.437920"
+    "timestamp": "2025-10-18T14:20:18.861492"
   },
   {
     "group": "TASK",
     "test": "POST /tasks/{id}/comments",
     "status": "PASS",
     "details": "Comment added successfully",
-    "timestamp": "2025-10-18T14:18:06.478956"
+    "timestamp": "2025-10-18T14:20:18.898469"
   },
   {
     "group": "TASK",
     "test": "DELETE /tasks/{id}",
     "status": "PASS",
     "details": "Task deleted successfully",
-    "timestamp": "2025-10-18T14:18:06.519600"
+    "timestamp": "2025-10-18T14:20:18.936177"
   },
   {
     "group": "TASK",
     "test": "GET /tasks/stats/overview",
     "status": "PASS",
     "details": "Total tasks: 33",
-    "timestamp": "2025-10-18T14:18:06.557990"
+    "timestamp": "2025-10-18T14:20:18.978563"
   },
   {
     "group": "USER/AUTH",
     "test": "GET /users",
     "status": "PASS",
     "details": "Found 7 users",
-    "timestamp": "2025-10-18T14:18:06.596272"
+    "timestamp": "2025-10-18T14:20:19.018292"
   },
   {
     "group": "USER/AUTH",
     "test": "GET /users/me",
     "status": "PASS",
     "details": "User: Llewellyn Nel",
-    "timestamp": "2025-10-18T14:18:06.631156"
+    "timestamp": "2025-10-18T14:20:19.057083"
   },
   {
     "group": "USER/AUTH",
     "test": "PUT /users/profile",
     "status": "PASS",
     "details": "Profile updated successfully",
-    "timestamp": "2025-10-18T14:18:06.707639"
+    "timestamp": "2025-10-18T14:20:19.092060"
   },
   {
     "group": "USER/AUTH",
     "test": "POST /users/invite",
     "status": "PASS",
     "details": "User invited successfully",
-    "timestamp": "2025-10-18T14:18:06.764545"
+    "timestamp": "2025-10-18T14:20:19.131691"
   },
   {
     "group": "USER/AUTH",
     "test": "GET /users/pending-approvals",
     "status": "PASS",
     "details": "Found 0 pending approvals",
-    "timestamp": "2025-10-18T14:18:06.803304"
+    "timestamp": "2025-10-18T14:20:19.212692"
   },
   {
     "group": "USER/AUTH",
     "test": "POST /users/{id}/approve",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production data",
-    "timestamp": "2025-10-18T14:18:06.803332"
+    "timestamp": "2025-10-18T14:20:19.212721"
   },
   {
     "group": "USER/AUTH",
     "test": "POST /users/{id}/reject",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production data",
-    "timestamp": "2025-10-18T14:18:06.803337"
+    "timestamp": "2025-10-18T14:20:19.212727"
   },
   {
     "group": "USER/AUTH",
     "test": "DELETE /users/{id}",
     "status": "SKIP",
     "details": "Skipped to avoid deleting production users",
-    "timestamp": "2025-10-18T14:18:06.803341"
+    "timestamp": "2025-10-18T14:20:19.212732"
   },
   {
     "group": "ROLE",
     "test": "GET /roles",
     "status": "PASS",
     "details": "Found 11 roles",
-    "timestamp": "2025-10-18T14:18:06.842621"
+    "timestamp": "2025-10-18T14:20:19.250281"
   },
   {
     "group": "ROLE",
     "test": "POST /roles",
-    "status": "FAIL",
-    "details": "Status: 422, Response: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"code\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Test Role 20251018141806\",\"description\":\"Test role for endpoint testing\",\"level\":5,\"permissions\":[\"task.read.own\",\"task.create.own\"]},\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"},{\"type\":\"missing\",\"loc\":[\"body\",\"color\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Test Role 20251018141806\",\"description\":\"Test role for endpoint testing\",\"level\":5,\"permissions\":[\"task.read.own\",\"task.create.own\"]},\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"}]}",
-    "timestamp": "2025-10-18T14:18:06.874930"
+    "status": "PASS",
+    "details": "Role created: fc8d9a06-053f-4415-a8e7-e8c30557098a",
+    "timestamp": "2025-10-18T14:20:19.291132"
   },
   {
     "group": "ROLE",
     "test": "PUT /roles/{id}",
-    "status": "SKIP",
-    "details": "Role creation failed",
-    "timestamp": "2025-10-18T14:18:06.874959"
+    "status": "FAIL",
+    "details": "Status: 422",
+    "timestamp": "2025-10-18T14:20:19.322599"
   },
   {
     "group": "ROLE",
     "test": "DELETE /roles/{id}",
-    "status": "SKIP",
-    "details": "Role creation failed",
-    "timestamp": "2025-10-18T14:18:06.874965"
+    "status": "PASS",
+    "details": "Role deleted successfully",
+    "timestamp": "2025-10-18T14:20:19.357637"
   },
   {
     "group": "ORGANIZATION",
     "test": "GET /organizations/units",
     "status": "PASS",
     "details": "Found 10 units",
-    "timestamp": "2025-10-18T14:18:06.919681"
+    "timestamp": "2025-10-18T14:20:19.398944"
   },
   {
     "group": "ORGANIZATION",
     "test": "POST /organizations/units",
-    "status": "FAIL",
-    "details": "Status: 400",
-    "timestamp": "2025-10-18T14:18:06.960251"
+    "status": "PASS",
+    "details": "Unit created: cf1b0bb8-16e8-4eec-9f68-ff49aa8cc367",
+    "timestamp": "2025-10-18T14:20:19.448367"
   },
   {
     "group": "ORGANIZATION",
     "test": "PUT /organizations/units/{id}",
-    "status": "SKIP",
-    "details": "Unit creation failed",
-    "timestamp": "2025-10-18T14:18:06.960282"
+    "status": "PASS",
+    "details": "Unit updated successfully",
+    "timestamp": "2025-10-18T14:20:19.486326"
   },
   {
     "group": "ORGANIZATION",
     "test": "DELETE /organizations/units/{id}",
-    "status": "SKIP",
-    "details": "Unit creation failed",
-    "timestamp": "2025-10-18T14:18:06.960287"
+    "status": "PASS",
+    "details": "Unit deleted successfully",
+    "timestamp": "2025-10-18T14:20:19.522846"
   },
   {
     "group": "WORKFLOW",
     "test": "GET /workflows/templates",
     "status": "PASS",
     "details": "Found 0 workflow templates",
-    "timestamp": "2025-10-18T14:18:06.999170"
+    "timestamp": "2025-10-18T14:20:19.564898"
   },
   {
     "group": "WORKFLOW",
     "test": "POST /workflows/templates",
-    "status": "FAIL",
-    "details": "Status: 422, Response: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"resource_type\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Test Workflow 20251018141806\",\"description\":\"Test workflow template\",\"steps\":[{\"step_number\":1,\"step_name\":\"Review\",\"approver_role\":\"manager\",\"required\":true}]},\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"}]}",
-    "timestamp": "2025-10-18T14:18:07.033914"
+    "status": "PASS",
+    "details": "Workflow template created",
+    "timestamp": "2025-10-18T14:20:19.646466"
   },
   {
     "group": "WORKFLOW",
     "test": "GET /workflows/instances",
     "status": "PASS",
     "details": "Found 0 workflow instances",
-    "timestamp": "2025-10-18T14:18:07.070317"
+    "timestamp": "2025-10-18T14:20:19.682282"
   },
   {
     "group": "WORKFLOW",
     "test": "POST /workflows/instances/{id}/approve",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production workflows",
-    "timestamp": "2025-10-18T14:18:07.070347"
+    "timestamp": "2025-10-18T14:20:19.682312"
   },
   {
     "group": "WORKFLOW",
     "test": "POST /workflows/instances/{id}/reject",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production workflows",
-    "timestamp": "2025-10-18T14:18:07.070353"
+    "timestamp": "2025-10-18T14:20:19.682317"
   },
   {
     "group": "SETTINGS",
     "test": "GET /settings/email",
     "status": "PASS",
     "details": "Email settings retrieved",
-    "timestamp": "2025-10-18T14:18:07.120941"
+    "timestamp": "2025-10-18T14:20:19.718548"
   },
   {
     "group": "SETTINGS",
     "test": "PUT /settings/email",
     "status": "SKIP",
     "details": "Skipped to avoid changing production email settings",
-    "timestamp": "2025-10-18T14:18:07.120967"
+    "timestamp": "2025-10-18T14:20:19.718576"
   },
   {
     "group": "SETTINGS",
     "test": "GET /settings/sms",
     "status": "FAIL",
     "details": "Status: 404",
-    "timestamp": "2025-10-18T14:18:07.161315"
+    "timestamp": "2025-10-18T14:20:19.791858"
   },
   {
     "group": "SETTINGS",
     "test": "PUT /settings/sms",
     "status": "SKIP",
     "details": "Skipped to avoid changing production SMS settings",
-    "timestamp": "2025-10-18T14:18:07.161349"
+    "timestamp": "2025-10-18T14:20:19.791887"
   },
   {
     "group": "BULK_IMPORT",
     "test": "POST /bulk-import/validate",
     "status": "FAIL",
     "details": "Status: 422",
-    "timestamp": "2025-10-18T14:18:07.196099"
+    "timestamp": "2025-10-18T14:20:19.866460"
   },
   {
     "group": "BULK_IMPORT",
     "test": "POST /bulk-import/users",
     "status": "SKIP",
     "details": "Skipped to avoid creating bulk test users",
-    "timestamp": "2025-10-18T14:18:07.196126"
+    "timestamp": "2025-10-18T14:20:19.866491"
   },
   {
     "group": "GROUPS",
     "test": "GET /groups",
     "status": "PASS",
     "details": "Found 0 groups",
-    "timestamp": "2025-10-18T14:18:07.233963"
+    "timestamp": "2025-10-18T14:20:19.903973"
   },
   {
     "group": "GROUPS",
     "test": "POST /groups",
     "status": "PASS",
-    "details": "Group created: f488e55d-9f29-4609-8a79-ad04d17bafd2",
-    "timestamp": "2025-10-18T14:18:07.274931"
+    "details": "Group created: 1ffcb844-242a-479b-abb7-192d77e2fd7e",
+    "timestamp": "2025-10-18T14:20:19.942294"
   },
   {
     "group": "GROUPS",
     "test": "PUT /groups/{id}",
     "status": "PASS",
     "details": "Group updated successfully",
-    "timestamp": "2025-10-18T14:18:07.317809"
+    "timestamp": "2025-10-18T14:20:19.978903"
   },
   {
     "group": "GROUPS",
     "test": "DELETE /groups/{id}",
     "status": "PASS",
     "details": "Group deleted successfully",
-    "timestamp": "2025-10-18T14:18:07.397651"
+    "timestamp": "2025-10-18T14:20:20.019634"
   },
   {
     "group": "WEBHOOKS",
     "test": "GET /webhooks",
     "status": "PASS",
     "details": "Found 0 webhooks",
-    "timestamp": "2025-10-18T14:18:07.434501"
+    "timestamp": "2025-10-18T14:20:20.055654"
   },
   {
     "group": "WEBHOOKS",
     "test": "POST /webhooks",
     "status": "PASS",
-    "details": "Webhook created: 72db4982-af9d-44f0-b265-1395d96c792f",
-    "timestamp": "2025-10-18T14:18:07.474725"
+    "details": "Webhook created: 60b2d357-824c-4589-9781-f7ac7995177c",
+    "timestamp": "2025-10-18T14:20:20.134920"
   },
   {
     "group": "WEBHOOKS",
     "test": "DELETE /webhooks/{id}",
     "status": "PASS",
     "details": "Webhook deleted successfully",
-    "timestamp": "2025-10-18T14:18:07.515136"
+    "timestamp": "2025-10-18T14:20:20.169151"
   }
 ]
