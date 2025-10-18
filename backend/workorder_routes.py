@@ -271,9 +271,14 @@ async def add_labor_to_work_order(
     rate = labor_data.get("hourly_rate", 0)
     cost = hours * rate
     
-    new_labor_cost = wo.get("labor_cost", 0) + cost
-    new_actual_hours = wo.get("actual_hours", 0) + hours
-    new_total_cost = new_labor_cost + wo.get("parts_cost", 0)
+    # Handle None values properly
+    current_labor_cost = wo.get("labor_cost") or 0
+    current_actual_hours = wo.get("actual_hours") or 0
+    current_parts_cost = wo.get("parts_cost") or 0
+    
+    new_labor_cost = current_labor_cost + cost
+    new_actual_hours = current_actual_hours + hours
+    new_total_cost = new_labor_cost + current_parts_cost
     
     await db.work_orders.update_one(
         {"id": wo_id},
