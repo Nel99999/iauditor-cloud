@@ -502,8 +502,7 @@ def test_organization_endpoints():
         unit_data = {
             "name": f"Test Unit {datetime.now().strftime('%Y%m%d%H%M%S')}",
             "description": "Test organizational unit",
-            "unit_type": "department",
-            "level": 3
+            "level": 1  # Root unit must be level 1
         }
         response = requests.post(f"{BASE_URL}/organizations/units", json=unit_data, headers=get_headers(), timeout=10)
         if response.status_code in [200, 201]:
