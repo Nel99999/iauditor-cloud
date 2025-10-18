@@ -326,6 +326,17 @@ function App() {
                   <LayoutNew>
                     <InventoryDetailPage />
                   </LayoutNew>
+            <Route
+              path="/projects/new"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ProjectFormPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
                 </ProtectedRoute>
               }
             />
