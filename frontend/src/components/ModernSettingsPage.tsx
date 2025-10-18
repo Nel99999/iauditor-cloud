@@ -119,7 +119,7 @@ const ModernSettingsPage = () => {
             axios.get(`${API}/settings/email`),
             axios.get(`${API}/sms/settings`),
             axios.get(`${API}/webhooks`),
-            axios.get(`${API}/gdpr/consents`)
+            axios.get(`${API}/gdpr/consent-status`)
           ]);
           
           setApiSettings(emailRes.data || {});
