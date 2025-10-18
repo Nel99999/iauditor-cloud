@@ -184,6 +184,100 @@ async def get_project_stats(
         s = p.get("status", "planning")
         by_status[s] = by_status.get(s, 0) + 1
     
+
+
+
+@router.post("/{project_id}/tasks")
+async def create_project_task(
+    project_id: str,
+    task_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Create task for project"""
+    user = await get_current_user(request, db)
+    
+    # Verify project exists
+    project = await db.projects.find_one({"id": project_id, "organization_id": user["organization_id"]})
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    
+    # Create task linked to project
+    task = {
+        "id": str(uuid.uuid4()),
+        "organization_id": user["organization_id"],
+        "title": task_data.get("title"),
+        "description": task_data.get("description"),
+        "task_type": "project_task",
+        "project_id": project_id,
+        "status": "todo",
+        "priority": task_data.get("priority", "normal"),
+        "assigned_to": task_data.get("assigned_to"),
+        "due_date": task_data.get("due_date"),
+        "created_by": user["id"],
+        "created_by_name": user["name"],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.tasks.insert_one(task.copy())
+    await db.projects.update_one({"id": project_id}, {"$inc": {"task_count": 1}})
+    
+    return task
+
+
+@router.get("/{project_id}/tasks")
+async def list_project_tasks(
+    project_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """List project tasks"""
+    user = await get_current_user(request, db)
+    
+    tasks = await db.tasks.find(
+        {"project_id": project_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    return tasks
+
+
+@router.get("/dashboard")
+async def get_project_dashboard(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get project portfolio dashboard"""
+    user = await get_current_user(request, db)
+    
+    projects = await db.projects.find(
+        {"organization_id": user["organization_id"], "is_active": True},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    # Calculate metrics
+    active_projects = [p for p in projects if p.get("status") == "active"]
+    on_hold = [p for p in projects if p.get("status") == "on_hold"]
+    completed = [p for p in projects if p.get("status") == "completed"]
+    
+    total_budget = sum(p.get("budget", 0) for p in projects)
+    total_spent = sum(p.get("actual_cost", 0) for p in projects)
+    
+    on_time = len([p for p in completed if p.get("actual_end") and p.get("planned_end") and p.get("actual_end") <= p.get("planned_end")])
+    on_time_pct = (on_time / len(completed) * 100) if completed else 0
+    
+    return {
+        "total_projects": len(projects),
+        "active": len(active_projects),
+        "on_hold": len(on_hold),
+        "completed": len(completed),
+        "total_budget": total_budget,
+        "total_spent": total_spent,
+        "variance": total_budget - total_spent,
+        "on_time_percentage": round(on_time_pct, 2)
+    }
+
     total_budget = sum(p.get("budget", 0) for p in projects)
     total_cost = sum(p.get("actual_cost", 0) for p in projects)
     
