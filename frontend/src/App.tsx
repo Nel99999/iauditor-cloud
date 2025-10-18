@@ -246,6 +246,47 @@ function App() {
               }
             />
             <Route
+              path="/assets"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <AssetsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/assets/new"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <AssetFormPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/assets/:assetId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <AssetDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/assets/:assetId/edit"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <AssetFormPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/schedule"
               element={
                 <ProtectedRoute>
