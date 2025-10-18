@@ -118,6 +118,15 @@ async def create_checklist_template(
             text=item.text,
             required=item.required,
             order=idx,
+            # V1 Enhancement fields
+            photo_required=getattr(item, 'photo_required', False),
+            min_photos=getattr(item, 'min_photos', 0),
+            max_photos=getattr(item, 'max_photos', 10),
+            signature_required=getattr(item, 'signature_required', False),
+            conditional_logic=getattr(item, 'conditional_logic', None),
+            help_text=getattr(item, 'help_text', None),
+            scoring_enabled=getattr(item, 'scoring_enabled', False),
+            pass_score=getattr(item, 'pass_score', None),
         )
         items.append(checklist_item.model_dump())
     
