@@ -68,9 +68,12 @@ def test_create_asset(token):
     print("TEST 1: Create Asset - POST /api/assets")
     print("="*80)
     
+    # Use timestamp to ensure unique asset tag
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    
     headers = {"Authorization": f"Bearer {token}"}
     payload = {
-        "asset_tag": "TEST-ASSET-001",
+        "asset_tag": f"TEST-ASSET-{timestamp}",
         "name": "Test Equipment",
         "description": "Testing asset creation",
         "asset_type": "equipment",
