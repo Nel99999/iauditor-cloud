@@ -442,11 +442,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-                </ProtectedRoute>
-              }
-            />
-
             <Route
               path="/financial"
               element={
