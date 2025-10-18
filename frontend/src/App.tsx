@@ -295,9 +295,23 @@ function App() {
             <Route
               path="/assets/:assetId/edit"
               element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <AssetFormPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/work-orders"
               element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <WorkOrdersPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/work-orders/new"
               element={
@@ -308,65 +322,12 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-                <ProtectedRoute>
-                  <LayoutNew>
             <Route
               path="/work-orders/:woId"
               element={
                 <ProtectedRoute>
                   <LayoutNew>
                     <WorkOrderDetailPage />
-                  </LayoutNew>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/inventory/:itemId"
-              element={
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <InventoryDetailPage />
-                  </LayoutNew>
-            <Route
-              path="/projects/new"
-              element={
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <ProjectFormPage />
-                  </LayoutNew>
-                </ProtectedRoute>
-              }
-            />
-
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/projects/:projectId"
-              element={
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <ProjectDetailPage />
-                  </LayoutNew>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/incidents/:incidentId"
-              element={
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <IncidentDetailPage />
-                  </LayoutNew>
-                </ProtectedRoute>
-              }
-            />
-
-
-
-
-                    <WorkOrdersPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -382,7 +343,65 @@ function App() {
               }
             />
             <Route
+              path="/inventory/:itemId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <InventoryDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/projects"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ProjectsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projects/new"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ProjectFormPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projects/:projectId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ProjectDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/incidents"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <IncidentsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/incidents/:incidentId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <IncidentDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/chat"
               element={
@@ -403,21 +422,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-              element={
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <ProjectsPage />
-                  </LayoutNew>
-                </ProtectedRoute>
-              }
-            <Route
-              path="/incidents"
-              element={
-                <ProtectedRoute>
-                  <LayoutNew>
-                    <IncidentsPage />
-                  </LayoutNew>
             <Route
               path="/training"
               element={
