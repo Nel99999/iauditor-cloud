@@ -249,6 +249,12 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           anyPermissions: ['project.read.own', 'project.read.organization'],
         },
         {
+          name: 'Incidents',
+          icon: AlertTriangle,
+          path: '/incidents',
+          anyPermissions: ['incident.read.own', 'incident.read.organization'],
+        },
+        {
           name: 'Schedule',
           icon: Calendar,
           path: '/schedule',
