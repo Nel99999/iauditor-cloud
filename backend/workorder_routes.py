@@ -73,6 +73,66 @@ async def create_work_order(
     return wo_dict
 
 
+@router.get("/stats/overview")
+async def get_work_order_stats(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get work order statistics"""
+    user = await get_current_user(request, db)
+    
+    wos = await db.work_orders.find({"organization_id": user["organization_id"], "is_active": True}, {"_id": 0}).to_list(10000)
+    
+    by_status = {}
+    by_type = {}
+    for wo in wos:
+        s = wo.get("status", "pending")
+        by_status[s] = by_status.get(s, 0) + 1
+        t = wo.get("work_type", "corrective")
+        by_type[t] = by_type.get(t, 0) + 1
+    
+    backlog = len([w for w in wos if w.get("status") in ["pending", "approved", "scheduled"]])
+    
+    # Completed this month
+    month_start = datetime.now(timezone.utc).replace(day=1).isoformat()
+    completed_month = len([w for w in wos if w.get("completed_at") and w.get("completed_at") >= month_start])
+    
+    # Average hours
+    hours = [w.get("actual_hours") for w in wos if w.get("actual_hours")]
+    avg_hours = sum(hours) / len(hours) if hours else None
+    
+    stats = WorkOrderStats(
+        total_work_orders=len(wos),
+        by_status=by_status,
+        by_type=by_type,
+        backlog_count=backlog,
+        completed_this_month=completed_month,
+        average_completion_hours=round(avg_hours, 2) if avg_hours else None
+    )
+    
+    return stats.model_dump()
+
+
+@router.get("/backlog")
+async def get_work_order_backlog(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get work order backlog"""
+    user = await get_current_user(request, db)
+    
+    backlog = await db.work_orders.find(
+        {
+            "organization_id": user["organization_id"],
+            "status": {"$in": ["pending", "approved", "scheduled"]},
+            "is_active": True
+        },
+        {"_id": 0}
+    ).sort("priority", -1).to_list(1000)
+    
+    return backlog
+
+
 @router.get("")
 async def list_work_orders(
     request: Request,
