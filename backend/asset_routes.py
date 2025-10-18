@@ -404,12 +404,12 @@ async def get_asset_stats(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    \"\"\"Get asset statistics\"\"\"
+    """Get asset statistics"""
     user = await get_current_user(request, db)
     
     assets = await db.assets.find(
-        {\"organization_id\": user[\"organization_id\"], \"is_active\": True},
-        {\"_id\": 0}
+        {"organization_id": user["organization_id"], "is_active": True},
+        {"_id": 0}
     ).to_list(10000)
     
     total = len(assets)
