@@ -103,53 +103,53 @@ const AssetFormPage = () => {
         </Button>
       }
     >
-      <form onSubmit={handleSubmit} className=\"max-w-4xl space-y-6\">
+      <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
         <Card>
           <CardHeader><CardTitle>Basic Information</CardTitle></CardHeader>
-          <CardContent className=\"space-y-4\">
-            <div className=\"grid grid-cols-2 gap-4\">
-              <div className=\"space-y-2\">
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label>Asset Tag *</Label>
                 <Input value={formData.asset_tag} onChange={(e) => setFormData({...formData, asset_tag: e.target.value})} />
               </div>
-              <div className=\"space-y-2\">
+              <div className="space-y-2">
                 <Label>Name *</Label>
                 <Input value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
               </div>
             </div>
-            <div className=\"space-y-2\">
+            <div className="space-y-2">
               <Label>Description</Label>
               <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={3} />
             </div>
-            <div className=\"grid grid-cols-3 gap-4\">
-              <div className=\"space-y-2\">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
                 <Label>Type</Label>
                 <Select value={formData.asset_type} onValueChange={(v) => setFormData({...formData, asset_type: v})}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value=\"equipment\">Equipment</SelectItem>
-                    <SelectItem value=\"vehicle\">Vehicle</SelectItem>
-                    <SelectItem value=\"building\">Building</SelectItem>
-                    <SelectItem value=\"machinery\">Machinery</SelectItem>
-                    <SelectItem value=\"tools\">Tools</SelectItem>
+                    <SelectItem value="equipment">Equipment</SelectItem>
+                    <SelectItem value="vehicle">Vehicle</SelectItem>
+                    <SelectItem value="building">Building</SelectItem>
+                    <SelectItem value="machinery">Machinery</SelectItem>
+                    <SelectItem value="tools">Tools</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className=\"space-y-2\">
+              <div className="space-y-2">
                 <Label>Criticality</Label>
                 <Select value={formData.criticality} onValueChange={(v) => setFormData({...formData, criticality: v})}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value=\"A\">A - Critical</SelectItem>
-                    <SelectItem value=\"B\">B - Important</SelectItem>
-                    <SelectItem value=\"C\">C - Normal</SelectItem>
+                    <SelectItem value="A">A - Critical</SelectItem>
+                    <SelectItem value="B">B - Important</SelectItem>
+                    <SelectItem value="C">C - Normal</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className=\"space-y-2\">
+              <div className="space-y-2">
                 <Label>Unit</Label>
                 <Select value={formData.unit_id || ''} onValueChange={(v) => setFormData({...formData, unit_id: v})}>
-                  <SelectTrigger><SelectValue placeholder=\"Select unit\" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Select unit" /></SelectTrigger>
                   <SelectContent>
                     {units.map(u => <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>)}
                   </SelectContent>
@@ -161,34 +161,34 @@ const AssetFormPage = () => {
 
         <Card>
           <CardHeader><CardTitle>Technical Details</CardTitle></CardHeader>
-          <CardContent className=\"space-y-4\">
-            <div className=\"grid grid-cols-2 gap-4\">
-              <div className=\"space-y-2\"><Label>Make</Label><Input value={formData.make || ''} onChange={(e) => setFormData({...formData, make: e.target.value})} /></div>
-              <div className=\"space-y-2\"><Label>Model</Label><Input value={formData.model || ''} onChange={(e) => setFormData({...formData, model: e.target.value})} /></div>
-              <div className=\"space-y-2\"><Label>Serial Number</Label><Input value={formData.serial_number || ''} onChange={(e) => setFormData({...formData, serial_number: e.target.value})} /></div>
-              <div className=\"space-y-2\"><Label>Manufacturer</Label><Input value={formData.manufacturer || ''} onChange={(e) => setFormData({...formData, manufacturer: e.target.value})} /></div>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2"><Label>Make</Label><Input value={formData.make || ''} onChange={(e) => setFormData({...formData, make: e.target.value})} /></div>
+              <div className="space-y-2"><Label>Model</Label><Input value={formData.model || ''} onChange={(e) => setFormData({...formData, model: e.target.value})} /></div>
+              <div className="space-y-2"><Label>Serial Number</Label><Input value={formData.serial_number || ''} onChange={(e) => setFormData({...formData, serial_number: e.target.value})} /></div>
+              <div className="space-y-2"><Label>Manufacturer</Label><Input value={formData.manufacturer || ''} onChange={(e) => setFormData({...formData, manufacturer: e.target.value})} /></div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader><CardTitle>Maintenance</CardTitle></CardHeader>
-          <CardContent className=\"space-y-4\">
-            <div className=\"grid grid-cols-2 gap-4\">
-              <div className=\"space-y-2\">
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label>Schedule</Label>
                 <Select value={formData.maintenance_schedule || 'monthly'} onValueChange={(v) => setFormData({...formData, maintenance_schedule: v})}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value=\"weekly\">Weekly</SelectItem>
-                    <SelectItem value=\"monthly\">Monthly</SelectItem>
-                    <SelectItem value=\"quarterly\">Quarterly</SelectItem>
-                    <SelectItem value=\"annual\">Annual</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                    <SelectItem value="quarterly">Quarterly</SelectItem>
+                    <SelectItem value="annual">Annual</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className=\"space-y-2\">
-                <Label className=\"flex items-center gap-2\">
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
                   Requires Calibration
                   <Switch checked={formData.requires_calibration} onCheckedChange={(c) => setFormData({...formData, requires_calibration: c})} />
                 </Label>
@@ -197,10 +197,10 @@ const AssetFormPage = () => {
           </CardContent>
         </Card>
 
-        <div className=\"flex gap-2\">
-          <Button type=\"button\" variant=\"outline\" onClick={() => navigate('/assets')} className=\"flex-1\">Cancel</Button>
-          <Button type=\"submit\" disabled={loading} className=\"flex-1\">
-            <Save className=\"h-4 w-4 mr-2\" />
+        <div className="flex gap-2">
+          <Button type="button" variant="outline" onClick={() => navigate('/assets')} className="flex-1">Cancel</Button>
+          <Button type="submit" disabled={loading} className="flex-1">
+            <Save className="h-4 w-4 mr-2" />
             {loading ? 'Saving...' : 'Save Asset'}
           </Button>
         </div>
