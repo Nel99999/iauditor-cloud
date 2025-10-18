@@ -83,6 +83,7 @@ async def get_recent_activity(
     # Get recent audit logs for this user
     logs = await db.audit_logs.find({
         "user_id": current_user["id"]
-    }).sort("created_at", -1).limit(limit).to_list(length=limit)
+    }, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(length=limit)
     
     return logs
+
