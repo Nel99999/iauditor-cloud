@@ -11,7 +11,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, ListTodo, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import TaskAnalyticsDashboard from '@/components/TaskAnalyticsDashboard';
+import TimeLoggingDialog from '@/components/TimeLoggingDialog';
+import SubtaskTreeView from '@/components/SubtaskTreeView';
+import DependencyVisualizer from '@/components/DependencyVisualizer';
+import { Plus, ListTodo, Clock, CheckCircle, AlertTriangle, BarChart3, GitBranch } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
