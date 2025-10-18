@@ -383,6 +383,27 @@ function App() {
             />
             <Route
               path="/projects"
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <TeamChatPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contractors"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ContractorsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
               element={
                 <ProtectedRoute>
                   <LayoutNew>
