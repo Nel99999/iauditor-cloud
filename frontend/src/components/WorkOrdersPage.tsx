@@ -87,7 +87,11 @@ const WorkOrdersPage = () => {
             ) : (
               <div className="space-y-3">
                 {workOrders.map((wo) => (
-                  <div key={wo.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900">
+                  <div 
+                    key={wo.id} 
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer transition-colors"
+                    onClick={() => navigate(`/work-orders/${wo.id}`)}
+                  >
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{wo.title}</span>
