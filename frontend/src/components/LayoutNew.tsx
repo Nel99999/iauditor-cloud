@@ -229,6 +229,24 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           anyPermissions: ['asset.read.own', 'asset.read.organization'],
         },
         {
+          name: 'Work Orders',
+          icon: Wrench,
+          path: '/work-orders',
+          anyPermissions: ['workorder.read.own', 'workorder.read.organization'],
+        },
+        {
+          name: 'Inventory',
+          icon: FolderOpen,
+          path: '/inventory',
+          anyPermissions: ['inventory.read.own', 'inventory.read.organization'],
+        },
+        {
+          name: 'Projects',
+          icon: FolderKanban,
+          path: '/projects',
+          anyPermissions: ['project.read.own', 'project.read.organization'],
+        },
+        {
           name: 'Schedule',
           icon: Calendar,
           path: '/schedule',
