@@ -269,20 +269,46 @@ async def start_inspection(
             detail="Template not found",
         )
     
+    # Get unit name if unit_id provided
+    unit_name = None
+    if execution_data.unit_id:
+        unit = await db.organization_units.find_one(
+            {"id": execution_data.unit_id},
+            {"_id": 0, "name": 1}
+        )
+        unit_name = unit.get("name") if unit else None
+    
+    # Get asset name if asset_id provided
+    asset_name = None
+    if execution_data.asset_id:
+        asset = await db.assets.find_one(
+            {"id": execution_data.asset_id},
+            {"_id": 0, "name": 1}
+        )
+        asset_name = asset.get("name") if asset else None
+    
     execution = InspectionExecution(
         organization_id=user["organization_id"],
         template_id=template["id"],
         template_name=template["name"],
         template_version=template.get("version", 1),
         unit_id=execution_data.unit_id,
+        unit_name=unit_name,
         inspector_id=user["id"],
         inspector_name=user["name"],
         location=execution_data.location,
+        asset_id=execution_data.asset_id,
+        asset_name=asset_name,
+        scheduled_date=execution_data.scheduled_date,
     )
     
     execution_dict = execution.model_dump()
     execution_dict["started_at"] = execution_dict["started_at"].isoformat()
     execution_dict["created_at"] = execution_dict["created_at"].isoformat()
+    if execution_dict.get("scheduled_date"):
+        execution_dict["scheduled_date"] = execution_dict["scheduled_date"].isoformat()
+    if execution_dict.get("due_date"):
+        execution_dict["due_date"] = execution_dict["due_date"].isoformat()
     
     # Create a copy for insertion to avoid _id contamination
     insert_dict = execution_dict.copy()
