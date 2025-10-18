@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timedelta, timezone, date
 from typing import List, Optional
+from collections import Counter
+import uuid
 from checklist_models import (
     ChecklistTemplate,
     ChecklistTemplateCreate,
@@ -12,6 +14,8 @@ from checklist_models import (
     ChecklistItem,
     ChecklistItemCompletion,
     ChecklistStats,
+    ChecklistSchedule,
+    ChecklistAnalytics,
 )
 from auth_utils import get_current_user
 
