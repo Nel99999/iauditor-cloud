@@ -648,3 +648,213 @@ async def get_checklist_stats(
         completion_rate=round(completion_rate, 2),
         overdue=overdue,
     )
+
+
+# ==================== V1 ENHANCEMENT ENDPOINTS ====================
+
+@router.get("/templates/{template_id}/analytics")
+async def get_checklist_analytics(
+    template_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get analytics for checklist template"""
+    user = await get_current_user(request, db)
+    
+    # Get template
+    template = await db.checklist_templates.find_one(
+        {"id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    # Get all executions
+    executions = await db.checklist_executions.find(
+        {"template_id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    total = len(executions)
+    completed = [e for e in executions if e.get("status") == "completed"]
+    in_progress = [e for e in executions if e.get("status") == "in_progress"]
+    pending = [e for e in executions if e.get("status") == "pending"]
+    
+    # Calculate metrics
+    scores = [e.get("score") for e in completed if e.get("score") is not None]
+    avg_score = sum(scores) / len(scores) if scores else None
+    
+    passed = [e for e in completed if e.get("passed")]
+    pass_rate = (len(passed) / len(completed) * 100.0) if completed else 0.0
+    
+    times = [e.get("time_taken_minutes") for e in completed if e.get("time_taken_minutes") is not None]
+    avg_time = int(sum(times) / len(times)) if times else None
+    
+    # Compliance rate (completed on same day)
+    on_time = len([e for e in completed if e.get("date") == e.get("completed_at", "")[:10]])
+    compliance_rate = (on_time / len(completed) * 100.0) if completed else 0.0
+    
+    # Completion trend (last 30 days)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    recent = [e for e in completed if datetime.fromisoformat(e.get("completed_at", "2000-01-01T00:00:00+00:00")) >= thirty_days_ago]
+    
+    trend = {}
+    for e in recent:
+        date_str = e.get("date", "")
+        trend[date_str] = trend.get(date_str, 0) + 1
+    
+    completion_trend = [{"date": d, "count": c} for d, c in sorted(trend.items())]
+    
+    analytics = ChecklistAnalytics(
+        template_id=template_id,
+        template_name=template["name"],
+        total_executions=total,
+        completed_executions=len(completed),
+        in_progress_executions=len(in_progress),
+        pending_executions=len(pending),
+        average_score=round(avg_score, 2) if avg_score else None,
+        pass_rate=round(pass_rate, 2),
+        average_time_minutes=avg_time,
+        compliance_rate=round(compliance_rate, 2),
+        completion_trend=completion_trend
+    )
+    
+    return analytics.model_dump()
+
+
+@router.get("/due")
+async def get_due_checklists(
+    request: Request,
+    shift: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get checklists due today or for current shift"""
+    user = await get_current_user(request, db)
+    
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
+    # Find today's checklists
+    query = {
+        "organization_id": user["organization_id"],
+        "date": today,
+        "status": {"$ne": "completed"}
+    }
+    
+    if shift:
+        query["shift"] = shift
+    
+    due_checklists = await db.checklist_executions.find(query, {"_id": 0}).to_list(1000)
+    
+    # Also get active templates to show which checklists should be created
+    templates = await db.checklist_templates.find(
+        {
+            "organization_id": user["organization_id"],
+            "is_active": True
+        },
+        {"_id": 0}
+    ).to_list(1000)
+    
+    return {
+        "due_checklists": due_checklists,
+        "active_templates": templates,
+        "date": today,
+        "shift": shift
+    }
+
+
+@router.post("/templates/{template_id}/schedule")
+async def set_checklist_schedule(
+    template_id: str,
+    schedule_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Set schedule for checklist template"""
+    user = await get_current_user(request, db)
+    
+    # Verify template exists
+    template = await db.checklist_templates.find_one(
+        {"id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    # Create schedule
+    schedule = ChecklistSchedule(
+        organization_id=user["organization_id"],
+        template_id=template["id"],
+        template_name=template["name"],
+        unit_ids=schedule_data.get("unit_ids", []),
+        frequency=schedule_data.get("frequency", "daily"),
+        shift_based=schedule_data.get("shift_based", False),
+        scheduled_time=schedule_data.get("scheduled_time"),
+        assigned_user_ids=schedule_data.get("assigned_user_ids", []),
+        auto_assign_logic=schedule_data.get("auto_assign_logic", "round_robin"),
+        created_by=user["id"],
+    )
+    
+    schedule_dict = schedule.model_dump()
+    schedule_dict["created_at"] = schedule_dict["created_at"].isoformat()
+    schedule_dict["updated_at"] = schedule_dict["updated_at"].isoformat()
+    
+    # Save schedule
+    insert_dict = schedule_dict.copy()
+    await db.checklist_schedules.insert_one(insert_dict)
+    
+    # Update template
+    await db.checklist_templates.update_one(
+        {"id": template_id},
+        {"$set": {
+            "frequency": schedule_data.get("frequency"),
+            "shift_based": schedule_data.get("shift_based", False),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return schedule_dict
+
+
+@router.post("/executions/{execution_id}/approve")
+async def approve_checklist(
+    execution_id: str,
+    approval_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Supervisor approval for checklist"""
+    user = await get_current_user(request, db)
+    
+    # Get execution
+    execution = await db.checklist_executions.find_one(
+        {"id": execution_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not execution:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Checklist not found",
+        )
+    
+    # Update with approval
+    await db.checklist_executions.update_one(
+        {"id": execution_id},
+        {"$set": {
+            "approved_by": user["id"],
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "workflow_status": "approved"
+        }}
+    )
+    
+    updated = await db.checklist_executions.find_one({"id": execution_id}, {"_id": 0})
+    return updated
+    )
