@@ -467,13 +467,13 @@ async def bulk_import_assets(
     request: Request = None,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    \"\"\"Bulk import assets from CSV\"\"\"
+    """Bulk import assets from CSV"""
     user = await get_current_user(request, db)
     
     if not file.filename.endswith('.csv'):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=\"Only CSV files are supported\",
+            detail="Only CSV files are supported",
         )
     
     # Read CSV content
