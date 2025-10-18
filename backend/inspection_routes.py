@@ -119,6 +119,13 @@ async def create_inspection_template(
             scoring_enabled=q.scoring_enabled,
             pass_score=q.pass_score,
             order=idx,
+            # V1 Enhancement fields
+            photo_required=getattr(q, 'photo_required', False),
+            min_photos=getattr(q, 'min_photos', 0),
+            max_photos=getattr(q, 'max_photos', 10),
+            signature_required=getattr(q, 'signature_required', False),
+            conditional_logic=getattr(q, 'conditional_logic', None),
+            help_text=getattr(q, 'help_text', None),
         )
         questions.append(question.model_dump())
     
