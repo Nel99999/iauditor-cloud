@@ -39,6 +39,8 @@ from asset_routes import router as asset_router
 from workorder_routes import router as workorder_router
 from inventory_routes import router as inventory_router
 from incident_routes import router as incident_router
+from training_routes import router as training_router
+from dashboard_enhanced_routes import router as dashboard_enhanced_router
 from project_routes import router as project_router
 from group_routes import router as group_router
 from bulk_import_routes import router as bulk_import_router
