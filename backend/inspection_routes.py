@@ -1091,3 +1091,65 @@ async def get_inspection_calendar(
         },
         "total_items": len(calendar_items)
     }
+
+
+@router.get("/executions/{execution_id}/export-pdf")
+async def export_inspection_pdf(
+    execution_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Export inspection execution as PDF report"""
+    user = await get_current_user(request, db)
+    
+    # Get execution
+    execution = await db.inspection_executions.find_one(
+        {"id": execution_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not execution:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Inspection not found",
+        )
+    
+    # Get template
+    template = await db.inspection_templates.find_one(
+        {"id": execution["template_id"]},
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    # Generate PDF
+    try:
+        pdf_generator = InspectionPDFGenerator()
+        pdf_buffer = pdf_generator.generate_inspection_report(
+            execution_data=execution,
+            template_data=template
+        )
+        
+        # Prepare filename
+        timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
+        filename = f"inspection_report_{execution_id}_{timestamp}.pdf"
+        
+        # Return as streaming response
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate PDF: {str(e)}"
+        )
+
+    }
