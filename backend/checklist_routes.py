@@ -207,6 +207,15 @@ async def update_checklist_template(
                 text=item["text"],
                 required=item.get("required", True),
                 order=idx,
+                # V1 Enhancement fields
+                photo_required=item.get("photo_required", False),
+                min_photos=item.get("min_photos", 0),
+                max_photos=item.get("max_photos", 10),
+                signature_required=item.get("signature_required", False),
+                conditional_logic=item.get("conditional_logic"),
+                help_text=item.get("help_text"),
+                scoring_enabled=item.get("scoring_enabled", False),
+                pass_score=item.get("pass_score"),
             )
             items.append(checklist_item.model_dump())
         update_data["items"] = items
