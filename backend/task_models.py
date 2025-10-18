@@ -91,6 +91,15 @@ class TaskUpdate(BaseModel):
     priority: Optional[str] = None
     assigned_to: Optional[str] = None
     due_date: Optional[str] = None
+    unit_id: Optional[str] = None
+    tags: Optional[List[str]] = None
+    # V1 Enhancement fields
+    asset_id: Optional[str] = None
+    actual_hours: Optional[float] = None
+    labor_cost: Optional[float] = None
+    parts_used: Optional[List[Dict[str, Any]]] = None
+    photo_ids: Optional[List[str]] = None
+    signature_data: Optional[str] = None
 
 
 
