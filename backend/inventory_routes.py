@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
 from typing import Optional
+import uuid
 
 from inventory_models import InventoryItem, InventoryItemCreate, InventoryItemUpdate, InventoryStats
 from auth_utils import get_current_user
