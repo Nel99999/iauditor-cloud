@@ -326,6 +326,17 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/incidents/:incidentId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <IncidentDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
 
 
 
