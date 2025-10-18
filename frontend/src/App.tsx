@@ -316,6 +316,17 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/projects/:projectId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ProjectDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
 
 
                     <WorkOrdersPage />
