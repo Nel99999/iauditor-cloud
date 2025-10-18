@@ -306,8 +306,12 @@ async def add_parts_to_work_order(
     wo = await db.work_orders.find_one({"id": wo_id})
     parts_cost = parts_data.get("cost", 0)
     
-    new_parts_cost = wo.get("parts_cost", 0) + parts_cost
-    new_total_cost = new_parts_cost + wo.get("labor_cost", 0)
+    # Handle None values properly
+    current_parts_cost = wo.get("parts_cost") or 0
+    current_labor_cost = wo.get("labor_cost") or 0
+    
+    new_parts_cost = current_parts_cost + parts_cost
+    new_total_cost = new_parts_cost + current_labor_cost
     
     await db.work_orders.update_one(
         {"id": wo_id},
