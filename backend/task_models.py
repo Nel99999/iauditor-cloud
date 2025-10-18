@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone, date
 import uuid
 
@@ -42,6 +42,23 @@ class Task(BaseModel):
     has_time_entries: bool = False
     total_time_minutes: int = 0
     estimated_time_minutes: Optional[int] = None
+    
+    # V1 Enhancement fields
+    asset_id: Optional[str] = None
+    asset_name: Optional[str] = None
+    task_type: str = "standard"  # "standard", "corrective_action", "project_task", "recurring"
+    template_id: Optional[str] = None  # If created from template
+    parent_task_id: Optional[str] = None  # For subtasks
+    predecessor_task_ids: List[str] = []  # Dependencies
+    estimated_hours: Optional[float] = None
+    actual_hours: Optional[float] = None
+    labor_cost: Optional[float] = None
+    parts_used: List[Dict[str, Any]] = []  # [{part_id, quantity, cost}]
+    requires_checklist: Optional[str] = None  # Checklist template ID
+    linked_inspection_id: Optional[str] = None  # If created from inspection
+    linked_incident_id: Optional[str] = None  # If corrective action
+    photo_ids: List[str] = []  # GridFS file IDs
+    signature_data: Optional[str] = None
 
 
 class TaskCreate(BaseModel):
