@@ -296,6 +296,17 @@ function App() {
             <Route
               path="/work-orders"
               element={
+            <Route
+              path="/work-orders/new"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <WorkOrderFormPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
                 <ProtectedRoute>
                   <LayoutNew>
             <Route
