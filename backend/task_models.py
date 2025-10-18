@@ -71,6 +71,16 @@ class TaskCreate(BaseModel):
     due_date: Optional[str] = None
     unit_id: Optional[str] = None
     tags: List[str] = []
+    # V1 Enhancement fields
+    asset_id: Optional[str] = None
+    task_type: str = "standard"
+    template_id: Optional[str] = None
+    parent_task_id: Optional[str] = None
+    predecessor_task_ids: List[str] = []
+    estimated_hours: Optional[float] = None
+    requires_checklist: Optional[str] = None
+    linked_inspection_id: Optional[str] = None
+    linked_incident_id: Optional[str] = None
 
 
 class TaskUpdate(BaseModel):
