@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ModernPageWrapper } from '@/design-system/components';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
