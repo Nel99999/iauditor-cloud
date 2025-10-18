@@ -438,6 +438,11 @@ async def complete_inspection(
     answers_dict = [ans.dict() if hasattr(ans, 'dict') else ans for ans in completion_data.answers]
     score, passed = calculate_inspection_score(template, answers_dict)
     
+    # Calculate duration
+    started_at = datetime.fromisoformat(execution["started_at"])
+    completed_at = datetime.now(timezone.utc)
+    duration_minutes = int((completed_at - started_at).total_seconds() / 60)
+    
     # Check if workflow is required
     requires_approval = template.get("requires_approval", False)
     workflow_template_id = template.get("workflow_template_id")
@@ -455,7 +460,9 @@ async def complete_inspection(
         "notes": completion_data.notes,
         "score": score,
         "passed": passed,
-        "completed_at": datetime.now(timezone.utc).isoformat(),
+        "completed_at": completed_at.isoformat(),
+        "duration_minutes": duration_minutes,
+        "rectification_required": bool(completion_data.findings),
     }
     
     await db.inspection_executions.update_one(
@@ -464,6 +471,32 @@ async def complete_inspection(
     )
     
     completed_execution = await db.inspection_executions.find_one({"id": execution_id}, {"_id": 0})
+    
+    # Auto-create work order if inspection failed and template requires it
+    if template.get("auto_create_work_order_on_fail") and not passed and completion_data.findings:
+        work_order = {
+            "id": str(uuid.uuid4()),
+            "organization_id": user["organization_id"],
+            "title": f"Corrective Action: {template['name']}",
+            "description": f"Inspection failed with findings:\n" + "\n".join(completion_data.findings),
+            "priority": template.get("work_order_priority", "normal"),
+            "status": "pending",
+            "source_inspection_id": execution_id,
+            "asset_id": execution.get("asset_id"),
+            "unit_id": execution.get("unit_id"),
+            "created_by": user["id"],
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.work_orders.insert_one(work_order.copy())
+        
+        # Link work order to inspection
+        await db.inspection_executions.update_one(
+            {"id": execution_id},
+            {"$set": {"auto_created_wo_id": work_order["id"]}}
+        )
+        
+        completed_execution["auto_created_wo_id"] = work_order["id"]
     
     # Auto-start workflow if required
     if requires_approval and workflow_template_id:
