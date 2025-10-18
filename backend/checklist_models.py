@@ -58,6 +58,17 @@ class ChecklistTemplate(BaseModel):
     # Workflow integration fields
     requires_approval: bool = False
     workflow_template_id: Optional[str] = None
+    
+    # V1 Enhancement fields
+    unit_ids: List[str] = []
+    asset_type_ids: List[str] = []
+    shift_based: bool = False  # Auto-create per shift
+    time_limit_minutes: Optional[int] = None  # Must complete within X minutes
+    requires_supervisor_approval: bool = False
+    scoring_enabled: bool = False
+    pass_percentage: Optional[float] = None
+    auto_create_work_order_on_fail: bool = False
+    work_order_priority: Optional[str] = None
 
 
 class ChecklistTemplateCreate(BaseModel):
