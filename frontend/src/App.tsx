@@ -50,6 +50,8 @@ import WorkOrderDetailPage from "@/components/WorkOrderDetailPage";
 import ProjectDetailPage from "@/components/ProjectDetailPage";
 import InventoryDetailPage from "@/components/InventoryDetailPage";
 import IncidentDetailPage from "@/components/IncidentDetailPage";
+import WorkOrderFormPage from "@/components/WorkOrderFormPage";
+import ProjectFormPage from "@/components/ProjectFormPage";
 import DashboardsPage from "@/components/DashboardsPage";
 import ReportsPage from "@/components/ReportsPage";
 import WorkflowDesignerNew from "@/components/WorkflowDesignerNew";
