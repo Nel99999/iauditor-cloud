@@ -233,27 +233,6 @@ async def list_milestones(
     return milestones
 
 
-@router.get("/stats/overview")
-async def get_project_stats(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get project statistics"""
-    user = await get_current_user(request, db)
-    
-    projects = await db.projects.find(
-        {"organization_id": user["organization_id"], "is_active": True},
-        {"_id": 0}
-    ).to_list(10000)
-    
-    by_status = {}
-    for p in projects:
-        s = p.get("status", "planning")
-        by_status[s] = by_status.get(s, 0) + 1
-    
-
-
-
 @router.post("/{project_id}/tasks")
 async def create_project_task(
     project_id: str,
