@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 import gridfs
 from bson import ObjectId
+import uuid
 from inspection_models import (
     InspectionTemplate,
     InspectionTemplateCreate,
