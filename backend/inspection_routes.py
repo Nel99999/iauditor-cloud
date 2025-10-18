@@ -580,3 +580,438 @@ async def get_inspection_photo(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Photo not found",
         )
+
+
+# ==================== NEW ENHANCED ENDPOINTS ====================
+
+@router.post("/templates/{template_id}/schedule")
+async def set_inspection_schedule(
+    template_id: str,
+    schedule_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Set recurring schedule for an inspection template"""
+    from inspection_models import InspectionSchedule
+    
+    user = await get_current_user(request, db)
+    
+    # Verify template exists and belongs to organization
+    template = await db.inspection_templates.find_one(
+        {"id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    # Create schedule
+    schedule = InspectionSchedule(
+        organization_id=user["organization_id"],
+        template_id=template["id"],
+        template_name=template["name"],
+        unit_ids=schedule_data.get("unit_ids", []),
+        recurrence_rule=schedule_data.get("recurrence_rule", "monthly"),
+        recurrence_details=schedule_data.get("recurrence_details"),
+        assigned_inspector_ids=schedule_data.get("assigned_inspector_ids", []),
+        auto_assign_logic=schedule_data.get("auto_assign_logic", "round_robin"),
+        created_by=user["id"],
+    )
+    
+    schedule_dict = schedule.model_dump()
+    schedule_dict["created_at"] = schedule_dict["created_at"].isoformat()
+    schedule_dict["updated_at"] = schedule_dict["updated_at"].isoformat()
+    if schedule_dict.get("next_due_date"):
+        schedule_dict["next_due_date"] = schedule_dict["next_due_date"].isoformat()
+    
+    # Save schedule
+    insert_dict = schedule_dict.copy()
+    await db.inspection_schedules.insert_one(insert_dict)
+    
+    # Update template with schedule info
+    await db.inspection_templates.update_one(
+        {"id": template_id},
+        {"$set": {
+            "recurrence_rule": schedule_data.get("recurrence_rule"),
+            "auto_assign_logic": schedule_data.get("auto_assign_logic"),
+            "assigned_inspector_ids": schedule_data.get("assigned_inspector_ids", []),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return schedule_dict
+
+
+@router.post("/templates/{template_id}/assign-units")
+async def assign_template_to_units(
+    template_id: str,
+    unit_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Assign inspection template to specific units"""
+    user = await get_current_user(request, db)
+    
+    # Verify template exists
+    template = await db.inspection_templates.find_one(
+        {"id": template_id, "organization_id": user["organization_id"]}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    unit_ids = unit_data.get("unit_ids", [])
+    
+    # Update template
+    await db.inspection_templates.update_one(
+        {"id": template_id},
+        {"$set": {
+            "unit_ids": unit_ids,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"message": "Units assigned successfully", "unit_ids": unit_ids}
+
+
+@router.get("/due")
+async def get_due_inspections(
+    request: Request,
+    days_ahead: int = 7,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get inspections due in the next X days"""
+    user = await get_current_user(request, db)
+    
+    # Calculate date range
+    now = datetime.now(timezone.utc)
+    end_date = now + timedelta(days=days_ahead)
+    
+    # Find due inspections (scheduled but not completed)
+    due_inspections = await db.inspection_executions.find(
+        {
+            "organization_id": user["organization_id"],
+            "status": {"$in": ["in_progress", "scheduled"]},
+            "due_date": {
+                "$gte": now.isoformat(),
+                "$lte": end_date.isoformat()
+            }
+        },
+        {"_id": 0}
+    ).sort("due_date", 1).to_list(1000)
+    
+    # Also check for recurring schedules that need new instances
+    schedules = await db.inspection_schedules.find(
+        {
+            "organization_id": user["organization_id"],
+            "is_active": True
+        },
+        {"_id": 0}
+    ).to_list(1000)
+    
+    return {
+        "due_inspections": due_inspections,
+        "active_schedules": schedules,
+        "date_range": {
+            "start": now.isoformat(),
+            "end": end_date.isoformat()
+        }
+    }
+
+
+@router.post("/executions/{execution_id}/create-work-order")
+async def create_work_order_from_inspection(
+    execution_id: str,
+    wo_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Manually create a work order from inspection findings"""
+    user = await get_current_user(request, db)
+    
+    # Get inspection
+    execution = await db.inspection_executions.find_one(
+        {"id": execution_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not execution:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Inspection not found",
+        )
+    
+    # Create placeholder work order (will be replaced when Work Order module is implemented)
+    work_order = {
+        "id": str(uuid.uuid4()),
+        "organization_id": user["organization_id"],
+        "title": wo_data.get("title", f"Work Order from Inspection: {execution['template_name']}"),
+        "description": wo_data.get("description", "\n".join(execution.get("findings", []))),
+        "priority": wo_data.get("priority", "normal"),
+        "status": "pending",
+        "source_inspection_id": execution_id,
+        "asset_id": execution.get("asset_id"),
+        "unit_id": execution.get("unit_id"),
+        "created_by": user["id"],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Save work order (placeholder collection)
+    await db.work_orders.insert_one(work_order.copy())
+    
+    # Update inspection with work order reference
+    await db.inspection_executions.update_one(
+        {"id": execution_id},
+        {"$set": {"auto_created_wo_id": work_order["id"]}}
+    )
+    
+    return work_order
+
+
+@router.get("/templates/{template_id}/analytics")
+async def get_template_analytics(
+    template_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get performance analytics for a template"""
+    from inspection_models import TemplateAnalytics
+    from collections import Counter
+    
+    user = await get_current_user(request, db)
+    
+    # Get template
+    template = await db.inspection_templates.find_one(
+        {"id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    # Get all executions for this template
+    executions = await db.inspection_executions.find(
+        {"template_id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    total = len(executions)
+    completed = [e for e in executions if e.get("status") == "completed"]
+    in_progress = [e for e in executions if e.get("status") == "in_progress"]
+    
+    # Calculate average score
+    scores = [e.get("score") for e in completed if e.get("score") is not None]
+    avg_score = sum(scores) / len(scores) if scores else None
+    
+    # Calculate pass rate
+    passed = [e for e in completed if e.get("passed")]
+    pass_rate = (len(passed) / len(completed) * 100.0) if completed else 0.0
+    
+    # Calculate average duration
+    durations = [e.get("duration_minutes") for e in completed if e.get("duration_minutes") is not None]
+    avg_duration = int(sum(durations) / len(durations)) if durations else None
+    
+    # Get most common findings
+    all_findings = []
+    for e in completed:
+        all_findings.extend(e.get("findings", []))
+    
+    finding_counts = Counter(all_findings)
+    most_common = [{"finding": f, "count": c} for f, c in finding_counts.most_common(10)]
+    
+    # Completion trend (last 30 days)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    recent = [e for e in completed if datetime.fromisoformat(e.get("completed_at", "2000-01-01T00:00:00+00:00")) >= thirty_days_ago]
+    
+    trend = {}
+    for e in recent:
+        date_str = e.get("completed_at", "")[:10]
+        trend[date_str] = trend.get(date_str, 0) + 1
+    
+    completion_trend = [{"date": d, "count": c} for d, c in sorted(trend.items())]
+    
+    analytics = TemplateAnalytics(
+        template_id=template_id,
+        template_name=template["name"],
+        total_executions=total,
+        completed_executions=len(completed),
+        in_progress_executions=len(in_progress),
+        average_score=round(avg_score, 2) if avg_score else None,
+        pass_rate=round(pass_rate, 2),
+        average_duration_minutes=avg_duration,
+        most_common_findings=most_common,
+        completion_trend=completion_trend
+    )
+    
+    return analytics.model_dump()
+
+
+@router.get("/executions/{execution_id}/follow-ups")
+async def get_inspection_follow_ups(
+    execution_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get follow-up inspection history"""
+    user = await get_current_user(request, db)
+    
+    # Get the inspection
+    execution = await db.inspection_executions.find_one(
+        {"id": execution_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not execution:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Inspection not found",
+        )
+    
+    # Find all follow-ups
+    follow_ups = await db.inspection_executions.find(
+        {"parent_inspection_id": execution_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Find parent if this is a follow-up
+    parent = None
+    if execution.get("parent_inspection_id"):
+        parent = await db.inspection_executions.find_one(
+            {"id": execution["parent_inspection_id"]},
+            {"_id": 0}
+        )
+    
+    return {
+        "inspection": execution,
+        "parent": parent,
+        "follow_ups": follow_ups,
+        "total_follow_ups": len(follow_ups)
+    }
+
+
+@router.post("/templates/bulk-schedule")
+async def bulk_schedule_inspections(
+    schedule_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Schedule multiple templates at once"""
+    user = await get_current_user(request, db)
+    
+    template_ids = schedule_data.get("template_ids", [])
+    unit_ids = schedule_data.get("unit_ids", [])
+    recurrence_rule = schedule_data.get("recurrence_rule", "monthly")
+    
+    if not template_ids:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No templates specified",
+        )
+    
+    results = []
+    
+    for template_id in template_ids:
+        template = await db.inspection_templates.find_one(
+            {"id": template_id, "organization_id": user["organization_id"]},
+            {"_id": 0}
+        )
+        
+        if not template:
+            continue
+        
+        # Update template
+        await db.inspection_templates.update_one(
+            {"id": template_id},
+            {"$set": {
+                "unit_ids": unit_ids,
+                "recurrence_rule": recurrence_rule,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        results.append({
+            "template_id": template_id,
+            "template_name": template["name"],
+            "status": "scheduled"
+        })
+    
+    return {
+        "message": f"Scheduled {len(results)} templates",
+        "results": results
+    }
+
+
+@router.get("/calendar")
+async def get_inspection_calendar(
+    request: Request,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    unit_id: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get calendar view of scheduled inspections"""
+    from inspection_models import InspectionCalendarItem
+    
+    user = await get_current_user(request, db)
+    
+    # Parse date range
+    if not start_date:
+        start = datetime.now(timezone.utc)
+    else:
+        start = datetime.fromisoformat(start_date)
+    
+    if not end_date:
+        end = start + timedelta(days=30)
+    else:
+        end = datetime.fromisoformat(end_date)
+    
+    # Build query
+    query = {
+        "organization_id": user["organization_id"],
+        "due_date": {
+            "$gte": start.isoformat(),
+            "$lte": end.isoformat()
+        }
+    }
+    
+    if unit_id:
+        query["unit_id"] = unit_id
+    
+    # Get scheduled inspections
+    executions = await db.inspection_executions.find(query, {"_id": 0}).sort("due_date", 1).to_list(1000)
+    
+    # Transform to calendar items
+    calendar_items = []
+    for e in executions:
+        item = InspectionCalendarItem(
+            id=e["id"],
+            template_id=e["template_id"],
+            template_name=e["template_name"],
+            due_date=datetime.fromisoformat(e["due_date"]),
+            assigned_to=e.get("inspector_id"),
+            assigned_to_name=e.get("inspector_name"),
+            status=e["status"],
+            unit_id=e.get("unit_id"),
+            unit_name=e.get("unit_name"),
+            asset_id=e.get("asset_id"),
+            asset_name=e.get("asset_name")
+        )
+        calendar_items.append(item.model_dump())
+    
+    return {
+        "calendar_items": calendar_items,
+        "date_range": {
+            "start": start.isoformat(),
+            "end": end.isoformat()
+        },
+        "total_items": len(calendar_items)
+    }
