@@ -38,6 +38,8 @@ const InspectionsPage = () => {
   const [executions, setExecutions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedTemplateForAnalytics, setSelectedTemplateForAnalytics] = useState<any>(null);
+  const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
 
   useEffect(() => {
     loadData();
