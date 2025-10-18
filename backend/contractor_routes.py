@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
+from typing import Optional
 
 from contractor_models import Contractor
 from auth_utils import get_current_user
