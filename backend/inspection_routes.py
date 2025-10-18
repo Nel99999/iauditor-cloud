@@ -211,6 +211,13 @@ async def update_inspection_template(
                 scoring_enabled=q.get("scoring_enabled", False),
                 pass_score=q.get("pass_score"),
                 order=idx,
+                # V1 Enhancement fields
+                photo_required=q.get("photo_required", False),
+                min_photos=q.get("min_photos", 0),
+                max_photos=q.get("max_photos", 10),
+                signature_required=q.get("signature_required", False),
+                conditional_logic=q.get("conditional_logic"),
+                help_text=q.get("help_text"),
             )
             questions.append(question.model_dump())
         update_data["questions"] = questions
