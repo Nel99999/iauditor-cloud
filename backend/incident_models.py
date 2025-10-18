@@ -47,7 +47,7 @@ class IncidentCreate(BaseModel):
     occurred_at: str
     location: str
     description: str
-    unit_id: str
+    unit_id: Optional[str] = None
 
 
 class IncidentStats(BaseModel):
