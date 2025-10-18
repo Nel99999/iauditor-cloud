@@ -263,10 +263,38 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           anyPermissions: ['training.read.own', 'training.read.organization'],
         },
         {
+          name: 'Emergencies',
+          icon: AlertTriangle,
+          path: '/emergencies',
+          anyPermissions: ['emergency.read.organization'],
+        },
+        {
           name: 'Schedule',
           icon: Calendar,
           path: '/schedule',
           anyPermissions: ['schedule.read.own', 'schedule.read.organization'],
+        },
+      ],
+    },
+    {
+      section: 'Financial',
+      items: [
+        {
+          name: 'Financial',
+          icon: DollarSign,
+          path: '/financial',
+          anyPermissions: ['financial.read.organization'],
+        },
+      ],
+    },
+    {
+      section: 'Communication',
+      items: [
+        {
+          name: 'Announcements',
+          icon: Megaphone,
+          path: '/announcements',
+          anyPermissions: ['announcement.read.organization'],
         },
       ],
     },
