@@ -430,11 +430,13 @@ def test_role_endpoints():
     
     # Test 2: POST /roles
     try:
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         role_data = {
-            "name": f"Test Role {datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "name": f"Test Role {timestamp}",
+            "code": f"test_role_{timestamp}",
+            "color": "#10b981",
             "description": "Test role for endpoint testing",
-            "level": 5,
-            "permissions": ["task.read.own", "task.create.own"]
+            "level": 5
         }
         response = requests.post(f"{BASE_URL}/roles", json=role_data, headers=get_headers(), timeout=10)
         if response.status_code in [200, 201]:
