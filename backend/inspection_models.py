@@ -55,8 +55,18 @@ class InspectionTemplate(BaseModel):
     pass_percentage: Optional[float] = None  # Minimum to pass (e.g., 80.0)
     require_gps: bool = False
     require_photos: bool = False
-    requires_approval: bool = False  # NEW: Requires workflow approval
-    workflow_template_id: Optional[str] = None  # NEW: Workflow template to use
+    requires_approval: bool = False  # Requires workflow approval
+    workflow_template_id: Optional[str] = None  # Workflow template to use
+    # Enhanced fields for V1
+    unit_ids: List[str] = []  # NEW: Which units use this template
+    asset_type_ids: List[str] = []  # NEW: Which asset types this applies to
+    recurrence_rule: Optional[str] = None  # NEW: "daily", "weekly", "monthly", cron
+    auto_assign_logic: Optional[str] = None  # NEW: "round_robin", "least_loaded", "specific_users"
+    assigned_inspector_ids: List[str] = []  # NEW: Pre-assigned inspectors
+    requires_competency: Optional[str] = None  # NEW: Competency required to perform
+    estimated_duration_minutes: Optional[int] = None  # NEW: Expected duration
+    auto_create_work_order_on_fail: bool = False  # NEW: Auto-create WO if fails
+    work_order_priority: Optional[str] = None  # NEW: Priority for auto-created WO
     version: int = 1
     is_active: bool = True
     created_by: str
