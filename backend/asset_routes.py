@@ -507,12 +507,12 @@ async def bulk_import_assets(
             
         except Exception as e:
             errors.append({
-                \"row\": row_num,
-                \"error\": str(e)
+                "row": row_num,
+                "error": str(e)
             })
     
     return {
-        \"imported\": imported,
-        \"failed\": len(errors),
-        \"errors\": errors
+        "imported": imported,
+        "failed": len(errors),
+        "errors": errors
     }
