@@ -42,6 +42,8 @@ import WorkOrdersPage from "@/components/WorkOrdersPage";
 import InventoryPage from "@/components/InventoryPage";
 import ProjectsPage from "@/components/ProjectsPage";
 import IncidentsPage from "@/components/IncidentsPage";
+import TrainingPage from "@/components/TrainingPage";
+import DashboardsPage from "@/components/DashboardsPage";
 import ReportsPage from "@/components/ReportsPage";
 import WorkflowDesignerNew from "@/components/WorkflowDesignerNew";
 import MyApprovalsPage from "@/components/MyApprovalsPage";
