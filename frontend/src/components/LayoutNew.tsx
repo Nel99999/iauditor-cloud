@@ -294,10 +294,27 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
       section: 'Communication',
       items: [
         {
+          name: 'Team Chat',
+          icon: MessageCircle,
+          path: '/chat',
+          anyPermissions: ['chat.read.organization'],
+        },
+        {
           name: 'Announcements',
           icon: Megaphone,
           path: '/announcements',
           anyPermissions: ['announcement.read.organization'],
+        },
+      ],
+    },
+    {
+      section: 'Supply Chain',
+      items: [
+        {
+          name: 'Contractors',
+          icon: Building2,
+          path: '/contractors',
+          anyPermissions: ['contractor.read.organization'],
         },
       ],
     },
