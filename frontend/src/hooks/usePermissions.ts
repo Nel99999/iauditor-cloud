@@ -33,6 +33,11 @@ export const usePermissions = (): UsePermissionsReturn => {
    * Check if user has a specific permission
    */
   const hasPermission = (resource: string, action: string, scope: string): boolean => {
+    // Developer and Master have all permissions (bypass for convenience)
+    if (user?.role === 'developer' || user?.role === 'master') {
+      return true;
+    }
+    
     // Check in user's permissions from database
     return userPermissions.some(
       perm =>
@@ -46,6 +51,11 @@ export const usePermissions = (): UsePermissionsReturn => {
    * Check if user has ANY of the specified permissions
    */
   const hasAnyPermission = (permissions: string[]): boolean => {
+    // Developer and Master have all permissions (bypass for convenience)
+    if (user?.role === 'developer' || user?.role === 'master') {
+      return true;
+    }
+    
     return permissions.some(perm => {
       const [resource, action, scope] = perm.split('.');
       return hasPermission(resource, action, scope);
@@ -56,6 +66,11 @@ export const usePermissions = (): UsePermissionsReturn => {
    * Check if user has ALL of the specified permissions
    */
   const hasAllPermissions = (permissions: string[]): boolean => {
+    // Developer and Master have all permissions (bypass for convenience)
+    if (user?.role === 'developer' || user?.role === 'master') {
+      return true;
+    }
+    
     return permissions.every(perm => {
       const [resource, action, scope] = perm.split('.');
       return hasPermission(resource, action, scope);
