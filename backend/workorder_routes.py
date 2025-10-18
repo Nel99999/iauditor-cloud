@@ -347,22 +347,3 @@ async def get_work_order_timeline(
     return {"work_order": wo, "timeline": audit_logs}
 
 
-@router.get("/backlog")
-async def get_work_order_backlog(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get work order backlog"""
-    user = await get_current_user(request, db)
-    
-    backlog = await db.work_orders.find(
-        {
-            "organization_id": user["organization_id"],
-            "status": {"$in": ["pending", "approved", "scheduled"]},
-            "is_active": True
-        },
-        {"_id": 0}
-    ).sort("priority", -1).to_list(1000)
-    
-    return backlog
-
