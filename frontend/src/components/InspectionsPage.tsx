@@ -178,9 +178,17 @@ const InspectionsPage = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="templates" className="space-y-6">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="templates">Templates ({templates.length})</TabsTrigger>
           <TabsTrigger value="executions">Executions ({executions.length})</TabsTrigger>
+          <TabsTrigger value="analytics">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="calendar">
+            <CalendarIcon className="h-4 w-4 mr-2" />
+            Calendar
+          </TabsTrigger>
         </TabsList>
 
         {/* Templates Tab */}
