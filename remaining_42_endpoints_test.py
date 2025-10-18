@@ -568,6 +568,7 @@ def test_workflow_endpoints():
         workflow_data = {
             "name": f"Test Workflow {datetime.now().strftime('%Y%m%d%H%M%S')}",
             "description": "Test workflow template",
+            "resource_type": "task",  # Required field
             "steps": [
                 {
                     "step_number": 1,
