@@ -38,6 +38,7 @@ import {
   Wrench,
   FolderKanban,
   AlertTriangle,
+  GraduationCap,
   LucideIcon,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
