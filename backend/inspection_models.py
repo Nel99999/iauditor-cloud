@@ -177,3 +177,50 @@ class InspectionStats(BaseModel):
     pending: int
     pass_rate: float
     average_score: Optional[float] = None
+
+
+class InspectionSchedule(BaseModel):
+    """Recurring inspection schedule"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    template_id: str
+    template_name: str
+    unit_ids: List[str] = []  # Units to schedule for
+    recurrence_rule: str  # "daily", "weekly", "monthly", "custom_cron"
+    recurrence_details: Optional[Dict[str, Any]] = None  # {day_of_week: 1, time: "09:00"}
+    assigned_inspector_ids: List[str] = []  # Auto-assign to these inspectors
+    auto_assign_logic: str = "round_robin"  # "round_robin", "least_loaded", "specific"
+    next_due_date: Optional[datetime] = None
+    is_active: bool = True
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TemplateAnalytics(BaseModel):
+    """Analytics for inspection template"""
+    template_id: str
+    template_name: str
+    total_executions: int
+    completed_executions: int
+    in_progress_executions: int
+    average_score: Optional[float] = None
+    pass_rate: float
+    average_duration_minutes: Optional[int] = None
+    most_common_findings: List[Dict[str, Any]] = []  # [{finding: str, count: int}]
+    completion_trend: List[Dict[str, Any]] = []  # [{date: str, count: int}]
+
+
+class InspectionCalendarItem(BaseModel):
+    """Calendar view item"""
+    id: str
+    template_id: str
+    template_name: str
+    due_date: datetime
+    assigned_to: Optional[str] = None
+    assigned_to_name: Optional[str] = None
+    status: str  # "scheduled", "in_progress", "completed", "overdue"
+    unit_id: Optional[str] = None
+    unit_name: Optional[str] = None
+    asset_id: Optional[str] = None
+    asset_name: Optional[str] = None
