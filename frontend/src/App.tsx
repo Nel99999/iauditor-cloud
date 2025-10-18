@@ -115,7 +115,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TemplateBuilderPage />
+                    <EnhancedTemplateBuilderPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -125,7 +125,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <TemplateBuilderPage />
+                    <EnhancedTemplateBuilderPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
