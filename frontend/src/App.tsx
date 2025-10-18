@@ -35,6 +35,9 @@ import ChecklistTemplateBuilderNew from "@/components/ChecklistTemplateBuilderNe
 import EnhancedChecklistBuilderPage from "@/components/EnhancedChecklistBuilderPage";
 import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
 import TasksPage from "@/components/TasksPage";
+import AssetsPage from "@/components/AssetsPage";
+import AssetDetailPage from "@/components/AssetDetailPage";
+import AssetFormPage from "@/components/AssetFormPage";
 import ReportsPage from "@/components/ReportsPage";
 import WorkflowDesignerNew from "@/components/WorkflowDesignerNew";
 import MyApprovalsPage from "@/components/MyApprovalsPage";
