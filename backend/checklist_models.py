@@ -122,6 +122,41 @@ class ChecklistItemCompletion(BaseModel):
 
 class ChecklistExecution(BaseModel):
     """Checklist execution/instance model"""
+
+
+
+class ChecklistSchedule(BaseModel):
+    """Recurring checklist schedule"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    template_id: str
+    template_name: str
+    unit_ids: List[str] = []
+    frequency: str  # "daily", "weekly", "monthly", "per_shift"
+    shift_based: bool = False
+    scheduled_time: Optional[str] = None  # HH:MM format
+    assigned_user_ids: List[str] = []
+    auto_assign_logic: str = "round_robin"
+    is_active: bool = True
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ChecklistAnalytics(BaseModel):
+    """Analytics for checklist template"""
+    template_id: str
+    template_name: str
+    total_executions: int
+    completed_executions: int
+    in_progress_executions: int
+    pending_executions: int
+    average_score: Optional[float] = None
+    pass_rate: float
+    average_time_minutes: Optional[int] = None
+    compliance_rate: float  # Completed on time
+    completion_trend: List[Dict[str, Any]] = []
+
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
