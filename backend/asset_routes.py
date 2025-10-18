@@ -417,35 +417,35 @@ async def get_asset_stats(
     # By type
     by_type = {}
     for a in assets:
-        t = a.get(\"asset_type\", \"unknown\")
+        t = a.get("asset_type", "unknown")
         by_type[t] = by_type.get(t, 0) + 1
     
     # By criticality
-    by_criticality = {\"A\": 0, \"B\": 0, \"C\": 0}
+    by_criticality = {"A": 0, "B": 0, "C": 0}
     for a in assets:
-        c = a.get(\"criticality\", \"C\")
+        c = a.get("criticality", "C")
         by_criticality[c] = by_criticality.get(c, 0) + 1
     
     # By status
     by_status = {}
     for a in assets:
-        s = a.get(\"status\", \"active\")
+        s = a.get("status", "active")
         by_status[s] = by_status.get(s, 0) + 1
     
     # Total value
-    total_value = sum(a.get(\"current_value\", 0) or 0 for a in assets)
+    total_value = sum(a.get("current_value", 0) or 0 for a in assets)
     
     # Maintenance due
-    today = datetime.now(timezone.utc).strftime(\"%Y-%m-%d\")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     maintenance_due = len([
         a for a in assets
-        if a.get(\"next_maintenance\") and a.get(\"next_maintenance\") <= today
+        if a.get("next_maintenance") and a.get("next_maintenance") <= today
     ])
     
     # Calibration due
     calibration_due = len([
         a for a in assets
-        if a.get(\"requires_calibration\") and a.get(\"next_calibration\") and a.get(\"next_calibration\") <= today
+        if a.get("requires_calibration") and a.get("next_calibration") and a.get("next_calibration") <= today
     ])
     
     stats = AssetStats(
@@ -461,7 +461,7 @@ async def get_asset_stats(
     return stats.model_dump()
 
 
-@router.post(\"/import\")
+@router.post("/import")
 async def bulk_import_assets(
     file: UploadFile = File(...),
     request: Request = None,
