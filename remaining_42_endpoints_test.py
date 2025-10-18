@@ -447,6 +447,10 @@ def test_role_endpoints():
             # Test 3: PUT /roles/{id}
             try:
                 update_data = {
+                    "name": role_data["name"],
+                    "code": role_data["code"],
+                    "color": role_data["color"],
+                    "level": role_data["level"],
                     "description": "Updated role description"
                 }
                 response = requests.put(f"{BASE_URL}/roles/{role_id}", json=update_data, headers=get_headers(), timeout=10)
