@@ -31,8 +31,10 @@ async def check_user_permission(
     db: AsyncIOMotorDatabase
 ) -> bool:
     """Check if user has permission for a specific unit"""
-    # Admin has access to everything
-    if user.get("role") == "admin":
+    # Check if user has organization-level permission
+    from auth_utils import check_permission
+    has_org_permission = await check_permission(user, "organization", "update", "organization", db)
+    if has_org_permission:
         return True
     
     # Check user's assignment to this unit or parent units
@@ -44,12 +46,17 @@ async def check_user_permission(
     if not assignment:
         return False
     
-    # Role hierarchy: admin > manager > inspector > viewer
-    role_hierarchy = {"admin": 4, "manager": 3, "inspector": 2, "viewer": 1}
-    user_role_level = role_hierarchy.get(assignment.get("role", "viewer"), 0)
-    required_role_level = role_hierarchy.get(required_role, 0)
+    # Get role hierarchy from database
+    user_role = await db.roles.find_one({"code": user.get("role")})
+    required_role_obj = await db.roles.find_one({"code": required_role})
     
-    return user_role_level >= required_role_level
+    if not user_role or not required_role_obj:
+        return False
+    
+    user_role_level = user_role.get("level", 10)
+    required_role_level = required_role_obj.get("level", 10)
+    
+    return user_role_level <= required_role_level
 
 
 async def build_unit_path(unit_id: str, db: AsyncIOMotorDatabase) -> str:
