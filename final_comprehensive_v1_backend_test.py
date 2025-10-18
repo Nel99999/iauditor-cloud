@@ -115,10 +115,10 @@ def setup_test_data():
             f"{BASE_URL}/assets",
             headers=get_headers(),
             json={
-                "asset_number": f"TEST-ASSET-{int(time.time())}",
+                "asset_tag": f"TEST-ASSET-{int(time.time())}",
                 "name": "Test Asset for Final Validation",
                 "asset_type": "equipment",
-                "status": "operational"
+                "status": "active"
             },
             timeout=10
         )
