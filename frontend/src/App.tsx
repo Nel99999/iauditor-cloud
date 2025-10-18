@@ -136,7 +136,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <InspectionExecutionPage />
+                    <EnhancedInspectionExecutionPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
