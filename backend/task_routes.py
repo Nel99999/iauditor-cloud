@@ -430,8 +430,8 @@ async def log_time_entry(
     await db.labor_entries.insert_one(entry_dict.copy())
     
     # Update task totals
-    total_hours = task.get("actual_hours", 0.0) + time_data.get("hours", 0)
-    total_cost = task.get("labor_cost", 0.0) + (entry_dict.get("cost") or 0)
+    total_hours = (task.get("actual_hours") or 0.0) + time_data.get("hours", 0)
+    total_cost = (task.get("labor_cost") or 0.0) + (entry_dict.get("cost") or 0)
     
     await db.tasks.update_one(
         {"id": task_id},
