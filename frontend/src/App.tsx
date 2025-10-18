@@ -320,6 +320,27 @@ function App() {
                   <LayoutNew>
                     <IncidentsPage />
                   </LayoutNew>
+            <Route
+              path="/training"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <TrainingPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboards"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <DashboardsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
                 </ProtectedRoute>
               }
             />
