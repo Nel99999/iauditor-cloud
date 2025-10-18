@@ -96,6 +96,16 @@ class ChecklistTemplateUpdate(BaseModel):
     is_active: Optional[bool] = None
     requires_approval: Optional[bool] = None
     workflow_template_id: Optional[str] = None
+    # V1 Enhancement fields
+    unit_ids: Optional[List[str]] = None
+    asset_type_ids: Optional[List[str]] = None
+    shift_based: Optional[bool] = None
+    time_limit_minutes: Optional[int] = None
+    requires_supervisor_approval: Optional[bool] = None
+    scoring_enabled: Optional[bool] = None
+    pass_percentage: Optional[float] = None
+    auto_create_work_order_on_fail: Optional[bool] = None
+    work_order_priority: Optional[str] = None
 
 
 class ChecklistItemCompletion(BaseModel):
