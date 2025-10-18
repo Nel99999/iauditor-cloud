@@ -11,7 +11,7 @@ class Incident(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     incident_number: str
     organization_id: str
-    unit_id: str
+    unit_id: Optional[str] = None
     
     # Classification
     incident_type: str  # "injury", "near_miss", "property_damage", "environmental"
