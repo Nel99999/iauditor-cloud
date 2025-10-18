@@ -122,6 +122,41 @@ class ChecklistItemCompletion(BaseModel):
 
 class ChecklistExecution(BaseModel):
     """Checklist execution/instance model"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    template_id: str
+    template_name: str  # Denormalized
+    date: str  # YYYY-MM-DD format
+    completed_by: Optional[str] = None  # user_id
+    completed_by_name: Optional[str] = None  # Denormalized
+    status: str = "pending"  # pending, in_progress, completed
+    items: List[ChecklistItemCompletion] = []
+    completion_percentage: float = 0.0
+    notes: Optional[str] = None
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    # Workflow integration fields
+    workflow_id: Optional[str] = None
+    workflow_status: Optional[str] = None  # pending, in_progress, approved, rejected, cancelled
+    workflow_template_id: Optional[str] = None
+    requires_approval: bool = False
+    
+    # V1 Enhancement fields
+    asset_id: Optional[str] = None
+    asset_name: Optional[str] = None
+    unit_id: Optional[str] = None
+    unit_name: Optional[str] = None
+    shift: Optional[str] = None  # "day", "night", "swing"
+    started_by: Optional[str] = None
+    time_taken_minutes: Optional[int] = None
+    score: Optional[float] = None
+    passed: Optional[bool] = None
+    approved_by: Optional[str] = None
+    approved_at: Optional[datetime] = None
 
 
 
