@@ -343,7 +343,78 @@ const InspectionsPage = () => {
             </Card>
           )}
         </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics">
+          {templates.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center py-12 text-muted-foreground">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">No templates available</h3>
+                  <p className="text-sm">Create inspection templates to view analytics</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Select Template for Analytics</CardTitle>
+                  <CardDescription>Choose a template to view detailed performance metrics</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Select 
+                    value={selectedTemplateForAnalytics?.id || ''}
+                    onValueChange={(value) => {
+                      const template = templates.find(t => t.id === value);
+                      setSelectedTemplateForAnalytics(template);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a template..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map(template => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+              {selectedTemplateForAnalytics && (
+                <InspectionAnalyticsDashboard 
+                  templateId={selectedTemplateForAnalytics.id}
+                  templateName={selectedTemplateForAnalytics.name}
+                />
+              )}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* Calendar Tab */}
+        <TabsContent value="calendar">
+          <InspectionCalendar />
+        </TabsContent>
       </Tabs>
+
+      {/* Analytics Dialog */}
+      <Dialog open={showAnalyticsDialog} onOpenChange={setShowAnalyticsDialog}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Template Analytics</DialogTitle>
+          </DialogHeader>
+          {selectedTemplateForAnalytics && (
+            <InspectionAnalyticsDashboard 
+              templateId={selectedTemplateForAnalytics.id}
+              templateName={selectedTemplateForAnalytics.name}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
       </div>
     </ModernPageWrapper>
   );
