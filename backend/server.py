@@ -34,6 +34,7 @@ from mfa_routes import router as mfa_router
 from security_routes import router as security_router
 from subtask_routes import router as subtask_router
 from attachment_routes import router as attachment_router
+from comment_routes import router as comment_router
 from group_routes import router as group_router
 from bulk_import_routes import router as bulk_import_router
 from webhook_routes import router as webhook_router
