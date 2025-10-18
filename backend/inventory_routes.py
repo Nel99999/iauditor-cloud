@@ -182,35 +182,6 @@ async def update_inventory_item(
     return await db.inventory_items.find_one({"id": item_id}, {"_id": 0})
 
 
-@router.get("/stats")
-async def get_inventory_stats(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get inventory statistics"""
-    user = await get_current_user(request, db)
-    
-    items = await db.inventory_items.find(
-        {"organization_id": user["organization_id"], "is_active": True},
-        {"_id": 0}
-    ).to_list(10000)
-    
-    total = len(items)
-    total_value = sum(i.get("total_value", 0) for i in items)
-    below_reorder = len([i for i in items if i.get("quantity_available", 0) <= i.get("reorder_point", 0)])
-    out_of_stock = len([i for i in items if i.get("quantity_available", 0) == 0])
-    
-    stats = InventoryStats(
-        total_items=total,
-        total_value=round(total_value, 2),
-        items_below_reorder=below_reorder,
-        out_of_stock=out_of_stock
-    )
-    
-    return stats.model_dump()
-
-
-
 @router.post("/items/{item_id}/adjust")
 async def adjust_stock(
     item_id: str,
