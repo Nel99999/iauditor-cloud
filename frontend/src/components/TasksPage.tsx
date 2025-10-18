@@ -27,6 +27,10 @@ const TasksPage = () => {
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [formData, setFormData] = useState<any>({ title: '', description: '', priority: 'medium', status: 'todo', due_date: '', tags: [] });
   const [loading, setLoading] = useState<boolean>(true);
+  const [showTimeDialog, setShowTimeDialog] = useState(false);
+  const [selectedTaskForTime, setSelectedTaskForTime] = useState(null);
+  const [selectedTaskForDetails, setSelectedTaskForDetails] = useState(null);
+  const [activeTab, setActiveTab] = useState('tasks');
 
   useEffect(() => {
     loadData();
