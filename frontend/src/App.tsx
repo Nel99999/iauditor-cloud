@@ -207,7 +207,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistTemplateBuilderNew />
+                    <EnhancedChecklistBuilderPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
@@ -217,7 +217,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
-                    <ChecklistTemplateBuilderNew />
+                    <EnhancedChecklistBuilderPage />
                   </LayoutNew>
                 </ProtectedRoute>
               }
