@@ -192,7 +192,7 @@ backend:
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "V1 Platform Complete Testing - Systematic testing of all modules (Assets, Work Orders, Inventory, Projects, Incidents, Training, Financial, etc.) to ensure 100% V1 completion with RBAC compliance and full operational verification"
+user_problem_statement: "V1 Platform Complete Testing - Systematic testing of all modules (Assets, Work Orders, Inventory, Projects, Incidents, Training, Financial, Dashboards, HR, Emergency, Chat, Contractors) to ensure 100% V1 completion with RBAC compliance and full operational verification"
 
 backend:
   - task: "Assets Module - Backend API Testing (10 Endpoints)"
