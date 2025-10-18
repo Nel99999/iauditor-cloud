@@ -311,6 +311,17 @@ function App() {
                   </LayoutNew>
                 </ProtectedRoute>
               }
+            <Route
+              path="/incidents"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <IncidentsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
             />
 
                 <ProtectedRoute>
