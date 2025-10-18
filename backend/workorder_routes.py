@@ -209,3 +209,131 @@ async def get_work_order_stats(
     )
     
     return stats.model_dump()
+
+
+@router.post("/{wo_id}/assign")
+async def assign_work_order(
+    wo_id: str,
+    assign_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Assign work order to technician"""
+    user = await get_current_user(request, db)
+    
+    assigned_to = assign_data.get("assigned_to")
+    assigned_user = await db.users.find_one({"id": assigned_to}, {"name": 1})
+    
+    await db.work_orders.update_one(
+        {"id": wo_id},
+        {"$set": {
+            "assigned_to": assigned_to,
+            "assigned_to_name": assigned_user.get("name") if assigned_user else None,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return await db.work_orders.find_one({"id": wo_id}, {"_id": 0})
+
+
+@router.post("/{wo_id}/add-labor")
+async def add_labor_to_work_order(
+    wo_id: str,
+    labor_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Add labor hours to work order"""
+    user = await get_current_user(request, db)
+    
+    wo = await db.work_orders.find_one({"id": wo_id})
+    hours = labor_data.get("hours", 0)
+    rate = labor_data.get("hourly_rate", 0)
+    cost = hours * rate
+    
+    new_labor_cost = wo.get("labor_cost", 0) + cost
+    new_actual_hours = wo.get("actual_hours", 0) + hours
+    new_total_cost = new_labor_cost + wo.get("parts_cost", 0)
+    
+    await db.work_orders.update_one(
+        {"id": wo_id},
+        {"$set": {
+            "labor_cost": new_labor_cost,
+            "actual_hours": new_actual_hours,
+            "total_cost": new_total_cost,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return await db.work_orders.find_one({"id": wo_id}, {"_id": 0})
+
+
+@router.post("/{wo_id}/add-parts")
+async def add_parts_to_work_order(
+    wo_id: str,
+    parts_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Add parts to work order"""
+    user = await get_current_user(request, db)
+    
+    wo = await db.work_orders.find_one({"id": wo_id})
+    parts_cost = parts_data.get("cost", 0)
+    
+    new_parts_cost = wo.get("parts_cost", 0) + parts_cost
+    new_total_cost = new_parts_cost + wo.get("labor_cost", 0)
+    
+    await db.work_orders.update_one(
+        {"id": wo_id},
+        {"$set": {
+            "parts_cost": new_parts_cost,
+            "total_cost": new_total_cost,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return await db.work_orders.find_one({"id": wo_id}, {"_id": 0})
+
+
+@router.get("/{wo_id}/timeline")
+async def get_work_order_timeline(
+    wo_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get work order activity timeline"""
+    user = await get_current_user(request, db)
+    
+    wo = await db.work_orders.find_one({"id": wo_id, "organization_id": user["organization_id"]}, {"_id": 0})
+    if not wo:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work order not found")
+    
+    # Get audit logs
+    audit_logs = await db.audit_logs.find(
+        {"resource_type": "work_order", "resource_id": wo_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return {"work_order": wo, "timeline": audit_logs}
+
+
+@router.get("/backlog")
+async def get_work_order_backlog(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get work order backlog"""
+    user = await get_current_user(request, db)
+    
+    backlog = await db.work_orders.find(
+        {
+            "organization_id": user["organization_id"],
+            "status": {"$in": ["pending", "approved", "scheduled"]},
+            "is_active": True
+        },
+        {"_id": 0}
+    ).sort("priority", -1).to_list(1000)
+    
+    return backlog
+
