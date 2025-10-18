@@ -94,7 +94,7 @@ def test_create_asset(token):
             # Verify required fields
             checks = [
                 data.get("id") is not None,
-                data.get("asset_tag") == "TEST-ASSET-001",
+                data.get("asset_tag") == f"TEST-ASSET-{timestamp}",
                 data.get("name") == "Test Equipment",
                 data.get("asset_type") == "equipment",
                 data.get("criticality") == "B",
