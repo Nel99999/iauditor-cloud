@@ -8,7 +8,7 @@ from datetime import datetime
 import uuid
 
 # Configuration
-BACKEND_URL = "https://userperm-hub.preview.emergentagent.com/api"
+BACKEND_URL = "https://ops-control-center.preview.emergentagent.com/api"
 PRODUCTION_USER = {
     "email": "llewellyn@bluedawncapital.co.za",
     "password": "TestPassword123!",

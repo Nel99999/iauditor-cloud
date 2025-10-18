@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test theme update with detailed debugging
-base_url = "https://userperm-hub.preview.emergentagent.com"
+base_url = "https://ops-control-center.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

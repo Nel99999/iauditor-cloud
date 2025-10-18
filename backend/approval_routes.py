@@ -180,7 +180,7 @@ async def approve_user(
                 if backend_url:
                     frontend_url = backend_url.replace("/api", "")
                 else:
-                    frontend_url = "https://userperm-hub.preview.emergentagent.com"
+                    frontend_url = "https://ops-control-center.preview.emergentagent.com"
             
             login_url = f"{frontend_url}/login"
             

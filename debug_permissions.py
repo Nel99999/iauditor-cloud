@@ -5,7 +5,7 @@ import requests
 import json
 from datetime import datetime
 
-BASE_URL = "https://userperm-hub.preview.emergentagent.com/api"
+BASE_URL = "https://ops-control-center.preview.emergentagent.com/api"
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 
 print("="*80)

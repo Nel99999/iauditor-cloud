@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 import uuid
 
-BASE_URL = "https://userperm-hub.preview.emergentagent.com/api"
+BASE_URL = "https://ops-control-center.preview.emergentagent.com/api"
 
 class ComprehensiveRetest:
     def __init__(self):

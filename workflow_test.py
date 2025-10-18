@@ -7,7 +7,7 @@ import io
 import os
 
 class WorkflowAPITester:
-    def __init__(self, base_url="https://userperm-hub.preview.emergentagent.com"):
+    def __init__(self, base_url="https://ops-control-center.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
