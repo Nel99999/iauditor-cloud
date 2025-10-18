@@ -348,6 +348,37 @@ function App() {
               }
             />
 
+            <Route
+              path="/financial"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <FinancialPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/announcements"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <AnnouncementsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/emergencies"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <EmergenciesPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
             />
 
                 <ProtectedRoute>
