@@ -296,6 +296,17 @@ function App() {
               element={
                 <ProtectedRoute>
                   <LayoutNew>
+            <Route
+              path="/work-orders/:woId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <WorkOrderDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
                     <WorkOrdersPage />
                   </LayoutNew>
                 </ProtectedRoute>
