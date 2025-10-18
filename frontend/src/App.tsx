@@ -27,6 +27,7 @@ import ModernSettingsPage from "@/components/ModernSettingsPage";
 import MFASetupPage from "@/components/MFASetupPage";
 import InspectionsPage from "@/components/InspectionsPage";
 import TemplateBuilderPage from "@/components/TemplateBuilderPage";
+import EnhancedTemplateBuilderPage from "@/components/EnhancedTemplateBuilderPage";
 import InspectionExecutionPage from "@/components/InspectionExecutionPage";
 import ChecklistsPage from "@/components/ChecklistsPage";
 import ChecklistTemplateBuilderNew from "@/components/ChecklistTemplateBuilderNew";
