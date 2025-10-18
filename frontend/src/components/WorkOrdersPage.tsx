@@ -49,7 +49,16 @@ const WorkOrdersPage = () => {
   };
 
   return (
-    <ModernPageWrapper title="Work Orders" subtitle="CMMS - Maintenance work orders">
+    <ModernPageWrapper 
+      title="Work Orders" 
+      subtitle="CMMS - Maintenance work orders"
+      actions={
+        <Button onClick={() => navigate('/work-orders/new')}>
+          <Plus className="h-4 w-4 mr-2" />
+          New Work Order
+        </Button>
+      }
+    >
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
