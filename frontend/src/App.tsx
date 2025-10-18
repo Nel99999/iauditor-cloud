@@ -281,6 +281,37 @@ function App() {
             <Route
               path="/assets/:assetId/edit"
               element={
+            <Route
+              path="/work-orders"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <WorkOrdersPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <InventoryPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <ProjectsPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
                 <ProtectedRoute>
                   <LayoutNew>
                     <AssetFormPage />
