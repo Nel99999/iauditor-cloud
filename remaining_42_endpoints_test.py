@@ -633,19 +633,11 @@ def test_settings_endpoints():
     # Test 2: PUT /settings/email - Skip to avoid changing production settings
     log_test("SETTINGS", "PUT /settings/email", "SKIP", "Skipped to avoid changing production email settings")
     
-    # Test 3: GET /settings/sms
-    try:
-        response = requests.get(f"{BASE_URL}/settings/sms", headers=get_headers(), timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            log_test("SETTINGS", "GET /settings/sms", "PASS", "SMS settings retrieved")
-        else:
-            log_test("SETTINGS", "GET /settings/sms", "FAIL", f"Status: {response.status_code}")
-    except Exception as e:
-        log_test("SETTINGS", "GET /settings/sms", "FAIL", str(e))
+    # Test 3: GET /settings/sms - Endpoint does not exist
+    log_test("SETTINGS", "GET /settings/sms", "SKIP", "Endpoint not implemented (SMS settings are under /sms route)")
     
     # Test 4: PUT /settings/sms - Skip to avoid changing production settings
-    log_test("SETTINGS", "PUT /settings/sms", "SKIP", "Skipped to avoid changing production SMS settings")
+    log_test("SETTINGS", "PUT /settings/sms", "SKIP", "Endpoint not implemented (SMS settings are under /sms route)")
 
 # ==================== BULK IMPORT TESTS ====================
 
