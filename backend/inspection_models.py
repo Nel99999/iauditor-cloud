@@ -106,6 +106,8 @@ class InspectionAnswer(BaseModel):
     photo_ids: Optional[List[str]] = []  # GridFS file IDs
     notes: Optional[str] = None
     score: Optional[float] = None
+    signature_data: Optional[str] = None  # NEW: Base64 encoded signature image
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))  # NEW: When answered
 
 
 class InspectionExecution(BaseModel):
