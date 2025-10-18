@@ -32,6 +32,37 @@ def calculate_completion_percentage(items: List[dict]) -> float:
     return round((completed / len(items)) * 100, 2)
 
 
+def calculate_checklist_score(template: dict, items: List[dict]) -> tuple:
+    """Calculate score and pass/fail status for a checklist"""
+    if not template.get("scoring_enabled"):
+        return None, None
+    
+    total_score = 0.0
+    max_score = 0.0
+    
+    # Create item map for quick lookup
+    item_map = {item["item_id"]: item for item in items}
+    
+    for template_item in template.get("items", []):
+        if not template_item.get("scoring_enabled"):
+            continue
+        
+        max_score += 100.0  # Each item worth 100 points
+        
+        completion = item_map.get(template_item["id"])
+        if completion and completion.get("completed"):
+            # Item completed = full score
+            total_score += 100.0
+    
+    if max_score == 0:
+        return None, None
+    
+    percentage = (total_score / max_score) * 100.0
+    passed = percentage >= template.get("pass_percentage", 80.0)
+    
+    return round(percentage, 2), passed
+
+
 # ==================== TEMPLATE ENDPOINTS ====================
 
 @router.get("/templates")
