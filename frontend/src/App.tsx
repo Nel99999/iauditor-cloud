@@ -306,6 +306,17 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/inventory/:itemId"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <InventoryDetailPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
+
 
                     <WorkOrdersPage />
                   </LayoutNew>
