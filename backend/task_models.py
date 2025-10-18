@@ -81,6 +81,63 @@ class TaskUpdate(BaseModel):
     priority: Optional[str] = None
     assigned_to: Optional[str] = None
     due_date: Optional[str] = None
+
+
+
+class TaskTemplate(BaseModel):
+    """Recurring task template"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    name: str
+    description: Optional[str] = None
+    task_type: str = "recurring"
+    priority: str = "medium"
+    assigned_to: Optional[str] = None
+    unit_id: Optional[str] = None
+    estimated_hours: Optional[float] = None
+    recurrence_rule: str = "daily"  # daily, weekly, monthly
+    is_active: bool = True
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TaskAnalytics(BaseModel):
+    """Task analytics"""
+    total_tasks: int
+    completed_tasks: int
+    in_progress_tasks: int
+    todo_tasks: int
+    blocked_tasks: int
+    overdue_tasks: int
+    average_completion_hours: Optional[float] = None
+    on_time_percentage: float
+    completion_trend: List[Dict[str, Any]] = []
+
+
+class LaborEntry(BaseModel):
+    """Labor time entry"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    task_id: str
+    user_id: str
+    user_name: str
+    hours: float
+    hourly_rate: Optional[float] = None
+    cost: Optional[float] = None
+    description: Optional[str] = None
+    entry_date: str  # YYYY-MM-DD
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class PartsUsage(BaseModel):
+    """Parts used in task"""
+    part_id: str
+    part_name: str
+    quantity: float
+    unit_cost: Optional[float] = None
+    total_cost: Optional[float] = None
+    notes: Optional[str] = None
+
     unit_id: Optional[str] = None
     tags: Optional[List[str]] = None
 
