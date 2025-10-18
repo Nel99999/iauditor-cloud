@@ -857,4 +857,3 @@ async def approve_checklist(
     
     updated = await db.checklist_executions.find_one({"id": execution_id}, {"_id": 0})
     return updated
-    )
