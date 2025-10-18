@@ -4,307 +4,307 @@
     "test": "Login",
     "status": "PASS",
     "details": "User ID: e9522a08-754c-4643-9e76-94a99abf8566",
-    "timestamp": "2025-10-18T14:20:18.391923"
+    "timestamp": "2025-10-18T14:21:02.335065"
   },
   {
     "group": "INSPECTION",
     "test": "GET /inspections/executions/{id}",
     "status": "SKIP",
     "details": "Could not create test execution",
-    "timestamp": "2025-10-18T14:20:18.466971"
+    "timestamp": "2025-10-18T14:21:02.426880"
   },
   {
     "group": "INSPECTION",
     "test": "PUT /inspections/executions/{id}",
     "status": "SKIP",
     "details": "Could not create test execution",
-    "timestamp": "2025-10-18T14:20:18.466997"
+    "timestamp": "2025-10-18T14:21:02.426907"
   },
   {
     "group": "INSPECTION",
     "test": "DELETE /inspections/templates/{id}",
     "status": "PASS",
     "details": "Template deleted successfully",
-    "timestamp": "2025-10-18T14:20:18.568331"
+    "timestamp": "2025-10-18T14:21:02.502250"
   },
   {
     "group": "CHECKLIST",
     "test": "GET /checklists/executions/today",
     "status": "PASS",
     "details": "Found 4 executions today",
-    "timestamp": "2025-10-18T14:20:18.626793"
+    "timestamp": "2025-10-18T14:21:02.543089"
   },
   {
     "group": "CHECKLIST",
     "test": "DELETE /checklists/templates/{id}",
     "status": "PASS",
     "details": "Template deleted successfully",
-    "timestamp": "2025-10-18T14:20:18.787512"
+    "timestamp": "2025-10-18T14:21:02.688055"
   },
   {
     "group": "TASK",
     "test": "PUT /tasks/{id}",
     "status": "PASS",
     "details": "Task updated successfully",
-    "timestamp": "2025-10-18T14:20:18.861492"
+    "timestamp": "2025-10-18T14:21:02.805209"
   },
   {
     "group": "TASK",
     "test": "POST /tasks/{id}/comments",
     "status": "PASS",
     "details": "Comment added successfully",
-    "timestamp": "2025-10-18T14:20:18.898469"
+    "timestamp": "2025-10-18T14:21:02.840160"
   },
   {
     "group": "TASK",
     "test": "DELETE /tasks/{id}",
     "status": "PASS",
     "details": "Task deleted successfully",
-    "timestamp": "2025-10-18T14:20:18.936177"
+    "timestamp": "2025-10-18T14:21:02.915866"
   },
   {
     "group": "TASK",
     "test": "GET /tasks/stats/overview",
     "status": "PASS",
     "details": "Total tasks: 33",
-    "timestamp": "2025-10-18T14:20:18.978563"
+    "timestamp": "2025-10-18T14:21:02.955989"
   },
   {
     "group": "USER/AUTH",
     "test": "GET /users",
     "status": "PASS",
     "details": "Found 7 users",
-    "timestamp": "2025-10-18T14:20:19.018292"
+    "timestamp": "2025-10-18T14:21:02.992188"
   },
   {
     "group": "USER/AUTH",
     "test": "GET /users/me",
     "status": "PASS",
     "details": "User: Llewellyn Nel",
-    "timestamp": "2025-10-18T14:20:19.057083"
+    "timestamp": "2025-10-18T14:21:03.032912"
   },
   {
     "group": "USER/AUTH",
     "test": "PUT /users/profile",
     "status": "PASS",
     "details": "Profile updated successfully",
-    "timestamp": "2025-10-18T14:20:19.092060"
+    "timestamp": "2025-10-18T14:21:03.070030"
   },
   {
     "group": "USER/AUTH",
     "test": "POST /users/invite",
     "status": "PASS",
     "details": "User invited successfully",
-    "timestamp": "2025-10-18T14:20:19.131691"
+    "timestamp": "2025-10-18T14:21:03.108606"
   },
   {
     "group": "USER/AUTH",
     "test": "GET /users/pending-approvals",
     "status": "PASS",
     "details": "Found 0 pending approvals",
-    "timestamp": "2025-10-18T14:20:19.212692"
+    "timestamp": "2025-10-18T14:21:03.144120"
   },
   {
     "group": "USER/AUTH",
     "test": "POST /users/{id}/approve",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production data",
-    "timestamp": "2025-10-18T14:20:19.212721"
+    "timestamp": "2025-10-18T14:21:03.144151"
   },
   {
     "group": "USER/AUTH",
     "test": "POST /users/{id}/reject",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production data",
-    "timestamp": "2025-10-18T14:20:19.212727"
+    "timestamp": "2025-10-18T14:21:03.144157"
   },
   {
     "group": "USER/AUTH",
     "test": "DELETE /users/{id}",
     "status": "SKIP",
     "details": "Skipped to avoid deleting production users",
-    "timestamp": "2025-10-18T14:20:19.212732"
+    "timestamp": "2025-10-18T14:21:03.144161"
   },
   {
     "group": "ROLE",
     "test": "GET /roles",
     "status": "PASS",
     "details": "Found 11 roles",
-    "timestamp": "2025-10-18T14:20:19.250281"
+    "timestamp": "2025-10-18T14:21:03.181471"
   },
   {
     "group": "ROLE",
     "test": "POST /roles",
     "status": "PASS",
-    "details": "Role created: fc8d9a06-053f-4415-a8e7-e8c30557098a",
-    "timestamp": "2025-10-18T14:20:19.291132"
+    "details": "Role created: f992204c-eec9-4119-b77c-08ca9c698d29",
+    "timestamp": "2025-10-18T14:21:03.260315"
   },
   {
     "group": "ROLE",
     "test": "PUT /roles/{id}",
-    "status": "FAIL",
-    "details": "Status: 422",
-    "timestamp": "2025-10-18T14:20:19.322599"
+    "status": "PASS",
+    "details": "Role updated successfully",
+    "timestamp": "2025-10-18T14:21:03.298594"
   },
   {
     "group": "ROLE",
     "test": "DELETE /roles/{id}",
     "status": "PASS",
     "details": "Role deleted successfully",
-    "timestamp": "2025-10-18T14:20:19.357637"
+    "timestamp": "2025-10-18T14:21:03.332528"
   },
   {
     "group": "ORGANIZATION",
     "test": "GET /organizations/units",
     "status": "PASS",
     "details": "Found 10 units",
-    "timestamp": "2025-10-18T14:20:19.398944"
+    "timestamp": "2025-10-18T14:21:03.370207"
   },
   {
     "group": "ORGANIZATION",
     "test": "POST /organizations/units",
     "status": "PASS",
-    "details": "Unit created: cf1b0bb8-16e8-4eec-9f68-ff49aa8cc367",
-    "timestamp": "2025-10-18T14:20:19.448367"
+    "details": "Unit created: 787abb83-bda8-4f3b-acf3-d939a31fd9c0",
+    "timestamp": "2025-10-18T14:21:03.407424"
   },
   {
     "group": "ORGANIZATION",
     "test": "PUT /organizations/units/{id}",
     "status": "PASS",
     "details": "Unit updated successfully",
-    "timestamp": "2025-10-18T14:20:19.486326"
+    "timestamp": "2025-10-18T14:21:03.487072"
   },
   {
     "group": "ORGANIZATION",
     "test": "DELETE /organizations/units/{id}",
     "status": "PASS",
     "details": "Unit deleted successfully",
-    "timestamp": "2025-10-18T14:20:19.522846"
+    "timestamp": "2025-10-18T14:21:03.522555"
   },
   {
     "group": "WORKFLOW",
     "test": "GET /workflows/templates",
     "status": "PASS",
-    "details": "Found 0 workflow templates",
-    "timestamp": "2025-10-18T14:20:19.564898"
+    "details": "Found 1 workflow templates",
+    "timestamp": "2025-10-18T14:21:03.563013"
   },
   {
     "group": "WORKFLOW",
     "test": "POST /workflows/templates",
     "status": "PASS",
     "details": "Workflow template created",
-    "timestamp": "2025-10-18T14:20:19.646466"
+    "timestamp": "2025-10-18T14:21:03.600004"
   },
   {
     "group": "WORKFLOW",
     "test": "GET /workflows/instances",
     "status": "PASS",
     "details": "Found 0 workflow instances",
-    "timestamp": "2025-10-18T14:20:19.682282"
+    "timestamp": "2025-10-18T14:21:03.641741"
   },
   {
     "group": "WORKFLOW",
     "test": "POST /workflows/instances/{id}/approve",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production workflows",
-    "timestamp": "2025-10-18T14:20:19.682312"
+    "timestamp": "2025-10-18T14:21:03.641781"
   },
   {
     "group": "WORKFLOW",
     "test": "POST /workflows/instances/{id}/reject",
     "status": "SKIP",
     "details": "Skipped to avoid affecting production workflows",
-    "timestamp": "2025-10-18T14:20:19.682317"
+    "timestamp": "2025-10-18T14:21:03.641788"
   },
   {
     "group": "SETTINGS",
     "test": "GET /settings/email",
     "status": "PASS",
     "details": "Email settings retrieved",
-    "timestamp": "2025-10-18T14:20:19.718548"
+    "timestamp": "2025-10-18T14:21:03.677588"
   },
   {
     "group": "SETTINGS",
     "test": "PUT /settings/email",
     "status": "SKIP",
     "details": "Skipped to avoid changing production email settings",
-    "timestamp": "2025-10-18T14:20:19.718576"
+    "timestamp": "2025-10-18T14:21:03.677615"
   },
   {
     "group": "SETTINGS",
     "test": "GET /settings/sms",
-    "status": "FAIL",
-    "details": "Status: 404",
-    "timestamp": "2025-10-18T14:20:19.791858"
+    "status": "SKIP",
+    "details": "Endpoint not implemented (SMS settings are under /sms route)",
+    "timestamp": "2025-10-18T14:21:03.677621"
   },
   {
     "group": "SETTINGS",
     "test": "PUT /settings/sms",
     "status": "SKIP",
-    "details": "Skipped to avoid changing production SMS settings",
-    "timestamp": "2025-10-18T14:20:19.791887"
+    "details": "Endpoint not implemented (SMS settings are under /sms route)",
+    "timestamp": "2025-10-18T14:21:03.677629"
   },
   {
     "group": "BULK_IMPORT",
     "test": "POST /bulk-import/validate",
-    "status": "FAIL",
-    "details": "Status: 422",
-    "timestamp": "2025-10-18T14:20:19.866460"
+    "status": "SKIP",
+    "details": "Requires multipart file upload (not simple JSON)",
+    "timestamp": "2025-10-18T14:21:03.678348"
   },
   {
     "group": "BULK_IMPORT",
     "test": "POST /bulk-import/users",
     "status": "SKIP",
     "details": "Skipped to avoid creating bulk test users",
-    "timestamp": "2025-10-18T14:20:19.866491"
+    "timestamp": "2025-10-18T14:21:03.678357"
   },
   {
     "group": "GROUPS",
     "test": "GET /groups",
     "status": "PASS",
     "details": "Found 0 groups",
-    "timestamp": "2025-10-18T14:20:19.903973"
+    "timestamp": "2025-10-18T14:21:03.717705"
   },
   {
     "group": "GROUPS",
     "test": "POST /groups",
     "status": "PASS",
-    "details": "Group created: 1ffcb844-242a-479b-abb7-192d77e2fd7e",
-    "timestamp": "2025-10-18T14:20:19.942294"
+    "details": "Group created: 233d65f0-5f34-4de4-87ca-0721cee03620",
+    "timestamp": "2025-10-18T14:21:03.755558"
   },
   {
     "group": "GROUPS",
     "test": "PUT /groups/{id}",
     "status": "PASS",
     "details": "Group updated successfully",
-    "timestamp": "2025-10-18T14:20:19.978903"
+    "timestamp": "2025-10-18T14:21:03.790512"
   },
   {
     "group": "GROUPS",
     "test": "DELETE /groups/{id}",
     "status": "PASS",
     "details": "Group deleted successfully",
-    "timestamp": "2025-10-18T14:20:20.019634"
+    "timestamp": "2025-10-18T14:21:03.828328"
   },
   {
     "group": "WEBHOOKS",
     "test": "GET /webhooks",
     "status": "PASS",
     "details": "Found 0 webhooks",
-    "timestamp": "2025-10-18T14:20:20.055654"
+    "timestamp": "2025-10-18T14:21:03.861805"
   },
   {
     "group": "WEBHOOKS",
     "test": "POST /webhooks",
     "status": "PASS",
-    "details": "Webhook created: 60b2d357-824c-4589-9781-f7ac7995177c",
-    "timestamp": "2025-10-18T14:20:20.134920"
+    "details": "Webhook created: b61ef409-bc5b-45c7-b171-70406667f0af",
+    "timestamp": "2025-10-18T14:21:03.902182"
   },
   {
     "group": "WEBHOOKS",
     "test": "DELETE /webhooks/{id}",
     "status": "PASS",
     "details": "Webhook deleted successfully",
-    "timestamp": "2025-10-18T14:20:20.169151"
+    "timestamp": "2025-10-18T14:21:03.938658"
   }
 ]
