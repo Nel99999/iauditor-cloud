@@ -120,6 +120,7 @@ class InspectionExecution(BaseModel):
     template_name: str  # Denormalized for reporting
     template_version: int
     unit_id: Optional[str] = None  # Which org unit was inspected
+    unit_name: Optional[str] = None  # NEW: Denormalized unit name
     inspector_id: str  # User who performed inspection
     inspector_name: str  # Denormalized
     status: str = "in_progress"  # in_progress, completed, pending_approval, approved, rejected, failed
@@ -129,7 +130,18 @@ class InspectionExecution(BaseModel):
     passed: Optional[bool] = None  # Pass/fail status
     findings: List[str] = []  # List of issues found
     notes: Optional[str] = None
-    workflow_id: Optional[str] = None  # NEW: Linked workflow instance
+    workflow_id: Optional[str] = None  # Linked workflow instance
+    # Enhanced fields for V1
+    asset_id: Optional[str] = None  # NEW: Asset being inspected
+    asset_name: Optional[str] = None  # NEW: Denormalized asset name
+    due_date: Optional[datetime] = None  # NEW: When inspection is due
+    scheduled_date: Optional[datetime] = None  # NEW: Scheduled date/time
+    auto_created_wo_id: Optional[str] = None  # NEW: Link to work order if created
+    follow_up_inspection_id: Optional[str] = None  # NEW: Follow-up inspection if required
+    parent_inspection_id: Optional[str] = None  # NEW: If this is a follow-up
+    rectification_required: bool = False  # NEW: Whether issues need fixing
+    rectified: bool = False  # NEW: Whether issues have been fixed
+    duration_minutes: Optional[int] = None  # NEW: Actual time taken
     started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
