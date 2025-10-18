@@ -152,6 +152,8 @@ class InspectionExecutionCreate(BaseModel):
     template_id: str
     unit_id: Optional[str] = None
     location: Optional[Dict[str, float]] = None
+    asset_id: Optional[str] = None  # NEW: Asset being inspected
+    scheduled_date: Optional[datetime] = None  # NEW: Scheduled date/time
 
 
 class InspectionExecutionUpdate(BaseModel):
