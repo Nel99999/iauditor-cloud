@@ -1200,5 +1200,3 @@ async def get_scheduled_inspections(
         },
         "total_count": len(scheduled)
     }
-
-        )
