@@ -217,7 +217,7 @@ backend:
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "COMPREHENSIVE SYSTEM-WIDE BACKEND TESTING - ALL MODULES & RBAC"
+user_problem_statement: "FULL INDUSTRIAL-STRENGTH COMMERCIAL LAUNCH TESTING - ALL WORKFLOWS, ALL MODULES, ALL RBAC"
 
 backend:
   - task: "INDUSTRIAL-STRENGTH BACKEND TESTING - COMMERCIAL LAUNCH READINESS (200+ Tests)"
@@ -226,7 +226,7 @@ backend:
     file: "backend/server.py, all backend routes"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
