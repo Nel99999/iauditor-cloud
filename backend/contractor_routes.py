@@ -63,6 +63,7 @@ async def create_contractor(
         payment_terms=contractor_data.payment_terms,
         tags=contractor_data.tags,
         created_by=user["id"],
+        onboarded_at=datetime.now(timezone.utc).isoformat(),
     )
     
     contractor_dict = contractor.model_dump()
