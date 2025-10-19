@@ -28,8 +28,14 @@ async def create_asset(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Create a new asset"""
+    """Create a new asset (requires asset.create.organization permission)"""
     user = await get_current_user(request, db)
+    
+    # SECURITY: Check permission before allowing creation
+    from permission_routes import check_permission
+    has_permission = await check_permission(db, user["id"], "asset", "create", "organization")
+    if not has_permission:
+        raise HTTPException(status_code=403, detail="You don't have permission to create assets")
     
     # Check if asset_tag already exists
     existing = await db.assets.find_one({
