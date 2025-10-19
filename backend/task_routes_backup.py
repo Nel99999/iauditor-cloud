@@ -88,180 +88,6 @@ async def create_task(
     return task_dict
 
 
-@router.get("/stats/overview")
-async def get_task_stats(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get task statistics"""
-    user = await get_current_user(request, db)
-    
-    tasks = await db.tasks.find({"organization_id": user["organization_id"]}, {"_id": 0}).to_list(10000)
-    
-    total = len(tasks)
-    todo = len([t for t in tasks if t.get("status") == "todo"])
-    in_progress = len([t for t in tasks if t.get("status") == "in_progress"])
-    completed = len([t for t in tasks if t.get("status") == "completed"])
-    
-    # Count overdue tasks
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    overdue = len([t for t in tasks if t.get("due_date") and t.get("due_date") < today and t.get("status") != "completed"])
-    
-    completion_rate = (completed / total * 100) if total > 0 else 0.0
-    
-    return TaskStats(
-        total_tasks=total,
-        todo=todo,
-        in_progress=in_progress,
-        completed=completed,
-        overdue=overdue,
-        completion_rate=round(completion_rate, 2),
-    )
-
-
-@router.post("/templates", status_code=status.HTTP_201_CREATED)
-async def create_task_template(
-    template_data: dict,
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Create recurring task template"""
-    from task_models import TaskTemplate
-    user = await get_current_user(request, db)
-    
-    template = TaskTemplate(
-        organization_id=user["organization_id"],
-        name=template_data.get("name"),
-        description=template_data.get("description"),
-        task_type="recurring",
-        priority=template_data.get("priority", "medium"),
-        assigned_to=template_data.get("assigned_to"),
-        unit_id=template_data.get("unit_id"),
-        estimated_hours=template_data.get("estimated_hours"),
-        recurrence_rule=template_data.get("recurrence_rule", "daily"),
-        created_by=user["id"],
-    )
-    
-    template_dict = template.model_dump()
-    template_dict["created_at"] = template_dict["created_at"].isoformat()
-    template_dict["updated_at"] = template_dict["updated_at"].isoformat()
-    
-    await db.task_templates.insert_one(template_dict.copy())
-    return template_dict
-
-
-
-@router.get("/templates")
-async def get_task_templates(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get task templates"""
-    user = await get_current_user(request, db)
-    
-    templates = await db.task_templates.find(
-        {"organization_id": user["organization_id"], "is_active": True},
-        {"_id": 0}
-    ).to_list(1000)
-    
-    return templates
-
-
-
-@router.post("/from-template")
-async def create_task_from_template(
-    template_id: str,
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Create task from template"""
-    user = await get_current_user(request, db)
-    
-    template = await db.task_templates.find_one(
-        {"id": template_id, "organization_id": user["organization_id"]},
-        {"_id": 0}
-    )
-    
-    if not template:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Template not found",
-        )
-    
-    # Create task from template
-    task_data = TaskCreate(
-        title=template["name"],
-        description=template.get("description"),
-        priority=template.get("priority", "medium"),
-        assigned_to=template.get("assigned_to"),
-        unit_id=template.get("unit_id"),
-        task_type="recurring",
-        template_id=template_id,
-        estimated_hours=template.get("estimated_hours"),
-    )
-    
-    # Use existing create_task logic
-    return await create_task(task_data, request, db)
-
-
-
-@router.get("/analytics/overview")
-async def get_task_analytics(
-    request: Request,
-    db: AsyncIOMotorDatabase = Depends(get_db)
-):
-    """Get task analytics"""
-    from task_models import TaskAnalytics
-    user = await get_current_user(request, db)
-    
-    tasks = await db.tasks.find(
-        {"organization_id": user["organization_id"]},
-        {"_id": 0}
-    ).to_list(10000)
-    
-    total = len(tasks)
-    completed = [t for t in tasks if t.get("status") == "completed"]
-    in_progress = [t for t in tasks if t.get("status") == "in_progress"]
-    todo = [t for t in tasks if t.get("status") == "todo"]
-    blocked = [t for t in tasks if t.get("status") == "blocked"]
-    
-    # Calculate overdue
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    overdue = len([t for t in tasks if t.get("due_date") and t.get("due_date") < today and t.get("status") != "completed"])
-    
-    # Average completion hours
-    hours = [t.get("actual_hours") for t in completed if t.get("actual_hours")]
-    avg_hours = sum(hours) / len(hours) if hours else None
-    
-    # On-time percentage
-    completed_on_time = len([t for t in completed if t.get("due_date") and t.get("completed_at") and t.get("completed_at")[:10] <= t.get("due_date")])
-    on_time_pct = (completed_on_time / len(completed) * 100) if completed else 0.0
-    
-    # Completion trend
-    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    recent = [t for t in completed if t.get("completed_at") and datetime.fromisoformat(t["completed_at"]) >= thirty_days_ago]
-    
-    trend = {}
-    for t in recent:
-        date_str = t.get("completed_at", "")[:10]
-        trend[date_str] = trend.get(date_str, 0) + 1
-    
-    completion_trend = [{"date": d, "count": c} for d, c in sorted(trend.items())]
-    
-    analytics = TaskAnalytics(
-        total_tasks=total,
-        completed_tasks=len(completed),
-        in_progress_tasks=len(in_progress),
-        todo_tasks=len(todo),
-        blocked_tasks=len(blocked),
-        overdue_tasks=overdue,
-        average_completion_hours=round(avg_hours, 2) if avg_hours else None,
-        on_time_percentage=round(on_time_pct, 2),
-        completion_trend=completion_trend
-    )
-    
-    return analytics.model_dump()
-
 @router.get("/{task_id}")
 async def get_task(
     task_id: str,
@@ -394,6 +220,123 @@ async def add_comment(
     )
     
     return {"message": "Comment added successfully", "comment": new_comment}
+
+
+@router.get("/stats/overview")
+async def get_task_stats(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get task statistics"""
+    user = await get_current_user(request, db)
+    
+    tasks = await db.tasks.find({"organization_id": user["organization_id"]}, {"_id": 0}).to_list(10000)
+    
+    total = len(tasks)
+    todo = len([t for t in tasks if t.get("status") == "todo"])
+    in_progress = len([t for t in tasks if t.get("status") == "in_progress"])
+    completed = len([t for t in tasks if t.get("status") == "completed"])
+    
+    # Count overdue tasks
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    overdue = len([t for t in tasks if t.get("due_date") and t.get("due_date") < today and t.get("status") != "completed"])
+    
+    completion_rate = (completed / total * 100) if total > 0 else 0.0
+    
+    return TaskStats(
+        total_tasks=total,
+        todo=todo,
+        in_progress=in_progress,
+        completed=completed,
+        overdue=overdue,
+        completion_rate=round(completion_rate, 2),
+    )
+
+
+
+# ==================== V1 ENHANCEMENT ENDPOINTS ====================
+
+@router.post("/templates", status_code=status.HTTP_201_CREATED)
+async def create_task_template(
+    template_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Create recurring task template"""
+    from task_models import TaskTemplate
+    user = await get_current_user(request, db)
+    
+    template = TaskTemplate(
+        organization_id=user["organization_id"],
+        name=template_data.get("name"),
+        description=template_data.get("description"),
+        task_type="recurring",
+        priority=template_data.get("priority", "medium"),
+        assigned_to=template_data.get("assigned_to"),
+        unit_id=template_data.get("unit_id"),
+        estimated_hours=template_data.get("estimated_hours"),
+        recurrence_rule=template_data.get("recurrence_rule", "daily"),
+        created_by=user["id"],
+    )
+    
+    template_dict = template.model_dump()
+    template_dict["created_at"] = template_dict["created_at"].isoformat()
+    template_dict["updated_at"] = template_dict["updated_at"].isoformat()
+    
+    await db.task_templates.insert_one(template_dict.copy())
+    return template_dict
+
+
+@router.get("/templates")
+async def get_task_templates(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get task templates"""
+    user = await get_current_user(request, db)
+    
+    templates = await db.task_templates.find(
+        {"organization_id": user["organization_id"], "is_active": True},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    return templates
+
+
+@router.post("/from-template")
+async def create_task_from_template(
+    template_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Create task from template"""
+    user = await get_current_user(request, db)
+    
+    template = await db.task_templates.find_one(
+        {"id": template_id, "organization_id": user["organization_id"]},
+        {"_id": 0}
+    )
+    
+    if not template:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Template not found",
+        )
+    
+    # Create task from template
+    task_data = TaskCreate(
+        title=template["name"],
+        description=template.get("description"),
+        priority=template.get("priority", "medium"),
+        assigned_to=template.get("assigned_to"),
+        unit_id=template.get("unit_id"),
+        task_type="recurring",
+        template_id=template_id,
+        estimated_hours=template.get("estimated_hours"),
+    )
+    
+    # Use existing create_task logic
+    return await create_task(task_data, request, db)
 
 
 @router.post("/{task_id}/subtasks")
@@ -585,3 +528,59 @@ async def get_task_dependencies(
     }
 
 
+@router.get("/analytics/overview")
+async def get_task_analytics(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get task analytics"""
+    from task_models import TaskAnalytics
+    user = await get_current_user(request, db)
+    
+    tasks = await db.tasks.find(
+        {"organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    total = len(tasks)
+    completed = [t for t in tasks if t.get("status") == "completed"]
+    in_progress = [t for t in tasks if t.get("status") == "in_progress"]
+    todo = [t for t in tasks if t.get("status") == "todo"]
+    blocked = [t for t in tasks if t.get("status") == "blocked"]
+    
+    # Calculate overdue
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    overdue = len([t for t in tasks if t.get("due_date") and t.get("due_date") < today and t.get("status") != "completed"])
+    
+    # Average completion hours
+    hours = [t.get("actual_hours") for t in completed if t.get("actual_hours")]
+    avg_hours = sum(hours) / len(hours) if hours else None
+    
+    # On-time percentage
+    completed_on_time = len([t for t in completed if t.get("due_date") and t.get("completed_at") and t.get("completed_at")[:10] <= t.get("due_date")])
+    on_time_pct = (completed_on_time / len(completed) * 100) if completed else 0.0
+    
+    # Completion trend
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    recent = [t for t in completed if t.get("completed_at") and datetime.fromisoformat(t["completed_at"]) >= thirty_days_ago]
+    
+    trend = {}
+    for t in recent:
+        date_str = t.get("completed_at", "")[:10]
+        trend[date_str] = trend.get(date_str, 0) + 1
+    
+    completion_trend = [{"date": d, "count": c} for d, c in sorted(trend.items())]
+    
+    analytics = TaskAnalytics(
+        total_tasks=total,
+        completed_tasks=len(completed),
+        in_progress_tasks=len(in_progress),
+        todo_tasks=len(todo),
+        blocked_tasks=len(blocked),
+        overdue_tasks=overdue,
+        average_completion_hours=round(avg_hours, 2) if avg_hours else None,
+        on_time_percentage=round(on_time_pct, 2),
+        completion_trend=completion_trend
+    )
+    
+    return analytics.model_dump()
