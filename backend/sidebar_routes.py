@@ -23,7 +23,7 @@ class SidebarPreferences(BaseModel):
     hover_expand_enabled: bool = True  # Desktop only: expand on hover
     auto_collapse_enabled: bool = False  # Auto-collapse after inactivity
     inactivity_timeout: int = 10  # Seconds before auto-collapse
-    context_aware_enabled: bool = True  # Adjust based on screen size and route
+    context_aware_enabled: bool = False  # Adjust based on screen size and route (disabled by default)
     collapse_after_navigation: bool = False  # Auto-collapse after clicking menu item
 
 
