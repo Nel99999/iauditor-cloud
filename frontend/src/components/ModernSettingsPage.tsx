@@ -777,6 +777,86 @@ const ModernSettingsPage = () => {
               </CardContent>
             </Card>
 
+            {/* Twilio SMS/WhatsApp Configuration */}
+            <Card>
+              <CardHeader>
+                <CardTitle>SMS & WhatsApp (Twilio)</CardTitle>
+                <CardDescription>Configure SMS and WhatsApp notifications</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Alert className="bg-blue-50 border-blue-200">
+                  <Shield className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-900">
+                    <strong>Master & Developer Only:</strong> Twilio configuration affects the entire organization.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="flex items-center gap-2 mb-4">
+                  <Badge variant={twilioSettings.twilio_configured ? 'default' : 'secondary'}>
+                    {twilioSettings.twilio_configured ? '✓ Configured' : 'Not Configured'}
+                  </Badge>
+                </div>
+
+                <div>
+                  <Label htmlFor="twilio_account_sid">Account SID</Label>
+                  <Input 
+                    id="twilio_account_sid"
+                    type="text" 
+                    placeholder={twilioSettings.twilio_configured ? twilioSettings.account_sid : "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"} 
+                    value={twilioSettings.account_sid} 
+                    onChange={(e) => setTwilioSettings({...twilioSettings, account_sid: e.target.value})} 
+                    className="font-mono" 
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="twilio_auth_token">Auth Token</Label>
+                  <Input 
+                    id="twilio_auth_token"
+                    type="password" 
+                    placeholder={twilioSettings.twilio_configured ? "Token configured" : "Your Twilio Auth Token"} 
+                    value={twilioSettings.auth_token} 
+                    onChange={(e) => setTwilioSettings({...twilioSettings, auth_token: e.target.value})} 
+                    className="font-mono" 
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="twilio_phone_number">SMS Phone Number</Label>
+                    <Input 
+                      id="twilio_phone_number"
+                      type="tel"
+                      placeholder="+1234567890" 
+                      value={twilioSettings.phone_number} 
+                      onChange={(e) => setTwilioSettings({...twilioSettings, phone_number: e.target.value})} 
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="twilio_whatsapp_number">WhatsApp Number (Optional)</Label>
+                    <Input 
+                      id="twilio_whatsapp_number"
+                      type="tel"
+                      placeholder="+1234567890" 
+                      value={twilioSettings.whatsapp_number} 
+                      onChange={(e) => setTwilioSettings({...twilioSettings, whatsapp_number: e.target.value})} 
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveTwilioSettings} disabled={loading}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Configuration
+                  </Button>
+                  <Button variant="outline" onClick={handleTestTwilio} disabled={!twilioSettings.twilio_configured}>
+                    <Smartphone className="h-4 w-4 mr-2" />
+                    Test Connection
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Webhooks Dashboard */}
             <PermissionGuard 
               anyPermissions={['webhook.manage.organization']}
