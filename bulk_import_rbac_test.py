@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://ops-control-center.preview.emergentagent.com/api"
+BASE_URL = "https://workflow-engine-18.preview.emergentagent.com/api"
 
 # Test Production User
 TEST_USER = {

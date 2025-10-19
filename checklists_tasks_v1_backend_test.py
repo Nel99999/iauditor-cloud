@@ -9,7 +9,7 @@ import json
 from datetime import datetime, timedelta
 
 # Configuration
-BASE_URL = "https://ops-control-center.preview.emergentagent.com/api"
+BASE_URL = "https://workflow-engine-18.preview.emergentagent.com/api"
 TEST_USER = {
     "email": "llewellyn@bluedawncapital.co.za",
     "password": "TestPassword123!"
