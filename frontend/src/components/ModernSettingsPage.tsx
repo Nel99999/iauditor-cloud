@@ -279,6 +279,47 @@ const ModernSettingsPage = () => {
     }
   };
 
+  const handleSaveTwilioSettings = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/sms/settings`, {
+        account_sid: twilioSettings.account_sid,
+        auth_token: twilioSettings.auth_token,
+        phone_number: twilioSettings.phone_number,
+        whatsapp_number: twilioSettings.whatsapp_number
+      });
+      toast({
+        title: 'Success',
+        description: 'Twilio settings saved successfully!',
+      });
+      loadData();
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.response?.data?.detail || 'Failed to save Twilio settings',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestTwilio = async () => {
+    try {
+      await axios.post(`${API}/sms/test-connection`);
+      toast({
+        title: 'Success',
+        description: 'Twilio connection successful!',
+      });
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.response?.data?.detail || 'Failed to connect to Twilio',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleExportData = async () => {
     try {
       const response = await axios.get(`${API}/gdpr/export-data`);
