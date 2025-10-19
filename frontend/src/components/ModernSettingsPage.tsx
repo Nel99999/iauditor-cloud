@@ -123,6 +123,14 @@ const ModernSettingsPage = () => {
         console.log('Security events not available');
       }
 
+      // Load sidebar preferences
+      try {
+        const sidebarRes = await axios.get(`${API}/users/sidebar-preferences`);
+        setSidebarPrefs(sidebarRes.data || sidebarPrefs);
+      } catch (err) {
+        console.log('Sidebar preferences not available, using defaults');
+      }
+
       // Load admin settings (only for Master/Developer)
       if (isDeveloperOrMaster()) {
         try {
