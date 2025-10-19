@@ -51,7 +51,7 @@ async def get_sidebar_preferences(
             "inactivity_timeout": 10,
             "context_aware_enabled": False,
             "collapse_after_navigation": False,
-            "click_outside_to_hide": False
+            "click_outside_to_hide": True  # ON by default for first-time users
         }
     
     return prefs.get("sidebar_preferences", {})
