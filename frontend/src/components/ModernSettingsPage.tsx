@@ -601,6 +601,119 @@ const ModernSettingsPage = () => {
             </Card>
           )}
 
+          {/* Sidebar Preferences */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Sidebar Preferences</CardTitle>
+              <CardDescription>Customize how your navigation sidebar behaves</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              
+              {/* Default Mode */}
+              <div>
+                <Label htmlFor="default_mode">Default Sidebar Mode</Label>
+                <select
+                  id="default_mode"
+                  value={sidebarPrefs.default_mode}
+                  onChange={(e) => setSidebarPrefs({...sidebarPrefs, default_mode: e.target.value})}
+                  className="w-full p-2 border rounded-md bg-background mt-2"
+                >
+                  <option value="expanded">Expanded (280px) - Full width with icons and text</option>
+                  <option value="collapsed">Collapsed (200px) - Compact layout</option>
+                  <option value="mini">Mini (80px) - Icons only</option>
+                </select>
+              </div>
+
+              {/* Hover Expand (Desktop Only) */}
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <p className="font-medium">Hover to Expand</p>
+                  <p className="text-sm text-muted-foreground">
+                    Automatically expand sidebar when you hover over it (Desktop only)
+                  </p>
+                </div>
+                <Switch 
+                  checked={sidebarPrefs.hover_expand_enabled}
+                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, hover_expand_enabled: checked})}
+                />
+              </div>
+
+              {/* Auto-Collapse on Inactivity */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Auto-Collapse on Inactivity</p>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically switch to mini mode after no interaction
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={sidebarPrefs.auto_collapse_enabled}
+                    onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, auto_collapse_enabled: checked})}
+                  />
+                </div>
+                
+                {sidebarPrefs.auto_collapse_enabled && (
+                  <div>
+                    <Label htmlFor="inactivity_timeout">Inactivity Timeout (seconds)</Label>
+                    <Input 
+                      id="inactivity_timeout"
+                      type="number"
+                      min="5"
+                      max="60"
+                      value={sidebarPrefs.inactivity_timeout}
+                      onChange={(e) => setSidebarPrefs({...sidebarPrefs, inactivity_timeout: parseInt(e.target.value) || 10})}
+                      className="mt-2"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Between 5 and 60 seconds</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Context-Aware Mode */}
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <p className="font-medium">Smart Context-Aware Mode</p>
+                  <p className="text-sm text-muted-foreground">
+                    Automatically adjust sidebar based on screen size and page type
+                  </p>
+                </div>
+                <Switch 
+                  checked={sidebarPrefs.context_aware_enabled}
+                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, context_aware_enabled: checked})}
+                />
+              </div>
+
+              {/* Collapse After Navigation */}
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <p className="font-medium">Collapse After Navigation</p>
+                  <p className="text-sm text-muted-foreground">
+                    Automatically switch to mini mode after clicking a menu item
+                  </p>
+                </div>
+                <Switch 
+                  checked={sidebarPrefs.collapse_after_navigation}
+                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, collapse_after_navigation: checked})}
+                />
+              </div>
+
+              {/* Save Button */}
+              <Button onClick={handleSaveSidebarPreferences} disabled={loading} className="w-full">
+                <Save className="h-4 w-4 mr-2" />
+                Save Sidebar Preferences
+              </Button>
+
+              {/* Info Alert */}
+              <Alert className="bg-blue-50 border-blue-200">
+                <Shield className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-900">
+                  <strong>Note:</strong> You may need to refresh the page for some changes to take effect. The manual toggle button in the sidebar will always override these automatic settings.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+
         </TabsContent>
 
         {/* TAB 2: SECURITY & ACCESS */}
