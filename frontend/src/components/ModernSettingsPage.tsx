@@ -740,6 +740,20 @@ const ModernSettingsPage = () => {
                 />
               </div>
 
+              {/* Click Outside to Hide */}
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <p className="font-medium">Click Outside to Hide</p>
+                  <p className="text-sm text-muted-foreground">
+                    Click anywhere on main page to hide sidebar (switches to mini mode)
+                  </p>
+                </div>
+                <Switch 
+                  checked={sidebarPrefs.click_outside_to_hide}
+                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, click_outside_to_hide: checked})}
+                />
+              </div>
+
               {/* Save Button */}
               <Button onClick={handleSaveSidebarPreferences} disabled={loading} className="w-full">
                 <Save className="h-4 w-4 mr-2" />
