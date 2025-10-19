@@ -95,7 +95,7 @@ print_test("Production User Authentication")
 try:
     login_data = {
         "email": "llewellyn@bluedawncapital.co.za",
-        "password": "password123"  # Using common test password
+        "password": "TestPassword123!"  # Using correct production password
     }
     
     response = requests.post(f"{BACKEND_URL}/auth/login", json=login_data)
