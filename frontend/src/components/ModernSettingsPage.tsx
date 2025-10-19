@@ -37,6 +37,16 @@ const ModernSettingsPage = () => {
   const [orgContext, setOrgContext] = useState<any>(null);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
+  // Sidebar Preferences state
+  const [sidebarPrefs, setSidebarPrefs] = useState({
+    default_mode: 'expanded',
+    hover_expand_enabled: true,
+    auto_collapse_enabled: false,
+    inactivity_timeout: 10,
+    context_aware_enabled: true,
+    collapse_after_navigation: false
+  });
+
   // Security state
   const [passwordData, setPasswordData] = useState({ current_password: '', new_password: '', confirm_password: '' });
   const [activeSessions, setActiveSessions] = useState<any[]>([]);
