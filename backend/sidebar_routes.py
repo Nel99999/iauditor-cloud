@@ -62,7 +62,13 @@ async def update_sidebar_preferences(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Update user's sidebar preferences"""
-    user = await get_current_user(request, db)
+    try:
+        logger.info(f"🔍 PUT sidebar preferences called with data: {preferences.dict()}")
+        user = await get_current_user(request, db)
+        logger.info(f"🔍 User retrieved successfully: {user['id']}")
+    except Exception as e:
+        logger.error(f"❌ Error in get_current_user: {str(e)}")
+        raise
     
     # Validate timeout value
     if preferences.inactivity_timeout < 5 or preferences.inactivity_timeout > 60:
