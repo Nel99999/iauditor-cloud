@@ -285,6 +285,10 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
 
   // Cycle sidebar modes: expanded -> collapsed -> mini -> expanded
   const cycleSidebarMode = () => {
+    // Clear any temporary expanded state from hover
+    setTempExpandedMode(null);
+    setIsHovering(false);
+    
     setSidebarMode(current => {
       if (current === 'expanded') return 'collapsed';
       if (current === 'collapsed') return 'mini';
