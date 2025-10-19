@@ -141,6 +141,16 @@ const ModernSettingsPage = () => {
         console.log('Sidebar preferences not available, using defaults');
       }
 
+      // Load organization sidebar settings (Master/Developer only)
+      if (user?.role === 'master' || user?.role === 'developer') {
+        try {
+          const orgSidebarRes = await axios.get(`${API}/organization/sidebar-settings`);
+          setOrgSidebarSettings(orgSidebarRes.data || orgSidebarSettings);
+        } catch (err) {
+          console.log('Organization sidebar settings not available');
+        }
+      }
+
       // Load admin settings (only for Master/Developer)
       if (isDeveloperOrMaster()) {
         try {
