@@ -83,11 +83,11 @@ async def get_checklist_templates(
         show_inactive: If True, includes inactive templates. Default False (active only)
     """
     user = await get_current_user(request, db)
-    # SECURITY: Check permission before allowing creation
+    # SECURITY: Check permission before allowing read access
     from permission_routes import check_permission
-    has_permission = await check_permission(db, user["id"], "checklist", "create", "organization")
+    has_permission = await check_permission(db, user["id"], "checklist", "read", "organization")
     if not has_permission:
-        raise HTTPException(status_code=403, detail="You don't have permission to create checklists")
+        raise HTTPException(status_code=403, detail="You don't have permission to view checklists")
     
     
     if not user.get("organization_id"):
