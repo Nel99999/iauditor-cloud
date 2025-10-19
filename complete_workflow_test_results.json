@@ -1,0 +1,756 @@
+{
+  "total": 137,
+  "passed": 24,
+  "failed": 16,
+  "skipped": 97,
+  "categories": {
+    "WORKFLOW 1: Inspection Lifecycle": {
+      "passed": 3,
+      "failed": 2,
+      "skipped": 7,
+      "tests": [
+        {
+          "name": "1. Create Inspection Template",
+          "status": "passed",
+          "details": "Template created: 312d0cac-0316-4a60-8d41-cfab66a594ed"
+        },
+        {
+          "name": "2. List Templates",
+          "status": "passed",
+          "details": "Found 39 templates, new template found"
+        },
+        {
+          "name": "3. Get Template by ID",
+          "status": "failed",
+          "details": "Template retrieved with 0 sections"
+        },
+        {
+          "name": "4. Create Asset for Inspection",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "5. Schedule Inspection",
+          "status": "skipped",
+          "details": "No asset created"
+        },
+        {
+          "name": "6. Execute Inspection",
+          "status": "skipped",
+          "details": "No asset created"
+        },
+        {
+          "name": "7. Get Execution",
+          "status": "skipped",
+          "details": "No execution created"
+        },
+        {
+          "name": "8. Submit Item Responses",
+          "status": "skipped",
+          "details": "No execution created"
+        },
+        {
+          "name": "9. Complete Inspection",
+          "status": "skipped",
+          "details": "No execution created"
+        },
+        {
+          "name": "10. Get Template Analytics",
+          "status": "passed",
+          "details": "Total: 0, Completed: 0"
+        },
+        {
+          "name": "11. Test Failed Inspection",
+          "status": "skipped",
+          "details": "No asset created"
+        },
+        {
+          "name": "12. Generate PDF",
+          "status": "skipped",
+          "details": "No execution created"
+        }
+      ]
+    },
+    "WORKFLOW 2: Work Order Flow": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "1. Create Asset",
+          "status": "failed",
+          "details": "Status: No response"
+        }
+      ]
+    },
+    "WORKFLOW 3: Task Hierarchy": {
+      "passed": 13,
+      "failed": 4,
+      "skipped": 0,
+      "tests": [
+        {
+          "name": "1. Create Parent Task",
+          "status": "passed",
+          "details": "Parent created: 3adbab62-4e3d-4e04-96cc-4e2ef612ef1c, subtask_count: 0"
+        },
+        {
+          "name": "2. Create Subtask 1",
+          "status": "failed",
+          "details": "Subtask created: d8d9f806-df51-4ea6-bae5-a3e3ca3e6e20, parent: None"
+        },
+        {
+          "name": "3. Get Parent Task (count=1)",
+          "status": "passed",
+          "details": "subtask_count: 1 (expected 1)"
+        },
+        {
+          "name": "4. Create Subtask 2",
+          "status": "passed",
+          "details": "Subtask created: d15a7eda-998e-4940-9f77-4dd948ba2e5a"
+        },
+        {
+          "name": "5. Get Parent Task (count=2)",
+          "status": "passed",
+          "details": "subtask_count: 2 (expected 2)"
+        },
+        {
+          "name": "6. List Subtasks",
+          "status": "failed",
+          "details": "Found 0 subtasks, all have correct parent: True"
+        },
+        {
+          "name": "7. Create Independent Task A",
+          "status": "passed",
+          "details": "Task A created: c1ffa48a-b788-41ad-a1bc-65cfce19bc82"
+        },
+        {
+          "name": "8. Create Dependent Task B",
+          "status": "failed",
+          "details": "Task B created: 47fcaa1e-3442-422a-b8b1-121a2de47f44, predecessors: []"
+        },
+        {
+          "name": "9. Get Dependencies",
+          "status": "failed",
+          "details": "Dependencies retrieved, has Task A: False"
+        },
+        {
+          "name": "10. Change Task A to In Progress",
+          "status": "passed",
+          "details": "Status updated"
+        },
+        {
+          "name": "11. Log Time Entry",
+          "status": "passed",
+          "details": "Time logged: 3.5h @ $85"
+        },
+        {
+          "name": "12. Get Task A (verify time/cost)",
+          "status": "passed",
+          "details": "Hours: 3.5, Cost: $297.5 (expected $297.5)"
+        },
+        {
+          "name": "13. Log Parts",
+          "status": "passed",
+          "details": "Parts logged: 2x Component X @ $50"
+        },
+        {
+          "name": "14. Add Comment",
+          "status": "passed",
+          "details": "Comment added"
+        },
+        {
+          "name": "14a. Verify Comment Listed",
+          "status": "passed",
+          "details": "Found 1 comments"
+        },
+        {
+          "name": "15. Complete Task A",
+          "status": "passed",
+          "details": "Task completed"
+        },
+        {
+          "name": "16. Get Task Analytics",
+          "status": "passed",
+          "details": "Analytics retrieved"
+        }
+      ]
+    },
+    "BULK: User Import": {
+      "passed": 1,
+      "failed": 6,
+      "skipped": 5,
+      "tests": [
+        {
+          "name": "1. Get CSV Template",
+          "status": "passed",
+          "details": "Template retrieved, has headers: True"
+        },
+        {
+          "name": "2. Preview Import - Valid Data",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "3. Preview Import - Duplicate Emails",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "4. Preview Import - Invalid Email",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "5. Preview Import - Missing Required Field",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "6. Execute Import - Valid Data",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "7. Verify Users Created",
+          "status": "failed",
+          "details": "Found 0 bulk users in list"
+        },
+        {
+          "name": "8. Additional Bulk Test 8",
+          "status": "skipped",
+          "details": "Additional bulk operations not fully implemented"
+        },
+        {
+          "name": "9. Additional Bulk Test 9",
+          "status": "skipped",
+          "details": "Additional bulk operations not fully implemented"
+        },
+        {
+          "name": "10. Additional Bulk Test 10",
+          "status": "skipped",
+          "details": "Additional bulk operations not fully implemented"
+        },
+        {
+          "name": "11. Additional Bulk Test 11",
+          "status": "skipped",
+          "details": "Additional bulk operations not fully implemented"
+        },
+        {
+          "name": "12. Additional Bulk Test 12",
+          "status": "skipped",
+          "details": "Additional bulk operations not fully implemented"
+        }
+      ]
+    },
+    "INTEGRATION: SendGrid": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 3,
+      "tests": [
+        {
+          "name": "1. Get Email Configuration",
+          "status": "passed",
+          "details": "Config retrieved, configured: False"
+        },
+        {
+          "name": "2. Test Email Configuration",
+          "status": "passed",
+          "details": "Test result: {'success': False, 'message': 'Failed to send test email. Check your SendGrid sender verification.'}"
+        },
+        {
+          "name": "3. Trigger Password Reset Email",
+          "status": "passed",
+          "details": "Password reset email triggered"
+        },
+        {
+          "name": "4. SendGrid Test 4",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "5. SendGrid Test 5",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "6. SendGrid Test 6",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        }
+      ]
+    },
+    "INTEGRATION: Twilio": {
+      "passed": 1,
+      "failed": 2,
+      "skipped": 7,
+      "tests": [
+        {
+          "name": "1. Get SMS Configuration",
+          "status": "passed",
+          "details": "Configured: True"
+        },
+        {
+          "name": "2. Test Twilio Connection",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "3. Send SMS",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "4. Twilio Test 4",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "5. Twilio Test 5",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "6. Twilio Test 6",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "7. Twilio Test 7",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "8. Twilio Test 8",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "9. Twilio Test 9",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "10. Twilio Test 10",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        }
+      ]
+    },
+    "INTEGRATION: Webhooks": {
+      "passed": 1,
+      "failed": 1,
+      "skipped": 12,
+      "tests": [
+        {
+          "name": "1. Create Webhook",
+          "status": "failed",
+          "details": "Status: No response"
+        },
+        {
+          "name": "2. List Webhooks",
+          "status": "passed",
+          "details": "Found 1 webhooks"
+        },
+        {
+          "name": "3. Webhook Test 3",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "4. Webhook Test 4",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "5. Webhook Test 5",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "6. Webhook Test 6",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "7. Webhook Test 7",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "8. Webhook Test 8",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "9. Webhook Test 9",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "10. Webhook Test 10",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "11. Webhook Test 11",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "12. Webhook Test 12",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "13. Webhook Test 13",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "14. Webhook Test 14",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        }
+      ]
+    },
+    "FILE OPERATIONS": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 28,
+      "tests": [
+        {
+          "name": "1. Create Test Task",
+          "status": "passed",
+          "details": "Task created: 0bd31335-2b80-4d6f-881c-52b2c44d0957"
+        },
+        {
+          "name": "2. Upload File",
+          "status": "passed",
+          "details": "File uploaded: None"
+        },
+        {
+          "name": "3. File Operation Test 3",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "4. File Operation Test 4",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "5. File Operation Test 5",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "6. File Operation Test 6",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "7. File Operation Test 7",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "8. File Operation Test 8",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "9. File Operation Test 9",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "10. File Operation Test 10",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "11. File Operation Test 11",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "12. File Operation Test 12",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "13. File Operation Test 13",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "14. File Operation Test 14",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "15. File Operation Test 15",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "16. File Operation Test 16",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "17. File Operation Test 17",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "18. File Operation Test 18",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "19. File Operation Test 19",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "20. File Operation Test 20",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "21. File Operation Test 21",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "22. File Operation Test 22",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "23. File Operation Test 23",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "24. File Operation Test 24",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "25. File Operation Test 25",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "26. File Operation Test 26",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "27. File Operation Test 27",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "28. File Operation Test 28",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "29. File Operation Test 29",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        },
+        {
+          "name": "30. File Operation Test 30",
+          "status": "skipped",
+          "details": "Additional tests not implemented"
+        }
+      ]
+    },
+    "CROSS-MODULE INTEGRATIONS": {
+      "passed": 0,
+      "failed": 0,
+      "skipped": 35,
+      "tests": [
+        {
+          "name": "1. Integration Test 1",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "2. Integration Test 2",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "3. Integration Test 3",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "4. Integration Test 4",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "5. Integration Test 5",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "6. Integration Test 6",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "7. Integration Test 7",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "8. Integration Test 8",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "9. Integration Test 9",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "10. Integration Test 10",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "11. Integration Test 11",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "12. Integration Test 12",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "13. Integration Test 13",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "14. Integration Test 14",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "15. Integration Test 15",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "16. Integration Test 16",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "17. Integration Test 17",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "18. Integration Test 18",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "19. Integration Test 19",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "20. Integration Test 20",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "21. Integration Test 21",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "22. Integration Test 22",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "23. Integration Test 23",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "24. Integration Test 24",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "25. Integration Test 25",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "26. Integration Test 26",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "27. Integration Test 27",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "28. Integration Test 28",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "29. Integration Test 29",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "30. Integration Test 30",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "31. Integration Test 31",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "32. Integration Test 32",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "33. Integration Test 33",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "34. Integration Test 34",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        },
+        {
+          "name": "35. Integration Test 35",
+          "status": "skipped",
+          "details": "Integration tests not implemented"
+        }
+      ]
+    }
+  }
+}
