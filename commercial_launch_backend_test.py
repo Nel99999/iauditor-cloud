@@ -76,6 +76,7 @@ def make_request(method: str, endpoint: str, **kwargs) -> Tuple[requests.Respons
         headers["Authorization"] = f"Bearer {auth_token}"
     
     kwargs["headers"] = headers
+    kwargs["verify"] = False  # Disable SSL verification for internal testing
     
     start_time = time.time()
     try:
@@ -84,6 +85,7 @@ def make_request(method: str, endpoint: str, **kwargs) -> Tuple[requests.Respons
         return response, response_time
     except Exception as e:
         response_time = (time.time() - start_time) * 1000
+        print(f"    Error: {str(e)}")
         return None, response_time
 
 
