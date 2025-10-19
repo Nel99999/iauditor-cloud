@@ -48,7 +48,7 @@ async def get_sidebar_preferences(
             "hover_expand_enabled": True,
             "auto_collapse_enabled": False,
             "inactivity_timeout": 10,
-            "context_aware_enabled": True,
+            "context_aware_enabled": False,
             "collapse_after_navigation": False
         }
     
