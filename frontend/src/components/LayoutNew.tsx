@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, ReactNode, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 import { useAuth } from '../contexts/AuthContext';
@@ -44,6 +44,10 @@ import {
   AlertOctagon,
   MessageCircle,
   LucideIcon,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import './LayoutNew.css';
