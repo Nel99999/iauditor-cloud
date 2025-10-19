@@ -42,10 +42,10 @@ async def get_sidebar_preferences(
     )
     
     if not prefs or "sidebar_preferences" not in prefs:
-        # Return defaults
+        # Return defaults (will be overridden by org defaults in frontend)
         return {
-            "default_mode": "expanded",
-            "hover_expand_enabled": True,
+            "default_mode": "collapsed",
+            "hover_expand_enabled": False,
             "auto_collapse_enabled": False,
             "inactivity_timeout": 10,
             "context_aware_enabled": False,
