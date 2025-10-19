@@ -25,6 +25,7 @@ class SidebarPreferences(BaseModel):
     inactivity_timeout: int = 10  # Seconds before auto-collapse
     context_aware_enabled: bool = False  # Adjust based on screen size and route
     collapse_after_navigation: bool = False  # Auto-collapse after clicking menu item
+    click_outside_to_hide: bool = False  # Click outside sidebar to hide (mini mode)
 
 
 @router.get("")
