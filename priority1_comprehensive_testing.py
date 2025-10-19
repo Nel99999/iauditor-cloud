@@ -897,8 +897,8 @@ def workflow5_user_onboarding_approval(dev_token: str):
     print("WORKFLOW 5: USER ONBOARDING & APPROVAL")
     print("="*80)
     
-    # Step 1: Register New User
-    print("\n--- Step 1: Register New User ---")
+    # Step 1: Register New User (creates new organization)
+    print("\n--- Step 1: Register New User (New Organization) ---")
     timestamp = int(time.time())
     new_user_email = f"onboarding_test_{timestamp}@example.com"
     new_user_password = "Test@1234"
@@ -907,8 +907,7 @@ def workflow5_user_onboarding_approval(dev_token: str):
         "email": new_user_email,
         "password": new_user_password,
         "name": "Onboarding Test User",
-        "create_organization": False,
-        "organization_id": ORGANIZATION_ID
+        "organization_name": f"Test Org {timestamp}"
     }
     
     success, response, status = make_request(
