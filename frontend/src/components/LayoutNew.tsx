@@ -130,12 +130,15 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   // Load user sidebar preferences from backend
   useEffect(() => {
     const loadPreferences = async () => {
+      if (!user) return;
+      
       try {
         const response = await fetch(`${BACKEND_URL}/api/users/sidebar-preferences`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
+        
         if (response.ok) {
           const prefs = await response.json();
           setSidebarPreferences(prefs);
@@ -146,15 +149,24 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           } else {
             setSidebarMode(prefs.default_mode as 'expanded' | 'collapsed' | 'mini');
           }
+        } else if (response.status === 401) {
+          // Auth not ready yet, use defaults silently
+          console.log('Sidebar preferences will load after authentication completes');
+        } else {
+          console.log('Using default sidebar preferences');
         }
       } catch (error) {
-        console.log('Could not load sidebar preferences, using defaults');
+        // Network error or other issue, use defaults silently
+        console.log('Using default sidebar preferences');
       }
     };
     
-    if (user) {
+    // Add delay to ensure auth is ready
+    const timer = setTimeout(() => {
       loadPreferences();
-    }
+    }, 500);
+    
+    return () => clearTimeout(timer);
   }, [user]);
 
   // Detect touch device
