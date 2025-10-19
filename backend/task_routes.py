@@ -47,8 +47,14 @@ async def create_task(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Create a new task"""
+    """Create a new task (requires task.create.organization permission)"""
     user = await get_current_user(request, db)
+    
+    # SECURITY: Check permission before allowing creation
+    from permission_routes import check_permission
+    has_permission = await check_permission(db, user["id"], "task", "create", "organization")
+    if not has_permission:
+        raise HTTPException(status_code=403, detail="You don't have permission to create tasks")
     
     # Sanitize user inputs to prevent XSS
     task_dict = task_data.model_dump()
