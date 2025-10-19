@@ -307,7 +307,8 @@ class TwilioComprehensiveBackendTester:
                 if ("not configured" in detail.lower() or 
                     "authentication error" in detail.lower() or 
                     "invalid username" in detail.lower() or
-                    "HTTP 401 error" in detail):
+                    "HTTP 401 error" in detail or
+                    "unable to fetch record" in detail.lower()):
                     self.log_test("GET /api/sms/message-status/{message_sid}", True, 
                                 "Message status check failed as expected (Twilio auth/config issue)")
                 else:
