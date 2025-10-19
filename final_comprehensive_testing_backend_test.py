@@ -194,8 +194,10 @@ class ComprehensiveEndpointTester:
         print("\n🎯 PHASE 4: ASSET CREATION TESTING")
         
         # Test 8: POST /api/assets
+        import time
+        unique_id = str(int(time.time()))
         asset_data = {
-            "asset_tag": "TEST-001",
+            "asset_tag": f"TEST-{unique_id}",
             "name": "Test Asset"
         }
         self.test_endpoint(
