@@ -49,7 +49,8 @@ async def get_organization_sidebar_settings(
             "auto_collapse_enabled": False,
             "inactivity_timeout": 10,
             "context_aware_enabled": False,
-            "collapse_after_navigation": False
+            "collapse_after_navigation": False,
+            "click_outside_to_hide": False
         }
     
     return org_settings.get("sidebar_settings", {})
