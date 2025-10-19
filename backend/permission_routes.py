@@ -115,14 +115,21 @@ async def check_permission(
         "own": ["all", "own"]
     }
     
-    permission_found = False
     permission_id_to_check = None
+    role_has_permission = False
     
     if permission:
+        # Found exact match, check if role has it
         permission_id_to_check = permission["id"]
-        permission_found = True
-    else:
-        # Try to find permission with broader or equivalent scopes
+        role_perm = await db.role_permissions.find_one({
+            "role_id": role_id,
+            "permission_id": permission_id_to_check,
+            "granted": True
+        })
+        role_has_permission = (role_perm is not None)
+    
+    # If exact match not granted, try scope hierarchy
+    if not role_has_permission:
         allowed_scopes = scope_hierarchy.get(scope, [scope])
         for check_scope in allowed_scopes:
             permission = await db.permissions.find_one({
@@ -131,7 +138,6 @@ async def check_permission(
                 "scope": check_scope
             })
             if permission:
-                permission_id_to_check = permission["id"]
                 # Check if role has THIS permission
                 role_perm = await db.role_permissions.find_one({
                     "role_id": role_id,
@@ -139,22 +145,10 @@ async def check_permission(
                     "granted": True
                 })
                 if role_perm:
-                    permission_found = True
+                    role_has_permission = True
                     break
     
-    if not permission_found or not permission_id_to_check:
-        result = False
-    else:
-        # Check role has this permission (if not already checked above)
-        if not permission_found:
-            role_perm = await db.role_permissions.find_one({
-                "role_id": role_id,
-                "permission_id": permission_id_to_check,
-                "granted": True
-            })
-            result = role_perm is not None
-        else:
-            result = True
+    result = role_has_permission
     
     # Cache result
     permission_cache[key] = (result, datetime.now(timezone.utc).timestamp())
