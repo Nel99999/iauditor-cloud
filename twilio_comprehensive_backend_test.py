@@ -121,7 +121,7 @@ class TwilioComprehensiveBackendTester:
         
         # Test 2: POST /api/sms/settings - Save mock Twilio configuration
         mock_settings = {
-            "account_sid": "ACtest123",
+            "account_sid": "ACtest123456789012345",  # Long enough to trigger masking (>14 chars)
             "auth_token": "test_token",
             "phone_number": "+1234567890",
             "whatsapp_number": "+1234567890"
