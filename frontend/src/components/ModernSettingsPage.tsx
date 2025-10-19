@@ -378,6 +378,26 @@ const ModernSettingsPage = () => {
     }
   };
 
+  const handleSaveOrgSidebarSettings = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/organization/sidebar-settings`, orgSidebarSettings);
+      toast({
+        title: 'Success',
+        description: 'Organization sidebar settings updated! All users will see these defaults.',
+      });
+      loadData(); // Reload to confirm
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.response?.data?.detail || 'Failed to update organization settings',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleExportData = async () => {
     try {
       const response = await axios.get(`${API}/gdpr/export-data`);
