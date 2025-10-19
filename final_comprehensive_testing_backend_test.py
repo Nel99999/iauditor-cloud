@@ -259,7 +259,11 @@ class ComprehensiveEndpointTester:
         
         # Test 12: POST /api/contractors
         contractor_data = {
-            "name": "Test Contractor"
+            "name": "Test Contractor",
+            "company_name": "Test Contractor Company",
+            "contact_person": "John Doe",
+            "email": "john@testcontractor.com",
+            "phone": "+1234567890"
         }
         self.test_endpoint(
             "POST", "/contractors",
