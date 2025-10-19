@@ -214,3 +214,48 @@ async def get_dashboard_stats(
         checklists=checklist_stats,
         organization=org_stats
     )
+
+
+
+@router.get("/financial")
+async def get_financial_dashboard(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get financial dashboard metrics"""
+    user = await get_current_user(request, db)
+    
+    transactions = await db.financial_transactions.find(
+        {"organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    total_revenue = sum(t.get("amount", 0) for t in transactions if t.get("transaction_type") == "income")
+    total_expenses = sum(t.get("amount", 0) for t in transactions if t.get("transaction_type") == "expense")
+    net_income = total_revenue - total_expenses
+    
+    # This month
+    from datetime import datetime, timezone
+    month_start = datetime.now(timezone.utc).replace(day=1).isoformat()
+    month_transactions = [t for t in transactions if t.get("created_at", "") >= month_start]
+    month_revenue = sum(t.get("amount", 0) for t in month_transactions if t.get("transaction_type") == "income")
+    month_expenses = sum(t.get("amount", 0) for t in month_transactions if t.get("transaction_type") == "expense")
+    
+    # By category
+    by_category = {}
+    for t in transactions:
+        category = t.get("category", "uncategorized")
+        amount = t.get("amount", 0)
+        if category not in by_category:
+            by_category[category] = 0
+        by_category[category] += amount
+    
+    return {
+        "total_revenue": round(total_revenue, 2),
+        "total_expenses": round(total_expenses, 2),
+        "net_income": round(net_income, 2),
+        "month_revenue": round(month_revenue, 2),
+        "month_expenses": round(month_expenses, 2),
+        "by_category": by_category,
+        "transaction_count": len(transactions)
+    }
