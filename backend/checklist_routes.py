@@ -868,4 +868,87 @@ async def approve_checklist(
     )
     
     updated = await db.checklist_executions.find_one({"id": execution_id}, {"_id": 0})
+    
+    return updated
+
+
+@router.get("/scheduled")
+async def get_scheduled_checklists(
+    request: Request,
+    days_ahead: int = 7,
+    shift: Optional[str] = None,
+    unit_id: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get scheduled checklists for the next N days"""
+    user = await get_current_user(request, db)
+    
+    # Calculate date range
+    today = datetime.now(timezone.utc).date()
+    end_date = today + timedelta(days=days_ahead)
+    
+    # Build query
+    query = {
+        "organization_id": user["organization_id"],
+        "scheduled_date": {
+            "$gte": today.isoformat(),
+            "$lte": end_date.isoformat()
+        }
+    }
+    
+    if shift:
+        query["shift"] = shift
+    
+    if unit_id:
+        query["unit_id"] = unit_id
+    
+    # Get scheduled executions
+    scheduled = await db.checklist_executions.find(
+        query,
+        {"_id": 0}
+    ).sort("scheduled_date", 1).to_list(100)
+    
+    return {
+        "scheduled_checklists": scheduled,
+        "date_range": {
+            "start": today.isoformat(),
+            "end": end_date.isoformat(),
+            "days_ahead": days_ahead
+        },
+        "total_count": len(scheduled),
+        "shift_filter": shift
+    }
+
+
+@router.get("/pending-approvals")
+async def get_pending_checklist_approvals(
+    request: Request,
+    unit_id: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get checklists pending supervisor approval"""
+    user = await get_current_user(request, db)
+    
+    # Build query
+    query = {
+        "organization_id": user["organization_id"],
+        "status": "completed",
+        "requires_supervisor_approval": True,
+        "approved_by": {"$exists": False}
+    }
+    
+    if unit_id:
+        query["unit_id"] = unit_id
+    
+    # Get pending checklists
+    pending = await db.checklist_executions.find(
+        query,
+        {"_id": 0}
+    ).sort("completed_at", -1).to_list(100)
+    
+    return {
+        "pending_approvals": pending,
+        "total_count": len(pending)
+    }
+
     return updated
