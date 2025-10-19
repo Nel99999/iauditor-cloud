@@ -39,6 +39,15 @@ test_data = {
 }
 
 
+# Test user credentials (created via create_test_users.py)
+TEST_USERS = {
+    "master": {"email": "master_test_1760884598@example.com", "password": "Test@1234"},
+    "admin": {"email": "admin_test_1760884598@example.com", "password": "Test@1234"},
+    "manager": {"email": "manager_test_1760884598@example.com", "password": "Test@1234"},
+    "viewer": {"email": "viewer_test_1760884598@example.com", "password": "Test@1234"}
+}
+
+
 def log_test(test_name: str, passed: bool, details: str = ""):
     """Log test result"""
     test_results["total"] += 1
