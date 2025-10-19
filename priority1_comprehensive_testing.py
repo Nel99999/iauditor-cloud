@@ -111,113 +111,37 @@ def authenticate_developer():
 
 
 def create_test_users(dev_token: str):
-    """PART 1: Create test users with different roles via MongoDB"""
+    """PART 1: Login test users with different roles"""
     print("\n" + "="*80)
-    print("PART 1: CREATING TEST USERS FOR MULTI-ROLE TESTING")
+    print("PART 1: AUTHENTICATING TEST USERS FOR MULTI-ROLE TESTING")
     print("="*80)
-    print("Note: Creating users directly via MongoDB for testing purposes")
+    print("Note: Test users already created via MongoDB")
     
-    import subprocess
-    import bcrypt
-    
-    timestamp = int(time.time())
-    
-    # Define test users
-    users_to_create = [
-        {
-            "role_name": "master",
-            "email": f"master_test_{timestamp}@example.com",
-            "name": "Master Test User",
-            "password": "Test@1234"
-        },
-        {
-            "role_name": "admin",
-            "email": f"admin_test_{timestamp}@example.com",
-            "name": "Admin Test User",
-            "password": "Test@1234"
-        },
-        {
-            "role_name": "manager",
-            "email": f"manager_test_{timestamp}@example.com",
-            "name": "Manager Test User",
-            "password": "Test@1234"
-        },
-        {
-            "role_name": "viewer",
-            "email": f"viewer_test_{timestamp}@example.com",
-            "name": "Viewer Test User",
-            "password": "Test@1234"
-        }
-    ]
-    
-    for user_info in users_to_create:
-        print(f"\n--- Creating {user_info['role_name'].upper()} role test user ---")
+    for role_name, credentials in TEST_USERS.items():
+        print(f"\n--- Authenticating {role_name.upper()} role test user ---")
         
-        # Generate user ID
-        user_id = str(uuid.uuid4())
-        
-        # Hash password
-        password_hash = bcrypt.hashpw(user_info["password"].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        
-        # Create user document
-        now = datetime.now(timezone.utc).isoformat()
-        user_doc = {
-            "id": user_id,
-            "email": user_info["email"],
-            "name": user_info["name"],
-            "password_hash": password_hash,
-            "auth_provider": "local",
-            "organization_id": ORGANIZATION_ID,
-            "role": user_info["role_name"],
-            "approval_status": "approved",
-            "is_active": True,
-            "invited": False,
-            "created_at": now,
-            "updated_at": now,
-            "last_login": None,
-            "failed_login_attempts": 0,
-            "account_locked_until": None
+        login_data = {
+            "email": credentials["email"],
+            "password": credentials["password"]
         }
         
-        # Insert via MongoDB
-        import json
-        user_json = json.dumps(user_doc).replace("'", "\\'")
-        cmd = f"mongosh mongodb://localhost:27017/operational_platform --quiet --eval \"db.users.insertOne({user_json})\""
+        success, response, status = make_request(
+            "POST", "/auth/login",
+            data=login_data
+        )
         
-        try:
-            result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=5)
-            if result.returncode == 0:
-                test_data["users"][user_info["role_name"]] = {
-                    "id": user_id,
-                    "email": user_info["email"],
-                    "password": user_info["password"]
-                }
-                log_test(f"Create {user_info['role_name']} user via MongoDB", True, 
-                        f"User ID: {user_id}, Email: {user_info['email']}")
-                
-                # Verify login
-                login_data = {
-                    "email": user_info["email"],
-                    "password": user_info["password"]
-                }
-                success, response, status = make_request(
-                    "POST", "/auth/login",
-                    data=login_data
-                )
-                
-                if success and "access_token" in response:
-                    test_data["tokens"][user_info["role_name"]] = response["access_token"]
-                    log_test(f"Login {user_info['role_name']} user", True, 
-                            f"Token obtained for {user_info['email']}")
-                else:
-                    log_test(f"Login {user_info['role_name']} user", False, 
-                            f"Status: {status}, Response: {response}")
-            else:
-                log_test(f"Create {user_info['role_name']} user via MongoDB", False, 
-                        f"MongoDB error: {result.stderr}")
-        except Exception as e:
-            log_test(f"Create {user_info['role_name']} user via MongoDB", False, 
-                    f"Exception: {str(e)}")
+        if success and "access_token" in response:
+            test_data["tokens"][role_name] = response["access_token"]
+            test_data["users"][role_name] = {
+                "id": response.get("user", {}).get("id"),
+                "email": credentials["email"],
+                "password": credentials["password"]
+            }
+            log_test(f"Login {role_name} user", True, 
+                    f"Token obtained for {credentials['email']}")
+        else:
+            log_test(f"Login {role_name} user", False, 
+                    f"Status: {status}, Response: {response}")
 
 
 def workflow1_inspection_lifecycle(manager_token: str):
