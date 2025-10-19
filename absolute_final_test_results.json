@@ -1,0 +1,995 @@
+{
+  "part1_workflows": {
+    "passed": 9,
+    "failed": 10,
+    "tests": [
+      {
+        "name": "1.1 Create inspection template",
+        "passed": true,
+        "details": "Template ID: ba721712-4eda-4bdd-8fc9-c689b4cfe83f"
+      },
+      {
+        "name": "1.2 Template sections preserved",
+        "passed": false,
+        "details": "Expected 2 sections, got 0"
+      },
+      {
+        "name": "1.3 Create inspection execution",
+        "passed": true,
+        "details": "Execution ID: cb67c79e-4006-4297-93c7-7b9cc5bb2db3"
+      },
+      {
+        "name": "1.4 Submit inspection responses",
+        "passed": false,
+        "details": "Status: 404"
+      },
+      {
+        "name": "1.5 Complete inspection",
+        "passed": false,
+        "details": "Status: 422"
+      },
+      {
+        "name": "1.6 Verify inspection analytics",
+        "passed": true,
+        "details": "Total: 0"
+      },
+      {
+        "name": "1.7 Create asset",
+        "passed": false,
+        "details": "Status: 422, Response: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"asset_tag\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Test Asset 2f9587c6\",\"asset_type\":\"Equipment\",\"status\":\"operational\",\"location\":\"Warehouse A\"},\"url\":\"https://errors.pydantic.dev/2.11/v/missing\"}]}"
+      },
+      {
+        "name": "1.14 Create dependency task",
+        "passed": true,
+        "details": "Task ID: 10e44afa-09f8-47c7-b76c-9b400ba262dd"
+      },
+      {
+        "name": "1.15 Create parent task with dependencies",
+        "passed": true,
+        "details": "Task ID: 2695c2f2-2659-48b1-932b-64c53a4ef7de"
+      },
+      {
+        "name": "1.16 Verify dependencies saved",
+        "passed": true,
+        "details": "1 dependency found"
+      },
+      {
+        "name": "1.17 Create subtask 1",
+        "passed": false,
+        "details": "Status: 200"
+      },
+      {
+        "name": "1.18 Create subtask 2",
+        "passed": false,
+        "details": "Status: 200"
+      },
+      {
+        "name": "1.19 Verify subtask_count incremented",
+        "passed": true,
+        "details": "Count: 2"
+      },
+      {
+        "name": "1.20 Verify subtask parent_task_id set",
+        "passed": false,
+        "details": "Status: 404"
+      },
+      {
+        "name": "1.21 List subtasks",
+        "passed": true,
+        "details": "2 subtasks returned"
+      },
+      {
+        "name": "1.22 Log time on parent task",
+        "passed": false,
+        "details": "Status: 404"
+      },
+      {
+        "name": "1.23 Add comment to task",
+        "passed": false,
+        "details": "Status: 422"
+      },
+      {
+        "name": "1.24 Complete subtask 1",
+        "passed": false,
+        "details": "Status: 404"
+      },
+      {
+        "name": "1.25 Complete parent task",
+        "passed": true,
+        "details": ""
+      }
+    ]
+  },
+  "part2_bulk": {
+    "passed": 1,
+    "failed": 19,
+    "tests": [
+      {
+        "name": "2.1 Get bulk user import template",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "2.2 Bulk user import preview",
+        "passed": false,
+        "details": "Status: 404"
+      },
+      {
+        "name": "2.3 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.4 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.5 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.6 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.7 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.8 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.9 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.10 Bulk operation test",
+        "passed": false,
+        "details": "Skipped - known timeout issue"
+      },
+      {
+        "name": "2.11 Bulk invitations",
+        "passed": false,
+        "details": "Status: 405"
+      },
+      {
+        "name": "2.12 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.13 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.14 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.15 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.16 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.17 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.18 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.19 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "2.20 Bulk operation test",
+        "passed": false,
+        "details": "Not implemented"
+      }
+    ]
+  },
+  "part3_files": {
+    "passed": 2,
+    "failed": 23,
+    "tests": [
+      {
+        "name": "3.1 Create task for attachments",
+        "passed": true,
+        "details": "Task ID: 3f12f44e-664e-4683-a75c-2d56c51a100d"
+      },
+      {
+        "name": "3.2 Upload attachment",
+        "passed": false,
+        "details": "Status: 405"
+      },
+      {
+        "name": "3.3 List attachments",
+        "passed": true,
+        "details": "0 attachments"
+      },
+      {
+        "name": "3.4 Download attachment",
+        "passed": false,
+        "details": "No attachment ID"
+      },
+      {
+        "name": "3.5 Delete attachment",
+        "passed": false,
+        "details": "No attachment ID"
+      },
+      {
+        "name": "3.6 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.7 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.8 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.9 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.10 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.11 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.12 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.13 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.14 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.15 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.16 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.17 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.18 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.19 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.20 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.21 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.22 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.23 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.24 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "3.25 File operation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      }
+    ]
+  },
+  "part4_integrations": {
+    "passed": 5,
+    "failed": 20,
+    "tests": [
+      {
+        "name": "4.1 SendGrid - Get config",
+        "passed": true,
+        "details": "Configured: None"
+      },
+      {
+        "name": "4.2 SendGrid - Test connection",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "4.3 Twilio - Get config",
+        "passed": true,
+        "details": "Configured: True"
+      },
+      {
+        "name": "4.4 Twilio - Test connection",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "4.5 Webhooks - List",
+        "passed": true,
+        "details": "1 webhooks"
+      },
+      {
+        "name": "4.6 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.7 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.8 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.9 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.10 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.11 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.12 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.13 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.14 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.15 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.16 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.17 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.18 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.19 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.20 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.21 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.22 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.23 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.24 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "4.25 Integration test",
+        "passed": false,
+        "details": "Not fully implemented"
+      }
+    ]
+  },
+  "part5_cross_module": {
+    "passed": 2,
+    "failed": 28,
+    "tests": [
+      {
+        "name": "5.1 Failed inspection \u2192 WO creation",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.2 WO completion \u2192 Asset history",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.3 Task time \u2192 actual_hours update",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.4 Subtask \u2192 parent count update",
+        "passed": true,
+        "details": "Verified in Part 1"
+      },
+      {
+        "name": "5.5 Task dependency \u2192 predecessor tracking",
+        "passed": true,
+        "details": "Verified in Part 1"
+      },
+      {
+        "name": "5.6 Comment \u2192 Audit log",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.7 Attachment \u2192 Audit log",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.8 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.9 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.10 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.11 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.12 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.13 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.14 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.15 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.16 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.17 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.18 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.19 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.20 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.21 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.22 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.23 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.24 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.25 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.26 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.27 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.28 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.29 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "5.30 Cross-module integration",
+        "passed": false,
+        "details": "Not implemented"
+      }
+    ]
+  },
+  "part6_analytics": {
+    "passed": 4,
+    "failed": 16,
+    "tests": [
+      {
+        "name": "6.1 Inspection analytics",
+        "passed": true,
+        "details": "Total: 0"
+      },
+      {
+        "name": "6.2 Checklist analytics",
+        "passed": true,
+        "details": "Total: 0"
+      },
+      {
+        "name": "6.3 Task analytics",
+        "passed": true,
+        "details": "Total: 98"
+      },
+      {
+        "name": "6.4 Dashboard stats",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "6.5 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.6 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.7 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.8 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.9 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.10 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.11 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.12 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.13 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.14 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.15 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.16 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.17 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.18 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.19 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "6.20 Analytics test",
+        "passed": false,
+        "details": "Not fully implemented"
+      }
+    ]
+  },
+  "part7_security": {
+    "passed": 4,
+    "failed": 26,
+    "tests": [
+      {
+        "name": "7.1 User permissions loaded",
+        "passed": true,
+        "details": "0 permissions"
+      },
+      {
+        "name": "7.2 Developer role - User management access",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "7.3 Developer role - Org management access",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "7.4 Developer role - Settings access",
+        "passed": true,
+        "details": ""
+      },
+      {
+        "name": "7.5 Cross-org access prevention",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "7.6 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.7 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.8 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.9 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.10 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.11 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.12 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.13 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.14 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.15 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.16 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.17 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.18 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.19 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.20 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.21 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.22 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.23 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.24 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.25 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.26 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.27 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.28 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.29 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "7.30 Security/RBAC test",
+        "passed": false,
+        "details": "Not fully implemented"
+      }
+    ]
+  },
+  "part8_validation": {
+    "passed": 2,
+    "failed": 18,
+    "tests": [
+      {
+        "name": "8.1 Required field validation",
+        "passed": true,
+        "details": "422 returned"
+      },
+      {
+        "name": "8.2 Invalid email format validation",
+        "passed": true,
+        "details": "422 returned"
+      },
+      {
+        "name": "8.3 Duplicate prevention",
+        "passed": false,
+        "details": "Not implemented"
+      },
+      {
+        "name": "8.4 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.5 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.6 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.7 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.8 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.9 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.10 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.11 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.12 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.13 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.14 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.15 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.16 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.17 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.18 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.19 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      },
+      {
+        "name": "8.20 Validation test",
+        "passed": false,
+        "details": "Not fully implemented"
+      }
+    ]
+  }
+}
