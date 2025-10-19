@@ -12,7 +12,7 @@ import uuid
 import time
 
 # Configuration
-BACKEND_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://backendhealer.preview.emergentagent.com/api"
 
 class BackendTester:
     def __init__(self):

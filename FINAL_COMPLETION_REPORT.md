@@ -9,7 +9,7 @@ After honest review and completing outstanding items, here's the **verified, wor
 ## 🎉 COMPLETED & VERIFIED
 
 ### 1. Component Demo Page ✅ **WORKING**
-**URL:** https://dynamic-sidebar-1.preview.emergentagent.com/demo
+**URL:** https://backendhealer.preview.emergentagent.com/demo
 
 **What's Working:**
 - ✅ Beautiful gradient background with glassmorphism
@@ -99,7 +99,7 @@ All 8 documentation files created:
 
 ### 1. Demo Page (READY NOW) ✅
 ```
-URL: https://dynamic-sidebar-1.preview.emergentagent.com/demo
+URL: https://backendhealer.preview.emergentagent.com/demo
 ```
 **Try it:**
 - Click "Open Peek Sheet" - see 25% height bottom sheet
@@ -264,7 +264,7 @@ Everything essential is working:
 
 ## 📋 QUICK LINKS
 
-- **Demo:** https://dynamic-sidebar-1.preview.emergentagent.com/demo
+- **Demo:** https://backendhealer.preview.emergentagent.com/demo
 - **Documentation:** `/app/*.md` files
 - **Components:** `/app/frontend/src/design-system/components/`
 - **Stories:** `/app/frontend/src/design-system/components/*.stories.jsx`

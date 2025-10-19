@@ -9,7 +9,7 @@ Based on testing across iPhone SE, iPhone 13, Pixel 5, and iPad, here's where yo
 ## 🎯 1. WHERE TO SEE MOBILE FEATURES NOW
 
 ### **Option 1: Demo Page (Best for Testing)** ⭐ RECOMMENDED
-**URL:** https://dynamic-sidebar-1.preview.emergentagent.com/demo
+**URL:** https://backendhealer.preview.emergentagent.com/demo
 
 **What You'll See:**
 - ✅ **Bottom Sheets** - Tap buttons to see 3 snap points (25%, 50%, 90%)
@@ -27,7 +27,7 @@ Based on testing across iPhone SE, iPhone 13, Pixel 5, and iPad, here's where yo
 - iPad (768x1024) ✅
 
 ### **Option 2: Main App (Requires Login)**
-**URL:** https://dynamic-sidebar-1.preview.emergentagent.com/
+**URL:** https://backendhealer.preview.emergentagent.com/
 
 **Mobile Features in App:**
 - ✅ **Adaptive Navigation** - Bottom nav on mobile (< 600px)
@@ -169,7 +169,7 @@ button {
 ## 🧪 3. HOW TO TEST MOBILE FEATURES
 
 ### **Method 1: Browser DevTools** (Easiest)
-1. Open https://dynamic-sidebar-1.preview.emergentagent.com/demo
+1. Open https://backendhealer.preview.emergentagent.com/demo
 2. Press F12 (open DevTools)
 3. Click device toggle icon (or Ctrl+Shift+M)
 4. Select device: iPhone 13, Pixel 5, iPad
@@ -182,7 +182,7 @@ button {
 
 ### **Method 2: Real Device** (Best)
 1. Open demo on your phone/tablet
-2. URL: https://dynamic-sidebar-1.preview.emergentagent.com/demo
+2. URL: https://backendhealer.preview.emergentagent.com/demo
 3. Try all interactions:
    - Tap bottom sheet buttons
    - Swipe down to close
@@ -292,7 +292,7 @@ button {
 
 1. **Open Demo Page:**
    ```
-   https://dynamic-sidebar-1.preview.emergentagent.com/demo
+   https://backendhealer.preview.emergentagent.com/demo
    ```
 
 2. **Open DevTools:** Press F12
@@ -334,8 +334,8 @@ These still use old layout (not mobile-optimized):
 ## 🎉 SUMMARY
 
 ### **Where Mobile Features Are:**
-✅ **Demo Page:** https://dynamic-sidebar-1.preview.emergentagent.com/demo
-✅ **Main App:** https://dynamic-sidebar-1.preview.emergentagent.com/
+✅ **Demo Page:** https://backendhealer.preview.emergentagent.com/demo
+✅ **Main App:** https://backendhealer.preview.emergentagent.com/
 ✅ **TasksPageNew:** /tasks (requires login)
 ✅ **All *PageNew components:** Mobile-optimized layouts
 
@@ -352,7 +352,7 @@ These still use old layout (not mobile-optimized):
 ### **Best Way to See It:**
 👉 **Visit the demo page on your phone or in DevTools mobile view!**
 
-URL: https://dynamic-sidebar-1.preview.emergentagent.com/demo
+URL: https://backendhealer.preview.emergentagent.com/demo
 
 ---
 

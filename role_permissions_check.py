@@ -6,7 +6,7 @@ Check role permissions in database
 import requests
 import json
 
-BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
 
 def login(email, password):
     """Login and get token"""

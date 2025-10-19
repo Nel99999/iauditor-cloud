@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 🏆 ABSOLUTE FINAL COMPREHENSIVE TESTING - COMMERCIAL LAUNCH CERTIFICATION
-Backend URL: https://dynamic-sidebar-1.preview.emergentagent.com/api
+Backend URL: https://backendhealer.preview.emergentagent.com/api
 
 TEST SUITE: 200+ COMPREHENSIVE TESTS
 - RBAC all roles validation (50 tests)
@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 # Backend URL
-BACKEND_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://backendhealer.preview.emergentagent.com/api"
 
 class Colors:
     GREEN = '\033[92m'

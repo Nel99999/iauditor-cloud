@@ -11,7 +11,7 @@ from datetime import datetime
 import uuid
 
 # Configuration
-BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
 EMAIL = "llewellyn@bluedawncapital.co.za"
 PASSWORD = "Test@1234"
 

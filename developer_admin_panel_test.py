@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 
 # Configuration
-BACKEND_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://backendhealer.preview.emergentagent.com/api"
 PROD_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
 PROD_USER_PASSWORD = "TestPassword123!"  # Production password
 

@@ -16,7 +16,7 @@ import time
 from datetime import datetime
 import uuid
 
-BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
 
 class ProtocolTester:
     def __init__(self):

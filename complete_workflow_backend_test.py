@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Tuple
 
 # Configuration
-BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
 CREDENTIALS = {
     "developer": {"email": "llewellyn@bluedawncapital.co.za", "password": "Test@1234"},
     "manager": {"email": "manager_test_1760884598@example.com", "password": "Test@1234"},

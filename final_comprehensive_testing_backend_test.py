@@ -13,7 +13,7 @@ import sys
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
+BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
 TEST_USER_PASSWORD = "TestPassword123!"
 
