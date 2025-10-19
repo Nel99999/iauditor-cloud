@@ -670,6 +670,9 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
             }}
             exit={{ x: -280 }}
             transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleUserInteraction}
           >
             <GlassCard className="sidebar-card" padding="none">
               {/* Logo/Brand */}
