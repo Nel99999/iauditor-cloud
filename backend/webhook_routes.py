@@ -197,7 +197,7 @@ async def get_available_events():
     }
 
 
-@router.post("", response_model=Webhook)
+@router.post("", response_model=Webhook, status_code=status.HTTP_201_CREATED)
 async def create_webhook(
     webhook_data: WebhookCreate,
     request: Request,
