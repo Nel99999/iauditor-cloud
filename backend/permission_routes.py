@@ -99,24 +99,62 @@ async def check_permission(
     if not role_id:
         return False
     
-    # Find permission
+    # Find permission - check for exact match first
     permission = await db.permissions.find_one({
         "resource_type": resource_type,
         "action": action,
         "scope": scope
     })
     
-    if not permission:
-        return False
+    # If not found and requesting broader scope, check if user has narrower scopes
+    # Scope hierarchy: all > organization > team > own
+    scope_hierarchy = {
+        "all": ["all"],
+        "organization": ["all", "organization", "team", "own"],
+        "team": ["all", "team", "own"],
+        "own": ["all", "own"]
+    }
     
-    # Check role has this permission
-    role_perm = await db.role_permissions.find_one({
-        "role_id": role_id,
-        "permission_id": permission["id"],
-        "granted": True
-    })
+    permission_found = False
+    permission_id_to_check = None
     
-    result = role_perm is not None
+    if permission:
+        permission_id_to_check = permission["id"]
+        permission_found = True
+    else:
+        # Try to find permission with broader or equivalent scopes
+        allowed_scopes = scope_hierarchy.get(scope, [scope])
+        for check_scope in allowed_scopes:
+            permission = await db.permissions.find_one({
+                "resource_type": resource_type,
+                "action": action,
+                "scope": check_scope
+            })
+            if permission:
+                permission_id_to_check = permission["id"]
+                # Check if role has THIS permission
+                role_perm = await db.role_permissions.find_one({
+                    "role_id": role_id,
+                    "permission_id": permission["id"],
+                    "granted": True
+                })
+                if role_perm:
+                    permission_found = True
+                    break
+    
+    if not permission_found or not permission_id_to_check:
+        result = False
+    else:
+        # Check role has this permission (if not already checked above)
+        if not permission_found:
+            role_perm = await db.role_permissions.find_one({
+                "role_id": role_id,
+                "permission_id": permission_id_to_check,
+                "granted": True
+            })
+            result = role_perm is not None
+        else:
+            result = True
     
     # Cache result
     permission_cache[key] = (result, datetime.now(timezone.utc).timestamp())
