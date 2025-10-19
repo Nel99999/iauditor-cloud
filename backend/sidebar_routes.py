@@ -19,11 +19,11 @@ def get_db(request: Request) -> AsyncIOMotorDatabase:
 
 
 class SidebarPreferences(BaseModel):
-    default_mode: str = "expanded"  # expanded, collapsed, mini
-    hover_expand_enabled: bool = True  # Desktop only: expand on hover
+    default_mode: str = "collapsed"  # expanded, collapsed, mini
+    hover_expand_enabled: bool = False  # Desktop only: expand on hover
     auto_collapse_enabled: bool = False  # Auto-collapse after inactivity
     inactivity_timeout: int = 10  # Seconds before auto-collapse
-    context_aware_enabled: bool = False  # Adjust based on screen size and route (disabled by default)
+    context_aware_enabled: bool = False  # Adjust based on screen size and route
     collapse_after_navigation: bool = False  # Auto-collapse after clicking menu item
 
 
