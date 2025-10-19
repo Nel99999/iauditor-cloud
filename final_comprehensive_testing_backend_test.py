@@ -225,15 +225,20 @@ class ComprehensiveEndpointTester:
         """PHASE 6: Training Creation (was 422)"""
         print("\n🎯 PHASE 6: TRAINING CREATION TESTING")
         
-        # Test 10: POST /api/training/programs
+        # Test 10: POST /api/training/courses
         training_data = {
-            "title": "Test Training Program"
+            "course_code": "TEST-001",
+            "name": "Test Training Program",
+            "description": "Test training description",
+            "course_type": "safety",
+            "duration_hours": 8.0,
+            "valid_for_years": 2
         }
         self.test_endpoint(
-            "POST", "/training/programs",
+            "POST", "/training/courses",
             data=training_data,
             expected_status=201,
-            test_name="Test 10 - Create Training Program"
+            test_name="Test 10 - Create Training Course"
         )
     
     def run_phase_7_emergencies(self):
