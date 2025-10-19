@@ -10,6 +10,10 @@ import json
 import time
 from datetime import datetime
 from typing import Dict, List, Tuple
+import urllib3
+
+# Disable SSL warnings for internal testing
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Configuration
 BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
