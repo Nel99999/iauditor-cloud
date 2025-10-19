@@ -217,7 +217,7 @@ backend:
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "COMPREHENSIVE BACKEND TESTING - Checklists & Tasks V1 Enhanced Features"
+user_problem_statement: "COMPREHENSIVE FINAL TESTING - ALL SIDEBAR FEATURES"
 
 backend:
   - task: "Checklists V1 Enhancements - Backend API Testing (11 Endpoints)"
