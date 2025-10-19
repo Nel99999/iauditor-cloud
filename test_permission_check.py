@@ -1,5 +1,5 @@
 import asyncio
-from pymongo import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient
 import sys
 sys.path.append('/app/backend')
 
@@ -24,8 +24,8 @@ async def test_permission():
         "organization"
     )
     
-    print(f"\ncheck_permission result: {result}")
-    print(f"Expected: True (Manager should be able to create tasks)")
+    print(f"\ncheck_permission(manager, task, create, organization) = {result}")
+    print(f"Expected: True (Manager has task.create.own, should match organization scope)")
     
     client.close()
 
