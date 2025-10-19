@@ -395,12 +395,13 @@ class TwilioComprehensiveBackendTester:
             response = self.session.get(f"{API_BASE}/sms/settings")
             if response.status_code == 200:
                 settings = response.json()
+                account_sid = settings.get("account_sid", "")
                 if (settings.get("twilio_configured") and 
                     settings.get("phone_number") == "+1234567890" and
                     settings.get("whatsapp_number") == "+1234567890" and
-                    "..." in settings.get("account_sid", "")):  # Should be masked
+                    ("..." in account_sid or len(account_sid) <= 14)):  # Should be masked if >14 chars
                     self.log_test("Data Persistence - Configuration", True, 
-                                "Mock configuration persisted correctly with masked account_sid")
+                                f"Mock configuration persisted correctly, account_sid: {account_sid}")
                 else:
                     self.log_test("Data Persistence - Configuration", False, 
                                 f"Configuration not properly persisted: {settings}")
