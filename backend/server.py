@@ -163,6 +163,7 @@ api_router.include_router(auth_router)
 api_router.include_router(org_router)
 api_router.include_router(inspection_router)
 api_router.include_router(checklist_router)
+api_router.include_router(module_analytics_router)  # Must be before task_router to avoid route conflicts
 api_router.include_router(task_router)
 api_router.include_router(reports_router)
 api_router.include_router(sidebar_router)
