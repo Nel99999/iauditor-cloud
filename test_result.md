@@ -498,6 +498,22 @@ backend:
     implemented: true
     working: true
     file: "backend/bulk_import_routes.py, backend/permission_routes.py"
+
+backend:
+  - task: "Sidebar Preferences API - Backend Testing"
+    implemented: true
+    working: true
+    file: "backend/sidebar_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "Sidebar preferences API implemented with 2 endpoints for managing user sidebar preferences (GET/PUT). Requesting comprehensive backend testing with production user credentials."
+        -working: true
+        -agent: "testing"
+        -comment: "🎉 SIDEBAR PREFERENCES API TESTING COMPLETED - 100% SUCCESS (2/2 endpoints passed)! ✅ CRITICAL BUG FIXED: Route ordering issue - sidebar_router was included AFTER user_router in server.py, causing FastAPI to match PUT /users/sidebar-preferences to PUT /users/{user_id} route. FIXED by moving sidebar_router inclusion before user_router (line 164 → line 165). ✅ TEST RESULTS: Test 1 ✅ GET /api/users/sidebar-preferences - Returns default preferences correctly (default_mode='expanded', hover_expand_enabled=true, auto_collapse_enabled=false, inactivity_timeout=10, context_aware_enabled=true, collapse_after_navigation=false). Test 2 ✅ PUT /api/users/sidebar-preferences - Updates preferences successfully with custom values (default_mode='mini', inactivity_timeout=15, etc.), returns proper response with message and updated preferences. ✅ VALIDATION TESTING: Test 3 ✅ Invalid mode validation - Correctly rejects 'invalid_mode' with 400 Bad Request and proper error message. Test 4 ✅ Timeout validation (low) - Correctly rejects inactivity_timeout=3 (below minimum 5) with proper error message. Test 5 ✅ Timeout validation (high) - Correctly rejects inactivity_timeout=70 (above maximum 60) with proper error message. ✅ DATA PERSISTENCE: Test 6 ✅ MongoDB persistence verified - Preferences save correctly to user_preferences collection and persist across requests. Updated preferences retrieved correctly after saving. ✅ AUTHENTICATION: Production user authentication working correctly (llewellyn@bluedawncapital.co.za, role: developer). JWT token validation working properly. ✅ ENDPOINT VERIFICATION: Both endpoints return proper HTTP status codes (200 for success, 400 for validation errors). JSON response structures correct. All required fields present in responses. Organization-level data isolation working. ✅ SUCCESS CRITERIA MET: Both endpoints accessible and working ✓, Default preferences returned when none exist ✓, Preferences save correctly to MongoDB ✓, Validation works for invalid inputs ✓, Data persists across requests ✓, No 500 errors ✓. OVERALL ASSESSMENT: Sidebar Preferences API is 100% operational and production-ready. Critical route ordering bug fixed. All endpoints tested and working correctly."
     stuck_count: 0
     priority: "high"
     needs_retesting: false
