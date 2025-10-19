@@ -291,28 +291,10 @@ async def get_profile_picture(file_id: str):
 
 
 # List all users in organization
-@router.get("")
+@router.get("", dependencies=[Depends(lambda request, db=Depends(get_db): __import__('permission_dependencies').require_user_read(request, db))])
 async def list_users(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Get all users in the organization"""
+    """Get all users in the organization (Admin level and above only)"""
     user = await get_current_user(request, db)
-    
-    # SECURITY: Check permission to list users (Admin level and above only)
-    # Import permission check function
-    from permission_routes import check_permission
-    
-    has_permission = await check_permission(
-        db, 
-        user["id"], 
-        "user", 
-        "read", 
-        "organization"
-    )
-    
-    if not has_permission:
-        raise HTTPException(
-            status_code=403, 
-            detail="You don't have permission to list users. This requires Admin level access or higher."
-        )
     
     # Get users from same organization (exclude deleted users)
     users = await db.users.find(
