@@ -53,3 +53,22 @@ class Budget(BaseModel):
     actual_amount: float = 0.0
     status: str = "active"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class FinancialTransaction(BaseModel):
+    """Financial transaction model"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    transaction_type: str  # expense, revenue, capex, opex
+    category: str  # supplies, labor, utilities, etc.
+    amount: float
+    description: Optional[str] = None
+    transaction_date: Optional[str] = None
+    unit_id: Optional[str] = None
+    work_order_id: Optional[str] = None
+    project_id: Optional[str] = None
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
