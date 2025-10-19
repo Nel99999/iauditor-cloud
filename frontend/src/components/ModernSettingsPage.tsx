@@ -45,7 +45,7 @@ const ModernSettingsPage = () => {
     inactivity_timeout: 10,
     context_aware_enabled: false,
     collapse_after_navigation: false,
-    click_outside_to_hide: false
+    click_outside_to_hide: true  // ON by default for first-time users
   });
 
   // Organization Sidebar Settings state (Master/Developer only)
@@ -56,7 +56,7 @@ const ModernSettingsPage = () => {
     inactivity_timeout: 10,
     context_aware_enabled: false,
     collapse_after_navigation: false,
-    click_outside_to_hide: false
+    click_outside_to_hide: true  // ON by default for first-time users
   });
 
   // Security state
