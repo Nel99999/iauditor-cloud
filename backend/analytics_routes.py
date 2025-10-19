@@ -442,3 +442,60 @@ async def get_user_activity(
             for user_id, data in sorted_activity
         ]
     }
+
+
+
+@router.get("/performance")
+async def get_performance_metrics(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get system performance metrics"""
+    user = await get_current_user(request, db)
+    
+    # Get audit logs for performance analysis
+    audit_logs = await db.audit_logs.find(
+        {"organization_id": user["organization_id"]},
+        {"_id": 0, "action": 1, "resource_type": 1, "created_at": 1}
+    ).sort("created_at", -1).limit(1000).to_list(1000)
+    
+    # Calculate metrics
+    total_actions = len(audit_logs)
+    
+    # By action type
+    by_action = {}
+    for log in audit_logs:
+        action = log.get("action", "unknown")
+        by_action[action] = by_action.get(action, 0) + 1
+    
+    # By resource type
+    by_resource = {}
+    for log in audit_logs:
+        resource = log.get("resource_type", "unknown")
+        by_resource[resource] = by_resource.get(resource, 0) + 1
+    
+    # Recent activity (last 24 hours)
+    from datetime import datetime, timezone, timedelta
+    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
+    recent_actions = len([log for log in audit_logs if log.get("created_at", "") >= yesterday])
+    
+    # Most active periods
+    hour_activity = {}
+    for log in audit_logs:
+        created_at = log.get("created_at", "")
+        if created_at:
+            try:
+                hour = created_at[11:13]  # Extract hour from ISO format
+                hour_activity[hour] = hour_activity.get(hour, 0) + 1
+            except:
+                pass
+    
+    return {
+        "total_actions": total_actions,
+        "recent_actions_24h": recent_actions,
+        "by_action_type": by_action,
+        "by_resource_type": by_resource,
+        "activity_by_hour": hour_activity,
+        "average_actions_per_day": round(total_actions / 30, 2) if total_actions > 0 else 0
+    }
+
