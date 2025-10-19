@@ -54,7 +54,6 @@ async def declare_emergency(
     
     emergency_dict = emergency.model_dump()
     emergency_dict["created_at"] = emergency_dict["created_at"].isoformat()
-    emergency_dict["updated_at"] = emergency_dict["updated_at"].isoformat()
     
     await db.emergencies.insert_one(emergency_dict.copy())
     return emergency_dict
