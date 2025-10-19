@@ -509,9 +509,12 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside
-            className="layout-sidebar"
+            className={`layout-sidebar layout-sidebar--${sidebarMode}`}
             initial={{ x: -280 }}
-            animate={{ x: 0 }}
+            animate={{ 
+              x: 0,
+              width: sidebarMode === 'expanded' ? 280 : sidebarMode === 'collapsed' ? 200 : 80
+            }}
             exit={{ x: -280 }}
             transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
           >
@@ -520,100 +523,218 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
               <div className="sidebar-header">
                 <div className="brand">
                   <Building2 size={32} className="brand-icon" />
-                  <div>
-                    <h1 className="brand-title">Operations</h1>
-                    <p className="brand-subtitle">Management v2.0</p>
-                  </div>
+                  {sidebarMode !== 'mini' && (
+                    <div>
+                      <h1 className="brand-title">Operations</h1>
+                      <p className="brand-subtitle">Management v2.0</p>
+                    </div>
+                  )}
                 </div>
+                {/* Sidebar toggle button */}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={cycleSidebarMode}
+                        className="sidebar-toggle-btn"
+                        aria-label="Toggle sidebar"
+                      >
+                        {sidebarMode === 'expanded' ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <span>{sidebarMode === 'expanded' ? 'Collapse' : sidebarMode === 'collapsed' ? 'Mini mode' : 'Expand'}</span>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Navigation */}
               <nav className="sidebar-nav">
-                {menuItems.map((section: any, sectionIndex: number) => (
-                  <div key={sectionIndex} className="nav-section">
-                    <div className="nav-section-title">{section.section}</div>
-                    {section.items.map((item: any) => {
-                      const Icon = item.icon;
-                      const active = isActive(item.path);
-                      const hasAccess = canAccessMenuItem(item);
-                      
-                      // If no access, show greyed out with tooltip
-                      if (!hasAccess) {
-                        return (
-                          <TooltipProvider key={item.path}>
+                {menuItems.map((section: any, sectionIndex: number) => {
+                  const isExpanded = expandedSections.has(section.section);
+                  const accessibleItems = section.items.filter(canAccessMenuItem);
+                  
+                  return (
+                    <div key={sectionIndex} className="nav-section">
+                      {/* Section Header - Clickable to expand/collapse */}
+                      <button
+                        onClick={() => toggleSection(section.section)}
+                        className="nav-section-title nav-section-title--clickable"
+                      >
+                        {sidebarMode === 'mini' ? (
+                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div className="nav-item nav-item--disabled">
-                                  <Icon size={20} />
-                                  <span>{item.name}</span>
-                                  <Lock size={14} className="ml-auto opacity-50" />
+                                <div className="flex items-center justify-center w-full">
+                                  {section.items[0]?.icon && <section.items[0].icon size={20} />}
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent side="right">
-                                <div className="flex items-center gap-2">
-                                  <Lock className="h-3 w-3" />
-                                  <span>Permission Required</span>
-                                </div>
+                                <span>{section.section}</span>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
-                        );
-                      }
+                        ) : (
+                          <>
+                            <span>{section.section}</span>
+                            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                          </>
+                        )}
+                      </button>
                       
-                      return (
-                        <motion.button
-                          key={item.path}
-                          onClick={() => navigate(item.path)}
-                          className={`nav-item ${active ? 'nav-item--active' : ''}`}
-                          whileHover={{ x: 4 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <Icon size={20} />
-                          <span>{item.name}</span>
-                          {item.badge && (
-                            <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
-                              {item.badge}
-                            </span>
-                          )}
-                          {active && (
-                            <motion.div
-                              className="active-indicator"
-                              layoutId="activeIndicator"
-                              transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
-                            />
-                          )}
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-                ))}
+                      {/* Section Items - Collapsible */}
+                      <AnimatePresence>
+                        {(isExpanded || sidebarMode === 'mini') && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            {section.items.map((item: any) => {
+                              const Icon = item.icon;
+                              const active = isActive(item.path);
+                              const hasAccess = canAccessMenuItem(item);
+                              
+                              // If no access, show greyed out with tooltip
+                              if (!hasAccess) {
+                                return (
+                                  <TooltipProvider key={item.path}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <div className="nav-item nav-item--disabled">
+                                          <Icon size={20} />
+                                          {sidebarMode !== 'mini' && <span>{item.name}</span>}
+                                          {sidebarMode !== 'mini' && <Lock size={14} className="ml-auto opacity-50" />}
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">
+                                        <div className="flex items-center gap-2">
+                                          <Lock className="h-3 w-3" />
+                                          <span>{sidebarMode === 'mini' ? item.name : 'Permission Required'}</span>
+                                        </div>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                );
+                              }
+                              
+                              // Mini mode: Show icon only with tooltip
+                              if (sidebarMode === 'mini') {
+                                return (
+                                  <TooltipProvider key={item.path}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <motion.button
+                                          onClick={() => navigate(item.path)}
+                                          className={`nav-item nav-item--icon-only ${active ? 'nav-item--active' : ''}`}
+                                          whileHover={{ scale: 1.05 }}
+                                          whileTap={{ scale: 0.95 }}
+                                        >
+                                          <Icon size={20} />
+                                          {active && (
+                                            <motion.div
+                                              className="active-indicator"
+                                              layoutId="activeIndicator"
+                                              transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+                                            />
+                                          )}
+                                        </motion.button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">
+                                        <span>{item.name}</span>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                );
+                              }
+                              
+                              return (
+                                <motion.button
+                                  key={item.path}
+                                  onClick={() => navigate(item.path)}
+                                  className={`nav-item ${active ? 'nav-item--active' : ''}`}
+                                  whileHover={{ x: 4 }}
+                                  whileTap={{ scale: 0.98 }}
+                                >
+                                  <Icon size={20} />
+                                  <span>{item.name}</span>
+                                  {item.badge && (
+                                    <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                                      {item.badge}
+                                    </span>
+                                  )}
+                                  {active && (
+                                    <motion.div
+                                      className="active-indicator"
+                                      layoutId="activeIndicator"
+                                      transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+                                    />
+                                  )}
+                                </motion.button>
+                              );
+                            })}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
               </nav>
 
               {/* User Profile */}
               <div className="sidebar-footer">
-                <div className="user-profile">
-                  <div className="user-avatar">
-                    {user?.picture ? (
-                      <img 
-                        src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
-                        alt={user?.name || 'User'}
-                        className="w-full h-full object-cover rounded-full"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          if (e.currentTarget.parentElement) {
-                            e.currentTarget.parentElement.textContent = user?.name?.charAt(0).toUpperCase() || 'U';
-                          }
-                        }}
-                      />
-                    ) : (
-                      user?.name?.charAt(0).toUpperCase() || 'U'
-                    )}
+                {sidebarMode === 'mini' ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="user-avatar-mini">
+                          {user?.picture ? (
+                            <img 
+                              src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
+                              alt={user?.name || 'User'}
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          ) : (
+                            user?.name?.charAt(0).toUpperCase() || 'U'
+                          )}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">
+                        <div>
+                          <p className="font-medium">{user?.name || 'User'}</p>
+                          <p className="text-xs text-muted-foreground">{user?.role || 'Member'}</p>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <div className="user-profile">
+                    <div className="user-avatar">
+                      {user?.picture ? (
+                        <img 
+                          src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
+                          alt={user?.name || 'User'}
+                          className="w-full h-full object-cover rounded-full"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            if (e.currentTarget.parentElement) {
+                              e.currentTarget.parentElement.textContent = user?.name?.charAt(0).toUpperCase() || 'U';
+                            }
+                          }}
+                        />
+                      ) : (
+                        user?.name?.charAt(0).toUpperCase() || 'U'
+                      )}
+                    </div>
+                    <div className="user-info">
+                      <p className="user-name">{user?.name || 'User'}</p>
+                      <p className="user-role">{user?.role || 'Member'}</p>
+                    </div>
                   </div>
-                  <div className="user-info">
-                    <p className="user-name">{user?.name || 'User'}</p>
-                    <p className="user-role">{user?.role || 'Member'}</p>
-                  </div>
-                </div>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -621,7 +742,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                   icon={<LogOut size={16} />}
                   className="logout-button"
                 >
-                  Logout
+                  {sidebarMode !== 'mini' && 'Logout'}
                 </Button>
               </div>
             </GlassCard>
