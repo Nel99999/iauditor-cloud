@@ -235,6 +235,38 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     checkTouchDevice();
   }, []);
 
+  // Click outside to hide (desktop only, if enabled)
+  useEffect(() => {
+    if (!sidebarPreferences.click_outside_to_hide || isTouchDevice) return;
+    
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.querySelector('.layout-sidebar');
+      const target = event.target as Node;
+      
+      // Only hide if:
+      // 1. Click is outside sidebar
+      // 2. Sidebar is not in mini mode already
+      // 3. Not clicking on toggle button
+      if (sidebar && !sidebar.contains(target) && sidebarMode !== 'mini') {
+        const isToggleButton = (event.target as Element)?.closest('.sidebar-toggle-btn');
+        if (!isToggleButton) {
+          setSidebarMode('mini');
+          handleUserInteraction();
+        }
+      }
+    };
+    
+    // Add listener with delay to avoid immediate trigger
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+    }, 500);
+    
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [sidebarPreferences.click_outside_to_hide, isTouchDevice, sidebarMode]);
+
   // Apply context-aware mode based on screen size and route
   const applyContextAwareMode = (defaultMode: string) => {
     if (!sidebarPreferences.context_aware_enabled) return;
