@@ -15,7 +15,7 @@ from datetime import datetime
 # Configuration
 BASE_URL = "https://workflow-engine-18.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
-TEST_USER_PASSWORD = "password123"
+TEST_USER_PASSWORD = "TestPassword123!"
 
 class ComprehensiveEndpointTester:
     def __init__(self):
