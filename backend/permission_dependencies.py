@@ -49,46 +49,101 @@ async def require_permission(
 
 
 # Common permission dependencies
-async def require_user_read(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Require permission to read users"""
+async def require_inspection_create_permission(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Dependency that checks inspection creation permission before endpoint runs"""
     user = await get_current_user(request, db)
-    has_permission = await check_permission(db, user["id"], "user", "read", "organization")
+    
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        user["id"],
+        "inspection",
+        "create",
+        "organization"
+    )
+    
     if not has_permission:
-        raise HTTPException(status_code=403, detail="You don't have permission to view users")
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have permission to create inspection templates"
+        )
+    
     return user
 
 
-async def require_inspection_create(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Require permission to create inspections"""
+async def require_task_create_permission(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Dependency that checks task creation permission before endpoint runs"""
     user = await get_current_user(request, db)
-    has_permission = await check_permission(db, user["id"], "inspection", "create", "organization")
+    
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        user["id"],
+        "task",
+        "create",
+        "organization"
+    )
+    
     if not has_permission:
-        raise HTTPException(status_code=403, detail="You don't have permission to create inspections")
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have permission to create tasks"
+        )
+    
     return user
 
 
-async def require_task_create(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Require permission to create tasks"""
+async def require_asset_create_permission(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Dependency that checks asset creation permission before endpoint runs"""
     user = await get_current_user(request, db)
-    has_permission = await check_permission(db, user["id"], "task", "create", "organization")
+    
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        user["id"],
+        "asset",
+        "create",
+        "organization"
+    )
+    
     if not has_permission:
-        raise HTTPException(status_code=403, detail="You don't have permission to create tasks")
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have permission to create assets"
+        )
+    
     return user
 
 
-async def require_asset_create(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Require permission to create assets"""
+async def require_workorder_create_permission(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Dependency that checks work order creation permission before endpoint runs"""
     user = await get_current_user(request, db)
-    has_permission = await check_permission(db, user["id"], "asset", "create", "organization")
+    
+    from permission_routes import check_permission
+    has_permission = await check_permission(
+        db,
+        user["id"],
+        "workorder",
+        "create",
+        "organization"
+    )
+    
     if not has_permission:
-        raise HTTPException(status_code=403, detail="You don't have permission to create assets")
-    return user
-
-
-async def require_workorder_create(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Require permission to create work orders"""
-    user = await get_current_user(request, db)
-    has_permission = await check_permission(db, user["id"], "workorder", "create", "organization")
-    if not has_permission:
-        raise HTTPException(status_code=403, detail="You don't have permission to create work orders")
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have permission to create work orders"
+        )
+    
     return user
