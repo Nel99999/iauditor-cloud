@@ -95,11 +95,21 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   
   // User preferences from backend
   const [sidebarPreferences, setSidebarPreferences] = useState({
-    default_mode: 'expanded',
-    hover_expand_enabled: true,
+    default_mode: 'collapsed',
+    hover_expand_enabled: false,
     auto_collapse_enabled: false,
     inactivity_timeout: 10,
-    context_aware_enabled: false, // Disabled by default to avoid confusion
+    context_aware_enabled: false,
+    collapse_after_navigation: false
+  });
+  
+  // Organization-level defaults
+  const [orgSidebarDefaults, setOrgSidebarDefaults] = useState({
+    default_mode: 'collapsed',
+    hover_expand_enabled: false,
+    auto_collapse_enabled: false,
+    inactivity_timeout: 10,
+    context_aware_enabled: false,
     collapse_after_navigation: false
   });
   
