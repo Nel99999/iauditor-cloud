@@ -303,3 +303,151 @@
     padding: var(--spacing-3);
   }
 }
+
+
+/* ==============================================
+   COLLAPSIBLE SIDEBAR & ACCORDION STYLES
+   ============================================== */
+
+/* Sidebar Modes */
+.layout-sidebar--expanded {
+  width: 280px;
+}
+
+.layout-sidebar--collapsed {
+  width: 200px;
+}
+
+.layout-sidebar--mini {
+  width: 80px;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--color-glass-surface);
+  border: 1px solid var(--color-glass-border);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard);
+  position: absolute;
+  right: var(--spacing-4);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sidebar-toggle-btn:hover {
+  background: var(--color-glass-surface-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-brand-primary);
+}
+
+.sidebar-header {
+  position: relative;
+}
+
+/* Section Title - Clickable Accordion */
+.nav-section-title--clickable {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--typography-size-xs);
+  font-weight: var(--typography-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard);
+  border-radius: var(--radius-md);
+}
+
+.nav-section-title--clickable:hover {
+  background: var(--color-glass-surface);
+  color: var(--color-text-primary);
+}
+
+/* Mini Mode Icon Only Nav Items */
+.nav-item--icon-only {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.nav-item--icon-only:hover {
+  background: var(--color-glass-surface);
+  color: var(--color-text-primary);
+}
+
+.nav-item--icon-only.nav-item--active {
+  background: var(--color-glass-surface);
+  color: var(--color-brand-primary);
+}
+
+/* User Avatar Mini Mode */
+.user-avatar-mini {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--typography-weight-bold);
+  font-size: var(--typography-size-sm);
+  cursor: pointer;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Layout Main Adjustments for Sidebar Modes */
+.layout-main.with-sidebar {
+  margin-left: 280px;
+}
+
+.layout-sidebar--collapsed ~ .layout-main.with-sidebar {
+  margin-left: 200px;
+}
+
+.layout-sidebar--mini ~ .layout-main.with-sidebar {
+  margin-left: 80px;
+}
+
+/* Animation Overrides */
+.nav-section {
+  margin-bottom: var(--spacing-2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .layout-sidebar--expanded,
+  .layout-sidebar--collapsed,
+  .layout-sidebar--mini {
+    width: 280px !important;
+  }
+  
+  .sidebar-toggle-btn {
+    display: none;
+  }
+  
+  .layout-main.with-sidebar {
+    margin-left: 0 !important;
+  }
+}
