@@ -82,3 +82,11 @@ class IncidentUpdate(BaseModel):
     root_cause: Optional[str] = None
     assigned_to: Optional[str] = None
     corrective_actions: Optional[List[Dict[str, Any]]] = None
+
+
+class IncidentStats(BaseModel):
+    """Incident statistics"""
+    total_incidents: int
+    by_type: Dict[str, int]
+    by_severity: Dict[str, int]
+    this_month: int
