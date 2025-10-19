@@ -1,6 +1,19 @@
 #====================================================================================================
 
 backend:
+  - task: "Twilio SMS/WhatsApp Integration - Backend API Testing (8 Endpoints)"
+    implemented: true
+    working: "NA"
+    file: "backend/sms_routes.py, backend/sms_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "main"
+        -comment: "🔍 TWILIO INVESTIGATION INITIATED - User reported Twilio integration appears to be missing. Investigation findings: ✅ Backend files exist: sms_routes.py (440 lines), sms_service.py (309 lines), Twilio SDK installed (v9.8.3) and in requirements.txt. ✅ Router registered in server.py (line 59 import, line 201 include_router). ✅ Frontend integration exists in ModernSettingsPage.tsx. ✅ 8 Twilio endpoints available: GET /api/sms/settings (view config), POST /api/sms/settings (save config), POST /api/sms/test-connection (test), POST /api/sms/send (SMS), POST /api/sms/whatsapp/send (WhatsApp), POST /api/sms/send-bulk (bulk SMS), POST /api/sms/whatsapp/send-bulk (bulk WhatsApp), GET /api/sms/message-status/{sid} (status check), GET /api/sms/preferences (user prefs), PUT /api/sms/preferences (update prefs). TESTING NEEDED: Test all 8 SMS/Twilio endpoints with developer/master role permissions, Test configuration save/retrieval, Test connection endpoint (mock mode without real credentials), Test SMS/WhatsApp sending endpoints (mock mode), Verify permission checks (Master & Developer only for config), Test user preferences endpoints (all users), Verify data persistence in organization_settings collection, Test error handling for unconfigured Twilio."
+
+backend:
   - task: "Settings Page Modernization - Backend API Testing for All 13 Endpoint Groups"
     implemented: true
     working: true
