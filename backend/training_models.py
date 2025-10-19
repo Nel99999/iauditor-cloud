@@ -69,6 +69,11 @@ class TrainingProgramCreate(BaseModel):
     frequency: Optional[str] = None
 
 
+# Aliases for backward compatibility
+TrainingCourse = TrainingProgram
+TrainingCourseCreate = TrainingProgramCreate
+
+
 class TrainingRecord(BaseModel):
     """Training attendance record"""
     model_config = ConfigDict(extra="ignore")
@@ -93,3 +98,16 @@ class TrainingRecord(BaseModel):
     # Tracking
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# Alias for backward compatibility
+EmployeeTraining = TrainingRecord
+
+
+class TrainingStats(BaseModel):
+    """Training statistics"""
+    total_programs: int
+    total_completions: int
+    completion_rate: float
+    by_type: Dict[str, int]
+    by_status: Dict[str, int]
