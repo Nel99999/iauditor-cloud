@@ -100,7 +100,8 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     auto_collapse_enabled: false,
     inactivity_timeout: 10,
     context_aware_enabled: false,
-    collapse_after_navigation: false
+    collapse_after_navigation: false,
+    click_outside_to_hide: false
   });
   
   // Organization-level defaults
@@ -110,7 +111,8 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     auto_collapse_enabled: false,
     inactivity_timeout: 10,
     context_aware_enabled: false,
-    collapse_after_navigation: false
+    collapse_after_navigation: false,
+    click_outside_to_hide: false
   });
   
   // Hover state
