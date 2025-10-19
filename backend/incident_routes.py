@@ -29,17 +29,30 @@ async def report_incident(
     """Report new incident"""
     user = await get_current_user(request, db)
     
+    # Get incident number
+    incident_number = f"INC-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{str(uuid.uuid4())[:8]}"
+    
+    # Use current time if occurred_at not provided
+    occurred_at = incident_data.occurred_at or datetime.now(timezone.utc).isoformat()
+    
     incident = Incident(
-        incident_number=generate_incident_number(),
+        incident_number=incident_number,
         organization_id=user["organization_id"],
         unit_id=incident_data.unit_id,
+        asset_id=incident_data.asset_id,
         incident_type=incident_data.incident_type,
         severity=incident_data.severity,
-        occurred_at=incident_data.occurred_at,
+        occurred_at=occurred_at,
+        reported_at=datetime.now(timezone.utc).isoformat(),
         location=incident_data.location,
+        title=incident_data.title,
         description=incident_data.description,
         reported_by=user["id"],
-        reporter_name=user["name"],
+        reported_by_name=user.get("name", user["email"]),
+        involved_persons=incident_data.involved_persons,
+        witnesses=incident_data.witnesses,
+        priority=incident_data.priority,
+        tags=incident_data.tags,
     )
     
     incident_dict = incident.model_dump()
