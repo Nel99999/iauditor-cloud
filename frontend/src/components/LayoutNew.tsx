@@ -567,7 +567,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div className="flex items-center justify-center w-full">
-                                  {section.items[0]?.icon && <section.items[0].icon size={20} />}
+                                  {section.items[0]?.icon && React.createElement(section.items[0].icon, { size: 20 })}
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent side="right">
