@@ -1,54 +1,95 @@
+"""
+Training & Competency Models
+Employee training program management
+"""
+
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime, timezone
 import uuid
 
 
-class TrainingCourse(BaseModel):
-    """Training course model"""
+class TrainingProgram(BaseModel):
+    """Training program model"""
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     organization_id: str
-    course_code: str
-    name: str
+    
+    # Basic info
+    title: str
     description: Optional[str] = None
-    course_type: str  # safety, technical, compliance, soft_skill
-    duration_hours: float
-    valid_for_years: Optional[int] = None
+    training_type: str = "safety"  # Default value
+    category: Optional[str] = None
+    
+    # Details
+    duration_hours: Optional[float] = None
+    instructor: Optional[str] = None
+    location: Optional[str] = None
+    max_participants: Optional[int] = None
+    
+    # Requirements
+    prerequisites: List[str] = []
     required_for_roles: List[str] = []
-    pass_score: Optional[float] = None
+    certification_provided: bool = False
+    certificate_valid_years: Optional[int] = None
+    
+    # Content
+    modules: List[Dict[str, Any]] = []
+    materials: List[str] = []
+    
+    # Scheduling
+    is_recurring: bool = False
+    frequency: Optional[str] = None
+    
+    # Status
+    status: str = "active"
     is_active: bool = True
     created_by: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
-class EmployeeTraining(BaseModel):
-    """Employee training record"""
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    employee_id: str
-    employee_name: str
-    course_id: str
-    course_name: str
-    completed_at: str
-    score: Optional[float] = None
-    passed: bool
-    expires_at: Optional[str] = None
-    instructor_id: Optional[str] = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-class TrainingCourseCreate(BaseModel):
-    course_code: str
-    name: str
+class TrainingProgramCreate(BaseModel):
+    """Create training program - only requires minimum fields"""
+    title: str
     description: Optional[str] = None
-    course_type: str
-    duration_hours: float
-    valid_for_years: Optional[int] = None
+    training_type: str = "safety"  # Default
+    category: Optional[str] = None
+    duration_hours: Optional[float] = None
+    instructor: Optional[str] = None
+    location: Optional[str] = None
+    max_participants: Optional[int] = None
+    prerequisites: List[str] = []
+    required_for_roles: List[str] = []
+    certification_provided: bool = False
+    certificate_valid_years: Optional[int] = None
+    modules: List[Dict[str, Any]] = []
+    is_recurring: bool = False
+    frequency: Optional[str] = None
 
 
-class TrainingStats(BaseModel):
-    total_courses: int
-    total_enrollments: int
-    completed_this_month: int
-    expired_certifications: int
+class TrainingRecord(BaseModel):
+    """Training attendance record"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    program_id: str
+    user_id: str
+    user_name: Optional[str] = None
+    
+    # Session details
+    session_date: str
+    completion_date: Optional[str] = None
+    score: Optional[float] = None
+    status: str = "registered"
+    
+    # Certification
+    certificate_issued: bool = False
+    certificate_number: Optional[str] = None
+    certificate_expires_at: Optional[str] = None
+    
+    # Tracking
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

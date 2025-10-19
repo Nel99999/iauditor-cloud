@@ -21,7 +21,7 @@ class Asset(BaseModel):
     description: Optional[str] = None
     
     # Classification
-    asset_type: str  # "equipment", "vehicle", "building", "infrastructure", etc.
+    asset_type: str = "equipment"  # Default value
     category: Optional[str] = None  # Sub-category
     criticality: str = "C"  # A (critical), B (important), C (normal)
     
@@ -78,11 +78,11 @@ class Asset(BaseModel):
 
 
 class AssetCreate(BaseModel):
-    """Create asset"""
+    """Create asset - only requires minimum fields"""
     asset_tag: str
     name: str
     description: Optional[str] = None
-    asset_type: str
+    asset_type: str = "equipment"  # Default value
     category: Optional[str] = None
     criticality: str = "C"
     unit_id: Optional[str] = None
@@ -110,7 +110,6 @@ class AssetCreate(BaseModel):
 
 class AssetUpdate(BaseModel):
     """Update asset"""
-    asset_tag: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
     asset_type: Optional[str] = None
@@ -119,46 +118,39 @@ class AssetUpdate(BaseModel):
     unit_id: Optional[str] = None
     location_details: Optional[str] = None
     gps_coordinates: Optional[Dict[str, float]] = None
-    parent_asset_id: Optional[str] = None
     make: Optional[str] = None
     model: Optional[str] = None
     serial_number: Optional[str] = None
     manufacturer: Optional[str] = None
     specifications: Optional[Dict[str, Any]] = None
-    purchase_date: Optional[str] = None
     purchase_cost: Optional[float] = None
     current_value: Optional[float] = None
     depreciation_rate: Optional[float] = None
     status: Optional[str] = None
-    installation_date: Optional[str] = None
-    expected_life_years: Optional[int] = None
     maintenance_schedule: Optional[str] = None
-    last_maintenance: Optional[str] = None
-    next_maintenance: Optional[str] = None
     requires_calibration: Optional[bool] = None
     calibration_frequency: Optional[str] = None
-    next_calibration: Optional[str] = None
     tags: Optional[List[str]] = None
     custom_fields: Optional[Dict[str, Any]] = None
-    is_active: Optional[bool] = None
 
 
 class AssetStats(BaseModel):
     """Asset statistics"""
     total_assets: int
+    active: int
+    inactive: int
+    in_maintenance: int
+    total_value: float
     by_type: Dict[str, int]
     by_criticality: Dict[str, int]
-    by_status: Dict[str, int]
-    total_value: float
-    maintenance_due_count: int
-    calibration_due_count: int
 
 
 class AssetHistory(BaseModel):
     """Asset history entry"""
-    entry_type: str  # "inspection", "checklist", "task", "work_order", "maintenance", "update"
-    entry_id: str
-    entry_name: str
-    timestamp: str
-    performed_by: Optional[str] = None
-    notes: Optional[str] = None
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    asset_id: str
+    action: str  # created, updated, maintenance, inspection, etc.
+    description: str
+    performed_by: str
+    performed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    metadata: Dict[str, Any] = {}
