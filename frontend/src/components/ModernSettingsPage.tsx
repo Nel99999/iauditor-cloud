@@ -43,7 +43,7 @@ const ModernSettingsPage = () => {
     hover_expand_enabled: true,
     auto_collapse_enabled: false,
     inactivity_timeout: 10,
-    context_aware_enabled: true,
+    context_aware_enabled: false,
     collapse_after_navigation: false
   });
 
