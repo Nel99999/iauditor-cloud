@@ -168,3 +168,44 @@ async def get_financial_summary(
         }
     
     return summary
+
+
+
+@router.get("/stats")
+async def get_financial_stats(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get financial statistics"""
+    user = await get_current_user(request, db)
+    
+    transactions = await db.financial_transactions.find(
+        {"organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    total_transactions = len(transactions)
+    total_revenue = sum(t.get("amount", 0) for t in transactions if t.get("transaction_type") == "income")
+    total_expenses = sum(t.get("amount", 0) for t in transactions if t.get("transaction_type") == "expense")
+    net_income = total_revenue - total_expenses
+    
+    # By type
+    by_type = {}
+    for t in transactions:
+        t_type = t.get("transaction_type", "unknown")
+        by_type[t_type] = by_type.get(t_type, 0) + 1
+    
+    # By category
+    by_category = {}
+    for t in transactions:
+        category = t.get("category", "uncategorized")
+        by_category[category] = by_category.get(category, 0) + 1
+    
+    return {
+        "total_transactions": total_transactions,
+        "total_revenue": round(total_revenue, 2),
+        "total_expenses": round(total_expenses, 2),
+        "net_income": round(net_income, 2),
+        "by_type": by_type,
+        "by_category": by_category
+    }
