@@ -339,6 +339,25 @@ const ModernSettingsPage = () => {
     }
   };
 
+  const handleSaveSidebarPreferences = async () => {
+    setLoading(true);
+    try {
+      await axios.put(`${API}/users/sidebar-preferences`, sidebarPrefs);
+      toast({
+        title: 'Success',
+        description: 'Sidebar preferences saved! Refresh the page to see changes.',
+      });
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.response?.data?.detail || 'Failed to save sidebar preferences',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleExportData = async () => {
     try {
       const response = await axios.get(`${API}/gdpr/export-data`);
