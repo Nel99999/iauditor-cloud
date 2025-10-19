@@ -93,6 +93,25 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     return 'expanded';
   });
   
+  // User preferences from backend
+  const [sidebarPreferences, setSidebarPreferences] = useState({
+    default_mode: 'expanded',
+    hover_expand_enabled: true,
+    auto_collapse_enabled: false,
+    inactivity_timeout: 10,
+    context_aware_enabled: true,
+    collapse_after_navigation: false
+  });
+  
+  // Hover state
+  const [isHovering, setIsHovering] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [tempExpandedMode, setTempExpandedMode] = useState<'expanded' | 'collapsed' | 'mini' | null>(null);
+  
+  // Inactivity timer
+  const inactivityTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
+  
   // Accordion sections state - tracks which sections are expanded
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
     // Load from localStorage or default to Main, Organization, Operations open
@@ -107,6 +126,126 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [swipeProgress, setSwipeProgress] = useState<number>(0);
+
+  // Load user sidebar preferences from backend
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/users/sidebar-preferences`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (response.ok) {
+          const prefs = await response.json();
+          setSidebarPreferences(prefs);
+          
+          // Apply context-aware mode if enabled
+          if (prefs.context_aware_enabled) {
+            applyContextAwareMode(prefs.default_mode);
+          } else {
+            setSidebarMode(prefs.default_mode as 'expanded' | 'collapsed' | 'mini');
+          }
+        }
+      } catch (error) {
+        console.log('Could not load sidebar preferences, using defaults');
+      }
+    };
+    
+    if (user) {
+      loadPreferences();
+    }
+  }, [user]);
+
+  // Detect touch device
+  useEffect(() => {
+    const checkTouchDevice = () => {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    checkTouchDevice();
+  }, []);
+
+  // Apply context-aware mode based on screen size and route
+  const applyContextAwareMode = (defaultMode: string) => {
+    if (!sidebarPreferences.context_aware_enabled) return;
+    
+    const screenWidth = window.innerWidth;
+    const currentPath = location.pathname;
+    
+    // Data-heavy pages that benefit from mini mode
+    const dataHeavyRoutes = ['/dashboards', '/reports', '/analytics'];
+    const isDataHeavy = dataHeavyRoutes.some(route => currentPath.startsWith(route));
+    
+    // Screen size rules
+    if (screenWidth < 1440) {
+      setSidebarMode('mini');
+    } else if (isDataHeavy) {
+      setSidebarMode('mini');
+    } else {
+      setSidebarMode(defaultMode as 'expanded' | 'collapsed' | 'mini');
+    }
+  };
+
+  // Context-aware mode on route change
+  useEffect(() => {
+    if (sidebarPreferences.context_aware_enabled) {
+      applyContextAwareMode(sidebarPreferences.default_mode);
+    }
+  }, [location.pathname, sidebarPreferences.context_aware_enabled]);
+
+  // Inactivity auto-collapse
+  useEffect(() => {
+    if (!sidebarPreferences.auto_collapse_enabled) return;
+    
+    const checkInactivity = () => {
+      const now = Date.now();
+      const timeSinceLastInteraction = (now - lastInteractionTime) / 1000;
+      
+      if (timeSinceLastInteraction >= sidebarPreferences.inactivity_timeout) {
+        if (sidebarMode !== 'mini' && !isHovering) {
+          setSidebarMode('mini');
+        }
+      }
+    };
+    
+    inactivityTimerRef.current = setInterval(checkInactivity, 1000);
+    
+    return () => {
+      if (inactivityTimerRef.current) {
+        clearInterval(inactivityTimerRef.current);
+      }
+    };
+  }, [sidebarPreferences.auto_collapse_enabled, sidebarPreferences.inactivity_timeout, lastInteractionTime, sidebarMode, isHovering]);
+
+  // Reset inactivity timer on user interaction
+  const handleUserInteraction = () => {
+    setLastInteractionTime(Date.now());
+  };
+
+  // Hover to expand (desktop only, not on touch devices)
+  const handleMouseEnter = () => {
+    if (isTouchDevice || !sidebarPreferences.hover_expand_enabled) return;
+    
+    setIsHovering(true);
+    
+    // If in mini mode, temporarily expand
+    if (sidebarMode === 'mini') {
+      setTempExpandedMode(sidebarMode);
+      setSidebarMode('expanded');
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isTouchDevice || !sidebarPreferences.hover_expand_enabled) return;
+    
+    setIsHovering(false);
+    
+    // Return to previous mode if it was temporarily expanded
+    if (tempExpandedMode) {
+      setSidebarMode(tempExpandedMode);
+      setTempExpandedMode(null);
+    }
+  };
 
   // Persist sidebar mode to localStorage
   useEffect(() => {
@@ -129,6 +268,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
       }
       return newSet;
     });
+    handleUserInteraction();
   };
 
   // Cycle sidebar modes: expanded -> collapsed -> mini -> expanded
@@ -138,6 +278,19 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
       if (current === 'collapsed') return 'mini';
       return 'expanded';
     });
+    handleUserInteraction();
+  };
+
+  // Handle navigation click
+  const handleNavigationClick = (path: string) => {
+    navigate(path);
+    
+    // Auto-collapse after navigation if enabled
+    if (sidebarPreferences.collapse_after_navigation) {
+      setSidebarMode('mini');
+    }
+    
+    handleUserInteraction();
   };
 
   // Gesture support for mobile - swipe right to go back
