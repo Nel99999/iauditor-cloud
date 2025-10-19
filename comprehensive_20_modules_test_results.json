@@ -1,0 +1,808 @@
+{
+  "total": 123,
+  "passed": 84,
+  "failed": 39,
+  "modules": {
+    "Authentication": {
+      "passed": 1,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Login successful",
+          "passed": true,
+          "details": "Role: developer, Org: 315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        }
+      ]
+    },
+    "1. Inspections": {
+      "passed": 6,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List templates",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Get template by ID",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create template",
+          "passed": true,
+          "details": "Status: 201"
+        },
+        {
+          "name": "List executions",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Analytics",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Calendar view",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Scheduled inspections",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "2. Checklists": {
+      "passed": 2,
+      "failed": 4,
+      "tests": [
+        {
+          "name": "List templates",
+          "passed": false,
+          "details": "Status: 403, Expected: [200, 201], Response: {\"detail\":\"You don't have permission to create checklists\"}"
+        },
+        {
+          "name": "Create template",
+          "passed": false,
+          "details": "Status: 403, Expected: [201, 422], Response: {\"detail\":\"You don't have permission to create checklists\"}"
+        },
+        {
+          "name": "List executions",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Analytics",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Scheduled checklists",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Pending approvals",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "3. Tasks": {
+      "passed": 8,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List tasks",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create task",
+          "passed": true,
+          "details": "Status: 201"
+        },
+        {
+          "name": "Get task by ID",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "List subtasks",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Task dependencies",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Time logging",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Task templates",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Task analytics",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "4. Assets": {
+      "passed": 5,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List assets",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create asset",
+          "passed": true,
+          "details": "Status: 422"
+        },
+        {
+          "name": "Asset QR codes",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Asset history",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Asset stats",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Asset types catalog",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Asset not found\"}"
+        }
+      ]
+    },
+    "5. Work Orders": {
+      "passed": 1,
+      "failed": 4,
+      "tests": [
+        {
+          "name": "List work orders",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Create work order",
+          "passed": false,
+          "details": "Status: 404, Expected: [201, 422, 403], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Work order stats",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Work order backlog",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Work order timeline",
+          "passed": true,
+          "details": "Status: 404"
+        }
+      ]
+    },
+    "6. Inventory": {
+      "passed": 2,
+      "failed": 3,
+      "tests": [
+        {
+          "name": "List items",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Create item",
+          "passed": false,
+          "details": "Status: 404, Expected: [201, 422, 403], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Stock adjustment",
+          "passed": true,
+          "details": "Status: 404"
+        },
+        {
+          "name": "Reorder list",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Inventory stats",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "7. Projects": {
+      "passed": 5,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List projects",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create project",
+          "passed": true,
+          "details": "Status: 403"
+        },
+        {
+          "name": "Project milestones",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Project tasks",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Project stats",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Project not found\"}"
+        },
+        {
+          "name": "Project dashboard",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "8. Incidents": {
+      "passed": 5,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List incidents",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create incident",
+          "passed": true,
+          "details": "Status: 403"
+        },
+        {
+          "name": "Incident investigation",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Corrective actions",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Incident stats",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "9. Training": {
+      "passed": 2,
+      "failed": 4,
+      "tests": [
+        {
+          "name": "List courses",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Create course",
+          "passed": false,
+          "details": "Status: 404, Expected: [201, 422, 403], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Course completions",
+          "passed": false,
+          "details": "Status: 405, Expected: [200, 201], Response: {\"detail\":\"Method Not Allowed\"}"
+        },
+        {
+          "name": "User transcripts",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Expired certifications",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Training stats",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "10. Financial": {
+      "passed": 3,
+      "failed": 3,
+      "tests": [
+        {
+          "name": "List transactions",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "CAPEX transactions",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "OPEX transactions",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Budget summary",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Financial summary",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Financial stats",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "11. HR": {
+      "passed": 4,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List employees",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "HR announcements",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Publish announcement",
+          "passed": true,
+          "details": "Status: 201"
+        },
+        {
+          "name": "HR stats",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "12. Emergency": {
+      "passed": 2,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "List emergencies",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Declare emergency",
+          "passed": true,
+          "details": "Status: 422"
+        },
+        {
+          "name": "Active emergencies",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Emergency not found\"}"
+        },
+        {
+          "name": "Resolve emergency",
+          "passed": false,
+          "details": "Status: 405, Expected: [200, 404, 422], Response: {\"detail\":\"Method Not Allowed\"}"
+        }
+      ]
+    },
+    "13. Dashboards": {
+      "passed": 3,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "Executive dashboard",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Safety dashboard",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Maintenance dashboard",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Operations dashboard",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Financial dashboard",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "14. Team Chat": {
+      "passed": 4,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List channels",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create channel",
+          "passed": true,
+          "details": "Status: 201"
+        },
+        {
+          "name": "List messages",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Send message",
+          "passed": true,
+          "details": "Status: 422"
+        }
+      ]
+    },
+    "15. Contractors": {
+      "passed": 2,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List contractors",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create contractor",
+          "passed": false,
+          "details": "Status: 500, Expected: [201, 422, 403], Response: Internal Server Error"
+        },
+        {
+          "name": "Contractor work history",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "16. Announcements": {
+      "passed": 1,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "List announcements",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create announcement",
+          "passed": false,
+          "details": "Status: 200, Expected: [201, 422, 403], Response: {\"message\":\"Announcement created successfully\",\"id\":\"f0f0ecd2-3dbb-47ab-bdf0-4df5cb48dc10\"}"
+        },
+        {
+          "name": "Publish announcement",
+          "passed": false,
+          "details": "Status: 405, Expected: [200, 404, 422], Response: {\"detail\":\"Method Not Allowed\"}"
+        }
+      ]
+    },
+    "17. Comments": {
+      "passed": 2,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "List comments",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create comment",
+          "passed": true,
+          "details": "Status: 422"
+        },
+        {
+          "name": "Update comment",
+          "passed": false,
+          "details": "Status: 405, Expected: [200, 404, 422], Response: {\"detail\":\"Method Not Allowed\"}"
+        },
+        {
+          "name": "Delete comment",
+          "passed": false,
+          "details": "Status: 405, Expected: [200, 204, 404], Response: {\"detail\":\"Method Not Allowed\"}"
+        }
+      ]
+    },
+    "18. Attachments": {
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List attachments",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Get attachment",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "19. Notifications": {
+      "passed": 4,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List notifications",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Notification stats",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Notification preferences",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Update preferences",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "20. Audit Logs": {
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List audit logs",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "User activity logs",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "21. User Management": {
+      "passed": 4,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List users",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Get current user",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Update profile",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Pending approvals",
+          "passed": true,
+          "details": "Status: 200"
+        }
+      ]
+    },
+    "22. Roles & Permissions": {
+      "passed": 2,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List roles",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "List permissions",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Get user permissions",
+          "passed": false,
+          "details": "Status: 405, Expected: [200, 201], Response: {\"detail\":\"Method Not Allowed\"}"
+        }
+      ]
+    },
+    "23. Organizations & Units": {
+      "passed": 2,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List org units",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Get org hierarchy",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Org stats",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "24. Groups & Teams": {
+      "passed": 1,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List groups",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create group",
+          "passed": false,
+          "details": "Status: 200, Expected: [201, 422, 403], Response: {\"id\":\"e7be6e0a-e567-43cc-946a-6cffc4d1364c\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940\",\"name\":\"Test Group 20251019162625\",\"description\":\"Test\",\"color\":\"#3b82f6\",\"icon\":null,\"parent_grou"
+        }
+      ]
+    },
+    "25. Invitations & Approvals": {
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "List invitations",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Send invitation",
+          "passed": true,
+          "details": "Status: 422"
+        }
+      ]
+    },
+    "26. Settings": {
+      "passed": 3,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "SendGrid settings",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Twilio settings",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "User preferences",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Org settings",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "27. Bulk Import": {
+      "passed": 0,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "Get CSV template",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Preview import",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 422, 400], Response: {\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "28. Webhooks": {
+      "passed": 1,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List webhooks",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Create webhook",
+          "passed": false,
+          "details": "Status: 200, Expected: [201, 422, 403], Response: {\"id\":\"c479dbd2-4cfb-4ed7-bc88-2e7df8f69f9b\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940\",\"name\":\"Test Webhook 20251019162626\",\"url\":\"https://example.com/webhook\",\"secret\":\"LSpXx2P9Dg5oUvt"
+        }
+      ]
+    },
+    "29. Workflows": {
+      "passed": 1,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "List workflows",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        },
+        {
+          "name": "Get workflow",
+          "passed": true,
+          "details": "Status: 404"
+        }
+      ]
+    },
+    "30. Analytics & Reports": {
+      "passed": 2,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "Reports overview",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Analytics performance",
+          "passed": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "Analytics summary",
+          "passed": false,
+          "details": "Status: 404, Expected: [200, 201], Response: {\"detail\":\"Not Found\"}"
+        }
+      ]
+    }
+  }
+}
