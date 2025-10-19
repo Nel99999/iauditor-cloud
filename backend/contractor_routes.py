@@ -38,23 +38,14 @@ async def create_contractor(
     
     contractor = Contractor(
         organization_id=user["organization_id"],
-        name=contractor_data.name,
         company_name=contractor_data.company_name,
-        contractor_type=contractor_data.contractor_type,
-        specialization=contractor_data.specialization,
         contact_person=contractor_data.contact_person,
         email=contractor_data.email,
         phone=contractor_data.phone,
-        address=contractor_data.address,
-        certification_number=contractor_data.certification_number,
-        certifications=contractor_data.certifications,
-        insurance_details=contractor_data.insurance_details,
-        contract_start_date=contractor_data.contract_start_date,
-        contract_end_date=contractor_data.contract_end_date,
-        hourly_rate=contractor_data.hourly_rate,
-        payment_terms=contractor_data.payment_terms,
-        tags=contractor_data.tags,
-        created_by=user["id"],
+        contractor_type=contractor_data.contractor_type,
+        trade=contractor_data.trade,
+        insurance_expiry=contractor_data.insurance_expiry,
+        safety_rating=contractor_data.safety_rating,
         onboarded_at=datetime.now(timezone.utc).isoformat(),
     )
     
