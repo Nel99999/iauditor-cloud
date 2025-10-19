@@ -68,7 +68,6 @@ async def create_contractor(
     
     contractor_dict = contractor.model_dump()
     contractor_dict["created_at"] = contractor_dict["created_at"].isoformat()
-    contractor_dict["updated_at"] = contractor_dict["updated_at"].isoformat()
     
     await db.contractors.insert_one(contractor_dict.copy())
     return contractor_dict
