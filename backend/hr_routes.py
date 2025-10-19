@@ -118,3 +118,45 @@ async def publish_announcement(
     )
     
     return await db.announcements.find_one({"id": announcement_id}, {"_id": 0})
+
+
+
+@router.get("/stats")
+async def get_hr_stats(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get HR statistics"""
+    user = await get_current_user(request, db)
+    
+    employees = await db.hr_employees.find(
+        {"organization_id": user["organization_id"]},
+        {"_id": 0}
+    ).to_list(10000)
+    
+    total_employees = len(employees)
+    
+    # By department
+    by_department = {}
+    for e in employees:
+        dept = e.get("department", "unassigned")
+        by_department[dept] = by_department.get(dept, 0) + 1
+    
+    # By employment_type
+    by_employment_type = {}
+    for e in employees:
+        emp_type = e.get("employment_type", "unknown")
+        by_employment_type[emp_type] = by_employment_type.get(emp_type, 0) + 1
+    
+    # By status
+    by_status = {}
+    for e in employees:
+        status_val = e.get("status", "active")
+        by_status[status_val] = by_status.get(status_val, 0) + 1
+    
+    return {
+        "total_employees": total_employees,
+        "by_department": by_department,
+        "by_employment_type": by_employment_type,
+        "by_status": by_status
+    }
