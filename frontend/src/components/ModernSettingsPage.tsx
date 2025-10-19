@@ -54,6 +54,7 @@ const ModernSettingsPage = () => {
     account_sid: '',
     auth_token: '',
     phone_number: '',
+    whatsapp_number: '',
     twilio_configured: false
   });
   const [webhookCount, setWebhookCount] = useState(0);
