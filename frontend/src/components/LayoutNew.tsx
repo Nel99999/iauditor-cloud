@@ -137,7 +137,44 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [swipeProgress, setSwipeProgress] = useState<number>(0);
 
-  // Load user sidebar preferences from backend
+  // Load organization sidebar defaults (works before login)
+  useEffect(() => {
+    const loadOrgDefaults = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/organization/sidebar-settings`);
+        
+        if (response.ok) {
+          const orgDefaults = await response.json();
+          setOrgSidebarDefaults(orgDefaults);
+          
+          // Apply org defaults immediately if no user prefs loaded yet
+          if (!user) {
+            setSidebarPreferences(orgDefaults);
+            if (orgDefaults.context_aware_enabled) {
+              applyContextAwareMode(orgDefaults.default_mode);
+            } else {
+              // Check localStorage first for manual toggle state
+              const manualMode = localStorage.getItem('sidebar-mode');
+              if (manualMode) {
+                setSidebarMode(manualMode as 'expanded' | 'collapsed' | 'mini');
+              } else {
+                setSidebarMode(orgDefaults.default_mode as 'expanded' | 'collapsed' | 'mini');
+              }
+            }
+          }
+        } else {
+          // Use system defaults
+          console.log('Using system sidebar defaults');
+        }
+      } catch (error) {
+        console.log('Using system sidebar defaults');
+      }
+    };
+    
+    loadOrgDefaults();
+  }, []);
+
+  // Load user sidebar preferences from backend (after login)
   useEffect(() => {
     const loadPreferences = async () => {
       if (!user) return;
@@ -150,24 +187,33 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
         });
         
         if (response.ok) {
-          const prefs = await response.json();
-          setSidebarPreferences(prefs);
+          const userPrefs = await response.json();
+          setSidebarPreferences(userPrefs);
           
-          // Apply context-aware mode if enabled
-          if (prefs.context_aware_enabled) {
-            applyContextAwareMode(prefs.default_mode);
+          // Priority: localStorage manual toggle > user prefs > org defaults
+          const manualMode = localStorage.getItem('sidebar-mode');
+          
+          if (manualMode) {
+            // User manually toggled, respect that
+            setSidebarMode(manualMode as 'expanded' | 'collapsed' | 'mini');
           } else {
-            setSidebarMode(prefs.default_mode as 'expanded' | 'collapsed' | 'mini');
+            // Use user prefs (which fall back to org defaults if not set)
+            if (userPrefs.context_aware_enabled) {
+              applyContextAwareMode(userPrefs.default_mode);
+            } else {
+              setSidebarMode(userPrefs.default_mode as 'expanded' | 'collapsed' | 'mini');
+            }
           }
         } else if (response.status === 401) {
-          // Auth not ready yet, use defaults silently
+          // Auth not ready yet, use org defaults silently
           console.log('Sidebar preferences will load after authentication completes');
         } else {
-          console.log('Using default sidebar preferences');
+          // Use org defaults
+          console.log('Using organization sidebar defaults');
         }
       } catch (error) {
-        // Network error or other issue, use defaults silently
-        console.log('Using default sidebar preferences');
+        // Use org defaults silently
+        console.log('Using organization sidebar defaults');
       }
     };
     
