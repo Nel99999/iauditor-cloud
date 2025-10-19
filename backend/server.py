@@ -210,6 +210,9 @@ api_router.include_router(user_context_router)
 api_router.include_router(session_router)
 api_router.include_router(developer_router)
 api_router.include_router(org_sidebar_router)
+api_router.include_router(announcement_router)
+api_router.include_router(module_analytics_router)
+api_router.include_router(dashboard_extended_router)
 
 app.include_router(api_router)
 
