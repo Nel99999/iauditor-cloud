@@ -146,11 +146,25 @@ async def get_training_stats(
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     expired = len([t for t in trainings if t.get("expires_at") and t.get("expires_at") < today])
     
+    # Calculate by_type and by_status
+    by_type = {}
+    for course in courses:
+        course_type = course.get("type", "other")
+        by_type[course_type] = by_type.get(course_type, 0) + 1
+    
+    by_status = {}
+    for training in trainings:
+        status = training.get("status", "unknown")
+        by_status[status] = by_status.get(status, 0) + 1
+    
+    completion_rate = (len([t for t in trainings if t.get("status") == "completed"]) / len(trainings) * 100) if len(trainings) > 0 else 0.0
+    
     stats = TrainingStats(
-        total_courses=len(courses),
-        total_enrollments=len(trainings),
-        completed_this_month=completed_month,
-        expired_certifications=expired
+        total_programs=len(courses),
+        total_completions=len([t for t in trainings if t.get("status") == "completed"]),
+        completion_rate=round(completion_rate, 2),
+        by_type=by_type,
+        by_status=by_status
     )
     
     return stats.model_dump()
