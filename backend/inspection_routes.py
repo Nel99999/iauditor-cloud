@@ -1157,3 +1157,48 @@ async def export_inspection_pdf(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate PDF: {str(e)}"
         )
+
+
+@router.get("/scheduled")
+async def get_scheduled_inspections(
+    request: Request,
+    days_ahead: int = 7,
+    unit_id: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get scheduled inspections for the next N days"""
+    user = await get_current_user(request, db)
+    
+    # Calculate date range
+    today = datetime.now(timezone.utc).date()
+    end_date = today + timedelta(days=days_ahead)
+    
+    # Build query
+    query = {
+        "organization_id": user["organization_id"],
+        "scheduled_date": {
+            "$gte": today.isoformat(),
+            "$lte": end_date.isoformat()
+        }
+    }
+    
+    if unit_id:
+        query["unit_id"] = unit_id
+    
+    # Get scheduled executions
+    scheduled = await db.inspection_executions.find(
+        query,
+        {"_id": 0}
+    ).sort("scheduled_date", 1).to_list(100)
+    
+    return {
+        "scheduled_inspections": scheduled,
+        "date_range": {
+            "start": today.isoformat(),
+            "end": end_date.isoformat(),
+            "days_ahead": days_ahead
+        },
+        "total_count": len(scheduled)
+    }
+
+        )
