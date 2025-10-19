@@ -1,0 +1,287 @@
+{
+  "total": 40,
+  "passed": 31,
+  "failed": 9,
+  "tests": [
+    {
+      "category": "CRITICAL FIX",
+      "test": "POST /api/contractors - Create contractor",
+      "passed": true,
+      "status_code": 201,
+      "message": "Contractor created successfully (previously returned 500)"
+    },
+    {
+      "category": "PERMISSION FIX",
+      "test": "GET /api/checklists/templates",
+      "passed": false,
+      "status_code": 403,
+      "message": "Still returns 403 - permission not fixed"
+    },
+    {
+      "category": "PERMISSION FIX",
+      "test": "POST /api/checklists/templates",
+      "passed": false,
+      "status_code": 403,
+      "message": "Still returns 403 - permission not fixed"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "GET /api/inspections/scheduled",
+      "passed": true,
+      "status_code": 200,
+      "message": "Get scheduled inspections - endpoint implemented"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "GET /api/checklists/scheduled",
+      "passed": true,
+      "status_code": 200,
+      "message": "Get scheduled checklists - endpoint implemented"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "GET /api/checklists/pending-approvals",
+      "passed": true,
+      "status_code": 200,
+      "message": "Get pending checklist approvals - endpoint implemented"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "GET /api/financial/capex",
+      "passed": true,
+      "status_code": 200,
+      "message": "Get CAPEX records - endpoint implemented"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "GET /api/financial/opex",
+      "passed": true,
+      "status_code": 200,
+      "message": "Get OPEX records - endpoint implemented"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "GET /api/financial/budgets",
+      "passed": true,
+      "status_code": 200,
+      "message": "Get budgets - endpoint implemented"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "POST /api/financial/capex",
+      "passed": false,
+      "status_code": 422,
+      "message": "Response: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"title\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Test CAPEX Item\",\"amount\":50000,\"category\":\"equipment\",\"date\":\"2025-10-19T16:45:09.891954\"},\"url\":\"https://e"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "POST /api/financial/opex",
+      "passed": true,
+      "status_code": 201,
+      "message": "OPEX creation endpoint working"
+    },
+    {
+      "category": "NEW ENDPOINTS",
+      "test": "POST /api/financial/budgets",
+      "passed": false,
+      "status_code": 422,
+      "message": "Response: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"fiscal_year\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Q1 2024 Budget\",\"amount\":100000,\"period\":\"Q1\",\"year\":2024},\"url\":\"https://errors.pydantic.dev/2.11/v/m"
+    },
+    {
+      "category": "STATUS CODE FIX",
+      "test": "POST /api/announcements",
+      "passed": true,
+      "status_code": 201,
+      "message": "Returns 201 (correct)"
+    },
+    {
+      "category": "STATUS CODE FIX",
+      "test": "POST /api/groups",
+      "passed": true,
+      "status_code": 201,
+      "message": "Returns 201 (correct)"
+    },
+    {
+      "category": "STATUS CODE FIX",
+      "test": "POST /api/webhooks",
+      "passed": true,
+      "status_code": 201,
+      "message": "Returns 201 (correct)"
+    },
+    {
+      "category": "PATH CORRECTION",
+      "test": "GET /api/work-orders",
+      "passed": true,
+      "status_code": 200,
+      "message": "Correct path working (not /api/workorders)"
+    },
+    {
+      "category": "PATH CORRECTION",
+      "test": "GET /api/inventory/items",
+      "passed": true,
+      "status_code": 200,
+      "message": "Correct inventory path working"
+    },
+    {
+      "category": "PATH CORRECTION",
+      "test": "GET /api/training/courses",
+      "passed": true,
+      "status_code": 200,
+      "message": "Correct training courses path working"
+    },
+    {
+      "category": "PATH CORRECTION",
+      "test": "GET /api/training/completions",
+      "passed": false,
+      "status_code": 405,
+      "message": "Response: {\"detail\":\"Method Not Allowed\"}"
+    },
+    {
+      "category": "PATH CORRECTION",
+      "test": "GET /api/dashboards/main",
+      "passed": false,
+      "status_code": 404,
+      "message": "Response: {\"detail\":\"Not Found\"}"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Inspections - GET /api/inspections/templates",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 42"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Checklists - GET /api/checklists/templates",
+      "passed": false,
+      "status_code": 403,
+      "message": "Response: {\"detail\":\"You don't have permission to create checklists\"}"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Tasks - GET /api/tasks",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 50"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Assets - GET /api/assets",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 7"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Work Orders - GET /api/work-orders",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 14"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Inventory - GET /api/inventory/items",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 4"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Projects - GET /api/projects",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 7"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Incidents - GET /api/incidents",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 6"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Training - GET /api/training/courses",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 4"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Financial - GET /api/financial/transactions",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 4"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "HR - GET /api/hr/employees",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 1"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Emergency - GET /api/emergency/plans",
+      "passed": false,
+      "status_code": 404,
+      "message": "Endpoint not found"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Dashboards - GET /api/dashboards/main",
+      "passed": false,
+      "status_code": 404,
+      "message": "Endpoint not found"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Team Chat - GET /api/chat/channels",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 2"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Contractors - GET /api/contractors",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 3"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Announcements - GET /api/announcements",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 2"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Comments - GET /api/comments",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 2"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Attachments - GET /api/attachments",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 0"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Notifications - GET /api/notifications",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: N/A"
+    },
+    {
+      "category": "20 MODULES",
+      "test": "Audit Logs - GET /api/audit/logs",
+      "passed": true,
+      "status_code": 200,
+      "message": "Module accessible, records: 31"
+    }
+  ]
+}
