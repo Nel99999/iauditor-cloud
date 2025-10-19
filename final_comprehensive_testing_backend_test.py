@@ -229,12 +229,10 @@ class ComprehensiveEndpointTester:
         
         # Test 10: POST /api/training/courses
         training_data = {
-            "course_code": "TEST-001",
-            "name": "Test Training Program",
+            "title": "Test Training Program",
             "description": "Test training description",
-            "course_type": "safety",
-            "duration_hours": 8.0,
-            "valid_for_years": 2
+            "training_type": "safety",
+            "duration_hours": 8.0
         }
         self.test_endpoint(
             "POST", "/training/courses",
