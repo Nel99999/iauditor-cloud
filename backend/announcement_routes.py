@@ -154,16 +154,12 @@ async def update_announcement(
     """Update announcement (Admin+)"""
     user = await get_current_user(request, db)
     
-    # Check permission
-    user_role = await db.roles.find_one({
-        "name": user["role"],
-        "organization_id": user["organization_id"]
-    })
-    
-    if not user_role or user_role.get("level", 10) > 3:
+    # Allow developer, master, and admin roles
+    allowed_roles = ["developer", "master", "admin"]
+    if user["role"].lower() not in allowed_roles:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only Admin and above can update announcements"
+            detail="Only Admin, Master, and Developer can update announcements"
         )
     
     # Build update dict
