@@ -244,7 +244,9 @@ class ComprehensiveEndpointTester:
         emergency_data = {
             "emergency_type": "fire",
             "severity": "high",
-            "description": "Test emergency"
+            "description": "Test emergency",
+            "location": "Test Location",
+            "unit_id": "test-unit-001"
         }
         self.test_endpoint(
             "POST", "/emergencies",
