@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 
 # Backend URL from environment
-BACKEND_URL = "https://workflow-engine-18.preview.emergentagent.com/api"
+BACKEND_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
 
 class TestResults:
     def __init__(self):

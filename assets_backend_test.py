@@ -1,7 +1,7 @@
 """
 Assets Module Backend Testing - All 10 Endpoints
 Test User: llewellyn@bluedawncapital.co.za
-Base URL: https://workflow-engine-18.preview.emergentagent.com/api
+Base URL: https://dynamic-sidebar-1.preview.emergentagent.com/api
 """
 
 import requests
@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://workflow-engine-18.preview.emergentagent.com/api"
+BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
 TEST_EMAIL = "llewellyn@bluedawncapital.co.za"
 TEST_PASSWORD = "TestPassword123!"
 

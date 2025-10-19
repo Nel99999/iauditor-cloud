@@ -1,7 +1,7 @@
 import requests
 import io
 
-BASE_URL = "https://workflow-engine-18.preview.emergentagent.com/api"
+BASE_URL = "https://dynamic-sidebar-1.preview.emergentagent.com/api"
 
 # Login
 response = requests.post(

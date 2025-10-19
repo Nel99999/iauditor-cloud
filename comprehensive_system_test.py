@@ -23,7 +23,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://workflow-engine-18.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://dynamic-sidebar-1.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 # Test organization
