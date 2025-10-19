@@ -21,6 +21,51 @@ MAX_FILE_SIZE = 100 * 1024 * 1024
 
 # ==================== ENDPOINTS ====================
 
+@router.get("")
+async def list_all_attachments(
+    request: Request,
+    resource_type: str = None,
+    limit: int = 50,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """List all attachments for the organization, optionally filtered by resource type"""
+    user = await get_current_user(request, db)
+    
+    # Build query
+    query = {}
+    
+    # Get all resources for this organization and extract their attachments
+    resources_to_check = ["tasks", "inspections", "checklists", "assets", "work_orders", "projects"]
+    
+    if resource_type:
+        resources_to_check = [resource_type + "s" if not resource_type.endswith("s") else resource_type]
+    
+    all_attachments = []
+    
+    for collection_name in resources_to_check:
+        if collection_name in dir(db):
+            collection = getattr(db, collection_name)
+            resources = await collection.find(
+                {"organization_id": user["organization_id"]},
+                {"_id": 0, "id": 1, "attachments": 1, "title": 1, "name": 1}
+            ).to_list(1000)
+            
+            for resource in resources:
+                attachments = resource.get("attachments", [])
+                for att in attachments:
+                    att["resource_type"] = collection_name.rstrip("s")
+                    att["resource_id"] = resource.get("id")
+                    att["resource_name"] = resource.get("title") or resource.get("name") or "Unnamed"
+                    all_attachments.append(att)
+    
+    # Sort by created_at descending
+    all_attachments.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    
+    # Limit results
+    return all_attachments[:limit]
+
+
+
 @router.post("/{resource_type}/{resource_id}/upload")
 async def upload_attachment(
     resource_type: str,  # task, inspection, checklist
