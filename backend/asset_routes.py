@@ -207,9 +207,19 @@ async def get_asset_stats(
     
     # By status
     by_status = {}
+    active_count = 0
+    inactive_count = 0
+    in_maintenance_count = 0
+    
     for a in assets:
         s = a.get("status", "active")
         by_status[s] = by_status.get(s, 0) + 1
+        if s == "active":
+            active_count += 1
+        elif s == "inactive":
+            inactive_count += 1
+        elif s == "maintenance":
+            in_maintenance_count += 1
     
     # Total value
     total_value = sum(a.get("current_value", 0) or 0 for a in assets)
@@ -229,12 +239,12 @@ async def get_asset_stats(
     
     stats = AssetStats(
         total_assets=total,
-        by_type=by_type,
-        by_criticality=by_criticality,
-        by_status=by_status,
+        active=active_count,
+        inactive=inactive_count,
+        in_maintenance=in_maintenance_count,
         total_value=round(total_value, 2),
-        maintenance_due_count=maintenance_due,
-        calibration_due_count=calibration_due
+        by_type=by_type,
+        by_criticality=by_criticality
     )
     
     return stats.model_dump()
