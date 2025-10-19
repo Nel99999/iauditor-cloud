@@ -61,7 +61,7 @@ async def get_announcements(
     return announcements
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_announcement(
     announcement: AnnouncementCreate,
     request: Request,
