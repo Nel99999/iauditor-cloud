@@ -25,12 +25,11 @@ async def create_course(
     
     course = TrainingCourse(
         organization_id=user["organization_id"],
-        course_code=course_data.course_code,
-        name=course_data.name,
+        title=course_data.title,
         description=course_data.description,
-        course_type=course_data.course_type,
+        training_type=course_data.training_type,
         duration_hours=course_data.duration_hours,
-        valid_for_years=course_data.valid_for_years,
+        certificate_valid_years=course_data.certificate_valid_years,
         created_by=user["id"],
     )
     
