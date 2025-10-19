@@ -17,22 +17,14 @@ def get_db(request: Request) -> AsyncIOMotorDatabase:
 
 class ContractorCreate(BaseModel):
     """Create contractor"""
-    name: str
-    company_name: Optional[str] = None
-    contractor_type: str = "service_provider"
-    specialization: Optional[str] = None
-    contact_person: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    address: Optional[str] = None
-    certification_number: Optional[str] = None
-    certifications: List[str] = []
-    insurance_details: Optional[Dict[str, Any]] = None
-    contract_start_date: Optional[str] = None
-    contract_end_date: Optional[str] = None
-    hourly_rate: Optional[float] = None
-    payment_terms: Optional[str] = None
-    tags: List[str] = []
+    company_name: str
+    contact_person: str
+    email: str
+    phone: str
+    contractor_type: str = "maintenance"
+    trade: Optional[str] = None
+    insurance_expiry: Optional[str] = None
+    safety_rating: Optional[float] = None
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
