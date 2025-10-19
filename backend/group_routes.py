@@ -72,7 +72,7 @@ async def get_parent_groups(db: AsyncIOMotorDatabase, group_id: str, org_id: str
 
 # ==================== ENDPOINTS ====================
 
-@router.post("", response_model=UserGroup)
+@router.post("", response_model=UserGroup, status_code=status.HTTP_201_CREATED)
 async def create_group(
     group_data: GroupCreate,
     request: Request,
