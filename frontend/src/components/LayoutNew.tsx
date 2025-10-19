@@ -784,7 +784,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <motion.button
-                                          onClick={() => navigate(item.path)}
+                                          onClick={() => handleNavigationClick(item.path)}
                                           className={`nav-item nav-item--icon-only ${active ? 'nav-item--active' : ''}`}
                                           whileHover={{ scale: 1.05 }}
                                           whileTap={{ scale: 0.95 }}
