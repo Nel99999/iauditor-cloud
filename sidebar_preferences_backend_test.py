@@ -524,7 +524,11 @@ class SidebarPreferencesAPITester:
 
 if __name__ == "__main__":
     tester = SidebarPreferencesAPITester()
-    passed, total = tester.run_all_tests()
+    result = tester.run_all_tests()
     
-    # Exit with appropriate code
-    exit(0 if passed == total else 1)
+    if result:
+        passed, total = result
+        # Exit with appropriate code
+        exit(0 if passed == total else 1)
+    else:
+        exit(1)
