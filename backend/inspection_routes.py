@@ -95,7 +95,7 @@ async def get_inspection_templates(
     return templates
 
 
-@router.post("/templates", status_code=status.HTTP_201_CREATED, dependencies=[Depends(lambda r, db=Depends(get_db): __import__('permission_dependencies').require_inspection_create_permission(r, db))])
+@router.post("/templates", status_code=status.HTTP_201_CREATED)
 async def create_inspection_template(
     template_data: InspectionTemplateCreate,
     request: Request,
@@ -103,6 +103,12 @@ async def create_inspection_template(
 ):
     """Create a new inspection template (requires inspection.create.organization permission)"""
     user = await get_current_user(request, db)
+    
+    # SECURITY: Check permission before allowing creation
+    from permission_routes import check_permission
+    has_permission = await check_permission(db, user["id"], "inspection", "create", "organization")
+    if not has_permission:
+        raise HTTPException(status_code=403, detail="You don't have permission to create inspection templates")
     
     if not user.get("organization_id"):
         raise HTTPException(
