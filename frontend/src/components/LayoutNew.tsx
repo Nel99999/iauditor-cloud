@@ -81,9 +81,64 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { hasPermission, hasAnyPermission, hasRoleLevel } = usePermissions();
+  
+  // Sidebar state management
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [sidebarMode, setSidebarMode] = useState<'expanded' | 'collapsed' | 'mini'>(() => {
+    // Load from localStorage or default to 'expanded'
+    if (typeof window !== 'undefined') {
+      const savedMode = localStorage.getItem('sidebar-mode');
+      return (savedMode as 'expanded' | 'collapsed' | 'mini') || 'expanded';
+    }
+    return 'expanded';
+  });
+  
+  // Accordion sections state - tracks which sections are expanded
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
+    // Load from localStorage or default to Main, Organization, Operations open
+    if (typeof window !== 'undefined') {
+      const savedSections = localStorage.getItem('expanded-sections');
+      if (savedSections) {
+        return new Set(JSON.parse(savedSections));
+      }
+    }
+    return new Set(['Main', 'Organization', 'Operations']);
+  });
+  
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [swipeProgress, setSwipeProgress] = useState<number>(0);
+
+  // Persist sidebar mode to localStorage
+  useEffect(() => {
+    localStorage.setItem('sidebar-mode', sidebarMode);
+  }, [sidebarMode]);
+
+  // Persist expanded sections to localStorage
+  useEffect(() => {
+    localStorage.setItem('expanded-sections', JSON.stringify(Array.from(expandedSections)));
+  }, [expandedSections]);
+
+  // Toggle section expand/collapse
+  const toggleSection = (sectionName: string) => {
+    setExpandedSections(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(sectionName)) {
+        newSet.delete(sectionName);
+      } else {
+        newSet.add(sectionName);
+      }
+      return newSet;
+    });
+  };
+
+  // Cycle sidebar modes: expanded -> collapsed -> mini -> expanded
+  const cycleSidebarMode = () => {
+    setSidebarMode(current => {
+      if (current === 'expanded') return 'collapsed';
+      if (current === 'collapsed') return 'mini';
+      return 'expanded';
+    });
+  };
 
   // Gesture support for mobile - swipe right to go back
   const swipeHandlers = useSwipeable({
