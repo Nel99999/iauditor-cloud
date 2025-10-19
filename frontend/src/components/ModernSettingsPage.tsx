@@ -39,8 +39,18 @@ const ModernSettingsPage = () => {
 
   // Sidebar Preferences state
   const [sidebarPrefs, setSidebarPrefs] = useState({
-    default_mode: 'expanded',
-    hover_expand_enabled: true,
+    default_mode: 'collapsed',
+    hover_expand_enabled: false,
+    auto_collapse_enabled: false,
+    inactivity_timeout: 10,
+    context_aware_enabled: false,
+    collapse_after_navigation: false
+  });
+
+  // Organization Sidebar Settings state (Master/Developer only)
+  const [orgSidebarSettings, setOrgSidebarSettings] = useState({
+    default_mode: 'collapsed',
+    hover_expand_enabled: false,
     auto_collapse_enabled: false,
     inactivity_timeout: 10,
     context_aware_enabled: false,
