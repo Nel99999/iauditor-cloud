@@ -61,6 +61,7 @@ from approval_routes import router as approval_router
 from user_context_routes import router as user_context_router
 from session_routes import router as session_router
 from developer_routes import router as developer_router
+from sidebar_routes import router as sidebar_router
 
 
 ROOT_DIR = Path(__file__).parent
