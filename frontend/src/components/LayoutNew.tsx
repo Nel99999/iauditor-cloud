@@ -810,7 +810,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                               return (
                                 <motion.button
                                   key={item.path}
-                                  onClick={() => navigate(item.path)}
+                                  onClick={() => handleNavigationClick(item.path)}
                                   className={`nav-item ${active ? 'nav-item--active' : ''}`}
                                   whileHover={{ x: 4 }}
                                   whileTap={{ scale: 0.98 }}
