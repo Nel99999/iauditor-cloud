@@ -70,17 +70,12 @@ async def create_announcement(
     """Create announcement (Admin+)"""
     user = await get_current_user(request, db)
     
-    # Check permission - Allow developer, master, and admin roles
-    user_role = await db.roles.find_one({
-        "name": user["role"],
-        "organization_id": user["organization_id"]
-    })
-    
+    # Allow developer, master, and admin roles
     allowed_roles = ["developer", "master", "admin"]
-    if not user_role or user["role"] not in allowed_roles:
+    if user["role"].lower() not in allowed_roles:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only Admin and above can create announcements"
+            detail="Only Admin, Master, and Developer can create announcements"
         )
     
     announcement_id = str(uuid.uuid4())
