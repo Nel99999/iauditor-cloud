@@ -80,6 +80,15 @@ async def create_task(
         due_date=task_data.due_date,
         unit_id=task_data.unit_id,
         tags=task_data.tags,
+        # V1 Enhancement fields
+        parent_task_id=task_data.parent_task_id,
+        predecessor_task_ids=task_data.predecessor_task_ids,
+        asset_id=task_data.asset_id,
+        task_type=task_data.task_type,
+        estimated_hours=task_data.estimated_hours,
+        requires_checklist=task_data.requires_checklist,
+        linked_inspection_id=task_data.linked_inspection_id,
+        linked_incident_id=task_data.linked_incident_id,
     )
     
     task_dict = task.model_dump()
