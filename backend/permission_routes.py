@@ -128,23 +128,21 @@ async def check_permission(
     
     # If exact match not granted, try scope hierarchy
     if not role_has_permission:
-        allowed_scopes = scope_hierarchy.get(scope, [scope])
-        for check_scope in allowed_scopes:
-            permission = await db.permissions.find_one({
-                "resource_type": resource_type,
-                "action": action,
-                "scope": check_scope
-            })
-            if permission:
-                # Check if role has THIS permission
-                role_perm = await db.role_permissions.find_one({
-                    "role_id": role_id,
-                    "permission_id": permission["id"],
-                    "granted": True
+        # Get role record once for efficiency
+        role_record = await db.roles.find_one({"id": role_id})
+        if role_record:
+            allowed_scopes = scope_hierarchy.get(scope, [scope])
+            for check_scope in allowed_scopes:
+                permission = await db.permissions.find_one({
+                    "resource_type": resource_type,
+                    "action": action,
+                    "scope": check_scope
                 })
-                if role_perm:
-                    role_has_permission = True
-                    break
+                if permission:
+                    # Check if role has THIS permission in its permission_ids array
+                    if permission["id"] in role_record.get("permission_ids", []):
+                        role_has_permission = True
+                        break
     
     result = role_has_permission
     
