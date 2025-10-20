@@ -493,4 +493,54 @@ async def get_invitations(
         {"_id": 0}
     ).to_list(1000)
     
+    
+    return invitations
+
+
+@router.get("/stats")
+async def get_organization_stats(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get organization statistics"""
+    user = await get_current_user(request, db)
+    
+    # Get org units count
+    units_count = await db.organization_units.count_documents({
+        "organization_id": user["organization_id"]
+    })
+    
+    # Get users count
+    users_count = await db.users.count_documents({
+        "organization_id": user["organization_id"],
+        "is_active": True
+    })
+    
+    # Get active projects count
+    projects_count = await db.projects.count_documents({
+        "organization_id": user["organization_id"],
+        "status": {"$ne": "completed"}
+    })
+    
+    # Get open work orders
+    work_orders_count = await db.work_orders.count_documents({
+        "organization_id": user["organization_id"],
+        "status": {"$in": ["pending", "approved", "in_progress"]}
+    })
+    
+    # Get incidents this month
+    start_of_month = datetime.now(timezone.utc).replace(day=1).strftime("%Y-%m-%d")
+    incidents_count = await db.incidents.count_documents({
+        "organization_id": user["organization_id"],
+        "created_at": {"$gte": start_of_month}
+    })
+    
+    return {
+        "organizational_units": units_count,
+        "active_users": users_count,
+        "active_projects": projects_count,
+        "open_work_orders": work_orders_count,
+        "incidents_this_month": incidents_count
+    }
+
     return invitations
