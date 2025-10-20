@@ -61,6 +61,10 @@ def log_test(module, test_name, passed, details=""):
     if details and not passed:
         print(f"   Details: {details}")
 
+def is_success(status_code):
+    """Check if status code indicates success"""
+    return status_code in [200, 201]
+
 def authenticate():
     """Authenticate and get token"""
     global token, org_id, user_id
