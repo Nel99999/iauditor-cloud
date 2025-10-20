@@ -499,13 +499,16 @@ async def complete_inspection(
     
     # Auto-create work order if inspection failed and template requires it
     if template.get("auto_create_work_order_on_fail") and not passed and completion_data.findings:
+        wo_number = f"WO-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{str(uuid.uuid4())[:8].upper()}"
         work_order = {
             "id": str(uuid.uuid4()),
             "organization_id": user["organization_id"],
+            "wo_number": wo_number,
             "title": f"Corrective Action: {template['name']}",
             "description": f"Inspection failed with findings:\n" + "\n".join(completion_data.findings),
             "priority": template.get("work_order_priority", "normal"),
             "status": "pending",
+            "work_type": "corrective",
             "source_inspection_id": execution_id,
             "asset_id": execution.get("asset_id"),
             "unit_id": execution.get("unit_id"),
