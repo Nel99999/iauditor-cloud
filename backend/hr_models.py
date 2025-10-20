@@ -9,17 +9,17 @@ class Employee(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: str
+    user_id: Optional[str] = None
     organization_id: str
-    unit_id: str
-    employee_number: str
+    unit_id: Optional[str] = None
+    employee_number: Optional[str] = None
     first_name: str
     last_name: str
     email: str
-    position: str
+    position: Optional[str] = None
     department: Optional[str] = None
     manager_id: Optional[str] = None
-    hire_date: str
+    hire_date: Optional[str] = None
     employment_status: str = "active"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
