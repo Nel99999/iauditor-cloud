@@ -121,12 +121,10 @@ async def check_permission(
     if permission:
         # Found exact match, check if role has it
         permission_id_to_check = permission["id"]
-        role_perm = await db.role_permissions.find_one({
-            "role_id": role_id,
-            "permission_id": permission_id_to_check,
-            "granted": True
-        })
-        role_has_permission = (role_perm is not None)
+        # Get role and check if permission is in its permission_ids array
+        role_record = await db.roles.find_one({"id": role_id})
+        if role_record:
+            role_has_permission = permission_id_to_check in role_record.get("permission_ids", [])
     
     # If exact match not granted, try scope hierarchy
     if not role_has_permission:
