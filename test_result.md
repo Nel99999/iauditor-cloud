@@ -243,7 +243,7 @@ backend:
     implemented: true
     working: false
     file: "backend/server.py, all backend routes"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: true
     status_history:
