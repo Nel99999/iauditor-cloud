@@ -171,6 +171,19 @@ async def global_search(
     return results
 
 
+
+@router.get("/")
+async def global_search_root(
+    request: Request,
+    q: str,
+    limit: int = 50,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Global search root endpoint (alias for /global)"""
+    return await global_search(q, request, None, limit, db)
+
+
+
 @router.get("/users")
 async def search_users_only(
     q: str,
