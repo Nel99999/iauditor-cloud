@@ -1,0 +1,513 @@
+{
+  "total": 42,
+  "passed": 28,
+  "failed": 14,
+  "permission_errors": 4,
+  "server_errors": 0,
+  "tests": [
+    {
+      "module": "INSPECTIONS",
+      "endpoint": "/inspections/templates",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List templates (returned 42 items)"
+    },
+    {
+      "module": "INSPECTIONS",
+      "endpoint": "/inspections/templates",
+      "method": "POST",
+      "status_code": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Create template (created ID: 08a0ffd3...)"
+    },
+    {
+      "module": "INSPECTIONS",
+      "endpoint": "/inspections/executions",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List executions (returned 24 items)"
+    },
+    {
+      "module": "CHECKLISTS",
+      "endpoint": "/checklists/templates",
+      "method": "GET",
+      "status_code": 403,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "List templates [PERMISSION DENIED]"
+    },
+    {
+      "module": "CHECKLISTS",
+      "endpoint": "/checklists/templates",
+      "method": "POST",
+      "status_code": 403,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create template [PERMISSION DENIED]"
+    },
+    {
+      "module": "CHECKLISTS",
+      "endpoint": "/checklists/executions",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List executions (returned 9 items)"
+    },
+    {
+      "module": "TASKS",
+      "endpoint": "/tasks",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List tasks (returned 50 items)"
+    },
+    {
+      "module": "TASKS",
+      "endpoint": "/tasks",
+      "method": "POST",
+      "status_code": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Create task (created ID: de0aeb15...)"
+    },
+    {
+      "module": "ASSETS",
+      "endpoint": "/assets",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List assets (returned 7 items)"
+    },
+    {
+      "module": "ASSETS",
+      "endpoint": "/assets",
+      "method": "POST",
+      "status_code": 422,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create asset"
+    },
+    {
+      "module": "WORK ORDERS",
+      "endpoint": "/workorders",
+      "method": "GET",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "List work orders"
+    },
+    {
+      "module": "WORK ORDERS",
+      "endpoint": "/workorders",
+      "method": "POST",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create work order"
+    },
+    {
+      "module": "INVENTORY",
+      "endpoint": "/inventory",
+      "method": "GET",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "List inventory"
+    },
+    {
+      "module": "INVENTORY",
+      "endpoint": "/inventory",
+      "method": "POST",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create inventory item"
+    },
+    {
+      "module": "PROJECTS",
+      "endpoint": "/projects",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List projects (returned 7 items)"
+    },
+    {
+      "module": "PROJECTS",
+      "endpoint": "/projects",
+      "method": "POST",
+      "status_code": 403,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create project [PERMISSION DENIED]"
+    },
+    {
+      "module": "INCIDENTS",
+      "endpoint": "/incidents",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List incidents (returned 6 items)"
+    },
+    {
+      "module": "INCIDENTS",
+      "endpoint": "/incidents",
+      "method": "POST",
+      "status_code": 403,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create incident [PERMISSION DENIED]"
+    },
+    {
+      "module": "TRAINING",
+      "endpoint": "/training/programs",
+      "method": "GET",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "List programs"
+    },
+    {
+      "module": "TRAINING",
+      "endpoint": "/training/programs",
+      "method": "POST",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create program"
+    },
+    {
+      "module": "FINANCIAL",
+      "endpoint": "/financial/transactions",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List transactions (returned 4 items)"
+    },
+    {
+      "module": "FINANCIAL",
+      "endpoint": "/financial/transactions",
+      "method": "POST",
+      "status_code": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Create transaction (created ID: 4afe07a9...)"
+    },
+    {
+      "module": "HR",
+      "endpoint": "/hr/employees",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List employees (returned 1 items)"
+    },
+    {
+      "module": "EMERGENCIES",
+      "endpoint": "/emergencies",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List emergencies (returned 2 items)"
+    },
+    {
+      "module": "EMERGENCIES",
+      "endpoint": "/emergencies",
+      "method": "POST",
+      "status_code": 422,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create emergency"
+    },
+    {
+      "module": "TEAM CHAT",
+      "endpoint": "/chat/channels",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List channels (returned 3 items)"
+    },
+    {
+      "module": "ANNOUNCEMENTS",
+      "endpoint": "/announcements",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List announcements (returned 2 items)"
+    },
+    {
+      "module": "ANNOUNCEMENTS",
+      "endpoint": "/announcements",
+      "method": "POST",
+      "status_code": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Create announcement (created ID: f7a8274f...)"
+    },
+    {
+      "module": "CONTRACTORS",
+      "endpoint": "/contractors",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List contractors (returned 3 items)"
+    },
+    {
+      "module": "CONTRACTORS",
+      "endpoint": "/contractors",
+      "method": "POST",
+      "status_code": 422,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "Create contractor"
+    },
+    {
+      "module": "GROUPS",
+      "endpoint": "/groups",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List groups (returned 2 items)"
+    },
+    {
+      "module": "GROUPS",
+      "endpoint": "/groups",
+      "method": "POST",
+      "status_code": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Create group (created ID: 7363257d...)"
+    },
+    {
+      "module": "WEBHOOKS",
+      "endpoint": "/webhooks",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List webhooks (returned 3 items)"
+    },
+    {
+      "module": "WEBHOOKS",
+      "endpoint": "/webhooks",
+      "method": "POST",
+      "status_code": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Create webhook (created ID: bae094a6...)"
+    },
+    {
+      "module": "REPORTS",
+      "endpoint": "/reports/overview",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Reports overview"
+    },
+    {
+      "module": "ANALYTICS",
+      "endpoint": "/analytics/overview",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "Analytics overview"
+    },
+    {
+      "module": "AUDIT LOGS",
+      "endpoint": "/audit/logs",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List audit logs (returned 33 items)"
+    },
+    {
+      "module": "USER MANAGEMENT",
+      "endpoint": "/users",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List users (returned 11 items)"
+    },
+    {
+      "module": "ROLE MANAGEMENT",
+      "endpoint": "/roles",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List roles (returned 11 items)"
+    },
+    {
+      "module": "ORGANIZATION",
+      "endpoint": "/organizations/units",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List org units (returned 10 items)"
+    },
+    {
+      "module": "INVITATIONS",
+      "endpoint": "/invitations",
+      "method": "GET",
+      "status_code": 200,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "PASS",
+      "details": "List invitations (returned 27 items)"
+    },
+    {
+      "module": "WORKFLOWS",
+      "endpoint": "/workflows",
+      "method": "GET",
+      "status_code": 404,
+      "expected": [
+        200,
+        201
+      ],
+      "result": "FAIL",
+      "details": "List workflows"
+    }
+  ]
+}
