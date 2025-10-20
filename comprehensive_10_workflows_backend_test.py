@@ -941,8 +941,6 @@ def test_workflow_5():
             "category": "quality",
             "scoring_enabled": True,
             "pass_percentage": 80,
-            "auto_create_work_order_on_fail": True,
-            "work_order_priority": "high",
             "questions": [
                 {
                     "question_text": "Quality check passed?",
@@ -963,9 +961,28 @@ def test_workflow_5():
         if response.status_code == 201:
             template = response.json()
             template_id = template.get("id")
-            auto_create = template.get("auto_create_work_order_on_fail")
-            priority = template.get("work_order_priority")
-            log_test(workflow, "Step 1: Create template with auto WO", True, f"Template ID: {template_id}, Auto WO: {auto_create}, Priority: {priority}")
+            
+            # Update template with auto_create_work_order_on_fail
+            update_data = {
+                "auto_create_work_order_on_fail": True,
+                "work_order_priority": "high"
+            }
+            
+            response = requests.put(
+                f"{API_BASE}/inspections/templates/{template_id}",
+                json=update_data,
+                headers=get_headers(),
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                template = response.json()
+                auto_create = template.get("auto_create_work_order_on_fail")
+                priority = template.get("work_order_priority")
+                log_test(workflow, "Step 1: Create template with auto WO", True, f"Template ID: {template_id}, Auto WO: {auto_create}, Priority: {priority}")
+            else:
+                log_test(workflow, "Step 1: Create template with auto WO", False, f"Update failed: {response.status_code}")
+                return
         else:
             log_test(workflow, "Step 1: Create template", False, f"Status: {response.status_code}")
             return
