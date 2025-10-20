@@ -179,7 +179,7 @@ def test_workflow_1():
     try:
         execution_data = {
             "template_id": template_id,
-            "location": "Main Facility - Building A"
+            "location": {"latitude": 40.7128, "longitude": -74.0060}  # NYC coordinates
         }
         
         response = requests.post(
