@@ -1171,13 +1171,11 @@ def test_workflow_9():
             "name": f"Daily Checklist - {datetime.now().strftime('%Y%m%d%H%M%S')}",
             "description": "Daily operational checklist",
             "category": "operations",
-            "requires_supervisor_approval": True,
-            "scoring_enabled": True,
+            "requires_approval": True,
             "items": [
                 {
                     "item_text": "Check equipment status",
-                    "required": True,
-                    "scoring_enabled": True
+                    "required": True
                 }
             ]
         }
