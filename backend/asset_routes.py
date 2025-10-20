@@ -37,16 +37,19 @@ async def create_asset(
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create assets")
     
+    # Auto-generate asset_tag if not provided
+    asset_tag = asset_data.asset_tag or f"AST-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{str(uuid.uuid4())[:6].upper()}"
+    
     # Check if asset_tag already exists
     existing = await db.assets.find_one({
-        "asset_tag": asset_data.asset_tag,
+        "asset_tag": asset_tag,
         "organization_id": user["organization_id"]
     })
     
     if existing:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Asset tag '{asset_data.asset_tag}' already exists",
+            detail=f"Asset tag '{asset_tag}' already exists",
         )
     
     # Get unit name if provided
