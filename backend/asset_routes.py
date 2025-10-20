@@ -187,6 +187,17 @@ async def get_asset_types(
     }
 
 
+
+
+@router.get("/types")
+async def get_asset_types_alias(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get asset type catalog (alias for /types/catalog)"""
+    return await get_asset_types(request, db)
+
+
 @router.get("/stats")
 async def get_asset_stats(
     request: Request,
