@@ -147,6 +147,8 @@ async def create_inspection_template(
         pass_percentage=template_data.pass_percentage,
         require_gps=template_data.require_gps,
         require_photos=template_data.require_photos,
+        auto_create_work_order_on_fail=template_data.auto_create_work_order_on_fail,
+        work_order_priority=template_data.work_order_priority,
         created_by=user["id"],
     )
     
