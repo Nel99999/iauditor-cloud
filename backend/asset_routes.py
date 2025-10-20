@@ -64,7 +64,7 @@ async def create_asset(
     # Create asset
     asset = Asset(
         organization_id=user["organization_id"],
-        asset_tag=asset_data.asset_tag,
+        asset_tag=asset_tag,
         name=asset_data.name,
         description=asset_data.description,
         asset_type=asset_data.asset_type,
