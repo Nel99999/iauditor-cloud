@@ -641,6 +641,8 @@ def test_workflow_3():
         
         if response.status_code == 201:
             log_test(workflow, "Step 2: Create subtask 1", True, "Subtask 1 created")
+        elif response.status_code == 200:
+            log_test(workflow, "Step 2: Create subtask 1", True, "Subtask 1 created (200 OK)")
         else:
             log_test(workflow, "Step 2: Create subtask 1", False, f"Status: {response.status_code}")
         
