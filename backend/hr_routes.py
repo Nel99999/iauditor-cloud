@@ -26,13 +26,13 @@ async def create_employee(
         user_id=employee_data.get("user_id"),
         organization_id=user["organization_id"],
         unit_id=employee_data.get("unit_id"),
-        employee_number=employee_data.get("employee_number"),
+        employee_number=employee_data.get("employee_number") or f"EMP-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{str(uuid.uuid4())[:6].upper()}",
         first_name=employee_data.get("first_name"),
         last_name=employee_data.get("last_name"),
         email=employee_data.get("email"),
         position=employee_data.get("position"),
         department=employee_data.get("department"),
-        hire_date=employee_data.get("hire_date"),
+        hire_date=employee_data.get("hire_date") or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
     )
     
     employee_dict = employee.model_dump()
