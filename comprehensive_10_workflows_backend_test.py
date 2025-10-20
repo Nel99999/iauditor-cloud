@@ -1189,7 +1189,7 @@ def test_workflow_9():
         
         if response.status_code == 201:
             checklist = response.json()
-            requires_approval = checklist.get("requires_supervisor_approval")
+            requires_approval = checklist.get("requires_approval")
             log_test(workflow, "Step 1: Create checklist with approval", True, f"Requires approval: {requires_approval}")
         else:
             log_test(workflow, "Step 1: Create checklist", False, f"Status: {response.status_code}")
