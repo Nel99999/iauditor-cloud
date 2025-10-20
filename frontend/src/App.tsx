@@ -625,6 +625,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/team-chat"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <TeamChatPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
