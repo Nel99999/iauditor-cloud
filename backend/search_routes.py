@@ -180,7 +180,7 @@ async def global_search_root(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Global search root endpoint (alias for /global)"""
-    return await global_search(q, request, None, limit, db)
+    return await global_search(q=q, request=request, types=None, limit=limit, db=db)
 
 
 
