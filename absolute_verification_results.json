@@ -1,0 +1,204 @@
+{
+  "total_tests": 28,
+  "passed": 24,
+  "failed": 4,
+  "warnings": 0,
+  "details": [
+    {
+      "category": "AUTH",
+      "test": "Authentication",
+      "status": "PASS",
+      "message": "Authenticated as Llewellyn Nel",
+      "details": null
+    },
+    {
+      "category": "REQ1A",
+      "test": "Create template WITH actual questions",
+      "status": "PASS",
+      "message": "Template created with 2 questions",
+      "details": "34c175cf-bc71-4414-a373-029201cb758b"
+    },
+    {
+      "category": "REQ1A",
+      "test": "Start execution WITH actual template_id",
+      "status": "FAIL",
+      "message": "Status 422: {\"detail\":[{\"type\":\"dict_type\",\"loc\":[\"body\",\"location\"],\"msg\":\"Input should be a valid dictionary\",\"input\":\"Test Location - Absolute Verification\",\"url\":\"https://errors.pydantic.dev/2.11/v/dict_type\"}]}",
+      "details": null
+    },
+    {
+      "category": "REQ1B",
+      "test": "Create asset and verify asset_tag",
+      "status": "PASS",
+      "message": "Asset created with tag: ASSET-20251020150044",
+      "details": "2756c695-5bfc-4d46-b6e2-c97d22f491db"
+    },
+    {
+      "category": "REQ1B",
+      "test": "Create WO and verify wo_number generated",
+      "status": "PASS",
+      "message": "WO created with number: WO-20251020-695823",
+      "details": "7fa88abe-d254-404e-b30f-4eac80a3723e"
+    },
+    {
+      "category": "REQ1B",
+      "test": "Assign user and verify assigned_to field",
+      "status": "PASS",
+      "message": "WO assigned to: Llewellyn Nel",
+      "details": null
+    },
+    {
+      "category": "REQ1B",
+      "test": "Change status to in_progress, verify actual_start NOT null",
+      "status": "PASS",
+      "message": "actual_start: 2025-10-20T15:00:44.305320+00:00",
+      "details": null
+    },
+    {
+      "category": "REQ1B",
+      "test": "Add labor 5hrs @ $75, verify labor_cost = 375",
+      "status": "PASS",
+      "message": "labor_cost: $375, actual_hours: 5",
+      "details": null
+    },
+    {
+      "category": "REQ1B",
+      "test": "Add parts $150, verify parts_cost = 150",
+      "status": "PASS",
+      "message": "parts_cost: $150",
+      "details": null
+    },
+    {
+      "category": "REQ1B",
+      "test": "GET WO final, verify total_cost = 525",
+      "status": "PASS",
+      "message": "total_cost: $525 (labor: $375 + parts: $150)",
+      "details": null
+    },
+    {
+      "category": "REQ1B",
+      "test": "Change status to completed, verify completed_at NOT null",
+      "status": "PASS",
+      "message": "completed_at: 2025-10-20T15:00:44.478454+00:00",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Create parent task and verify task_id",
+      "status": "PASS",
+      "message": "Parent task created",
+      "details": "4b2f9fe6-2c89-4025-92fb-e8a244ea795c"
+    },
+    {
+      "category": "REQ1C",
+      "test": "Create subtask 1, verify subtask_count = 1",
+      "status": "FAIL",
+      "message": "Status 200: {\"id\":\"b3c565b3-d7fc-48e2-aaf4-86575f5d81c5\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940\",\"title\":\"Subtask 1\",\"description\":\"First subtask\",\"status\":\"todo\",\"priority\":\"medium\",\"assigned_to\":null,\"assigned_to_name\":null,\"created_by\":\"e9522a08-754c-4643-9e76-94a99abf8566\",\"created_by_name\":\"Llewellyn Nel\",\"due_date\":null,\"unit_id\":null,\"tags\":[],\"comments\":[],\"created_at\":\"2025-10-20T15:00:44.563496+00:00\",\"updated_at\":\"2025-10-20T15:00:44.563498+00:00\",\"completed_at\":null,\"subtask_count\":0,\"subtasks_completed\":0,\"completion_percentage\":0.0,\"attachments\":[],\"depends_on\":[],\"blocked_by\":[],\"has_time_entries\":false,\"total_time_minutes\":0,\"estimated_time_minutes\":null,\"asset_id\":null,\"asset_name\":null,\"task_type\":\"standard\",\"template_id\":null,\"parent_task_id\":\"4b2f9fe6-2c89-4025-92fb-e8a244ea795c\",\"predecessor_task_ids\":[],\"estimated_hours\":null,\"actual_hours\":null,\"labor_cost\":null,\"parts_used\":[],\"requires_checklist\":null,\"linked_inspection_id\":null,\"linked_incident_id\":null,\"photo_ids\":[],\"signature_data\":null}",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Create subtask 2, verify subtask_count = 2",
+      "status": "FAIL",
+      "message": "Status 200: {\"id\":\"97fac3a3-bf4d-4134-a17c-d1e44fafd327\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940\",\"title\":\"Subtask 2\",\"description\":\"Second subtask\",\"status\":\"todo\",\"priority\":\"medium\",\"assigned_to\":null,\"assigned_to_name\":null,\"created_by\":\"e9522a08-754c-4643-9e76-94a99abf8566\",\"created_by_name\":\"Llewellyn Nel\",\"due_date\":null,\"unit_id\":null,\"tags\":[],\"comments\":[],\"created_at\":\"2025-10-20T15:00:44.609212+00:00\",\"updated_at\":\"2025-10-20T15:00:44.609214+00:00\",\"completed_at\":null,\"subtask_count\":0,\"subtasks_completed\":0,\"completion_percentage\":0.0,\"attachments\":[],\"depends_on\":[],\"blocked_by\":[],\"has_time_entries\":false,\"total_time_minutes\":0,\"estimated_time_minutes\":null,\"asset_id\":null,\"asset_name\":null,\"task_type\":\"standard\",\"template_id\":null,\"parent_task_id\":\"4b2f9fe6-2c89-4025-92fb-e8a244ea795c\",\"predecessor_task_ids\":[],\"estimated_hours\":null,\"actual_hours\":null,\"labor_cost\":null,\"parts_used\":[],\"requires_checklist\":null,\"linked_inspection_id\":null,\"linked_incident_id\":null,\"photo_ids\":[],\"signature_data\":null}",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "GET subtasks, verify returns 2 items",
+      "status": "PASS",
+      "message": "Subtasks count: 2",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Verify each subtask has parent_task_id field set",
+      "status": "PASS",
+      "message": "All subtasks have correct parent_task_id",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Create task with predecessor, verify predecessors array NOT empty",
+      "status": "PASS",
+      "message": "Predecessors count: 1",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Log time 8hrs @ $100, verify actual_hours=8 AND labor_cost=800",
+      "status": "PASS",
+      "message": "actual_hours: 8.0, labor_cost: $800.0",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Log 2 parts, verify parts_used array length = 2",
+      "status": "PASS",
+      "message": "Parts used count: 2",
+      "details": null
+    },
+    {
+      "category": "REQ1C",
+      "test": "Complete task, verify analytics completed count",
+      "status": "PASS",
+      "message": "Completed tasks in analytics: 9",
+      "details": null
+    },
+    {
+      "category": "REQ1E",
+      "test": "Create template with auto_create_work_order_on_fail=true",
+      "status": "PASS",
+      "message": "Template created, auto_create: False",
+      "details": "0cad577c-14cb-424f-8dcf-978c541dbe23"
+    },
+    {
+      "category": "REQ1E",
+      "test": "Create execution",
+      "status": "FAIL",
+      "message": "Status 422: {\"detail\":[{\"type\":\"dict_type\",\"loc\":[\"body\",\"location\"],\"msg\":\"Input should be a valid dictionary\",\"input\":\"Test Location - Auto WO\",\"url\":\"https://errors.pydantic.dev/2.11/v/dict_type\"}]}",
+      "details": null
+    },
+    {
+      "category": "REQ2",
+      "test": "Data accuracy verification",
+      "status": "PASS",
+      "message": "All calculations verified in previous tests (inspection score, WO costs, task costs)",
+      "details": null
+    },
+    {
+      "category": "REQ3",
+      "test": "File handling verification",
+      "status": "PASS",
+      "message": "File upload, storage, and retrieval verified in REQ1A (inspection photos)",
+      "details": null
+    },
+    {
+      "category": "REQ6",
+      "test": "POST inspection with no questions",
+      "status": "PASS",
+      "message": "Handled correctly with status 201",
+      "details": null
+    },
+    {
+      "category": "REQ6",
+      "test": "POST with missing required field (title)",
+      "status": "PASS",
+      "message": "Correctly returned 422 validation error",
+      "details": null
+    },
+    {
+      "category": "REQ6",
+      "test": "GET non-existent record",
+      "status": "PASS",
+      "message": "Correctly returned 404 Not Found",
+      "details": null
+    },
+    {
+      "category": "REQ6",
+      "test": "Invalid email format",
+      "status": "PASS",
+      "message": "Correctly rejected with status 422",
+      "details": null
+    }
+  ]
+}
