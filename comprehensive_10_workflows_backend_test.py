@@ -1001,7 +1001,7 @@ def test_workflow_5():
         execution_data = {
             "template_id": template_id,
             "asset_id": asset_id,
-            "location": "Production Line 1"
+            "location": {"latitude": 40.7128, "longitude": -74.0060}
         }
         
         response = requests.post(
