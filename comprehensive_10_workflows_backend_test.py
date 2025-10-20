@@ -1178,7 +1178,7 @@ def test_workflow_9():
             "requires_approval": True,
             "items": [
                 {
-                    "item_text": "Check equipment status",
+                    "text": "Check equipment status",
                     "required": True
                 }
             ]
