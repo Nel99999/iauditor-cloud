@@ -84,6 +84,8 @@ class InspectionTemplateCreate(BaseModel):
     pass_percentage: Optional[float] = None
     require_gps: bool = False
     require_photos: bool = False
+    auto_create_work_order_on_fail: bool = False
+    work_order_priority: Optional[str] = None
 
 
 class InspectionTemplateUpdate(BaseModel):
