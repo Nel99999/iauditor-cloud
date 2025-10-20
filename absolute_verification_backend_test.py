@@ -141,7 +141,7 @@ def test_1a_inspection_with_photo_signature_pdf():
     try:
         execution_data = {
             "template_id": template_id,
-            "location": "Test Location - Absolute Verification"
+            "location": {"latitude": -33.9249, "longitude": 18.4241}  # Cape Town coordinates
         }
         
         response = requests.post(
