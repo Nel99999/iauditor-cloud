@@ -79,7 +79,7 @@ class Asset(BaseModel):
 
 class AssetCreate(BaseModel):
     """Create asset - only requires minimum fields"""
-    asset_tag: str
+    asset_tag: Optional[str] = None
     name: str
     description: Optional[str] = None
     asset_type: str = "equipment"  # Default value
