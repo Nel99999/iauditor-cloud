@@ -29,9 +29,9 @@ const FinancialPage = () => {
         axios.get(`${API}/financial/budgets`),
       ]);
       setSummary(summaryRes.data);
-      setCapex(capexRes.data);
-      setOpex(opexRes.data);
-      setBudgets(budgetsRes.data);
+      setCapex(capexRes.data.capex_requests || capexRes.data || []);
+      setOpex(opexRes.data.opex_transactions || opexRes.data || []);
+      setBudgets(budgetsRes.data.budgets || budgetsRes.data || []);
     } catch (err) {
       console.error('Failed to load financial data:', err);
     } finally {
