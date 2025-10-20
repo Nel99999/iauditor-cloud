@@ -636,6 +636,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/hr"
+              element={
+                <ProtectedRoute>
+                  <LayoutNew>
+                    <HRPage />
+                  </LayoutNew>
+                </ProtectedRoute>
+              }
+            />
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
