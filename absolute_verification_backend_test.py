@@ -870,7 +870,7 @@ def test_1e_failed_inspection_auto_work_order():
     try:
         execution_data = {
             "template_id": template_id,
-            "location": "Test Location - Auto WO"
+            "location": {"latitude": -33.9249, "longitude": 18.4241}
         }
         
         response = requests.post(
