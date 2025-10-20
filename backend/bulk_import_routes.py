@@ -394,3 +394,14 @@ async def get_import_template(
             ]
         }
     }
+
+
+
+
+@router.get("/template")
+async def get_import_template_alias(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get CSV template for import (alias for /users/template)"""
+    return await get_import_template(request, db)
