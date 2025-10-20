@@ -119,6 +119,17 @@ async def get_work_order_stats(
     return stats.model_dump()
 
 
+
+
+@router.get("/stats")
+async def get_work_order_stats_alias(
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get work order statistics (alias for /stats/overview)"""
+    return await get_work_order_stats(request, db)
+
+
 @router.get("/backlog")
 async def get_work_order_backlog(
     request: Request,
