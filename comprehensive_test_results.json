@@ -1,0 +1,1056 @@
+{
+  "total": 119,
+  "passed": 95,
+  "failed": 24,
+  "modules": {
+    "1. AUTHENTICATION & USERS": {
+      "passed": 14,
+      "failed": 1,
+      "tests": [
+        {
+          "endpoint": "POST /auth/login",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Already authenticated"
+        },
+        {
+          "endpoint": "POST /auth/register",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"name\"],\"msg\":\"Field required\",\"input\":{\"email\":\"test_202"
+        },
+        {
+          "endpoint": "POST /auth/forgot-password",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"message\":\"If this email is registered, a password reset link has been sent\"}"
+        },
+        {
+          "endpoint": "POST /auth/reset-password",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires reset token"
+        },
+        {
+          "endpoint": "GET /users",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Users: 11"
+        },
+        {
+          "endpoint": "GET /users/me",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"e9522a08-754c-4643-9e76-94a99abf8566\",\"email\":\"llewellyn@bluedawncapital.co.za\",\"name\":\"Llewe"
+        },
+        {
+          "endpoint": "PUT /users/profile",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"message\":\"Profile updated successfully\"}"
+        },
+        {
+          "endpoint": "POST /users/invite",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "{\"message\":\"Invitation sent to invite_20251020045424@example.com\",\"invitation\":{\"id\":\"aa15fbcd-5c91-"
+        },
+        {
+          "endpoint": "GET /users/pending-approvals",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Pending: 0"
+        },
+        {
+          "endpoint": "POST /users/{id}/approve",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires pending user"
+        },
+        {
+          "endpoint": "POST /users/{id}/reject",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires pending user"
+        },
+        {
+          "endpoint": "GET /users/me/org-context",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940\",\"organization_name\":null,\"unit_id\":null,\"u"
+        },
+        {
+          "endpoint": "GET /users/me/recent-activity",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Activities: 5"
+        },
+        {
+          "endpoint": "PUT /users/sidebar-preferences",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"message\":\"Sidebar preferences updated successfully\",\"preferences\":{\"default_mode\":\"collapsed\",\"hov"
+        },
+        {
+          "endpoint": "GET /users/sidebar-preferences",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"default_mode\":\"collapsed\",\"hover_expand_enabled\":false,\"auto_collapse_enabled\":false,\"inactivity_t"
+        }
+      ]
+    },
+    "2. ROLES & PERMISSIONS": {
+      "passed": 5,
+      "failed": 5,
+      "tests": [
+        {
+          "endpoint": "GET /roles",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Roles: 11"
+        },
+        {
+          "endpoint": "POST /roles",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"code\"],\"msg\":\"Field required\",\"input\":{\"name\":\"Test Role"
+        },
+        {
+          "endpoint": "GET /roles/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No role created"
+        },
+        {
+          "endpoint": "PUT /roles/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No role created"
+        },
+        {
+          "endpoint": "DELETE /roles/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No role created"
+        },
+        {
+          "endpoint": "GET /permissions",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Permissions: 121"
+        },
+        {
+          "endpoint": "POST /permissions/check",
+          "status": 422,
+          "expected": 200,
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"query\",\"resource_type\"],\"msg\":\"Field required\",\"input\":null,\"ur"
+        },
+        {
+          "endpoint": "GET /permissions/me",
+          "status": 405,
+          "expected": 200,
+          "result": "\u274c FAIL",
+          "message": "My permissions: 0"
+        },
+        {
+          "endpoint": "GET /roles/{id}/users",
+          "status": 404,
+          "expected": 200,
+          "result": "\u274c FAIL",
+          "message": "Users in role: 0"
+        },
+        {
+          "endpoint": "POST /roles/{id}/assign-permissions",
+          "status": 404,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "3. ORGANIZATIONS": {
+      "passed": 5,
+      "failed": 3,
+      "tests": [
+        {
+          "endpoint": "GET /organizations/units",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Units: 10"
+        },
+        {
+          "endpoint": "POST /organizations/units",
+          "status": 400,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":\"Root units must be level 1\"}"
+        },
+        {
+          "endpoint": "GET /organizations/units/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No unit created"
+        },
+        {
+          "endpoint": "PUT /organizations/units/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No unit created"
+        },
+        {
+          "endpoint": "DELETE /organizations/units/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No unit created"
+        },
+        {
+          "endpoint": "GET /organizations/hierarchy",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "[{\"id\":\"cbca528a-bfd8-4953-992f-c700f1f34f10\",\"name\":\"Llewellyn Nel Profile\",\"description\":\"Test iTh"
+        },
+        {
+          "endpoint": "GET /organizations/stats",
+          "status": 404,
+          "expected": 200,
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":\"Not Found\"}"
+        },
+        {
+          "endpoint": "GET /organizations/sidebar-settings",
+          "status": 404,
+          "expected": 200,
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":\"Not Found\"}"
+        }
+      ]
+    },
+    "4. INSPECTIONS": {
+      "passed": 12,
+      "failed": 0,
+      "tests": [
+        {
+          "endpoint": "GET /inspections/templates",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Templates: 42"
+        },
+        {
+          "endpoint": "POST /inspections/templates",
+          "status": 201,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"16b418dd-e0cb-4e96-868f-f408cc7475fa\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "GET /inspections/templates/{id}",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"16b418dd-e0cb-4e96-868f-f408cc7475fa\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "PUT /inspections/templates/{id}",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"16b418dd-e0cb-4e96-868f-f408cc7475fa\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "DELETE /inspections/templates/{id}",
+          "status": 200,
+          "expected": [
+            200,
+            204
+          ],
+          "result": "\u2705 PASS",
+          "message": "{\"message\":\"Template deleted successfully\"}"
+        },
+        {
+          "endpoint": "GET /inspections/executions",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Executions: 24"
+        },
+        {
+          "endpoint": "POST /inspections/executions",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires valid template"
+        },
+        {
+          "endpoint": "PUT /inspections/executions/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires execution"
+        },
+        {
+          "endpoint": "POST /inspections/executions/{id}/complete",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires execution"
+        },
+        {
+          "endpoint": "GET /inspections/templates/{id}/analytics",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"template_id\":\"af09eb0e-1807-42ce-99b4-f66b7ea34991\",\"template_name\":\"Safety Inspection\",\"total_exe"
+        },
+        {
+          "endpoint": "GET /inspections/calendar",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"calendar_items\":[],\"date_range\":{\"start\":\"2025-10-20T04:54:25.674740+00:00\",\"end\":\"2025-11-19T04:5"
+        },
+        {
+          "endpoint": "GET /inspections/scheduled",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"scheduled_inspections\":[],\"date_range\":{\"start\":\"2025-10-20\",\"end\":\"2025-10-27\",\"days_ahead\":7},\"t"
+        }
+      ]
+    },
+    "5. CHECKLISTS": {
+      "passed": 10,
+      "failed": 2,
+      "tests": [
+        {
+          "endpoint": "GET /checklists/templates",
+          "status": 403,
+          "expected": 200,
+          "result": "\u274c FAIL",
+          "message": "Templates: 0"
+        },
+        {
+          "endpoint": "POST /checklists/templates",
+          "status": 403,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "{\"detail\":\"You don't have permission to create checklists\"}"
+        },
+        {
+          "endpoint": "GET /checklists/templates/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No template"
+        },
+        {
+          "endpoint": "PUT /checklists/templates/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No template"
+        },
+        {
+          "endpoint": "DELETE /checklists/templates/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No template"
+        },
+        {
+          "endpoint": "GET /checklists/executions",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Executions: 9"
+        },
+        {
+          "endpoint": "POST /checklists/executions",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires template"
+        },
+        {
+          "endpoint": "PUT /checklists/executions/{id}",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires execution"
+        },
+        {
+          "endpoint": "POST /checklists/executions/{id}/complete",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires execution"
+        },
+        {
+          "endpoint": "GET /checklists/templates/{id}/analytics",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "No templates"
+        },
+        {
+          "endpoint": "GET /checklists/scheduled",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"scheduled_checklists\":[],\"date_range\":{\"start\":\"2025-10-20\",\"end\":\"2025-10-27\",\"days_ahead\":7},\"to"
+        },
+        {
+          "endpoint": "GET /checklists/pending-approvals",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"pending_approvals\":[],\"total_count\":0}"
+        }
+      ]
+    },
+    "6. TASKS": {
+      "passed": 15,
+      "failed": 0,
+      "tests": [
+        {
+          "endpoint": "GET /tasks",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "Tasks: 50"
+        },
+        {
+          "endpoint": "POST /tasks",
+          "status": 201,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"fea91665-0d5c-4efe-9cb6-8188ee644c56\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "GET /tasks/{id}",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"fea91665-0d5c-4efe-9cb6-8188ee644c56\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "PUT /tasks/{id}",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"fea91665-0d5c-4efe-9cb6-8188ee644c56\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "DELETE /tasks/{id}",
+          "status": 200,
+          "expected": [
+            200,
+            204
+          ],
+          "result": "\u2705 PASS",
+          "message": "Deleted"
+        },
+        {
+          "endpoint": "POST /tasks/{id}/subtasks",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires task"
+        },
+        {
+          "endpoint": "GET /tasks/{id}/subtasks",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires task"
+        },
+        {
+          "endpoint": "GET /tasks/{id}/dependencies",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires task"
+        },
+        {
+          "endpoint": "POST /tasks/{id}/log-time",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires task"
+        },
+        {
+          "endpoint": "POST /tasks/{id}/log-parts",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires task"
+        },
+        {
+          "endpoint": "GET /tasks/templates",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "[{\"id\":\"3cc55998-e6db-428c-8675-92384e639206\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb94"
+        },
+        {
+          "endpoint": "POST /tasks/templates",
+          "status": 201,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "{\"id\":\"efb166df-fe16-4d56-adc2-b2b72e9f4e27\",\"organization_id\":\"315fa36c-4555-4b2b-8ba3-fdbde31cb940"
+        },
+        {
+          "endpoint": "GET /tasks/stats/overview",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"total_tasks\":99,\"todo\":75,\"in_progress\":1,\"completed\":4,\"overdue\":1,\"completion_rate\":4.04}"
+        },
+        {
+          "endpoint": "GET /tasks/analytics/overview",
+          "status": 200,
+          "expected": 200,
+          "result": "\u2705 PASS",
+          "message": "{\"total_tasks\":99,\"completed_tasks\":4,\"in_progress_tasks\":1,\"todo_tasks\":75,\"blocked_tasks\":0,\"overd"
+        },
+        {
+          "endpoint": "POST /tasks/{id}/comments",
+          "status": "SKIP",
+          "expected": "SKIP",
+          "result": "\u2705 PASS",
+          "message": "Requires task"
+        }
+      ]
+    },
+    "7-20. REMAINING MODULES": {
+      "passed": 34,
+      "failed": 13,
+      "tests": [
+        {
+          "endpoint": "GET /assets",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Assets list: [{\"id\":\"8bd79c47-c3dc-4f70-96d4-676dbd2ef5a5\",\"org"
+        },
+        {
+          "endpoint": "POST /assets",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create asset: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"asset_"
+        },
+        {
+          "endpoint": "GET /assets/types",
+          "status": 404,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Asset types: {\"detail\":\"Asset not found\"}"
+        },
+        {
+          "endpoint": "GET /assets/stats",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Asset stats: {\"total_assets\":7,\"active\":5,\"inactive\":0,\"in_main"
+        },
+        {
+          "endpoint": "GET /work-orders",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Work orders list: [{\"id\":\"ed14e54f-bca4-4d8b-9b27-20816f11ecea\",\"wo_"
+        },
+        {
+          "endpoint": "POST /work-orders",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create work order: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"title\""
+        },
+        {
+          "endpoint": "GET /work-orders/stats",
+          "status": 404,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Work order stats: {\"detail\":\"Work order not found\"}"
+        },
+        {
+          "endpoint": "GET /inventory/items",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Inventory items: [{\"id\":\"22bce5ed-0819-4a60-8a9c-6a5755ed7338\",\"org"
+        },
+        {
+          "endpoint": "POST /inventory/items",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create inventory item: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"part_n"
+        },
+        {
+          "endpoint": "GET /inventory/stats",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Inventory stats: {\"total_items\":4,\"total_value\":5340.0,\"items_below"
+        },
+        {
+          "endpoint": "GET /projects",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Projects list: [{\"id\":\"e02138d1-3f09-4a57-a59a-c9c68dbe33e1\",\"org"
+        },
+        {
+          "endpoint": "POST /projects",
+          "status": 403,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create project: {\"detail\":\"You don't have permission to create pro"
+        },
+        {
+          "endpoint": "GET /projects/stats/overview",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Project stats: {\"total_projects\":7,\"by_status\":{\"planning\":7},\"to"
+        },
+        {
+          "endpoint": "GET /incidents",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Incidents list: [{\"id\":\"14753d59-9388-41f3-9715-4f9611d9d78b\",\"org"
+        },
+        {
+          "endpoint": "POST /incidents",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create incident: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"title\""
+        },
+        {
+          "endpoint": "GET /incidents/stats",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Incident stats: {\"total_incidents\":6,\"by_type\":{\"safety\":6},\"by_se"
+        },
+        {
+          "endpoint": "GET /training/courses",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Training courses: [{\"id\":\"bbeec8bb-03ec-4853-be28-c17bf81dacee\",\"org"
+        },
+        {
+          "endpoint": "POST /training/courses",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create course: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"title\""
+        },
+        {
+          "endpoint": "GET /training/stats",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Training stats: {\"total_programs\":4,\"total_completions\":0,\"complet"
+        },
+        {
+          "endpoint": "GET /financial/transactions",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Transactions: [{\"id\":\"dfb389b6-4e3f-4cac-ab9a-c69d903a7a7d\",\"org"
+        },
+        {
+          "endpoint": "POST /financial/transactions",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create transaction: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"transa"
+        },
+        {
+          "endpoint": "GET /financial/summary",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Financial summary: {\"expense\":{\"total\":400.0,\"count\":4}}"
+        },
+        {
+          "endpoint": "GET /hr/employees",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Employees: [{\"id\":\"3971d5a1-060c-4d0a-90fa-900770886b4a\",\"use"
+        },
+        {
+          "endpoint": "GET /hr/announcements",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Announcements: [{\"id\":\"faeb3a06-e108-4f73-96c8-7a2b06726b71\",\"org"
+        },
+        {
+          "endpoint": "GET /hr/stats",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "HR stats: {\"total_employees\":0,\"by_department\":{},\"by_employ"
+        },
+        {
+          "endpoint": "GET /emergencies",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Emergencies: [{\"id\":\"3321f9b3-1ab8-4a8a-8cdb-00eefb6b2868\",\"eme"
+        },
+        {
+          "endpoint": "POST /emergencies",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create emergency: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"emerge"
+        },
+        {
+          "endpoint": "GET /emergencies/active",
+          "status": 404,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Active emergencies: {\"detail\":\"Emergency not found\"}"
+        },
+        {
+          "endpoint": "GET /dashboard/stats",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Dashboard stats: {\"users\":{\"total_users\":11,\"active_users\":1,\"pendi"
+        },
+        {
+          "endpoint": "GET /dashboard/financial",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Financial dashboard: {\"total_revenue\":0,\"total_expenses\":400.0,\"net_inc"
+        },
+        {
+          "endpoint": "GET /dashboards/executive",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Executive dashboard: {\"overview\":{\"total_tasks\":99,\"total_assets\":7,\"to"
+        },
+        {
+          "endpoint": "GET /chat/channels",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Chat channels: [{\"id\":\"4f14859e-e518-4817-aa18-70f59b2de51c\",\"org"
+        },
+        {
+          "endpoint": "POST /chat/channels",
+          "status": 201,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Create channel: {\"id\":\"0a5ec7c8-5f77-4289-b09f-58f9ff6e99e0\",\"orga"
+        },
+        {
+          "endpoint": "GET /contractors",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Contractors: [{\"id\":\"34f6bfa6-cf04-46c3-9293-31c55060087f\",\"org"
+        },
+        {
+          "endpoint": "POST /contractors",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create contractor: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"compan"
+        },
+        {
+          "endpoint": "GET /announcements",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Announcements: [{\"id\":\"faeb3a06-e108-4f73-96c8-7a2b06726b71\",\"org"
+        },
+        {
+          "endpoint": "POST /announcements",
+          "status": 422,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u274c FAIL",
+          "message": "Create announcement: {\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"title\""
+        },
+        {
+          "endpoint": "GET /comments",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Comments: [{\"id\":\"74976cb5-9549-463e-936d-4f3fb5512b22\",\"org"
+        },
+        {
+          "endpoint": "GET /attachments",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Attachments: []"
+        },
+        {
+          "endpoint": "GET /notifications",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Notifications: {\"notifications\":[],\"total\":0,\"unread_count\":0}"
+        },
+        {
+          "endpoint": "GET /audit/logs",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Audit logs: [{\"id\":\"c68896a7-98cb-4111-b9fa-522342e79478\",\"org"
+        },
+        {
+          "endpoint": "GET /invitations",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Invitations: [{\"id\":\"4b180278-4530-4e8a-a128-9180b051990a\",\"ema"
+        },
+        {
+          "endpoint": "GET /groups",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Groups: [{\"id\":\"e7be6e0a-e567-43cc-946a-6cffc4d1364c\",\"org"
+        },
+        {
+          "endpoint": "GET /webhooks",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Webhooks: [{\"id\":\"4f7c894d-1f52-417c-8c41-9d07a44b01c8\",\"org"
+        },
+        {
+          "endpoint": "GET /workflows/templates",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Workflow templates: [{\"id\":\"d62a8103-982d-4935-86cd-7dd792bc72ff\",\"org"
+        },
+        {
+          "endpoint": "GET /settings/email",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Email settings: {\"sendgrid_configured\":true,\"sendgrid_api_key\":\"Te"
+        },
+        {
+          "endpoint": "GET /analytics/overview",
+          "status": 200,
+          "expected": [
+            200,
+            201
+          ],
+          "result": "\u2705 PASS",
+          "message": "Analytics overview: {\"period\":\"week\",\"start_date\":\"2025-10-13T04:54:28"
+        }
+      ]
+    }
+  }
+}
