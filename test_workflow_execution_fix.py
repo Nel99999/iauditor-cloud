@@ -284,7 +284,7 @@ def test_workflow_execution(token):
     print("="*80)
     
     response = requests.get(
-        f"{BACKEND_URL}/api/inspections/executions/{execution_id}/pdf",
+        f"{BACKEND_URL}/api/inspections/executions/{execution_id}/export-pdf",
         headers=headers
     )
     
