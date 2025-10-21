@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
+BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
 PRODUCTION_USER = {
     "email": "llewellyn@bluedawncapital.co.za",
     "password": "Test@1234"

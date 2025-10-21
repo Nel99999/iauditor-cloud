@@ -480,7 +480,7 @@ async def forgot_password(
                 # Remove /api if present and use as frontend URL
                 frontend_url = backend_url.replace("/api", "")
             else:
-                frontend_url = "https://backendhealer.preview.emergentagent.com"
+                frontend_url = "https://twilio-ops.preview.emergentagent.com"
         
         reset_link = f"{frontend_url}/reset-password?token={reset_token}"
         

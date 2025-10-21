@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import time
 
 # Configuration
-BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
+BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
 TEST_USER_PASSWORD = "Test@1234"
 

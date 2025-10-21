@@ -3,7 +3,7 @@ import json
 import uuid
 
 # Test user creation and settings update
-base_url = "https://backendhealer.preview.emergentagent.com"
+base_url = "https://twilio-ops.preview.emergentagent.com"
 api_url = f"{base_url}/api"
 
 # Create test user

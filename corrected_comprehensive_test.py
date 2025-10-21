@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 import concurrent.futures
 
 # Configuration
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://backendhealer.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://twilio-ops.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 class CorrectedComprehensiveTester:

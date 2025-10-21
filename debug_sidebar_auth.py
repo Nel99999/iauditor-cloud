@@ -8,7 +8,7 @@ import json
 import jwt
 
 # Configuration
-BACKEND_URL = "https://backendhealer.preview.emergentagent.com/api"
+BACKEND_URL = "https://twilio-ops.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
 TEST_USER_PASSWORD = "TestPassword123!"
 

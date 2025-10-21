@@ -6,7 +6,7 @@ Diagnostic script to get detailed error messages
 import requests
 import json
 
-BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
+BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
 
 def login(email, password):
     """Login and get token"""

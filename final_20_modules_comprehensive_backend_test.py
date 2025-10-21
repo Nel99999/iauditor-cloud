@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import uuid
 
 # Configuration
-BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
+BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
 PRODUCTION_EMAIL = "llewellyn@bluedawncapital.co.za"
 PRODUCTION_PASSWORD = "Test@1234"
 

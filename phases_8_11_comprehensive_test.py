@@ -27,7 +27,7 @@ import concurrent.futures
 import threading
 
 # Configuration
-BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
+BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
 TEST_TIMEOUT = 30
 PERFORMANCE_THRESHOLD_MS = 500
 CONCURRENT_REQUESTS = 5

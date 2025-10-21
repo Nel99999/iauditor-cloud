@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://backendhealer.preview.emergentagent.com/api"
+BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
 DEVELOPER_EMAIL = "llewellyn@bluedawncapital.co.za"
 DEVELOPER_PASSWORD = "Test@1234"
 ORGANIZATION_ID = "315fa36c-4555-4b2b-8ba3-fdbde31cb940"
