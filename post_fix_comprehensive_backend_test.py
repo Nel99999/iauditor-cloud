@@ -11,7 +11,7 @@ from datetime import datetime
 import base64
 
 # Configuration
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 # Test credentials
 CREDENTIALS = {

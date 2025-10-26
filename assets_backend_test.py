@@ -1,7 +1,7 @@
 """
 Assets Module Backend Testing - All 10 Endpoints
 Test User: llewellyn@bluedawncapital.co.za
-Base URL: https://twilio-ops.preview.emergentagent.com/api
+Base URL: https://rbacmaster-1.preview.emergentagent.com/api
 """
 
 import requests
@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 TEST_EMAIL = "llewellyn@bluedawncapital.co.za"
 TEST_PASSWORD = "TestPassword123!"
 

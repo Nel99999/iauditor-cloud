@@ -11,7 +11,7 @@ import time
 import uuid
 
 # Configuration
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 TIMEOUT = 30
 
 # Test Credentials

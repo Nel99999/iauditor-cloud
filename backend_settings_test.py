@@ -10,7 +10,7 @@ import io
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 PRODUCTION_EMAIL = "llewellyn@bluedawncapital.co.za"
 PRODUCTION_PASSWORD = "TestPassword123!"
 

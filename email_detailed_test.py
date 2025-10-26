@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BACKEND_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 PRODUCTION_USER = {
     "email": "llewellyn@bluedawncapital.co.za",
     "password": "TestPassword123!",

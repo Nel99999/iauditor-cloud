@@ -11,7 +11,7 @@ from datetime import datetime
 import sys
 
 # Backend URL from environment
-BACKEND_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BACKEND_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 # Test results tracking
 test_results = {

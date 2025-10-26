@@ -4,7 +4,7 @@ from datetime import datetime
 import uuid
 
 class UserDeleteFunctionalityTester:
-    def __init__(self, base_url="https://twilio-ops.preview.emergentagent.com"):
+    def __init__(self, base_url="https://rbacmaster-1.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None

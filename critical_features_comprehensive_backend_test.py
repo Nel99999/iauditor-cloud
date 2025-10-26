@@ -20,7 +20,7 @@ import io
 from datetime import datetime, timedelta
 
 # Configuration
-BACKEND_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BACKEND_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "llewellyn@bluedawncapital.co.za"
 TEST_USER_PASSWORD = "Test@1234"
 

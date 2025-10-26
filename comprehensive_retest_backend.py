@@ -18,7 +18,7 @@ from datetime import datetime
 import sys
 
 # Backend URL from frontend/.env
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 # Production user credentials
 PROD_EMAIL = "llewellyn@bluedawncapital.co.za"

@@ -16,7 +16,7 @@ import time
 from datetime import datetime
 import uuid
 
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 class ProtocolTester:
     def __init__(self):

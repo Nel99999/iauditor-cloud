@@ -16,7 +16,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Configuration
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 PRODUCTION_USER = "llewellyn@bluedawncapital.co.za"
 PRODUCTION_PASSWORD = "Test@1234"  # Will need to be reset if needed
 

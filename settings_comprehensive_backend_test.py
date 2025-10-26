@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BACKEND_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 PRODUCTION_EMAIL = "llewellyn@bluedawncapital.co.za"
 PRODUCTION_PASSWORD = "TestPassword123!"
 

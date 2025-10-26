@@ -3,7 +3,7 @@ import requests
 import json
 requests.packages.urllib3.disable_warnings()
 
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 # Login
 response = requests.post(f"{BASE_URL}/auth/login",

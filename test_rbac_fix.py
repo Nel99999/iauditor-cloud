@@ -2,7 +2,7 @@
 import requests
 requests.packages.urllib3.disable_warnings()
 
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 # Test users (from testing agent's output)
 TEST_USERS = {

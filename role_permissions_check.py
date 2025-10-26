@@ -6,7 +6,7 @@ Check role permissions in database
 import requests
 import json
 
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 
 def login(email, password):
     """Login and get token"""

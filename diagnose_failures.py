@@ -5,7 +5,7 @@ import json
 from pymongo import MongoClient
 
 # Setup
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 TOKEN = None
 
 # Get auth token first

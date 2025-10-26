@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import sys
 
 # Configuration
-BASE_URL = "https://twilio-ops.preview.emergentagent.com/api"
+BASE_URL = "https://rbacmaster-1.preview.emergentagent.com/api"
 TEST_USER = {
     "email": "llewellyn@bluedawncapital.co.za",
     "password": "TestPassword123!"
