@@ -197,6 +197,7 @@ const OrganizationPage = () => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showUsersDialog, setShowUsersDialog] = useState<boolean>(false);
   const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
+  const [showLinkDialog, setShowLinkDialog] = useState<boolean>(false);
   
   // Form states
   const [selectedNode, setSelectedNode] = useState<any>(null);
@@ -213,6 +214,10 @@ const OrganizationPage = () => {
     role: 'viewer',
   });
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+  const [linkData, setLinkData] = useState<any>({
+    child_unit_id: '',
+  });
+  const [availableUnits, setAvailableUnits] = useState<any[]>([]);
 
   useEffect(() => {
     loadHierarchy();
