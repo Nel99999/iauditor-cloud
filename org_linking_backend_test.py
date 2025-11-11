@@ -300,17 +300,54 @@ def test_suite_2_link_units(token):
     # Test 2.2: Create Test Orphaned Unit
     print("\n📋 Test 2.2: Create Test Orphaned Unit")
     orphaned_unit_id = None
+    parent_for_orphan = None
     try:
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        # First create a level 2 unit (orphaned at level 2)
+        
+        # Strategy: Create a level 3 unit with a parent, then unlink it to make it orphaned
+        # First, get or create a level 2 parent
+        response = requests.get(f"{BASE_URL}/organizations/units?level=2", headers=headers)
+        if response.status_code == 200:
+            level2_units = response.json()
+            if level2_units:
+                # Use existing level 2 unit
+                parent_for_orphan = level2_units[0]["id"]
+                print(f"   Using existing level 2 unit as temporary parent: {level2_units[0]['name']}")
+            else:
+                # Need to create level 2 unit first (which needs level 1 parent)
+                response = requests.get(f"{BASE_URL}/organizations/units?level=1", headers=headers)
+                if response.status_code == 200:
+                    level1_units = response.json()
+                    if level1_units:
+                        level1_parent = level1_units[0]["id"]
+                        # Create level 2 unit
+                        response = requests.post(
+                            f"{BASE_URL}/organizations/units",
+                            headers=headers,
+                            json={
+                                "name": f"Temp Parent Org {timestamp}",
+                                "description": "Temporary parent for orphan test",
+                                "level": 2,
+                                "parent_id": level1_parent
+                            }
+                        )
+                        if response.status_code == 201:
+                            parent_for_orphan = response.json()["id"]
+                            print(f"   Created level 2 unit as temporary parent")
+        
+        if not parent_for_orphan:
+            log_test("Test 2.2", "FAIL", "Could not create/find parent for orphan test")
+            return
+        
+        # Now create level 3 unit with parent
         response = requests.post(
             f"{BASE_URL}/organizations/units",
             headers=headers,
             json={
-                "name": f"Orphaned Organization Test {timestamp}",
-                "description": "Test unit for linking (level 2 orphaned)",
-                "level": 2,
-                "parent_id": None
+                "name": f"Orphaned Company Test {timestamp}",
+                "description": "Test unit for linking",
+                "level": 3,
+                "parent_id": parent_for_orphan
             }
         )
         
