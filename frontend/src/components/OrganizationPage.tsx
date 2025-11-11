@@ -596,7 +596,7 @@ const OrganizationPage = () => {
             <DialogFooter>
               <Button onClick={handleInviteUser}>
                 <UserPlus className="h-4 w-4 mr-2" />
-                Invite User
+                Allocate User
               </Button>
             </DialogFooter>
           </DialogContent>
