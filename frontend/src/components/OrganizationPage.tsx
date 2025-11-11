@@ -97,20 +97,37 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onLinkExisting, onE
         {/* Action Buttons with Simple Title Tooltips */}
         <div className="flex gap-1 ml-auto">
           {node.level < 5 && (
-            <PermissionGuard 
-              anyPermissions={['organization.create.organization', 'organization.update.organization']}
-              tooltipMessage="No permission to add organizational units"
-            >
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => onAddChild(node)}
-                data-testid={`add-child-${node.id}`}
-                title={`Add child ${getLevelColors(node.level + 1)?.name || 'unit'}`}
+            <>
+              <PermissionGuard 
+                anyPermissions={['organization.create.organization', 'organization.update.organization']}
+                tooltipMessage="No permission to add organizational units"
               >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </PermissionGuard>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onAddChild(node)}
+                  data-testid={`add-child-${node.id}`}
+                  title={`Create new ${getLevelColors(node.level + 1)?.name || 'unit'}`}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </PermissionGuard>
+              
+              <PermissionGuard 
+                anyPermissions={['organization.update.organization']}
+                tooltipMessage="No permission to link organizational units"
+              >
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onLinkExisting(node)}
+                  data-testid={`link-existing-${node.id}`}
+                  title={`Link existing ${getLevelColors(node.level + 1)?.name || 'unit'}`}
+                >
+                  <Link2 className="h-4 w-4" />
+                </Button>
+              </PermissionGuard>
+            </>
           )}
           
           <Button
