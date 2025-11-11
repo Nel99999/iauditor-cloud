@@ -550,10 +550,10 @@ const OrganizationPage = () => {
           <DialogContent data-testid="create-unit-dialog">
             <DialogHeader>
               <DialogTitle>
-                {selectedNode ? `Add ${LEVEL_NAMES[formData.level]} under ${selectedNode.name}` : 'Create Profile'}
+                {selectedNode ? `Create New ${LEVEL_NAMES[formData.level]} under ${selectedNode.name}` : 'Create New Profile'}
               </DialogTitle>
               <DialogDescription>
-                Create a new {LEVEL_NAMES[formData.level]} level unit
+                Create a brand new {LEVEL_NAMES[formData.level]} level unit. Use "Link Existing" button to link an already created unit.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitCreate}>
