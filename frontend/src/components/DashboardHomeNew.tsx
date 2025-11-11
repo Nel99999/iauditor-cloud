@@ -252,27 +252,35 @@ const DashboardHomeNew = () => {
               <Button variant="ghost" size="sm">View All</Button>
             </div>
             <div className="activity-list">
-              {recentActivity.map((activity: any, index: number) => {
-                const Icon = activity.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    className="activity-item"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                  >
-                    <div className="activity-icon">
-                      <Icon size={20} />
-                    </div>
-                    <div className="activity-content">
-                      <p className="activity-title">{activity.title}</p>
-                      <p className="activity-description">{activity.description}</p>
-                    </div>
-                    <p className="activity-time">{activity.time}</p>
-                  </motion.div>
-                );
-              })}
+              {recentActivity.length > 0 ? (
+                recentActivity.map((activity: any, index: number) => {
+                  const Icon = activity.icon;
+                  return (
+                    <motion.div
+                      key={index}
+                      className="activity-item"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + index * 0.1 }}
+                      onClick={() => activity.link && navigate(activity.link)}
+                      style={{ cursor: activity.link ? 'pointer' : 'default' }}
+                    >
+                      <div className="activity-icon">
+                        <Icon size={20} />
+                      </div>
+                      <div className="activity-content">
+                        <p className="activity-title">{activity.title}</p>
+                        <p className="activity-description">{activity.description}</p>
+                      </div>
+                      <p className="activity-time">{activity.time}</p>
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <p style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+                  No recent activity
+                </p>
+              )}
             </div>
           </GlassCard>
         </motion.div>
