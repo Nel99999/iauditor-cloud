@@ -46,7 +46,7 @@ const getLevelColors = (level: number) => {
   };
 };
 
-const OrganizationNode: React.FC<any> = ({ node, onAddChild, onEdit, onDelete, onViewUsers, expandedNodes, toggleNode, depth = 0 }) => {
+const OrganizationNode: React.FC<any> = ({ node, onAddChild, onLinkExisting, onEdit, onDelete, onViewUsers, expandedNodes, toggleNode, depth = 0 }) => {
   const hasChildren = node.children && node.children.length > 0;
   const isExpanded = expandedNodes[node.id];
   const userCount = node.user_count || 0;
