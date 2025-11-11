@@ -302,13 +302,14 @@ def test_suite_2_link_units(token):
     orphaned_unit_id = None
     try:
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        # First create a level 2 unit (orphaned at level 2)
         response = requests.post(
             f"{BASE_URL}/organizations/units",
             headers=headers,
             json={
-                "name": f"Orphaned Company Test {timestamp}",
-                "description": "Test unit for linking",
-                "level": 3,
+                "name": f"Orphaned Organization Test {timestamp}",
+                "description": "Test unit for linking (level 2 orphaned)",
+                "level": 2,
                 "parent_id": None
             }
         )
