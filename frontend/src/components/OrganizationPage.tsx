@@ -366,6 +366,38 @@ const OrganizationPage = () => {
     }
   };
 
+  const handleLinkExisting = async (parentNode: any) => {
+    // Load available units at the next level that are unassigned (no parent)
+    try {
+      const token = localStorage.getItem('access_token');
+      const nextLevel = parentNode.level + 1;
+      const response = await axios.get(`${API}/organizations/units?level=${nextLevel}&unassigned=true`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAvailableUnits(response.data || []);
+    } catch (err) {
+      console.error('Failed to load available units:', err);
+      setAvailableUnits([]);
+    }
+    
+    setLinkData({ child_unit_id: '' });
+    setSelectedNode(parentNode);
+    setShowLinkDialog(true);
+  };
+
+  const handleSubmitLink = async (e: any) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API}/organizations/units/${selectedNode.id}/link-child`, linkData);
+      alert('Unit linked successfully!');
+      setShowLinkDialog(false);
+      loadHierarchy();
+    } catch (err: unknown) {
+      alert((err as any).response?.data?.detail || 'Failed to link unit');
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
