@@ -714,6 +714,59 @@ const OrganizationPage = () => {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Link Existing Unit Dialog */}
+        <Dialog open={showLinkDialog} onOpenChange={setShowLinkDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Link Existing {getLevelColors(selectedNode?.level + 1)?.name} to {selectedNode?.name}</DialogTitle>
+              <DialogDescription>
+                Select an existing unit to link as a child. Only unassigned units at the next level are shown.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmitLink}>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="unit-select">Select {getLevelColors(selectedNode?.level + 1)?.name}</Label>
+                  {availableUnits.length > 0 ? (
+                    <Select
+                      value={linkData.child_unit_id}
+                      onValueChange={(value) => setLinkData({ child_unit_id: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={`Choose ${getLevelColors(selectedNode?.level + 1)?.name}...`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableUnits.map((unit) => (
+                          <SelectItem key={unit.id} value={unit.id}>
+                            {unit.name} (Level {unit.level})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Alert>
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        No unassigned {getLevelColors(selectedNode?.level + 1)?.name} units available. 
+                        Create a new {getLevelColors(selectedNode?.level + 1)?.name} first or unlink an existing one.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </div>
+              </div>
+              <DialogFooter className="mt-4">
+                <Button type="button" variant="outline" onClick={() => setShowLinkDialog(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={!linkData.child_unit_id || availableUnits.length === 0}>
+                  Link Unit
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </ModernPageWrapper>
   );
