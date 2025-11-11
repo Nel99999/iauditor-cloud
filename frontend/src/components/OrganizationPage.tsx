@@ -328,19 +328,36 @@ const OrganizationPage = () => {
     }
   };
 
-  const handleInviteUser = () => {
-    setInviteData({ email: '', unit_id: selectedNode?.id || '', role: 'viewer' });
+  const handleInviteUser = async () => {
+    // Load available users based on RBAC
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await axios.get(`${API}/users`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAvailableUsers(response.data.users || response.data || []);
+    } catch (err) {
+      console.error('Failed to load users:', err);
+      setAvailableUsers([]);
+    }
+    
+    setInviteData({ user_id: '', unit_id: selectedNode?.id || '', role: 'viewer' });
     setShowInviteDialog(true);
   };
 
   const handleSubmitInvite = async (e: any) => {
     e.preventDefault();
     try {
-      await axios.post(`${API}/organizations/invitations`, inviteData);
-      alert('Invitation sent successfully!');
+      // Allocate existing user to organizational unit
+      await axios.post(`${API}/organizations/units/${inviteData.unit_id}/assign-user`, {
+        user_id: inviteData.user_id,
+        role: inviteData.role
+      });
+      alert('User allocated successfully!');
       setShowInviteDialog(false);
+      loadHierarchy();
     } catch (err: unknown) {
-      alert((err as any).response?.data?.detail || 'Failed to send invitation');
+      alert((err as any).response?.data?.detail || 'Failed to allocate user');
     }
   };
 
