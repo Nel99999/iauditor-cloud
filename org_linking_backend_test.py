@@ -165,6 +165,7 @@ def test_suite_1_assign_user(token, users):
                 headers=headers,
                 json={
                     "user_id": user_id,
+                    "unit_id": unit_id,
                     "role": "inspector"
                 }
             )
