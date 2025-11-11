@@ -427,6 +427,165 @@ async def assign_user_to_unit(
     return assignment
 
 
+
+@router.post("/units/{parent_id}/link-child", status_code=status.HTTP_201_CREATED)
+async def link_existing_unit_to_parent(
+    parent_id: str,
+    link_data: dict,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Link an existing organizational unit as a child of a parent unit
+    
+    This allows linking orphaned/unassigned units to a parent without creating new units.
+    Based on RBAC hierarchy and level restrictions.
+    """
+    user = await get_current_user(request, db)
+    child_unit_id = link_data.get("child_unit_id")
+    
+    if not child_unit_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="child_unit_id is required"
+        )
+    
+    # Validate parent unit exists
+    parent = await db.organization_units.find_one({
+        "id": parent_id,
+        "organization_id": user["organization_id"]
+    })
+    
+    if not parent:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Parent unit not found"
+        )
+    
+    # Validate child unit exists
+    child = await db.organization_units.find_one({
+        "id": child_unit_id,
+        "organization_id": user["organization_id"]
+    })
+    
+    if not child:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Child unit not found"
+        )
+    
+    # Validate level hierarchy (child must be parent.level + 1)
+    if child["level"] != parent["level"] + 1:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid level hierarchy. Child level must be {parent['level'] + 1}, but is {child['level']}"
+        )
+    
+    # Check if child already has a parent
+    if child.get("parent_id"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Unit is already linked to another parent. Unlink first before re-linking."
+        )
+    
+    # Check max level depth (cannot link if parent is at max level)
+    if parent["level"] >= 5:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Parent unit is at maximum level (5). Cannot add children."
+        )
+    
+    # Update child unit with parent_id
+    await db.organization_units.update_one(
+        {"id": child_unit_id},
+        {
+            "$set": {
+                "parent_id": parent_id,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+                "updated_by": user["id"]
+            }
+        }
+    )
+    
+    # Log to audit
+    await db.audit_logs.insert_one({
+        "id": str(__import__("uuid").uuid4()),
+        "organization_id": user["organization_id"],
+        "user_id": user["id"],
+        "action": "organization_unit.linked",
+        "resource_type": "organization_unit",
+        "resource_id": child_unit_id,
+        "details": f"Linked unit '{child['name']}' to parent '{parent['name']}'",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {
+        "message": "Unit linked successfully",
+        "parent": {"id": parent_id, "name": parent["name"]},
+        "child": {"id": child_unit_id, "name": child["name"]}
+    }
+
+
+@router.post("/units/{unit_id}/unlink", status_code=status.HTTP_200_OK)
+async def unlink_unit_from_parent(
+    unit_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Unlink an organizational unit from its parent (makes it orphaned/unassigned)"""
+    user = await get_current_user(request, db)
+    
+    # Validate unit exists
+    unit = await db.organization_units.find_one({
+        "id": unit_id,
+        "organization_id": user["organization_id"]
+    })
+    
+    if not unit:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Unit not found"
+        )
+    
+    # Check if unit has a parent
+    if not unit.get("parent_id"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Unit is not linked to any parent"
+        )
+    
+    # Store parent info for logging
+    parent = await db.organization_units.find_one({"id": unit.get("parent_id")})
+    
+    # Remove parent_id from unit
+    await db.organization_units.update_one(
+        {"id": unit_id},
+        {
+            "$set": {
+                "parent_id": None,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+                "updated_by": user["id"]
+            }
+        }
+    )
+    
+    # Log to audit
+    await db.audit_logs.insert_one({
+        "id": str(__import__("uuid").uuid4()),
+        "organization_id": user["organization_id"],
+        "user_id": user["id"],
+        "action": "organization_unit.unlinked",
+        "resource_type": "organization_unit",
+        "resource_id": unit_id,
+        "details": f"Unlinked unit '{unit['name']}' from parent '{parent['name'] if parent else 'Unknown'}'",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {
+        "message": "Unit unlinked successfully",
+        "unit": {"id": unit_id, "name": unit["name"]}
+    }
+
+
 @router.get("/units/{unit_id}/users")
 async def get_unit_users(
     unit_id: str,
