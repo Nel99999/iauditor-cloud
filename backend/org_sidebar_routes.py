@@ -32,28 +32,36 @@ async def get_organization_sidebar_settings(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get organization-wide sidebar settings"""
-    user = await get_current_user(request, db)
+    """Get organization-wide sidebar settings (public endpoint with optional auth)"""
+    try:
+        # Try to get user if authenticated
+        user = await get_current_user(request, db)
+        org_id = user.get("organization_id")
+    except:
+        # If not authenticated, try to get default organization settings
+        # This allows the endpoint to work before login
+        org_id = None
     
-    # Get organization settings
-    org_settings = await db.organization_settings.find_one(
-        {"organization_id": user["organization_id"]},
-        {"_id": 0, "sidebar_settings": 1}
-    )
+    # If we have an org_id, try to get org-specific settings
+    if org_id:
+        org_settings = await db.organization_settings.find_one(
+            {"organization_id": org_id},
+            {"_id": 0, "sidebar_settings": 1}
+        )
+        
+        if org_settings and "sidebar_settings" in org_settings:
+            return org_settings.get("sidebar_settings", {})
     
-    if not org_settings or "sidebar_settings" not in org_settings:
-        # Return system defaults
-        return {
-            "default_mode": "collapsed",
-            "hover_expand_enabled": False,
-            "auto_collapse_enabled": False,
-            "inactivity_timeout": 10,
-            "context_aware_enabled": False,
-            "collapse_after_navigation": False,
-            "click_outside_to_hide": True  # ON by default for first-time users
-        }
-    
-    return org_settings.get("sidebar_settings", {})
+    # Return system defaults if no org settings found or not authenticated
+    return {
+        "default_mode": "collapsed",
+        "hover_expand_enabled": False,
+        "auto_collapse_enabled": False,
+        "inactivity_timeout": 10,
+        "context_aware_enabled": False,
+        "collapse_after_navigation": False,
+        "click_outside_to_hide": True  # ON by default for first-time users
+    }
 
 
 @router.put("")
