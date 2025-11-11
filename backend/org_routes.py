@@ -78,12 +78,16 @@ async def build_unit_path(unit_id: str, db: AsyncIOMotorDatabase) -> str:
 async def get_organization_units(
     request: Request,
     show_inactive: bool = False,
+    level: Optional[int] = None,
+    unassigned: bool = False,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Get all organization units for current user's organization
     
     Args:
         show_inactive: If True, includes inactive units. Default False (active only)
+        level: Filter by specific level (1-5)
+        unassigned: If True, only returns units without a parent_id (orphaned units)
     """
     user = await get_current_user(request, db)
     
@@ -97,6 +101,17 @@ async def get_organization_units(
     query = {"organization_id": user["organization_id"]}
     if not show_inactive:
         query["is_active"] = True
+    
+    # Filter by level if specified
+    if level is not None:
+        query["level"] = level
+    
+    # Filter by unassigned (no parent) if specified
+    if unassigned:
+        query["$or"] = [
+            {"parent_id": None},
+            {"parent_id": {"$exists": False}}
+        ]
     
     units = await db.organization_units.find(
         query,
