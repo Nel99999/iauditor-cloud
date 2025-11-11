@@ -354,14 +354,25 @@ def test_suite_2_link_units(token):
         if response.status_code == 201:
             orphaned_unit = response.json()
             orphaned_unit_id = orphaned_unit["id"]
-            log_test(
-                "Test 2.2",
-                "PASS",
-                f"Created orphaned unit successfully",
-                {"unit_id": orphaned_unit_id, "name": orphaned_unit["name"]}
+            print(f"   Created level 3 unit with parent: {orphaned_unit['name']}")
+            
+            # Now unlink it to make it orphaned
+            response = requests.post(
+                f"{BASE_URL}/organizations/units/{orphaned_unit_id}/unlink",
+                headers=headers
             )
+            
+            if response.status_code == 200:
+                log_test(
+                    "Test 2.2",
+                    "PASS",
+                    f"Created and unlinked unit to make it orphaned",
+                    {"unit_id": orphaned_unit_id, "name": orphaned_unit["name"], "level": 3}
+                )
+            else:
+                log_test("Test 2.2", "WARN", f"Created unit but failed to unlink: {response.status_code}")
         else:
-            log_test("Test 2.2", "FAIL", f"Failed to create orphaned unit: {response.status_code}", {"response": response.text})
+            log_test("Test 2.2", "FAIL", f"Failed to create unit: {response.status_code}", {"response": response.text})
             return
     except Exception as e:
         log_test("Test 2.2", "FAIL", f"Exception: {str(e)}")
@@ -370,7 +381,7 @@ def test_suite_2_link_units(token):
     # Test 2.3: Verify Unit is Unassigned
     print("\n📋 Test 2.3: Verify Unit is Unassigned")
     try:
-        response = requests.get(f"{BASE_URL}/organizations/units?level=2&unassigned=true", headers=headers)
+        response = requests.get(f"{BASE_URL}/organizations/units?level=3&unassigned=true", headers=headers)
         if response.status_code == 200:
             unassigned_level2 = response.json()
             found = any(u["id"] == orphaned_unit_id for u in unassigned_level2)
