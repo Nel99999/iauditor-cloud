@@ -21,6 +21,8 @@ import {
   Globe, Laptop, MapPin
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
