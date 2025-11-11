@@ -383,8 +383,8 @@ def test_suite_2_link_units(token):
     try:
         response = requests.get(f"{BASE_URL}/organizations/units?level=3&unassigned=true", headers=headers)
         if response.status_code == 200:
-            unassigned_level2 = response.json()
-            found = any(u["id"] == orphaned_unit_id for u in unassigned_level2)
+            unassigned_level3 = response.json()
+            found = any(u["id"] == orphaned_unit_id for u in unassigned_level3)
             if found:
                 log_test(
                     "Test 2.3",
@@ -399,33 +399,38 @@ def test_suite_2_link_units(token):
     except Exception as e:
         log_test("Test 2.3", "FAIL", f"Exception: {str(e)}")
     
-    # Get a parent unit at level 1 for linking
-    print("\n📋 Finding parent unit at level 1...")
+    # Get a parent unit at level 2 for linking
+    print("\n📋 Finding parent unit at level 2...")
     parent_unit_id = None
     try:
-        response = requests.get(f"{BASE_URL}/organizations/units?level=1", headers=headers)
+        response = requests.get(f"{BASE_URL}/organizations/units?level=2", headers=headers)
         if response.status_code == 200:
-            level1_units = response.json()
-            if level1_units:
-                parent_unit_id = level1_units[0]["id"]
-                print(f"   Using parent unit: {level1_units[0]['name']} (ID: {parent_unit_id})")
+            level2_units = response.json()
+            if level2_units:
+                parent_unit_id = level2_units[0]["id"]
+                print(f"   Using parent unit: {level2_units[0]['name']} (ID: {parent_unit_id})")
             else:
-                print("   ⚠️  No level 1 units available, creating one...")
-                # Create a level 1 unit
-                response = requests.post(
-                    f"{BASE_URL}/organizations/units",
-                    headers=headers,
-                    json={
-                        "name": f"Test Parent Company {timestamp}",
-                        "description": "Parent unit for linking test",
-                        "level": 1,
-                        "parent_id": None
-                    }
-                )
-                if response.status_code == 201:
-                    parent_unit = response.json()
-                    parent_unit_id = parent_unit["id"]
-                    print(f"   Created parent unit: {parent_unit['name']} (ID: {parent_unit_id})")
+                print("   ⚠️  No level 2 units available, creating one...")
+                # Create a level 2 unit (needs level 1 parent)
+                response = requests.get(f"{BASE_URL}/organizations/units?level=1", headers=headers)
+                if response.status_code == 200:
+                    level1_units = response.json()
+                    if level1_units:
+                        level1_parent = level1_units[0]["id"]
+                        response = requests.post(
+                            f"{BASE_URL}/organizations/units",
+                            headers=headers,
+                            json={
+                                "name": f"Test Parent Unit {timestamp}",
+                                "description": "Parent unit for linking test",
+                                "level": 2,
+                                "parent_id": level1_parent
+                            }
+                        )
+                        if response.status_code == 201:
+                            parent_unit = response.json()
+                            parent_unit_id = parent_unit["id"]
+                            print(f"   Created parent unit: {parent_unit['name']} (ID: {parent_unit_id})")
     except Exception as e:
         print(f"   ❌ Error finding/creating parent unit: {str(e)}")
     
