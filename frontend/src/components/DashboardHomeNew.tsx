@@ -101,6 +101,7 @@ const DashboardHomeNew = () => {
       icon: Users,
       color: 'blue',
       change: '+12%',
+      link: '/users',
     },
     {
       title: 'Active Tasks',
@@ -108,6 +109,7 @@ const DashboardHomeNew = () => {
       icon: CheckSquare,
       color: 'green',
       change: '+5%',
+      link: '/tasks',
     },
     {
       title: 'Inspections',
@@ -115,6 +117,7 @@ const DashboardHomeNew = () => {
       icon: ClipboardCheck,
       color: 'purple',
       change: '+8%',
+      link: '/inspections',
     },
     {
       title: 'Completion Rate',
@@ -122,29 +125,11 @@ const DashboardHomeNew = () => {
       icon: TrendingUp,
       color: 'orange',
       change: '+3%',
+      link: '/tasks',
     },
   ];
 
-  const recentActivity: Activity[] = [
-    {
-      title: 'New inspection completed',
-      description: 'Safety inspection #1234',
-      time: '2 hours ago',
-      icon: ClipboardCheck,
-    },
-    {
-      title: 'Task assigned',
-      description: 'Maintenance task #567',
-      time: '4 hours ago',
-      icon: CheckSquare,
-    },
-    {
-      title: 'New user added',
-      description: 'John Doe joined the team',
-      time: '6 hours ago',
-      icon: Users,
-    },
-  ];
+  const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
 
   if (loading) {
     return (
