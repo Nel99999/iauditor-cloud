@@ -59,6 +59,7 @@ interface QuickStat {
   icon: LucideIcon;
   color: string;
   change: string;
+  link?: string;
 }
 
 interface Activity {
@@ -66,6 +67,7 @@ interface Activity {
   description: string;
   time: string;
   icon: LucideIcon;
+  link?: string;
 }
 
 const DashboardHomeNew = () => {
