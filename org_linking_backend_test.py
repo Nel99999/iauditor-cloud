@@ -435,10 +435,10 @@ def test_suite_2_link_units(token):
     # Test 2.6: Verify Unit No Longer in Unassigned List
     print("\n📋 Test 2.6: Verify Unit No Longer in Unassigned List")
     try:
-        response = requests.get(f"{BASE_URL}/organizations/units?level=3&unassigned=true", headers=headers)
+        response = requests.get(f"{BASE_URL}/organizations/units?level=2&unassigned=true", headers=headers)
         if response.status_code == 200:
-            unassigned_level3 = response.json()
-            found = any(u["id"] == orphaned_unit_id for u in unassigned_level3)
+            unassigned_level2 = response.json()
+            found = any(u["id"] == orphaned_unit_id for u in unassigned_level2)
             if not found:
                 log_test(
                     "Test 2.6",
@@ -456,15 +456,15 @@ def test_suite_2_link_units(token):
     # Test 2.7: Test Level Validation
     print("\n📋 Test 2.7: Test Level Validation")
     try:
-        # Try to link a level 4 unit to a level 2 parent (should fail)
-        # First create a level 4 unit
+        # Try to link a level 3 unit to a level 1 parent (should fail - needs level 2)
+        # First create a level 3 unit
         response = requests.post(
             f"{BASE_URL}/organizations/units",
             headers=headers,
             json={
                 "name": f"Wrong Level Unit {timestamp}",
                 "description": "Unit with wrong level for testing",
-                "level": 4,
+                "level": 3,
                 "parent_id": None
             }
         )
@@ -473,7 +473,7 @@ def test_suite_2_link_units(token):
             wrong_level_unit = response.json()
             wrong_level_unit_id = wrong_level_unit["id"]
             
-            # Try to link it to level 2 parent (should fail)
+            # Try to link it to level 1 parent (should fail - child should be level 2)
             response = requests.post(
                 f"{BASE_URL}/organizations/units/{parent_unit_id}/link-child",
                 headers=headers,
