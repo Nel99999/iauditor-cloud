@@ -569,7 +569,7 @@ const ModernSettingsPage = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Permissions</p>
-                  <p className="font-semibold">{userPermissions.length} of 49 assigned</p>
+                  <p className="font-semibold">{userPermissions?.length || 0} assigned</p>
                 </div>
               </div>
 
