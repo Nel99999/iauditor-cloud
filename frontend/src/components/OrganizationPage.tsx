@@ -179,6 +179,7 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onLinkExisting, onE
               key={child.id}
               node={child}
               onAddChild={onAddChild}
+              onLinkExisting={onLinkExisting}
               onEdit={onEdit}
               onDelete={onDelete}
               onViewUsers={onViewUsers}
