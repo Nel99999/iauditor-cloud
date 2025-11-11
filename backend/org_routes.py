@@ -395,11 +395,18 @@ async def assign_user_to_unit(
     
     await db.user_org_assignments.insert_one(assignment_dict)
     
-    # Update user's organization_id if not set
+    # Update user's organization_id and organizational_unit_id
+    update_fields = {}
     if not target_user.get("organization_id"):
+        update_fields["organization_id"] = user["organization_id"]
+    
+    # Always update the organizational_unit_id to reflect current assignment
+    update_fields["organizational_unit_id"] = unit_id
+    
+    if update_fields:
         await db.users.update_one(
             {"id": assignment_data.user_id},
-            {"$set": {"organization_id": user["organization_id"]}}
+            {"$set": update_fields}
         )
     
     return assignment
