@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Building2, Users, Plus, ChevronRight, ChevronDown, Pencil, Trash2, UserPlus, AlertCircle } from 'lucide-react';
+import { Building2, Users, Plus, ChevronRight, ChevronDown, Pencil, Trash2, UserPlus, AlertCircle, Link2 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
