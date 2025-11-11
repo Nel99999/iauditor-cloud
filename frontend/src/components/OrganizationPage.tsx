@@ -602,26 +602,34 @@ const OrganizationPage = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Invite User Dialog */}
+        {/* Allocate User Dialog */}
         <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Invite User</DialogTitle>
+              <DialogTitle>Allocate User to {selectedNode?.name}</DialogTitle>
               <DialogDescription>
-                Send an invitation to join {selectedNode?.name}
+                Assign an existing user to this organizational unit
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitInvite}>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="invite-email">Email</Label>
-                  <Input
-                    id="invite-email"
-                    type="email"
-                    value={inviteData.email}
-                    onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })}
-                    required
-                  />
+                  <Label htmlFor="user-select">Select User</Label>
+                  <Select
+                    value={inviteData.user_id}
+                    onValueChange={(value) => setInviteData({ ...inviteData, user_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a user..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableUsers.map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.name} ({user.email}) - {user.role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="invite-role">Role</Label>
@@ -645,7 +653,7 @@ const OrganizationPage = () => {
                 <Button type="button" variant="outline" onClick={() => setShowInviteDialog(false)}>
                   Cancel
                 </Button>
-                <Button type="submit">Send Invitation</Button>
+                <Button type="submit">Allocate User</Button>
               </DialogFooter>
             </form>
           </DialogContent>
