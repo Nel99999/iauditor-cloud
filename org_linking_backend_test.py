@@ -488,10 +488,10 @@ def test_suite_2_link_units(token):
     # Test 2.6: Verify Unit No Longer in Unassigned List
     print("\n📋 Test 2.6: Verify Unit No Longer in Unassigned List")
     try:
-        response = requests.get(f"{BASE_URL}/organizations/units?level=2&unassigned=true", headers=headers)
+        response = requests.get(f"{BASE_URL}/organizations/units?level=3&unassigned=true", headers=headers)
         if response.status_code == 200:
-            unassigned_level2 = response.json()
-            found = any(u["id"] == orphaned_unit_id for u in unassigned_level2)
+            unassigned_level3 = response.json()
+            found = any(u["id"] == orphaned_unit_id for u in unassigned_level3)
             if not found:
                 log_test(
                     "Test 2.6",
@@ -509,31 +509,41 @@ def test_suite_2_link_units(token):
     # Test 2.7: Test Level Validation
     print("\n📋 Test 2.7: Test Level Validation")
     try:
-        # Try to link a level 3 unit to a level 1 parent (should fail - needs level 2)
-        # First create a level 3 unit
-        response = requests.post(
-            f"{BASE_URL}/organizations/units",
-            headers=headers,
-            json={
-                "name": f"Wrong Level Unit {timestamp}",
-                "description": "Unit with wrong level for testing",
-                "level": 3,
-                "parent_id": None
-            }
-        )
-        
-        if response.status_code == 201:
-            wrong_level_unit = response.json()
-            wrong_level_unit_id = wrong_level_unit["id"]
-            
-            # Try to link it to level 1 parent (should fail - child should be level 2)
-            response = requests.post(
-                f"{BASE_URL}/organizations/units/{parent_unit_id}/link-child",
-                headers=headers,
-                json={
-                    "child_unit_id": wrong_level_unit_id
-                }
-            )
+        # Try to link a level 4 unit to a level 2 parent (should fail - needs level 3)
+        # First create a level 4 unit with a temporary parent, then unlink it
+        # Get a level 3 unit to create level 4
+        response = requests.get(f"{BASE_URL}/organizations/units?level=3", headers=headers)
+        if response.status_code == 200:
+            level3_units = response.json()
+            if level3_units:
+                temp_parent_l3 = level3_units[0]["id"]
+                # Create level 4 unit
+                response = requests.post(
+                    f"{BASE_URL}/organizations/units",
+                    headers=headers,
+                    json={
+                        "name": f"Wrong Level Unit {timestamp}",
+                        "description": "Unit with wrong level for testing",
+                        "level": 4,
+                        "parent_id": temp_parent_l3
+                    }
+                )
+                
+                if response.status_code == 201:
+                    wrong_level_unit = response.json()
+                    wrong_level_unit_id = wrong_level_unit["id"]
+                    
+                    # Unlink it
+                    requests.post(f"{BASE_URL}/organizations/units/{wrong_level_unit_id}/unlink", headers=headers)
+                    
+                    # Try to link it to level 2 parent (should fail - child should be level 3)
+                    response = requests.post(
+                        f"{BASE_URL}/organizations/units/{parent_unit_id}/link-child",
+                        headers=headers,
+                        json={
+                            "child_unit_id": wrong_level_unit_id
+                        }
+                    )
             
             if response.status_code == 400:
                 log_test(
