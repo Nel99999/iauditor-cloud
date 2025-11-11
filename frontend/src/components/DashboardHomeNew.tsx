@@ -78,6 +78,7 @@ const DashboardHomeNew = () => {
 
   useEffect(() => {
     loadStats();
+    loadRecentActivity();
   }, []);
 
   const loadStats = async (): Promise<void> => {
@@ -93,6 +94,48 @@ const DashboardHomeNew = () => {
       console.error('Failed to load stats:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadRecentActivity = async (): Promise<void> => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await axios.get(`${API}/users/me/recent-activity?limit=5`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Map backend activity to frontend format
+      const activities = (response.data || []).map((item: any) => {
+        let icon = ClipboardCheck;
+        let link = '/';
+        
+        if (item.resource_type === 'task') {
+          icon = CheckSquare;
+          link = '/tasks';
+        } else if (item.resource_type === 'inspection') {
+          icon = ClipboardCheck;
+          link = '/inspections';
+        } else if (item.resource_type === 'user') {
+          icon = Users;
+          link = '/users';
+        }
+        
+        return {
+          title: item.action || 'Activity',
+          description: item.details || item.resource_type || '',
+          time: item.created_at ? new Date(item.created_at).toLocaleString() : '',
+          icon,
+          link
+        };
+      });
+      
+      setRecentActivity(activities);
+    } catch (err) {
+      console.error('Failed to load recent activity:', err);
+      // Set empty array if fails
+      setRecentActivity([]);
     }
   };
 
