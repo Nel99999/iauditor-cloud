@@ -531,6 +531,7 @@ const OrganizationPage = () => {
                     key={node.id}
                     node={node}
                     onAddChild={handleAddChild}
+                    onLinkExisting={handleLinkExisting}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onViewUsers={handleViewUsers}
