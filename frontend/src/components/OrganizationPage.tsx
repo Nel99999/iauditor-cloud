@@ -208,10 +208,11 @@ const OrganizationPage = () => {
     parent_id: null,
   });
   const [inviteData, setInviteData] = useState<any>({
-    email: '',
+    user_id: '',
     unit_id: '',
     role: 'viewer',
   });
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
 
   useEffect(() => {
     loadHierarchy();
