@@ -1,12 +1,4 @@
 // @ts-nocheck
-/**
- * Organizational Entities Management Component
- * Settings → Admin & Compliance → Organizational Entities
- * 
- * Purpose: Create and configure organizational entities with rich metadata
- * Features: 20 standard fields + unlimited custom fields
- */
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
@@ -20,10 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Building2, Plus, Pencil, Trash2, Upload, Save, X,
-  Building, Factory, Store, Briefcase, AlertCircle, Check, Link2, LinkOff
-} from 'lucide-react';
+import { Building2, Plus, Pencil, Trash2, Save, X, Building, Factory, Store, Briefcase, AlertCircle, Link2, LinkOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import PhoneInput from 'react-phone-number-input';
 
@@ -47,7 +36,6 @@ const OrganizationalEntitiesManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  // State for entities by type
   const [entities, setEntities] = useState({
     profile: [],
     organisation: [],
@@ -59,43 +47,33 @@ const OrganizationalEntitiesManager = () => {
   const [loading, setLoading] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [selectedEntityType, setSelectedEntityType] = useState('');
+  const [selectedEntityType, setSelectedEntityType] = useState('profile');
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const [availableManagers, setAvailableManagers] = useState([]);
   
-  // Form data
   const [formData, setFormData] = useState({
-    entity_type: '',
+    entity_type: 'profile',
     level: 1,
     name: '',
     description: '',
     logo_url: '',
-    primary_color: '',
-    secondary_color: '',
+    primary_color: '#3b82f6',
     address_street: '',
     address_city: '',
-    address_state: '',
     address_country: '',
-    address_postal_code: '',
     phone: '',
     email: '',
     website: '',
     tax_id: '',
     registration_number: '',
-    established_date: '',
     industry: '',
     cost_center: '',
     budget_code: '',
     currency: 'USD',
-    default_manager_id: '',
-    custom_fields: {},
   });
-  
-  const [customFields, setCustomFields] = useState([]);
-  const [availableManagers, setAvailableManagers] = useState([]);
 
   useEffect(() => {
     loadAllEntities();
-    loadCustomFields();
     loadAvailableManagers();
   }, []);
 
@@ -107,7 +85,6 @@ const OrganizationalEntitiesManager = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Group entities by type
       const grouped = {
         profile: [],
         organisation: [],
@@ -125,25 +102,8 @@ const OrganizationalEntitiesManager = () => {
       setEntities(grouped);
     } catch (err) {
       console.error('Failed to load entities:', err);
-      toast({
-        title: 'Error',
-        description: 'Failed to load organizational entities',
-        variant: 'destructive',
-      });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadCustomFields = async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(`${API}/entities/custom-fields`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setCustomFields(response.data || []);
-    } catch (err) {
-      console.error('Failed to load custom fields:', err);
     }
   };
 
@@ -169,24 +129,18 @@ const OrganizationalEntitiesManager = () => {
       description: '',
       logo_url: '',
       primary_color: typeInfo.color,
-      secondary_color: '',
       address_street: '',
       address_city: '',
-      address_state: '',
       address_country: '',
-      address_postal_code: '',
       phone: '',
       email: '',
       website: '',
       tax_id: '',
       registration_number: '',
-      established_date: '',
       industry: '',
       cost_center: '',
       budget_code: '',
       currency: 'USD',
-      default_manager_id: '',
-      custom_fields: {},
     });
     setShowCreateDialog(true);
   };
@@ -201,24 +155,18 @@ const OrganizationalEntitiesManager = () => {
       description: entity.description || '',
       logo_url: entity.logo_url || '',
       primary_color: entity.primary_color || '',
-      secondary_color: entity.secondary_color || '',
       address_street: entity.address_street || '',
       address_city: entity.address_city || '',
-      address_state: entity.address_state || '',
       address_country: entity.address_country || '',
-      address_postal_code: entity.address_postal_code || '',
       phone: entity.phone || '',
       email: entity.email || '',
       website: entity.website || '',
       tax_id: entity.tax_id || '',
       registration_number: entity.registration_number || '',
-      established_date: entity.established_date || '',
       industry: entity.industry || '',
       cost_center: entity.cost_center || '',
       budget_code: entity.budget_code || '',
       currency: entity.currency || 'USD',
-      default_manager_id: entity.default_manager_id || '',
-      custom_fields: entity.custom_fields || {},
     });
     setShowEditDialog(true);
   };
@@ -295,46 +243,6 @@ const OrganizationalEntitiesManager = () => {
     }
   };
 
-  const handleLogoUpload = async (e, entityId = null) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    const formDataUpload = new FormData();
-    formDataUpload.append('file', file);
-    
-    try {
-      const token = localStorage.getItem('access_token');
-      const uploadEntityId = entityId || (selectedEntity?.id || 'temp');
-      
-      const response = await axios.post(
-        `${API}/entities/${uploadEntityId}/upload-logo`,
-        formDataUpload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      
-      setFormData(prev => ({
-        ...prev,
-        logo_url: response.data.logo_url
-      }));
-      
-      toast({
-        title: 'Success',
-        description: 'Logo uploaded successfully!',
-      });
-    } catch (err) {
-      toast({
-        title: 'Error',
-        description: 'Failed to upload logo',
-        variant: 'destructive',
-      });
-    }
-  };
-
   const renderEntityList = (entityType) => {
     const typeInfo = ENTITY_TYPES[entityType];
     const Icon = typeInfo.icon;
@@ -371,7 +279,6 @@ const OrganizationalEntitiesManager = () => {
                   key={entity.id}
                   className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                 >
-                  {/* Logo */}
                   <div className="flex-shrink-0">
                     {entity.logo_url ? (
                       <img
@@ -389,7 +296,6 @@ const OrganizationalEntitiesManager = () => {
                     )}
                   </div>
                   
-                  {/* Info */}
                   <div className="flex-1">
                     <h4 className="font-semibold">{entity.name}</h4>
                     <div className="flex gap-2 text-sm text-muted-foreground">
@@ -399,7 +305,6 @@ const OrganizationalEntitiesManager = () => {
                     </div>
                   </div>
                   
-                  {/* Status */}
                   <div>
                     {entity.parent_id ? (
                       <Badge variant="default" className="gap-1">
@@ -414,7 +319,6 @@ const OrganizationalEntitiesManager = () => {
                     )}
                   </div>
                   
-                  {/* Actions */}
                   <div className="flex gap-1">
                     <Button variant="ghost" size="sm" onClick={() => handleEdit(entity)}>
                       <Pencil className="h-4 w-4" />
@@ -423,7 +327,7 @@ const OrganizationalEntitiesManager = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDelete(entity)}
-                      disabled={entity.parent_id}
+                      disabled={!!entity.parent_id}
                       title={entity.parent_id ? "Unlink from hierarchy first" : "Delete entity"}
                     >
                       <Trash2 className="h-4 w-4 text-red-600" />
@@ -439,27 +343,23 @@ const OrganizationalEntitiesManager = () => {
   };
 
   const renderEntityForm = () => {
-    const typeInfo = ENTITY_TYPES[selectedEntityType] || ENTITY_TYPES.profile;
-    
     return (
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="basic">Basic</TabsTrigger>
           <TabsTrigger value="contact">Contact</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
           <TabsTrigger value="business">Business</TabsTrigger>
           <TabsTrigger value="financial">Financial</TabsTrigger>
         </TabsList>
         
-        {/* Tab 1: Basic Information */}
-        <TabsContent value="basic" className="space-y-4">
+        <TabsContent value="basic" className="space-y-4 mt-4">
           <div>
             <Label htmlFor="name">Name *</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              placeholder={`Enter ${typeInfo.name.toLowerCase()} name`}
+              placeholder="Enter name"
               required
             />
           </div>
@@ -491,10 +391,26 @@ const OrganizationalEntitiesManager = () => {
               </SelectContent>
             </Select>
           </div>
+          
+          <div>
+            <Label htmlFor="primary_color">Primary Color</Label>
+            <div className="flex gap-2">
+              <Input
+                type="color"
+                value={formData.primary_color || '#3b82f6'}
+                onChange={(e) => setFormData({...formData, primary_color: e.target.value})}
+                className="w-20 h-10"
+              />
+              <Input
+                value={formData.primary_color || ''}
+                onChange={(e) => setFormData({...formData, primary_color: e.target.value})}
+                placeholder="#3b82f6"
+              />
+            </div>
+          </div>
         </TabsContent>
         
-        {/* Tab 2: Contact & Location */}
-        <TabsContent value="contact" className="space-y-4">
+        <TabsContent value="contact" className="space-y-4 mt-4">
           <div>
             <Label htmlFor="address_street">Street Address</Label>
             <Input
@@ -560,73 +476,7 @@ const OrganizationalEntitiesManager = () => {
           </div>
         </TabsContent>
         
-        {/* Tab 3: Branding */}
-        <TabsContent value="branding" className="space-y-4">
-          <div>
-            <Label htmlFor="logo">Logo</Label>
-            <div className="flex items-center gap-4">
-              {formData.logo_url && (
-                <img
-                  src={formData.logo_url.startsWith('http') ? formData.logo_url : `${BACKEND_URL}${formData.logo_url}`}
-                  alt="Logo preview"
-                  className="h-20 w-20 object-cover rounded border"
-                />
-              )}
-              <div>
-                <Input
-                  id="logo"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleLogoUpload(e, selectedEntity?.id)}
-                  className="mb-2"
-                />
-                <p className="text-xs text-muted-foreground">
-                  PNG, JPG, or SVG (max 2MB)
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="primary_color">Primary Brand Color</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="primary_color"
-                  type="color"
-                  value={formData.primary_color || '#3b82f6'}
-                  onChange={(e) => setFormData({...formData, primary_color: e.target.value})}
-                  className="w-20 h-10"
-                />
-                <Input
-                  value={formData.primary_color || ''}
-                  onChange={(e) => setFormData({...formData, primary_color: e.target.value})}
-                  placeholder="#3b82f6"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="secondary_color">Secondary Color</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="secondary_color"
-                  type="color"
-                  value={formData.secondary_color || '#64748b'}
-                  onChange={(e) => setFormData({...formData, secondary_color: e.target.value})}
-                  className="w-20 h-10"
-                />
-                <Input
-                  value={formData.secondary_color || ''}
-                  onChange={(e) => setFormData({...formData, secondary_color: e.target.value})}
-                  placeholder="#64748b"
-                />
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-        
-        {/* Tab 4: Business Details */}
-        <TabsContent value="business" className="space-y-4">
+        <TabsContent value="business" className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="tax_id">Tax ID / VAT Number</Label>
@@ -647,39 +497,9 @@ const OrganizationalEntitiesManager = () => {
               />
             </div>
           </div>
-          
-          <div>
-            <Label htmlFor="established_date">Established Date</Label>
-            <Input
-              id="established_date"
-              type="date"
-              value={formData.established_date}
-              onChange={(e) => setFormData({...formData, established_date: e.target.value})}
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="default_manager">Default Manager</Label>
-            <Select
-              value={formData.default_manager_id}
-              onValueChange={(value) => setFormData({...formData, default_manager_id: value})}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select manager" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableManagers.map(manager => (
-                  <SelectItem key={manager.id} value={manager.id}>
-                    {manager.name} ({manager.role})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
         </TabsContent>
         
-        {/* Tab 5: Financial */}
-        <TabsContent value="financial" className="space-y-4">
+        <TabsContent value="financial" className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="cost_center">Cost Center Code</Label>
@@ -740,8 +560,7 @@ const OrganizationalEntitiesManager = () => {
         <div>
           <h3 className="text-lg font-semibold">Organizational Entities</h3>
           <p className="text-sm text-muted-foreground">
-            Create and configure organizational entities with complete details, logos, and business information.
-            Use the Organization Structure page to link them into hierarchy.
+            Create and configure organizational entities with complete details. Use the Organization Structure page to link them into hierarchy.
           </p>
         </div>
       </div>
@@ -754,10 +573,8 @@ const OrganizationalEntitiesManager = () => {
         </AlertDescription>
       </Alert>
 
-      {/* Render entity lists for all 5 levels */}
       {Object.keys(ENTITY_TYPES).map(renderEntityList)}
 
-      {/* Create Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -787,7 +604,6 @@ const OrganizationalEntitiesManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
