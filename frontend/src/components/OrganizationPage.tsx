@@ -254,23 +254,6 @@ const OrganizationPage = () => {
     }));
   };
 
-  const handleCreateRoot = () => {
-    setFormData({ name: '', description: '', level: 1, parent_id: null });
-    setSelectedNode(null);
-    setShowCreateDialog(true);
-  };
-
-  const handleAddChild = (parentNode: any) => {
-    setFormData({
-      name: '',
-      description: '',
-      level: parentNode.level + 1,
-      parent_id: parentNode.id,
-    });
-    setSelectedNode(parentNode);
-    setShowCreateDialog(true);
-  };
-
   const handleUnlink = async (node: any) => {
     if (!window.confirm(`Unlink "${node.name}" from its parent? It will become an orphaned entity but won't be deleted.`)) {
       return;
@@ -303,31 +286,6 @@ const OrganizationPage = () => {
       setShowUsersDialog(true);
     } catch (err: unknown) {
       alert('Failed to load users');
-    }
-  };
-
-  const handleSubmitCreate = async (e: any) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${API}/organizations/units`, formData);
-      setShowCreateDialog(false);
-      loadHierarchy();
-    } catch (err: unknown) {
-      alert((err as any).response?.data?.detail || 'Failed to create unit');
-    }
-  };
-
-  const handleSubmitEdit = async (e: any) => {
-    e.preventDefault();
-    try {
-      await axios.put(`${API}/organizations/units/${selectedNode.id}`, {
-        name: formData.name,
-        description: formData.description,
-      });
-      setShowEditDialog(false);
-      loadHierarchy();
-    } catch (err: unknown) {
-      alert((err as any).response?.data?.detail || 'Failed to update unit');
     }
   };
 
