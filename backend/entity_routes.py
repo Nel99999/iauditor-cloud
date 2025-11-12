@@ -109,7 +109,7 @@ async def create_entity(
     # RBAC: Only Master and Developer can create entities
     from permission_routes import check_permission
     has_permission = await check_permission(
-        user, "organization", "create", "organization", db
+        db, user["id"], "organization", "create", "organization"
     )
     
     if not has_permission:
