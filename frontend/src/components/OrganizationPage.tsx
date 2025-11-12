@@ -198,22 +198,14 @@ const OrganizationPage = () => {
     }
   });
   
-  // Dialog states
-  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  // Dialog states (streamlined - removed showCreateDialog and showEditDialog)
   const [showUsersDialog, setShowUsersDialog] = useState<boolean>(false);
   const [showInviteDialog, setShowInviteDialog] = useState<boolean>(false);
   const [showLinkDialog, setShowLinkDialog] = useState<boolean>(false);
   
-  // Form states
+  // Form states (removed formData for create/edit - now in Settings)
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [unitUsers, setUnitUsers] = useState<any[]>([]);
-  const [formData, setFormData] = useState<{[key: string]: any}>({
-    name: '',
-    description: '',
-    level: 1,
-    parent_id: null,
-  });
   const [inviteData, setInviteData] = useState<any>({
     user_id: '',
     unit_id: '',
