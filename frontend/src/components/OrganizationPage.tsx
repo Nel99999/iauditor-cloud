@@ -374,6 +374,7 @@ const OrganizationPage = () => {
       // Allocate existing user to organizational unit
       await axios.post(`${API}/organizations/units/${inviteData.unit_id}/assign-user`, {
         user_id: inviteData.user_id,
+        unit_id: inviteData.unit_id,  // Required by Pydantic model
         role: inviteData.role
       });
       alert('User allocated successfully!');
