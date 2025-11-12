@@ -477,13 +477,20 @@ def run_tests():
     if response.status_code == 200:
         hierarchy = response.json()
         # Recursively search for entity in hierarchy
-        def find_in_hierarchy(node, entity_id):
-            if node.get("id") == entity_id:
-                return node
-            for child in node.get("children", []):
-                result = find_in_hierarchy(child, entity_id)
-                if result:
-                    return result
+        def find_in_hierarchy(nodes, entity_id):
+            """Search for entity in hierarchy tree (handles both dict and list)"""
+            if isinstance(nodes, dict):
+                if nodes.get("id") == entity_id:
+                    return nodes
+                for child in nodes.get("children", []):
+                    result = find_in_hierarchy(child, entity_id)
+                    if result:
+                        return result
+            elif isinstance(nodes, list):
+                for node in nodes:
+                    result = find_in_hierarchy(node, entity_id)
+                    if result:
+                        return result
             return None
         
         found_entity = find_in_hierarchy(hierarchy, hierarchy_entity_id) if hierarchy_entity_id else None
