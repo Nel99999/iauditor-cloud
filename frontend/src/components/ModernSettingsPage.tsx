@@ -1299,6 +1299,13 @@ const ModernSettingsPage = () => {
               </CardContent>
             </Card>
 
+
+
+            {/* Organizational Entities Section */}
+            <div className="mt-8">
+              <OrganizationalEntitiesManager />
+            </div>
+
           </TabsContent>
         )}
 
