@@ -247,7 +247,7 @@ async def delete_entity(
     # RBAC: Only Master and Developer can delete entities
     from permission_routes import check_permission
     has_permission = await check_permission(
-        user, "organization", "delete", "organization", db
+        db, user["id"], "organization", "delete", "organization"
     )
     
     if not has_permission:
