@@ -65,7 +65,7 @@ async def build_unit_path(unit_id: str, db: AsyncIOMotorDatabase) -> str:
     current_id = unit_id
     
     while current_id:
-        unit = await db.organization_units.find_one({"id": current_id}, {"_id": 0})
+        unit = await db.organizational_entities.find_one({"id": current_id}, {"_id": 0})
         if not unit:
             break
         path_parts.insert(0, unit["name"])
@@ -247,7 +247,7 @@ async def create_organization_unit(
     
     # Validate parent if provided
     if unit_data.parent_id:
-        parent = await db.organization_units.find_one(
+        parent = await db.organizational_entities.find_one(
             {"id": unit_data.parent_id, "organization_id": user["organization_id"]}
         )
         if not parent:
@@ -287,7 +287,7 @@ async def create_organization_unit(
     
     # Create a copy for insertion to avoid _id contamination
     insert_dict = unit_dict.copy()
-    await db.organization_units.insert_one(insert_dict)
+    await db.organizational_entities.insert_one(insert_dict)
     
     # Return clean dict without MongoDB _id
     return unit_dict
@@ -304,7 +304,7 @@ async def update_organization_unit(
     user = await get_current_user(request, db)
     
     # Find unit
-    unit = await db.organization_units.find_one(
+    unit = await db.organizational_entities.find_one(
         {"id": unit_id, "organization_id": user["organization_id"]},
         {"_id": 0}
     )
@@ -319,13 +319,13 @@ async def update_organization_unit(
     update_data = unit_data.model_dump(exclude_unset=True)
     if update_data:
         update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-        await db.organization_units.update_one(
+        await db.organizational_entities.update_one(
             {"id": unit_id},
             {"$set": update_data}
         )
     
     # Get updated unit
-    updated_unit = await db.organization_units.find_one({"id": unit_id}, {"_id": 0})
+    updated_unit = await db.organizational_entities.find_one({"id": unit_id}, {"_id": 0})
     return updated_unit
 
 
@@ -339,7 +339,7 @@ async def delete_organization_unit(
     user = await get_current_user(request, db)
     
     # Find unit
-    unit = await db.organization_units.find_one(
+    unit = await db.organizational_entities.find_one(
         {"id": unit_id, "organization_id": user["organization_id"]}
     )
     
@@ -350,7 +350,7 @@ async def delete_organization_unit(
         )
     
     # Check if unit has children
-    children = await db.organization_units.find_one(
+    children = await db.organizational_entities.find_one(
         {"parent_id": unit_id, "is_active": True}
     )
     
@@ -361,7 +361,7 @@ async def delete_organization_unit(
         )
     
     # Soft delete
-    await db.organization_units.update_one(
+    await db.organizational_entities.update_one(
         {"id": unit_id},
         {"$set": {"is_active": False, "updated_at": datetime.now(timezone.utc).isoformat()}}
     )
@@ -380,7 +380,7 @@ async def assign_user_to_unit(
     user = await get_current_user(request, db)
     
     # Validate unit exists
-    unit = await db.organization_units.find_one(
+    unit = await db.organizational_entities.find_one(
         {"id": unit_id, "organization_id": user["organization_id"]}
     )
     
@@ -464,7 +464,7 @@ async def link_existing_unit_to_parent(
         )
     
     # Validate parent unit exists
-    parent = await db.organization_units.find_one({
+    parent = await db.organizational_entities.find_one({
         "id": parent_id,
         "organization_id": user["organization_id"]
     })
@@ -476,7 +476,7 @@ async def link_existing_unit_to_parent(
         )
     
     # Validate child unit exists
-    child = await db.organization_units.find_one({
+    child = await db.organizational_entities.find_one({
         "id": child_unit_id,
         "organization_id": user["organization_id"]
     })
@@ -509,7 +509,7 @@ async def link_existing_unit_to_parent(
         )
     
     # Update child unit with parent_id
-    await db.organization_units.update_one(
+    await db.organizational_entities.update_one(
         {"id": child_unit_id},
         {
             "$set": {
@@ -549,7 +549,7 @@ async def unlink_unit_from_parent(
     user = await get_current_user(request, db)
     
     # Validate unit exists
-    unit = await db.organization_units.find_one({
+    unit = await db.organizational_entities.find_one({
         "id": unit_id,
         "organization_id": user["organization_id"]
     })
@@ -568,10 +568,10 @@ async def unlink_unit_from_parent(
         )
     
     # Store parent info for logging
-    parent = await db.organization_units.find_one({"id": unit.get("parent_id")})
+    parent = await db.organizational_entities.find_one({"id": unit.get("parent_id")})
     
     # Remove parent_id from unit
-    await db.organization_units.update_one(
+    await db.organizational_entities.update_one(
         {"id": unit_id},
         {
             "$set": {
@@ -701,7 +701,7 @@ async def get_organization_stats(
     user = await get_current_user(request, db)
     
     # Get org units count
-    units_count = await db.organization_units.count_documents({
+    units_count = await db.organizational_entities.count_documents({
         "organization_id": user["organization_id"]
     })
     
