@@ -171,7 +171,7 @@ async def update_entity(
     # RBAC: Only Master and Developer can update entities
     from permission_routes import check_permission
     has_permission = await check_permission(
-        user, "organization", "update", "organization", db
+        db, user["id"], "organization", "update", "organization"
     )
     
     if not has_permission:
