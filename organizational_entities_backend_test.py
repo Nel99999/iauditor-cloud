@@ -194,6 +194,7 @@ def run_tests():
     # Test 1.8: DELETE Entity with parent_id (Should Fail)
     # First, we need to create an entity and link it to hierarchy
     print("\n--- Test 1.8: DELETE Entity with parent_id (Should Fail) ---")
+    temp_entity_id = None  # Initialize variable
     # Create a temporary entity for this test
     temp_entity_payload = {
         "entity_type": "company",
