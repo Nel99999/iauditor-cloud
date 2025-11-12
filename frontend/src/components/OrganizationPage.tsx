@@ -94,42 +94,45 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onLinkExisting, onE
           </Badge>
         </div>
         
-        {/* Action Buttons with Simple Title Tooltips */}
+        {/* Action Buttons - Streamlined for Management Only */}
         <div className="flex gap-1 ml-auto">
+          {/* Link Existing - Only if not at max level */}
           {node.level < 5 && (
-            <>
-              <PermissionGuard 
-                anyPermissions={['organization.create.organization', 'organization.update.organization']}
-                tooltipMessage="No permission to add organizational units"
+            <PermissionGuard 
+              anyPermissions={['organization.update.organization']}
+              tooltipMessage="No permission to link organizational units"
+            >
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => onLinkExisting(node)}
+                data-testid={`link-existing-${node.id}`}
+                title={`Link existing ${getLevelColors(node.level + 1)?.name || 'unit'}`}
               >
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onAddChild(node)}
-                  data-testid={`add-child-${node.id}`}
-                  title={`Create new ${getLevelColors(node.level + 1)?.name || 'unit'}`}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </PermissionGuard>
-              
-              <PermissionGuard 
-                anyPermissions={['organization.update.organization']}
-                tooltipMessage="No permission to link organizational units"
-              >
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => onLinkExisting(node)}
-                  data-testid={`link-existing-${node.id}`}
-                  title={`Link existing ${getLevelColors(node.level + 1)?.name || 'unit'}`}
-                >
-                  <Link2 className="h-4 w-4" />
-                </Button>
-              </PermissionGuard>
-            </>
+                <Link2 className="h-4 w-4" />
+              </Button>
+            </PermissionGuard>
           )}
           
+          {/* Unlink - Only if entity has a parent */}
+          {node.parent_id && (
+            <PermissionGuard 
+              anyPermissions={['organization.update.organization']}
+              tooltipMessage="No permission to unlink organizational units"
+            >
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => onUnlink(node)}
+                data-testid={`unlink-${node.id}`}
+                title="Unlink from parent (makes orphaned)"
+              >
+                <Unlink className="h-4 w-4" />
+              </Button>
+            </PermissionGuard>
+          )}
+          
+          {/* View Users */}
           <Button
             size="sm"
             variant="ghost"
@@ -140,33 +143,19 @@ const OrganizationNode: React.FC<any> = ({ node, onAddChild, onLinkExisting, onE
             <Users className="h-4 w-4" />
           </Button>
           
+          {/* View Details - Opens Settings for editing */}
           <PermissionGuard 
-            anyPermissions={['organization.update.organization']}
-            tooltipMessage="No permission to edit organizational units"
+            anyPermissions={['organization.read.organization']}
+            tooltipMessage="No permission to view details"
           >
             <Button
               size="sm"
               variant="ghost"
-              onClick={() => onEdit(node)}
-              data-testid={`edit-${node.id}`}
-              title={`Edit ${node.name}`}
+              onClick={() => onViewDetails(node)}
+              data-testid={`view-details-${node.id}`}
+              title="View/Edit details in Settings"
             >
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </PermissionGuard>
-          
-          <PermissionGuard 
-            anyPermissions={['organization.delete.organization']}
-            tooltipMessage="No permission to delete organizational units"
-          >
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => onDelete(node)}
-              data-testid={`delete-${node.id}`}
-              title={`Delete ${node.name}`}
-            >
-              <Trash2 className="h-4 w-4 text-red-600" />
+              <Eye className="h-4 w-4" />
             </Button>
           </PermissionGuard>
         </div>
