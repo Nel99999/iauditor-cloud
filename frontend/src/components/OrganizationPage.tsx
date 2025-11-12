@@ -279,28 +279,28 @@ const OrganizationPage = () => {
     setShowCreateDialog(true);
   };
 
-  const handleEdit = (node: any) => {
-    setFormData({
-      name: node.name,
-      description: node.description || '',
-      level: node.level,
-      parent_id: node.parent_id,
-    });
-    setSelectedNode(node);
-    setShowEditDialog(true);
-  };
-
-  const handleDelete = async (node: any) => {
-    if (!window.confirm(`Are you sure you want to delete "${node.name}"?`)) {
+  const handleUnlink = async (node: any) => {
+    if (!window.confirm(`Unlink "${node.name}" from its parent? It will become an orphaned entity but won't be deleted.`)) {
       return;
     }
 
     try {
-      await axios.delete(`${API}/organizations/units/${node.id}`);
+      const token = localStorage.getItem('access_token');
+      await axios.post(`${API}/organizations/units/${node.id}/unlink`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert(`${node.name} has been unlinked successfully`);
       loadHierarchy();
     } catch (err: unknown) {
-      alert((err as any).response?.data?.detail || 'Failed to delete unit');
+      alert((err as any).response?.data?.detail || 'Failed to unlink unit');
     }
+  };
+
+  const handleViewDetails = (node: any) => {
+    // Redirect to Settings page to edit entity
+    alert(`To edit "${node.name}", go to Settings → Admin & Compliance → Organizational Entities`);
+    // Optionally: navigate to settings
+    // window.location.href = '/settings';
   };
 
   const handleViewUsers = async (node: any) => {
