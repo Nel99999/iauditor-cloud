@@ -341,27 +341,30 @@ def run_tests():
     response = requests.get(f"{BACKEND_URL}/entities/custom-fields?entity_type=company", headers=headers)
     if response.status_code == 200:
         fields = response.json()
-        has_iso_field = any(f.get("field_id") == "iso_certification" for f in fields)
-        log_test("3.3", "GET Custom Fields (Has Data)", has_iso_field, f"Retrieved {len(fields)} fields, contains iso_certification: {has_iso_field}")
+        has_field = any(f.get("field_id") == test_data.get("custom_field_field_id") for f in fields) if test_data.get("custom_field_field_id") else False
+        log_test("3.3", "GET Custom Fields (Has Data)", has_field, f"Retrieved {len(fields)} fields, contains created field: {has_field}")
     else:
         log_test("3.3", "GET Custom Fields (Has Data)", False, f"Status: {response.status_code}")
     
     # Test 3.4: CREATE Duplicate Field (Should Fail)
     print("\n--- Test 3.4: CREATE Duplicate Field (Should Fail) ---")
-    duplicate_payload = {
-        "entity_type": "company",
-        "field_id": "iso_certification",  # Same as Test 3.2
-        "field_label": "ISO Cert Duplicate",
-        "field_type": "text",
-        "field_group": "business_details"
-    }
-    response = requests.post(f"{BACKEND_URL}/entities/custom-fields", headers=headers, json=duplicate_payload)
-    if response.status_code == 400:
-        error_msg = response.json().get("detail", "")
-        correct_error = "already exists" in error_msg.lower()
-        log_test("3.4", "CREATE Duplicate Field (Should Fail)", correct_error, f"Correctly rejected with 400: {error_msg}")
+    if test_data.get("custom_field_field_id"):
+        duplicate_payload = {
+            "entity_type": "company",
+            "field_id": test_data["custom_field_field_id"],  # Same as Test 3.2
+            "field_label": "ISO Cert Duplicate",
+            "field_type": "text",
+            "field_group": "business_details"
+        }
+        response = requests.post(f"{BACKEND_URL}/entities/custom-fields", headers=headers, json=duplicate_payload)
+        if response.status_code == 400:
+            error_msg = response.json().get("detail", "")
+            correct_error = "already exists" in error_msg.lower()
+            log_test("3.4", "CREATE Duplicate Field (Should Fail)", correct_error, f"Correctly rejected with 400: {error_msg}")
+        else:
+            log_test("3.4", "CREATE Duplicate Field (Should Fail)", False, f"Expected 400, got {response.status_code}")
     else:
-        log_test("3.4", "CREATE Duplicate Field (Should Fail)", False, f"Expected 400, got {response.status_code}")
+        log_test("3.4", "CREATE Duplicate Field (Should Fail)", False, "Skipped - no field_id from Test 3.2")
     
     # Test 3.5: DELETE Custom Field
     if test_data["custom_field_id"]:
