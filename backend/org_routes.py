@@ -136,28 +136,28 @@ async def get_organization_unit(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get a specific organization unit by ID"""
+    """Get a specific organization unit by ID (using organizational_entities)"""
     user = await get_current_user(request, db)
     
-    unit = await db.organization_units.find_one(
+    entity = await db.organizational_entities.find_one(
         {"id": unit_id, "organization_id": user["organization_id"], "is_active": True},
         {"_id": 0}
     )
     
-    if not unit:
+    if not entity:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Organization unit not found"
         )
     
-    # Get user count for this unit
+    # Get user count for this entity
     user_count = await db.user_org_assignments.count_documents({
         "unit_id": unit_id,
         "organization_id": user["organization_id"]
     })
-    unit["user_count"] = user_count
+    entity["user_count"] = user_count
     
-    return unit
+    return entity
 
 
 @router.get("/hierarchy")
