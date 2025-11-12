@@ -63,6 +63,7 @@ from session_routes import router as session_router
 from developer_routes import router as developer_router
 from sidebar_routes import router as sidebar_router
 from org_sidebar_routes import router as org_sidebar_router
+from entity_routes import router as entity_router
 from announcement_routes import router as announcement_router
 from module_analytics_routes import router as module_analytics_router
 from dashboard_enhanced_extended_routes import router as dashboard_extended_router
