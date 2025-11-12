@@ -313,7 +313,7 @@ const OrganizationalEntitiesManager = () => {
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="gap-1">
-                        <LinkOff className="h-3 w-3" />
+                        <Unlink className="h-3 w-3" />
                         Not Linked
                       </Badge>
                     )}
