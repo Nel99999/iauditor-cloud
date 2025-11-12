@@ -167,11 +167,10 @@ const OrganizationNode: React.FC<any> = ({ node, onLinkExisting, onUnlink, onVie
             <OrganizationNode
               key={child.id}
               node={child}
-              onAddChild={onAddChild}
               onLinkExisting={onLinkExisting}
-              onEdit={onEdit}
-              onDelete={onDelete}
+              onUnlink={onUnlink}
               onViewUsers={onViewUsers}
+              onViewDetails={onViewDetails}
               expandedNodes={expandedNodes}
               toggleNode={toggleNode}
               depth={depth + 1}
