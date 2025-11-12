@@ -450,9 +450,10 @@ def run_tests():
     
     # Test 5.2: Master/Developer Can Create Custom Fields
     print("\n--- Test 5.2: Master/Developer Can Create Custom Fields ---")
+    import time
     rbac_field_payload = {
         "entity_type": "company",
-        "field_id": "rbac_test_field",
+        "field_id": f"rbac_test_field_{int(time.time())}",  # Unique field ID
         "field_label": "RBAC Test Field",
         "field_type": "text",
         "field_group": "test"
@@ -461,7 +462,7 @@ def run_tests():
     if response.status_code == 201:
         log_test("5.2", "Master/Developer Can Create Custom Fields", True, "Developer role can create custom fields")
     else:
-        log_test("5.2", "Master/Developer Can Create Custom Fields", False, f"Status: {response.status_code}")
+        log_test("5.2", "Master/Developer Can Create Custom Fields", False, f"Status: {response.status_code}, Response: {response.text}")
     
     # Test 5.3: Verify Audit Logging
     print("\n--- Test 5.3: Verify Audit Logging ---")
