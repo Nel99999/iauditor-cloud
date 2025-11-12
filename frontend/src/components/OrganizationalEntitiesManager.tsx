@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Building2, Plus, Pencil, Trash2, Save, X, Building, Factory, Store, Briefcase, AlertCircle, Link2, LinkOff } from 'lucide-react';
+import { Building2, Plus, Pencil, Trash2, Save, X, Building, Factory, Store, Briefcase, AlertCircle, Link2, Unlink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import PhoneInput from 'react-phone-number-input';
 
