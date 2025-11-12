@@ -95,4 +95,170 @@ class PermissionCheck(BaseModel):
     has_permission: bool
     user_role: str
     unit_id: str
+
+
+
+# ============================================================================
+# ENHANCED OPTION B - ORGANIZATIONAL ENTITIES WITH RICH METADATA
+# ============================================================================
+
+class OrganizationalEntity(BaseModel):
+    """Rich organizational entity (Profile, Organization, Company, Branch, Brand)"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str
+    entity_type: str  # "profile", "organisation", "company", "branch", "brand"
+    level: int  # 1-5
+    
+    # Core fields
+    name: str
+    description: Optional[str] = None
+    
+    # Branding
+    logo_url: Optional[str] = None
+    primary_color: Optional[str] = None
+    secondary_color: Optional[str] = None
+    
+    # Contact & Location
+    address_street: Optional[str] = None
+    address_city: Optional[str] = None
+    address_state: Optional[str] = None
+    address_country: Optional[str] = None
+    address_postal_code: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    website: Optional[str] = None
+    
+    # Business Details
+    tax_id: Optional[str] = None
+    registration_number: Optional[str] = None
+    established_date: Optional[str] = None
+    industry: Optional[str] = None
+    
+    # Financial
+    cost_center: Optional[str] = None
+    budget_code: Optional[str] = None
+    currency: Optional[str] = "USD"
+    
+    # Management
+    default_manager_id: Optional[str] = None
+    
+    # Custom fields (metadata for flexibility)
+    custom_fields: Optional[dict] = Field(default_factory=dict)
+    
+    # Hierarchy (managed separately in tree)
+    parent_id: Optional[str] = None  # Set via tree linking
+    
+    # Status
+    is_active: bool = True
+    status: Optional[str] = "active"  # active, inactive, archived
+    
+    # Audit
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_by: Optional[str] = None
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class OrganizationalEntityCreate(BaseModel):
+    """Create organizational entity"""
+    entity_type: str  # "profile", "organisation", "company", "branch", "brand"
+    level: int = Field(ge=1, le=5)
+    name: str
+    description: Optional[str] = None
+    
+    # Branding
+    logo_url: Optional[str] = None
+    primary_color: Optional[str] = None
+    
+    # Contact & Location
+    address_street: Optional[str] = None
+    address_city: Optional[str] = None
+    address_country: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    website: Optional[str] = None
+    
+    # Business
+    tax_id: Optional[str] = None
+    registration_number: Optional[str] = None
+    industry: Optional[str] = None
+    
+    # Financial
+    cost_center: Optional[str] = None
+    budget_code: Optional[str] = None
+    
+    # Custom fields
+    custom_fields: Optional[dict] = Field(default_factory=dict)
+
+
+class OrganizationalEntityUpdate(BaseModel):
+    """Update organizational entity"""
+    name: Optional[str] = None
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
+    primary_color: Optional[str] = None
+    address_street: Optional[str] = None
+    address_city: Optional[str] = None
+    address_country: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    website: Optional[str] = None
+    tax_id: Optional[str] = None
+    registration_number: Optional[str] = None
+    industry: Optional[str] = None
+    cost_center: Optional[str] = None
+    budget_code: Optional[str] = None
+    default_manager_id: Optional[str] = None
+    custom_fields: Optional[dict] = None
+    is_active: Optional[bool] = None
+    status: Optional[str] = None
+
+
+class CustomFieldDefinition(BaseModel):
+    """Custom field definition for extending entity types"""
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    organization_id: str  # Org-specific custom fields
+    entity_type: str  # Which entity type this field applies to
+    
+    field_id: str  # Unique identifier for the field
+    field_label: str  # Display label
+    field_type: str  # text, number, date, select, multi_select, file, image, etc.
+    field_group: str  # Which tab/section it belongs to
+    
+    required: bool = False
+    default_value: Optional[str] = None
+    options: Optional[List[str]] = None  # For select/multi_select types
+    validation_rules: Optional[dict] = None  # Min, max, regex, etc.
+    
+    visible_to_roles: Optional[List[str]] = None  # Which roles can see this field
+    editable_by_roles: Optional[List[str]] = None  # Which roles can edit
+    
+    order: int = 0  # Display order within group
+    help_text: Optional[str] = None
+    placeholder: Optional[str] = None
+    
+    is_active: bool = True
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CustomFieldDefinitionCreate(BaseModel):
+    """Create custom field definition"""
+    entity_type: str
+    field_id: str
+    field_label: str
+    field_type: str
+    field_group: str = "additional_info"
+    required: bool = False
+    default_value: Optional[str] = None
+    options: Optional[List[str]] = None
+    validation_rules: Optional[dict] = None
+    visible_to_roles: Optional[List[str]] = None
+    order: int = 0
+    help_text: Optional[str] = None
+
     reason: Optional[str] = None
