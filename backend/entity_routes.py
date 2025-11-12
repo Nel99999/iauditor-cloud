@@ -74,6 +74,122 @@ async def get_all_entities(
     return entities
 
 
+# ============================================================================
+# CUSTOM FIELDS CRUD (Must come before /{entity_id} to avoid route conflicts)
+# ============================================================================
+
+@router.get("/custom-fields")
+async def get_custom_fields(
+    request: Request,
+    entity_type: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Get all custom field definitions for organization"""
+    user = await get_current_user(request, db)
+    
+    query = {"organization_id": user["organization_id"], "is_active": True}
+    
+    if entity_type:
+        query["entity_type"] = entity_type
+    
+    fields = await db.custom_field_definitions.find(
+        query,
+        {"_id": 0}
+    ).sort("order", 1).to_list(1000)
+    
+    return fields
+
+
+@router.post("/custom-fields", status_code=status.HTTP_201_CREATED)
+async def create_custom_field(
+    field_data: CustomFieldDefinitionCreate,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Create custom field definition (Master/Developer only)"""
+    user = await get_current_user(request, db)
+    
+    # RBAC: Only Master and Developer
+    user_role = await db.roles.find_one({
+        "code": user["role"],
+        "organization_id": user["organization_id"]
+    })
+    
+    if not user_role or user_role.get("level", 10) > 2:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only Master and Developer roles can create custom fields"
+        )
+    
+    # Check if field_id already exists for this entity type
+    existing = await db.custom_field_definitions.find_one({
+        "organization_id": user["organization_id"],
+        "entity_type": field_data.entity_type,
+        "field_id": field_data.field_id,
+        "is_active": True
+    })
+    
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Field '{field_data.field_id}' already exists for {field_data.entity_type}"
+        )
+    
+    # Create field definition
+    field_def = CustomFieldDefinition(
+        **field_data.model_dump(),
+        organization_id=user["organization_id"],
+        created_by=user["id"]
+    )
+    
+    field_dict = field_def.model_dump()
+    field_dict["created_at"] = field_dict["created_at"].isoformat()
+    
+    await db.custom_field_definitions.insert_one(field_dict)
+    
+    return field_def
+
+
+@router.delete("/custom-fields/{field_id}")
+async def delete_custom_field(
+    field_id: str,
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    """Delete custom field definition"""
+    user = await get_current_user(request, db)
+    
+    # RBAC: Only Master and Developer
+    user_role = await db.roles.find_one({
+        "code": user["role"],
+        "organization_id": user["organization_id"]
+    })
+    
+    if not user_role or user_role.get("level", 10) > 2:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only Master and Developer roles can delete custom fields"
+        )
+    
+    # Soft delete
+    result = await db.custom_field_definitions.update_one(
+        {"id": field_id, "organization_id": user["organization_id"]},
+        {"$set": {"is_active": False}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Custom field not found"
+        )
+    
+    return {"message": "Custom field deleted successfully"}
+
+
+# ============================================================================
+# ENTITY-SPECIFIC ROUTES (Must come after /custom-fields)
+# ============================================================================
+
 @router.get("/{entity_id}")
 async def get_entity(
     entity_id: str,
