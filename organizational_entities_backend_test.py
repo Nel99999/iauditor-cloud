@@ -413,6 +413,7 @@ def run_tests():
     
     # Test 4.1: Create Entity in Settings
     print("\n--- Test 4.1: Create Entity in Settings ---")
+    hierarchy_entity_id = None  # Initialize variable
     hierarchy_entity_payload = {
         "entity_type": "company",
         "level": 3,
@@ -427,7 +428,6 @@ def run_tests():
         log_test("4.1", "Create Entity in Settings", parent_id_is_none, f"Created entity ID: {hierarchy_entity_id}, parent_id is None: {parent_id_is_none}")
     else:
         log_test("4.1", "Create Entity in Settings", False, f"Status: {response.status_code}")
-        hierarchy_entity_id = None
     
     # Test 4.2: Verify Entity is Unlinked
     if hierarchy_entity_id:
