@@ -317,9 +317,10 @@ def run_tests():
     
     # Test 3.2: CREATE Custom Field
     print("\n--- Test 3.2: CREATE Custom Field ---")
+    import time
     field_payload = {
         "entity_type": "company",
-        "field_id": "iso_certification",
+        "field_id": f"iso_certification_{int(time.time())}",  # Unique field ID
         "field_label": "ISO Certification Number",
         "field_type": "text",
         "field_group": "business_details",
@@ -330,6 +331,7 @@ def run_tests():
     if response.status_code == 201:
         field = response.json()
         test_data["custom_field_id"] = field.get("id")
+        test_data["custom_field_field_id"] = field.get("field_id")  # Store field_id for duplicate test
         log_test("3.2", "CREATE Custom Field", True, f"Created custom field ID: {test_data['custom_field_id']}")
     else:
         log_test("3.2", "CREATE Custom Field", False, f"Status: {response.status_code}, Response: {response.text}")
