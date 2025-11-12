@@ -192,84 +192,49 @@ def run_tests():
         log_test("1.7", "Verify Update in Database", False, "Skipped - no entity_id")
     
     # Test 1.8: DELETE Entity with parent_id (Should Fail)
-    # First, we need to create an entity and link it to hierarchy
+    # NOTE: This test cannot be executed as expected because organizational entities
+    # and organizational units are separate systems. Entities cannot be linked to
+    # the hierarchy using the /organizations/units/{parent_id}/link-child endpoint.
     print("\n--- Test 1.8: DELETE Entity with parent_id (Should Fail) ---")
-    temp_entity_id = None  # Initialize variable
-    # Create a temporary entity for this test
-    temp_entity_payload = {
-        "entity_type": "company",
-        "level": 3,
-        "name": "Temp Company for Delete Test",
-        "description": "Will be linked then deletion attempted"
-    }
-    response = requests.post(f"{BACKEND_URL}/entities", headers=headers, json=temp_entity_payload)
-    if response.status_code == 201:
-        temp_entity = response.json()
-        temp_entity_id = temp_entity.get("id")
-        
-        # Get a parent unit to link to
-        response = requests.get(f"{BACKEND_URL}/organizations/units", headers=headers)
-        if response.status_code == 200:
-            units = response.json()
-            if len(units) > 0:
-                parent_unit = units[0]
-                test_data["parent_unit_id"] = parent_unit.get("id")
-                
-                # Link the entity to hierarchy
-                link_payload = {"child_unit_id": temp_entity_id}
-                response = requests.post(
-                    f"{BACKEND_URL}/organizations/units/{test_data['parent_unit_id']}/link-child",
-                    headers=headers,
-                    json=link_payload
-                )
-                
-                if response.status_code == 201:
-                    # Now try to delete - should fail
-                    response = requests.delete(f"{BACKEND_URL}/entities/{temp_entity_id}", headers=headers)
-                    if response.status_code == 400:
-                        error_msg = response.json().get("detail", "")
-                        correct_error = "Unlink" in error_msg or "unlink" in error_msg or "hierarchy" in error_msg
-                        log_test("1.8", "DELETE Entity with parent_id (Should Fail)", correct_error, f"Correctly rejected with 400: {error_msg}")
-                    else:
-                        log_test("1.8", "DELETE Entity with parent_id (Should Fail)", False, f"Expected 400, got {response.status_code}")
-                else:
-                    log_test("1.8", "DELETE Entity with parent_id (Should Fail)", False, f"Failed to link entity: {response.status_code}")
-            else:
-                log_test("1.8", "DELETE Entity with parent_id (Should Fail)", False, "No organizational units found to link to")
-        else:
-            log_test("1.8", "DELETE Entity with parent_id (Should Fail)", False, "Failed to get organizational units")
-    else:
-        log_test("1.8", "DELETE Entity with parent_id (Should Fail)", False, f"Failed to create temp entity: {response.status_code}")
+    print("⚠️  SKIPPED: Entities and organizational units are separate systems.")
+    print("   The link-child endpoint expects organization_units, not organizational_entities.")
+    log_test("1.8", "DELETE Entity with parent_id (Should Fail)", False, "SKIPPED - Entities cannot be linked to org units hierarchy")
+    temp_entity_id = None
     
     # Test 1.9: Unlink Entity, Then DELETE
-    if temp_entity_id and test_data["parent_unit_id"]:
-        print("\n--- Test 1.9: Unlink Entity, Then DELETE ---")
-        # Unlink
-        response = requests.post(f"{BACKEND_URL}/organizations/units/{temp_entity_id}/unlink", headers=headers)
-        if response.status_code == 200:
-            # Now delete should succeed
-            response = requests.delete(f"{BACKEND_URL}/entities/{temp_entity_id}", headers=headers)
-            if response.status_code == 200:
-                log_test("1.9", "Unlink Entity, Then DELETE", True, "Entity unlinked and deleted successfully")
-            else:
-                log_test("1.9", "Unlink Entity, Then DELETE", False, f"Delete failed after unlink: {response.status_code}")
-        else:
-            log_test("1.9", "Unlink Entity, Then DELETE", False, f"Unlink failed: {response.status_code}")
-    else:
-        log_test("1.9", "Unlink Entity, Then DELETE", False, "Skipped - no temp_entity_id")
+    print("\n--- Test 1.9: Unlink Entity, Then DELETE ---")
+    print("⚠️  SKIPPED: Depends on Test 1.8")
+    log_test("1.9", "Unlink Entity, Then DELETE", False, "SKIPPED - Depends on hierarchy linking")
     
     # Test 1.10: Verify Soft Delete
-    if temp_entity_id:
-        print("\n--- Test 1.10: Verify Soft Delete ---")
-        response = requests.get(f"{BACKEND_URL}/entities", headers=headers)
+    print("\n--- Test 1.10: Verify Soft Delete ---")
+    # Test soft delete with a standalone entity instead
+    standalone_entity_payload = {
+        "entity_type": "company",
+        "level": 3,
+        "name": "Soft Delete Test Company",
+        "description": "For testing soft delete"
+    }
+    response = requests.post(f"{BACKEND_URL}/entities", headers=headers, json=standalone_entity_payload)
+    if response.status_code == 201:
+        standalone_entity = response.json()
+        standalone_entity_id = standalone_entity.get("id")
+        
+        # Delete it
+        response = requests.delete(f"{BACKEND_URL}/entities/{standalone_entity_id}", headers=headers)
         if response.status_code == 200:
-            entities = response.json()
-            deleted_entity_not_in_list = not any(e.get("id") == temp_entity_id for e in entities)
-            log_test("1.10", "Verify Soft Delete", deleted_entity_not_in_list, f"Deleted entity not in active list: {deleted_entity_not_in_list}")
+            # Verify it's not in active list
+            response = requests.get(f"{BACKEND_URL}/entities", headers=headers)
+            if response.status_code == 200:
+                entities = response.json()
+                deleted_entity_not_in_list = not any(e.get("id") == standalone_entity_id for e in entities)
+                log_test("1.10", "Verify Soft Delete", deleted_entity_not_in_list, f"Deleted entity not in active list: {deleted_entity_not_in_list}")
+            else:
+                log_test("1.10", "Verify Soft Delete", False, f"Failed to get entities: {response.status_code}")
         else:
-            log_test("1.10", "Verify Soft Delete", False, f"Status: {response.status_code}")
+            log_test("1.10", "Verify Soft Delete", False, f"Delete failed: {response.status_code}")
     else:
-        log_test("1.10", "Verify Soft Delete", False, "Skipped - no temp_entity_id")
+        log_test("1.10", "Verify Soft Delete", False, f"Failed to create entity: {response.status_code}")
     
     print("\n" + "="*80)
     print("TEST SUITE 2: ENTITY LOGO UPLOAD (3 tests)")
