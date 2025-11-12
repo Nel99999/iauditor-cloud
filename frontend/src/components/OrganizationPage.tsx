@@ -519,11 +519,10 @@ const OrganizationPage = () => {
                   <OrganizationNode
                     key={node.id}
                     node={node}
-                    onAddChild={handleAddChild}
                     onLinkExisting={handleLinkExisting}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
+                    onUnlink={handleUnlink}
                     onViewUsers={handleViewUsers}
+                    onViewDetails={handleViewDetails}
                     expandedNodes={expandedNodes}
                     toggleNode={toggleNode}
                     depth={0}
