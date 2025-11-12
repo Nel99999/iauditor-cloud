@@ -165,7 +165,7 @@ async def get_organization_hierarchy(
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get organization hierarchy as a tree structure"""
+    """Get organization hierarchy as a tree structure (using organizational_entities)"""
     user = await get_current_user(request, db)
     
     if not user.get("organization_id"):
@@ -174,13 +174,13 @@ async def get_organization_hierarchy(
             detail="User not associated with an organization",
         )
     
-    # Get all units
-    units = await db.organization_units.find(
+    # Get all entities (new system)
+    entities = await db.organizational_entities.find(
         {"organization_id": user["organization_id"], "is_active": True},
         {"_id": 0}
     ).sort("level", 1).to_list(1000)
     
-    # Get user counts per unit
+    # Get user counts per entity
     user_counts = {}
     assignments = await db.user_org_assignments.find(
         {"organization_id": user["organization_id"]},
@@ -191,29 +191,43 @@ async def get_organization_hierarchy(
         unit_id = assignment["unit_id"]
         user_counts[unit_id] = user_counts.get(unit_id, 0) + 1
     
-    # Build tree structure
-    unit_map = {}
-    for unit in units:
-        unit_map[unit["id"]] = {
-            "id": unit["id"],
-            "name": unit["name"],
-            "description": unit.get("description"),
-            "level": unit["level"],
-            "parent_id": unit.get("parent_id"),
+    # Build tree structure with rich entity data
+    entity_map = {}
+    for entity in entities:
+        entity_map[entity["id"]] = {
+            # Core hierarchy fields
+            "id": entity["id"],
+            "name": entity["name"],
+            "description": entity.get("description"),
+            "level": entity["level"],
+            "entity_type": entity.get("entity_type", "profile"),
+            "parent_id": entity.get("parent_id"),
             "children": [],
-            "user_count": user_counts.get(unit["id"], 0),
+            "user_count": user_counts.get(entity["id"], 0),
+            
+            # Rich metadata fields
+            "logo_url": entity.get("logo_url"),
+            "primary_color": entity.get("primary_color"),
+            "address_city": entity.get("address_city"),
+            "address_country": entity.get("address_country"),
+            "industry": entity.get("industry"),
+            "phone": entity.get("phone"),
+            "email": entity.get("email"),
+            "tax_id": entity.get("tax_id"),
+            "cost_center": entity.get("cost_center"),
+            "status": entity.get("status", "active"),
         }
     
     # Build tree by linking children to parents
-    root_units = []
-    for unit_id, unit_data in unit_map.items():
-        parent_id = unit_data["parent_id"]
-        if parent_id and parent_id in unit_map:
-            unit_map[parent_id]["children"].append(unit_data)
+    root_entities = []
+    for entity_id, entity_data in entity_map.items():
+        parent_id = entity_data["parent_id"]
+        if parent_id and parent_id in entity_map:
+            entity_map[parent_id]["children"].append(entity_data)
         else:
-            root_units.append(unit_data)
+            root_entities.append(entity_data)
     
-    return root_units
+    return root_entities
 
 
 @router.post("/units", status_code=status.HTTP_201_CREATED)
