@@ -415,19 +415,16 @@ const OrganizationPage = () => {
 
   return (
     <ModernPageWrapper 
-      title="Organization" 
-      subtitle="Manage organizational structure"
+      title="Organization Structure" 
+      subtitle="Manage hierarchy, link entities, and allocate users"
       actions={
-        <PermissionGuard 
-          anyPermissions={['organization.create.organization']}
-          minLevel={2}
-          tooltipMessage="No permission to create root organizational units"
-        >
-          <Button onClick={handleCreateRoot} data-testid="create-root-unit-btn">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Profile
-          </Button>
-        </PermissionGuard>
+        <Alert className="max-w-xl">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="text-sm">
+            <strong>Note:</strong> To create new entities with full details and logos, 
+            go to <strong>Settings → Admin & Compliance → Organizational Entities</strong>
+          </AlertDescription>
+        </Alert>
       }
     >
       <div className="space-y-6">
@@ -444,7 +441,7 @@ const OrganizationPage = () => {
             <CardTitle>Hierarchy Tree</CardTitle>
             <CardDescription>
               <div className="text-sm text-muted-foreground mb-3">
-                5-level organizational structure
+                5-level organizational structure - Link entities and allocate users
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 {[1, 2, 3, 4, 5].map((level, idx) => {
