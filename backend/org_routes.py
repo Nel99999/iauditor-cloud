@@ -82,7 +82,7 @@ async def get_organization_units(
     unassigned: bool = False,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
-    """Get all organization units for current user's organization
+    """Get all organization units (using organizational_entities)
     
     Args:
         show_inactive: If True, includes inactive units. Default False (active only)
@@ -113,16 +113,16 @@ async def get_organization_units(
             {"parent_id": {"$exists": False}}
         ]
     
-    units = await db.organization_units.find(
+    units = await db.organizational_entities.find(
         query,
         {"_id": 0}
     ).to_list(1000)
     
     # Calculate user count for each unit
     for unit in units:
-        user_count = await db.users.count_documents({
-            "org_unit_id": unit["id"],
-            "is_active": True
+        user_count = await db.user_org_assignments.count_documents({
+            "unit_id": unit["id"],
+            "organization_id": user["organization_id"]
         })
         unit["user_count"] = user_count
     
