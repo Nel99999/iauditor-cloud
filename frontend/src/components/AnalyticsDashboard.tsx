@@ -1,225 +1,61 @@
-// @ts-nocheck
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import {
-  LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
-} from 'recharts';
-import {
-  Activity, TrendingUp, Users, CheckSquare, Clock, Award,
-  Download, RefreshCw
-} from 'lucide-react';
+import { ModernPageWrapper } from '@/design-system/components';
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
-
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+// ... existing imports ...
 
 const AnalyticsDashboard = () => {
-  const [period, setPeriod] = useState('week');
-  const [overview, setOverview] = useState<any | null>(null);
-  const [taskTrends, setTaskTrends] = useState<any[]>([]);
-  const [tasksByStatus, setTasksByStatus] = useState<any[]>([]);
-  const [tasksByPriority, setTasksByPriority] = useState<any[]>([]);
-  const [timeTrackingTrends, setTimeTrackingTrends] = useState<any[]>([]);
-  const [userActivity, setUserActivity] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any | null>(null);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
+  // ... existing state ...
 
-  const fetchAnalyticsData = async (showRefresh = false) => {
-    try {
-      if (showRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError(null);
-
-      const token = localStorage.getItem('token') || localStorage.getItem('access_token');
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Fetch all analytics data in parallel
-      const [
-        overviewRes,
-        trendsRes,
-        statusRes,
-        priorityRes,
-        timeRes,
-        activityRes
-      ] = await Promise.all([
-        axios.get(`${API_BASE_URL}/api/analytics/overview?period=${period}`, { headers }),
-        axios.get(`${API_BASE_URL}/api/analytics/tasks/trends?period=${period}`, { headers }),
-        axios.get(`${API_BASE_URL}/api/analytics/tasks/by-status`, { headers }),
-        axios.get(`${API_BASE_URL}/api/analytics/tasks/by-priority`, { headers }),
-        axios.get(`${API_BASE_URL}/api/analytics/time-tracking/trends?period=${period}`, { headers }),
-        axios.get(`${API_BASE_URL}/api/analytics/user-activity?limit=5`, { headers })
-      ]);
-
-      setOverview(overviewRes.data);
-      
-      // Format task trends data for charts
-      if (trendsRes.data.trends) {
-        setTaskTrends(trendsRes.data.trends.map((item: any) => ({
-          date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          created: item.created || 0,
-          completed: item.completed || 0
-        })));
-      }
-
-      // Format status data for pie chart
-      if (statusRes.data.breakdown) {
-        setTasksByStatus(Object.entries(statusRes.data.breakdown).map(([status, count]: [string, any]) => ({
-          name: status.replace('_', ' ').toUpperCase(),
-          value: count
-        })));
-      }
-
-      // Format priority data for bar chart
-      if (priorityRes.data.breakdown) {
-        setTasksByPriority(Object.entries(priorityRes.data.breakdown).map(([priority, count]: [string, any]) => ({
-          name: priority.toUpperCase(),
-          count: count
-        })));
-      }
-
-      // Format time tracking trends
-      if (timeRes.data.trends) {
-        setTimeTrackingTrends(timeRes.data.trends.map((item: any) => ({
-          date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          hours: item.total_hours || 0,
-          billable: item.billable_hours || 0
-        })));
-      }
-
-      // Format user activity
-      if (activityRes.data.most_active_users) {
-        setUserActivity(activityRes.data.most_active_users.slice(0, 5));
-      }
-
-    } catch (err: unknown) {
-      console.error('Error fetching analytics:', err);
-      setError((err as any).response?.data?.detail || 'Failed to load analytics data');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAnalyticsData();
-  }, [period]);
-
-  const handleRefresh = () => {
-    fetchAnalyticsData(true);
-  };
-
-  const exportData = () => {
-    const exportData = {
-      period,
-      generated_at: new Date().toISOString(),
-      overview,
-      taskTrends,
-      tasksByStatus,
-      tasksByPriority,
-      timeTrackingTrends,
-      userActivity
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `analytics-${period}-${Date.now()}.json`;
-    a.click();
-  };
+  // ... existing functions ...
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    // ... existing loading ...
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <Activity className="w-5 h-5 text-red-600" />
-              <h3 className="text-lg font-semibold text-red-900 dark:text-red-100">Error Loading Analytics</h3>
-            </div>
-            <p className="text-red-700 dark:text-red-300">{error}</p>
-            <button
-              onClick={() => fetchAnalyticsData()}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    // ... existing error ...
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <Activity className="w-8 h-8 text-blue-600" />
-              Analytics Dashboard
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Comprehensive insights and performance metrics
-            </p>
-          </div>
+    <ModernPageWrapper
+      title="Analytics Dashboard"
+      subtitle="Comprehensive insights and performance metrics"
+      actions={
+        <div className="flex items-center gap-3">
+          {/* Period Selector */}
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white"
+          >
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
+          </select>
 
-          <div className="flex items-center gap-3">
-            {/* Period Selector */}
-            <select
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white"
-            >
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="quarter">This Quarter</option>
-              <option value="year">This Year</option>
-            </select>
+          {/* Refresh Button */}
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
 
-            {/* Refresh Button */}
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
-            >
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
-
-            {/* Export Button */}
-            <button
-              onClick={exportData}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Export
-            </button>
-          </div>
+          {/* Export Button */}
+          <button
+            onClick={exportData}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Export
+          </button>
         </div>
-
+      }
+    >
+      <div className="space-y-6">
         {/* Overview Metrics */}
         {overview && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

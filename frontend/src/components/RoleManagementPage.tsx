@@ -1,6 +1,8 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { usePermissions } from '@/hooks/usePermissions';
+import { PermissionGuard } from '@/components/PermissionGuard';
 import { ModernPageWrapper } from '@/design-system/components';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,20 +10,43 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Shield, Plus, Trash2, Lock, Save, Grid3x3 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Shield, Plus, Trash2, Lock, Save, Grid3x3, Eye, Edit, CheckCircle, Crown, Users, Info, ChevronDown, ChevronRight, Search } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import PermissionMatrixTable from './PermissionMatrixTable';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Role level to color mapping with hex values for inline styles
+const ROLE_COLORS = {
+  1: { bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-500', hex: '#a855f7' },
+  2: { bg: 'bg-red-500', text: 'text-red-500', border: 'border-red-500', hex: '#ef4444' },
+  3: { bg: 'bg-purple-600', text: 'text-purple-600', border: 'border-purple-600', hex: '#9333ea' },
+  4: { bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-500', hex: '#f97316' },
+  5: { bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-500', hex: '#3b82f6' },
+  6: { bg: 'bg-blue-600', text: 'text-blue-600', border: 'border-blue-600', hex: '#2563eb' },
+  7: { bg: 'bg-green-600', text: 'text-green-600', border: 'border-green-600', hex: '#16a34a' },
+  8: { bg: 'bg-yellow-500', text: 'text-yellow-500', border: 'border-yellow-500', hex: '#eab308' },
+  9: { bg: 'bg-gray-500', text: 'text-gray-500', border: 'border-gray-500', hex: '#6b7280' },
+  10: { bg: 'bg-green-500', text: 'text-green-500', border: 'border-green-500', hex: '#22c55e' }
+};
+
 const RoleManagementPage = () => {
+  const { toast } = useToast();
   const [roles, setRoles] = useState<any[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
   const [rolePermissions, setRolePermissions] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+  const [showPermissionsDialog, setShowPermissionsDialog] = useState<boolean>(false);
+  const [selectedRole, setSelectedRole] = useState<any | null>(null);
+  const [permissionSearch, setPermissionSearch] = useState<string>('');
+  const [expandedPermSections, setExpandedPermSections] = useState<Set<string>>(new Set(['inspection', 'task', 'user']));
+  const [activeTab, setActiveTab] = useState<string>('system');
   const [newRole, setNewRole] = useState({ 
     name: '', 
     code: '', 
@@ -30,7 +55,6 @@ const RoleManagementPage = () => {
     description: '',
     selectedPermissions: []
   });
-  const [matrixChanges, setMatrixChanges] = useState<any>({});
 
   useEffect(() => {
     loadRoles();
@@ -56,6 +80,11 @@ const RoleManagementPage = () => {
       setRolePermissions(permMap);
     } catch (err: unknown) {
       console.error('Failed to load roles:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to load roles',
+        variant: 'destructive'
+      });
     } finally {
       setLoading(false);
     }
@@ -81,387 +110,486 @@ const RoleManagementPage = () => {
         description: newRole.description
       });
       
-      // If permissions selected, assign them
-      if (newRole.selectedPermissions.length > 0) {
-        const createdRoles = await axios.get(`${API}/roles`);
-        const newRoleData = createdRoles.data.find((r: any) => r.code === newRole.code);
-        if (newRoleData) {
-          await axios.post(`${API}/roles/${newRoleData.id}/permissions/bulk`, newRole.selectedPermissions);
-        }
-      }
+      toast({
+        title: 'Success',
+        description: 'Custom role created successfully!',
+      });
       
-      alert('Role created successfully!');
       setShowCreateDialog(false);
       setNewRole({ name: '', code: '', color: '#3b82f6', level: 11, description: '', selectedPermissions: [] });
       loadRoles();
     } catch (err: unknown) {
-      alert((err as any).response?.data?.detail || 'Failed to create role');
+      toast({
+        title: 'Error',
+        description: (err as any).response?.data?.detail || 'Failed to create role',
+        variant: 'destructive'
+      });
     }
   };
 
-  const handleDeleteRole = async (roleId: string, isSystemRole: boolean) => {
-    if (isSystemRole) {
-      alert('Cannot delete system roles');
-      return;
-    }
-    if (window.confirm('Delete this role?')) {
-      try {
-        await axios.delete(`${API}/roles/${roleId}`);
-        alert('Role deleted successfully!');
-        loadRoles();
-      } catch (err: unknown) {
-        alert((err as any).response?.data?.detail || 'Failed to delete role');
-      }
-    }
-  };
-
-  const togglePermission = (roleId: string, permissionId: string) => {
-    const key = `${roleId}-${permissionId}`;
-    const currentPerms = rolePermissions[roleId] || [];
-    const hasPermission = currentPerms.includes(permissionId);
+  const handleDeleteRole = async (roleId: string) => {
+    if (!confirm('Are you sure you want to delete this role?')) return;
     
-    setMatrixChanges(prev => ({
-      ...prev,
-      [key]: !hasPermission
-    }));
-  };
-
-  const saveRolePermissions = async (roleId: string) => {
     try {
-      const currentPerms = rolePermissions[roleId] || [];
-      const newPerms = [...currentPerms];
-      
-      // Apply changes
-      Object.keys(matrixChanges).forEach((key: any) => {
-        if (key.startsWith(`${roleId}-`)) {
-          const permId = key.split('-')[1];
-          const shouldHave = matrixChanges[key];
-          
-          if (shouldHave && !newPerms.includes(permId)) {
-            newPerms.push(permId);
-          } else if (!shouldHave && newPerms.includes(permId)) {
-            const index = newPerms.indexOf(permId);
-            newPerms.splice(index, 1);
-          }
-        }
+      await axios.delete(`${API}/roles/${roleId}`);
+      toast({
+        title: 'Success',
+        description: 'Role deleted successfully',
       });
-      
-      await axios.post(`${API}/roles/${roleId}/permissions/bulk`, newPerms);
-      alert('Permissions updated successfully!');
-      
-      // Clear changes for this role
-      const clearedChanges = {};
-      Object.keys(matrixChanges).forEach((key: any) => {
-        if (!key.startsWith(`${roleId}-`)) {
-          clearedChanges[key] = matrixChanges[key];
-        }
-      });
-      setMatrixChanges(clearedChanges);
-      
-      // Reload
       loadRoles();
     } catch (err: unknown) {
-      alert((err as any).response?.data?.detail || 'Failed to update permissions');
+      toast({
+        title: 'Error',
+        description: (err as any).response?.data?.detail || 'Failed to delete role',
+        variant: 'destructive'
+      });
     }
   };
 
-  const isPermissionChecked = (roleId: string, permissionId: string) => {
-    const key = `${roleId}-${permissionId}`;
-    if (key in matrixChanges) {
-      return matrixChanges[key];
-    }
-    return (rolePermissions[roleId] || []).includes(permissionId);
+  const handleViewPermissions = (role: any) => {
+    setSelectedRole(role);
+    setShowPermissionsDialog(true);
   };
 
-  const hasChanges = (roleId: any) => {
-    return Object.keys(matrixChanges).some((key: any) => key.startsWith(`${roleId}-`));
-  };
+  const systemRoles = roles.filter(r => r.is_system_role || r.is_system);
+  const customRoles = roles.filter(r => !r.is_system_role && !r.is_system);
 
-  // const _groupPermissionsByResource = () => {
-  //   const grouped = {};
-  //   permissions.forEach((perm: any) => {
-  //     if (!grouped[perm.resource_type]) {
-  //       grouped[perm.resource_type] = [];
-  //     }
-  //     grouped[perm.resource_type].push(perm);
-  //   });
-  //   return grouped;
-  // };
+  const getRoleColor = (level: number) => {
+    return ROLE_COLORS[level] || { bg: 'bg-gray-500', text: 'text-gray-500', border: 'border-gray-500' };
+  };
 
   return (
-    <ModernPageWrapper 
-      title="Role Management" 
+    <ModernPageWrapper
+      title="Role Management"
       subtitle="Configure roles and access control"
       actions={
-        <Button onClick={() => setShowCreateDialog(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Custom Role
-        </Button>
+        <PermissionGuard 
+          anyPermissions={['role.create.organization']}
+          minLevel={2}
+          tooltipMessage="No permission to create custom roles"
+        >
+          <Button onClick={() => setShowCreateDialog(true)} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Custom Role
+          </Button>
+        </PermissionGuard>
       }
     >
       <div className="space-y-6">
 
-      <Tabs defaultValue="roles" className="w-full">
-        <TabsList>
-          <TabsTrigger value="roles">Roles</TabsTrigger>
-          <TabsTrigger value="permissions">
-            <Grid3x3 className="h-4 w-4 mr-2" />
-            Permission Matrix
-          </TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="system">System Roles</TabsTrigger>
+          <TabsTrigger value="custom">Custom Roles</TabsTrigger>
+          <TabsTrigger value="matrix">Permission Matrix</TabsTrigger>
         </TabsList>
 
-        {/* Roles Tab */}
-        <TabsContent value="roles">
+        {/* System Roles Tab - Card Grid */}
+        <TabsContent value="system" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>System & Custom Roles</CardTitle>
-              <CardDescription>10 system roles + custom roles for your organization</CardDescription>
+              <CardTitle>System Roles</CardTitle>
+              <CardDescription>
+                10 built-in roles with predefined permissions. System roles cannot be deleted.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {loading ? (
-                <p>Loading...</p>
+                <div className="text-center py-12 text-muted-foreground">Loading roles...</div>
               ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Code</TableHead>
-                      <TableHead>Level</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {roles.map((role) => (
-                      <TableRow key={role.id}>
-                        <TableCell>
-                          <Badge style={{ backgroundColor: role.color, color: 'white' }}>
-                            {role.name}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="font-mono text-sm">{role.code}</TableCell>
-                        <TableCell>{role.level}</TableCell>
-                        <TableCell className="max-w-md truncate">{role.description}</TableCell>
-                        <TableCell>
-                          {role.is_system_role ? (
-                            <Badge variant="outline">
-                              <Lock className="h-3 w-3 mr-1" />
-                              System
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary">Custom</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {!role.is_system_role && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleDeleteRole(role.id, role.is_system_role)}
-                              className="text-red-600"
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  {systemRoles.map((role) => {
+                    const color = getRoleColor(role.level);
+                    const permCount = rolePermissions[role.id]?.length || 0;
+                    
+                    return (
+                      <Card key={role.id} className={`border-2 ${color.border} hover:shadow-lg transition-shadow`}>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <Badge 
+                              style={{ backgroundColor: color.hex, color: 'white' }}
+                              className="font-semibold text-xs px-2 py-1"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              Level {role.level}
+                            </Badge>
+                            <Lock className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <CardTitle className="text-lg mt-2">{role.name}</CardTitle>
+                          <CardDescription className="text-xs">{role.code}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="text-sm text-muted-foreground">
+                            {role.description || 'System role with predefined permissions'}
+                          </div>
+                          <div className="flex items-center justify-between pt-2 border-t">
+                            <span className="text-xs text-muted-foreground">Permissions</span>
+                            <Badge variant="outline" className={color.text}>
+                              {permCount} assigned
+                            </Badge>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => handleViewPermissions(role)}
+                          >
+                            <Eye className="h-3 w-3 mr-2" />
+                            View Permissions
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Custom Roles Tab - Card Grid (same as System Roles) */}
+        <TabsContent value="custom" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Custom Roles</CardTitle>
+              <CardDescription>
+                Create and manage custom roles tailored to your organization's needs.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {customRoles.length === 0 ? (
+                <div className="text-center py-12">
+                  <Grid3x3 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No Custom Roles</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Create your first custom role with specific permissions
+                  </p>
+                  <Button onClick={() => setShowCreateDialog(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Custom Role
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                  {customRoles.map((role) => {
+                    const color = getRoleColor(role.level);
+                    const permCount = rolePermissions[role.id]?.length || 0;
+                    
+                    return (
+                      <Card key={role.id} className={`border-2 ${color.border} hover:shadow-lg transition-shadow`}>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <Badge 
+                              style={{ backgroundColor: color.hex, color: 'white' }}
+                              className="font-semibold text-xs px-2 py-1"
+                            >
+                              Level {role.level}
+                            </Badge>
+                            <Edit className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <CardTitle className="text-lg mt-2">{role.name}</CardTitle>
+                          <CardDescription className="text-xs">{role.code}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="text-sm text-muted-foreground">
+                            {role.description || 'Custom role with specific permissions'}
+                          </div>
+                          <div className="flex items-center justify-between pt-2 border-t">
+                            <span className="text-xs text-muted-foreground">Permissions</span>
+                            <Badge variant="outline" className={color.text}>
+                              {permCount} assigned
+                            </Badge>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex-1"
+                              onClick={() => handleViewPermissions(role)}
+                            >
+                              <Eye className="h-3 w-3 mr-2" />
+                              View
                             </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                            <PermissionGuard 
+                              anyPermissions={['role.delete.organization']}
+                              minLevel={2}
+                              tooltipMessage="No permission to delete roles"
+                            >
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleDeleteRole(role.id)}
+                              >
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </PermissionGuard>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Permission Matrix Tab */}
-        <TabsContent value="permissions">
-          <Card>
-            <CardHeader>
-              <CardTitle>Permission Matrix</CardTitle>
-              <CardDescription>
-                System roles (locked) are pre-configured. Custom roles can be modified. Check/uncheck boxes and click Save.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border">
-                  <thead>
-                    <tr className="bg-slate-100 border-b">
-                      <th className="text-left p-3 font-semibold sticky left-0 bg-slate-100">Permission</th>
-                      {roles.sort((a: any, b: any) => a.level - b.level).map((role: any) => (
-                        <th key={role.id} className="p-2 text-center min-w-[100px]">
-                          <div className="flex flex-col items-center gap-1">
-                            <Badge 
-                              style={{ backgroundColor: role.color, color: 'white' }}
-                              className="text-xs"
-                            >
-                              {role.name}
-                            </Badge>
-                            {role.is_system_role && (
-                              <Lock className="h-3 w-3 text-slate-400" />
-                            )}
-                          </div>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {permissions.map((perm: any) => (
-                      <tr key={perm.id} className="border-b hover:bg-slate-50">
-                        <td className="p-3 sticky left-0 bg-white">
-                          <div>
-                            <span className="font-medium">{perm.resource_type}.{perm.action}.{perm.scope}</span>
-                            <p className="text-xs text-slate-500">{perm.description}</p>
-                          </div>
-                        </td>
-                        {roles.sort((a: any, b: any) => a.level - b.level).map((role: any) => (
-                          <td key={role.id} className="p-2 text-center">
-                            <Checkbox
-                              checked={isPermissionChecked(role.id, perm.id)}
-                              onCheckedChange={() => !role.is_system_role && togglePermission(role.id, perm.id)}
-                              disabled={role.is_system_role}
-                              className={role.is_system_role ? 'opacity-50 cursor-not-allowed' : ''}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              
-              {/* Save buttons for custom roles only */}
-              <div className="flex gap-2 flex-wrap mt-4">
-                {roles.filter((r: any) => !r.is_system_role).map((role: any) => (
-                  hasChanges(role.id) && (
-                    <Button
-                      key={role.id}
-                      onClick={() => saveRolePermissions(role.id)}
-                      style={{ backgroundColor: role.color, color: 'white' }}
-                    >
-                      <Save className="h-4 w-4 mr-2" />
-                      Save {role.name}
-                    </Button>
-                  )
-                ))}
-              </div>
-
-              {roles.filter((r: any) => !r.is_system_role).length === 0 && (
-                <p className="text-center text-slate-500 mt-4">
-                  No custom roles to modify. System roles are locked and pre-configured.
-                </p>
-              )}
-            </CardContent>
-          </Card>
+        <TabsContent value="matrix" className="space-y-4">
+          <PermissionMatrixTable />
         </TabsContent>
       </Tabs>
 
-      {/* Create Role Dialog */}
+      {/* Create Custom Role Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Create Custom Role</DialogTitle>
-            <DialogDescription>Define a new role with specific permissions</DialogDescription>
+            <DialogDescription>
+              Create a new custom role for your organization
+            </DialogDescription>
           </DialogHeader>
+          
           <form onSubmit={handleCreateRole} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="name">Role Name</Label>
-                <Input
-                  id="name"
-                  value={newRole.name}
-                  onChange={(e: any) => setNewRole({ ...newRole, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="code">Role Code</Label>
-                <Input
-                  id="code"
-                  value={newRole.code}
-                  onChange={(e: any) => setNewRole({ ...newRole, code: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
-                  placeholder="e.g., custom_role"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="color">Badge Color</Label>
-                <Input
-                  id="color"
-                  type="color"
-                  value={newRole.color}
-                  onChange={(e: any) => setNewRole({ ...newRole, color: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="level">Hierarchy Level (11+)</Label>
-                <Input
-                  id="level"
-                  type="number"
-                  min="11"
-                  value={newRole.level}
-                  onChange={(e: any) => setNewRole({ ...newRole, level: parseInt(e.target.value) })}
-                  required
-                />
-              </div>
-            </div>
-
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="name">Role Name</Label>
               <Input
-                id="description"
-                value={newRole.description}
-                onChange={(e: any) => setNewRole({ ...newRole, description: e.target.value })}
+                id="name"
+                value={newRole.name}
+                onChange={(e) => setNewRole({...newRole, name: e.target.value})}
+                placeholder="e.g., Regional Manager"
                 required
               />
             </div>
 
             <div>
-              <Label>Select Permissions (Optional)</Label>
-              <div className="border rounded-lg p-4 max-h-64 overflow-y-auto space-y-2">
-                {permissions.map((perm: any) => (
-                  <div key={perm.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={newRole.selectedPermissions.includes(perm.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setNewRole({
-                            ...newRole,
-                            selectedPermissions: [...newRole.selectedPermissions, perm.id]
-                          });
-                        } else {
-                          setNewRole({
-                            ...newRole,
-                            selectedPermissions: newRole.selectedPermissions.filter((p: any) => p !== perm.id)
-                          });
-                        }
-                      }}
-                    />
-                    <label className="text-sm">
-                      <span className="font-medium">{perm.resource_type}.{perm.action}.{perm.scope}</span>
-                      <span className="text-slate-500 ml-2">{perm.description}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-slate-500 mt-2">
-                Selected: {newRole.selectedPermissions.length} permissions
+              <Label htmlFor="code">Role Code</Label>
+              <Input
+                id="code"
+                value={newRole.code}
+                onChange={(e) => setNewRole({...newRole, code: e.target.value.toLowerCase().replace(/\s+/g, '_')})}
+                placeholder="e.g., regional_manager"
+                required
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Lowercase with underscores (auto-formatted)
               </p>
+            </div>
+
+            <div>
+              <Label htmlFor="level">Hierarchy Level</Label>
+              <Input
+                id="level"
+                type="number"
+                min="11"
+                max="100"
+                value={newRole.level}
+                onChange={(e) => setNewRole({...newRole, level: parseInt(e.target.value)})}
+                required
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                System roles use levels 1-10. Custom roles start at 11.
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Textarea
+                id="description"
+                value={newRole.description}
+                onChange={(e) => setNewRole({...newRole, description: e.target.value})}
+                placeholder="Brief description of this role..."
+                rows={3}
+              />
             </div>
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setShowCreateDialog(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Create Role</Button>
+              <Button type="submit">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Role
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* View Permissions Dialog - Redesigned */}
+      <Dialog open={showPermissionsDialog} onOpenChange={setShowPermissionsDialog}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Shield className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">
+                  {selectedRole?.name}
+                </DialogTitle>
+                <DialogDescription className="mt-1">
+                  {selectedRole?.is_system_role || selectedRole?.is_system 
+                    ? 'System role with predefined permissions' 
+                    : 'Custom role permissions'}
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          
+          {selectedRole && (
+            <div className="flex-1 overflow-y-auto space-y-4 py-2">
+              {/* Role Info Card */}
+              <div className="grid grid-cols-3 gap-3 p-4 bg-muted/50 rounded-lg border">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Role Code</p>
+                  <p className="font-semibold text-sm">{selectedRole.code}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Hierarchy Level</p>
+                  <Badge 
+                    style={{ 
+                      backgroundColor: getRoleColor(selectedRole.level).hex, 
+                      color: 'white' 
+                    }}
+                    className="font-semibold"
+                  >
+                    Level {selectedRole.level}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Permissions</p>
+                  <p className="font-semibold text-sm">
+                    {rolePermissions[selectedRole.id]?.length || 0} / {permissions.length}
+                  </p>
+                </div>
+              </div>
+
+              {/* System Role Notice for Developer */}
+              {(selectedRole.is_system_role || selectedRole.is_system) && (
+                <Alert className="border-blue-200 bg-blue-50">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-sm text-blue-900">
+                    {selectedRole.code === 'developer' 
+                      ? 'As a Developer, you can modify system role permissions in the Permission Matrix.'
+                      : 'System role permissions are pre-configured and cannot be modified by most users.'}
+                    {' '}
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-blue-600 font-semibold"
+                      onClick={() => {
+                        setShowPermissionsDialog(false);
+                        setTimeout(() => setActiveTab('matrix'), 100);
+                      }}
+                    >
+                      Go to Permission Matrix →
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* Custom Role Notice - can edit in matrix */}
+              {!(selectedRole.is_system_role || selectedRole.is_system) && (
+                <Alert className="border-green-200 bg-green-50">
+                  <Info className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-sm text-green-900">
+                    Custom role permissions can be edited in the Permission Matrix.
+                    {' '}
+                    <Button 
+                      variant="link" 
+                      className="p-0 h-auto text-green-600 font-semibold"
+                      onClick={() => {
+                        setShowPermissionsDialog(false);
+                        setTimeout(() => setActiveTab('matrix'), 100);
+                      }}
+                    >
+                      Go to Permission Matrix →
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* Permissions List - Grouped by Resource */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">Assigned Permissions</Label>
+                  <Badge variant="secondary" className="text-xs">
+                    {rolePermissions[selectedRole.id]?.length || 0} total
+                  </Badge>
+                </div>
+                
+                <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+                  {(() => {
+                    const assignedPerms = permissions.filter(p => 
+                      rolePermissions[selectedRole.id]?.includes(p.id)
+                    );
+                    
+                    // Group by resource type
+                    const grouped = assignedPerms.reduce((acc, perm) => {
+                      const resource = perm.resource || 'other';
+                      if (!acc[resource]) acc[resource] = [];
+                      acc[resource].push(perm);
+                      return acc;
+                    }, {});
+                    
+                    if (Object.keys(grouped).length === 0) {
+                      return (
+                        <div className="text-center py-8 text-muted-foreground border rounded-lg bg-muted/30">
+                          <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No permissions assigned to this role</p>
+                        </div>
+                      );
+                    }
+                    
+                    return Object.entries(grouped).map(([resource, perms]) => (
+                      <div key={resource} className="border rounded-lg overflow-hidden">
+                        <div className="bg-muted/70 px-3 py-2 border-b">
+                          <h4 className="text-sm font-semibold capitalize">
+                            {resource} ({perms.length})
+                          </h4>
+                        </div>
+                        <div className="p-2 space-y-1">
+                          {perms.map((perm) => (
+                            <div 
+                              key={perm.id} 
+                              className="flex items-start gap-2 p-2 rounded hover:bg-muted/50 transition-colors"
+                            >
+                              <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium leading-tight">
+                                  {perm.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {perm.resource}.{perm.action}.{perm.scope}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="border-t pt-4">
+            <Button variant="outline" onClick={() => setShowPermissionsDialog(false)}>
+              Close
+            </Button>
+            <Button 
+              onClick={() => {
+                setShowPermissionsDialog(false);
+                setTimeout(() => setActiveTab('matrix'), 100);
+              }}
+            >
+              <Grid3x3 className="h-4 w-4 mr-2" />
+              Open Permission Matrix
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       </div>
     </ModernPageWrapper>
   );

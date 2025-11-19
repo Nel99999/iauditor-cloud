@@ -4,46 +4,10 @@ import "@/App.css";
 import "@/design-system/tokens/base.css";
 // Import global modern overrides to modernize ALL existing components
 import "@/design-system/global-modern-overrides.css";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import "@/i18n/config";
-import RouteMiddleware from "@/routing/RouteMiddleware";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import LayoutNew from "@/components/LayoutNew";
-import LoginPage from "@/components/LoginPage";
-import RegisterPage from "@/components/RegisterPage";
-import ForgotPasswordPage from "@/components/ForgotPasswordPage";
-import ComponentDemo from "@/components/ComponentDemo";
-import ResetPasswordPage from "@/components/ResetPasswordPage";
-import DashboardHomeNew from "@/components/DashboardHomeNew";
-// Refactored pages - removed wrapper pattern
-import OrganizationPage from "@/components/OrganizationPage";
-import UserManagementPageNew from "@/components/UserManagementPageNew";
-import RoleManagementPage from "@/components/RoleManagementPageNew";
-import InvitationManagementPage from "@/components/InvitationManagementPage";
-import DeveloperAdminPanelNew from "@/components/DeveloperAdminPanelNew";
-import ModernSettingsPage from "@/components/ModernSettingsPage";
-import MFASetupPage from "@/components/MFASetupPage";
-import InspectionsPage from "@/components/InspectionsPage";
-import TemplateBuilderPage from "@/components/TemplateBuilderPage";
-import EnhancedTemplateBuilderPage from "@/components/EnhancedTemplateBuilderPage";
 import InspectionExecutionPage from "@/components/InspectionExecutionPage";
 import EnhancedInspectionExecutionPage from "@/components/EnhancedInspectionExecutionPage";
 import ChecklistsPage from "@/components/ChecklistsPage";
-import ChecklistTemplateBuilderNew from "@/components/ChecklistTemplateBuilderNew";
-import EnhancedChecklistBuilderPage from "@/components/EnhancedChecklistBuilderPage";
-import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
-import TasksPage from "@/components/TasksPage";
-import AssetsPage from "@/components/AssetsPage";
-import AssetDetailPage from "@/components/AssetDetailPage";
-import AssetFormPage from "@/components/AssetFormPage";
-import WorkOrdersPage from "@/components/WorkOrdersPage";
-import InventoryPage from "@/components/InventoryPage";
-import ProjectsPage from "@/components/ProjectsPage";
-import IncidentsPage from "@/components/IncidentsPage";
-import TrainingPage from "@/components/TrainingPage";
-import FinancialPage from "@/components/FinancialPage";
+
 import AnnouncementsPage from "@/components/AnnouncementsPage";
 import EmergenciesPage from "@/components/EmergenciesPage";
 import TeamChatPage from "@/components/TeamChatPage";
@@ -55,18 +19,6 @@ import InventoryDetailPage from "@/components/InventoryDetailPage";
 import IncidentDetailPage from "@/components/IncidentDetailPage";
 import WorkOrderFormPage from "@/components/WorkOrderFormPage";
 import ProjectFormPage from "@/components/ProjectFormPage";
-import DashboardsPage from "@/components/DashboardsPage";
-import ReportsPage from "@/components/ReportsPage";
-import WorkflowDesignerNew from "@/components/WorkflowDesignerNew";
-import MyApprovalsPage from "@/components/MyApprovalsPage";
-import DelegationManagerNew from "@/components/DelegationManagerNew";
-import AuditViewerNew from "@/components/AuditViewerNew";
-import AnalyticsDashboardNew from "@/components/AnalyticsDashboardNew";
-import GroupsManagementPage from "@/components/GroupsManagementPage";
-import BulkImportPage from "@/components/BulkImportPage";
-import WebhooksPage from "@/components/WebhooksPage";
-import DesignSystemShowcase from "@/components/DesignSystemShowcase";
-import VisualPolishShowcase from "@/components/VisualPolishShowcase";
 import ThemeShowcase from "@/components/ThemeShowcase";
 import InspectionCalendar from "@/components/InspectionCalendar";
 
@@ -98,7 +50,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <DashboardHomeNew />
+                        <DashboardHome />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -168,7 +120,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <UserManagementPageNew />
+                        <UserManagementPage />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -178,7 +130,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <UserManagementPageNew />
+                        <UserManagementPage />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -500,7 +452,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <WorkflowDesignerNew />
+                        <WorkflowDesigner />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -520,7 +472,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <DelegationManagerNew />
+                        <DelegationManager />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -530,7 +482,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <AuditViewerNew />
+                        <AuditViewer />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -540,7 +492,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <AnalyticsDashboardNew />
+                        <AnalyticsDashboard />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
@@ -600,7 +552,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <LayoutNew>
-                        <DeveloperAdminPanelNew />
+                        <DeveloperAdminPanel />
                       </LayoutNew>
                     </ProtectedRoute>
                   }

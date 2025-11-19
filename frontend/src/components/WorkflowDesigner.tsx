@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ModernPageWrapper } from '@/design-system/components';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ const WorkflowDesigner = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [editingTemplate, setEditingTemplate] = useState<any | null>(null);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -111,7 +112,7 @@ const WorkflowDesigner = () => {
 
   const handleDeleteTemplate = async (templateId: string) => {
     if (!window.confirm('Are you sure you want to deactivate this workflow template?')) return;
-    
+
     try {
       const token = localStorage.getItem('access_token');
       await axios.delete(`${API}/workflows/templates/${templateId}`, {
@@ -186,318 +187,316 @@ const WorkflowDesigner = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Workflow Designer</h2>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
-            Design multi-level approval workflows for your organization
-          </p>
-        </div>
+    <ModernPageWrapper
+      title="Workflow Designer"
+      subtitle="Design multi-level approval workflows for your organization"
+      actions={
         <Button onClick={() => { resetForm(); setShowCreateDialog(true); }}>
           <Plus className="h-4 w-4 mr-2" />
           New Workflow
         </Button>
-      </div>
-
-      {loading ? (
-        <div className="text-center py-12">
-          <p className="text-slate-600 dark:text-slate-400">Loading workflows...</p>
-        </div>
-      ) : templates.length === 0 ? (
-        <Card>
-          <CardContent className="text-center py-12">
-            <GitBranch className="h-12 w-12 mx-auto mb-4 text-slate-400" />
-            <p className="text-slate-600 dark:text-slate-400 mb-4">
-              No workflow templates yet. Create your first workflow!
-            </p>
-            <Button onClick={() => setShowCreateDialog(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Workflow
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {templates.map((template: any) => (
-            <Card key={template.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="flex items-center gap-2">
-                      {template.name}
-                      {template.active ? (
-                        <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
-                          Inactive
-                        </span>
-                      )}
-                    </CardTitle>
-                    <CardDescription>{template.description}</CardDescription>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => openEditDialog(template)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteTemplate(template.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-600" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm">
-                    <Play className="h-4 w-4 mr-2 text-slate-500" />
-                    <span className="font-medium">Resource:</span>
-                    <span className="ml-2 text-slate-600">{template.resource_type}</span>
-                  </div>
-                  <div className="flex items-center text-sm">
-                    <GitBranch className="h-4 w-4 mr-2 text-slate-500" />
-                    <span className="font-medium">Steps:</span>
-                    <span className="ml-2 text-slate-600">{template.steps.length}</span>
-                  </div>
-                  <div className="border-t pt-3 mt-3">
-                    <p className="text-xs font-semibold text-slate-700 mb-2">Approval Flow:</p>
-                    <div className="space-y-2">
-                      {template.steps.map((step: any, idx: number) => (
-                        <div key={idx} className="flex items-center text-xs">
-                          <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold mr-2">
-                            {step.step_number}
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">{step.name}</div>
-                            <div className="text-slate-500">
-                              {step.approver_role} • {step.timeout_hours}h timeout
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+      }
+    >
+      <div className="space-y-6">
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600 dark:text-slate-400">Loading workflows...</p>
+          </div>
+        ) : templates.length === 0 ? (
+          <Card>
+            <CardContent className="text-center py-12">
+              <GitBranch className="h-12 w-12 mx-auto mb-4 text-slate-400" />
+              <p className="text-slate-600 dark:text-slate-400 mb-4">
+                No workflow templates yet. Create your first workflow!
+              </p>
+              <Button onClick={() => setShowCreateDialog(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Workflow
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {templates.map((template: any) => (
+              <Card key={template.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="flex items-center gap-2">
+                        {template.name}
+                        {template.active ? (
+                          <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
+                            Inactive
+                          </span>
+                        )}
+                      </CardTitle>
+                      <CardDescription>{template.description}</CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditDialog(template)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteTemplate(template.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </Button>
                     </div>
                   </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center text-sm">
+                      <Play className="h-4 w-4 mr-2 text-slate-500" />
+                      <span className="font-medium">Resource:</span>
+                      <span className="ml-2 text-slate-600">{template.resource_type}</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <GitBranch className="h-4 w-4 mr-2 text-slate-500" />
+                      <span className="font-medium">Steps:</span>
+                      <span className="ml-2 text-slate-600">{template.steps.length}</span>
+                    </div>
+                    <div className="border-t pt-3 mt-3">
+                      <p className="text-xs font-semibold text-slate-700 mb-2">Approval Flow:</p>
+                      <div className="space-y-2">
+                        {template.steps.map((step: any, idx: number) => (
+                          <div key={idx} className="flex items-center text-xs">
+                            <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold mr-2">
+                              {step.step_number}
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-medium">{step.name}</div>
+                              <div className="text-slate-500">
+                                {step.approver_role} • {step.timeout_hours}h timeout
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Create/Edit Dialog */}
+        <Dialog open={showCreateDialog} onOpenChange={(open) => {
+          setShowCreateDialog(open);
+          if (!open) {
+            setEditingTemplate(null);
+            resetForm();
+          }
+        }}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingTemplate ? 'Edit Workflow Template' : 'Create Workflow Template'}
+              </DialogTitle>
+              <DialogDescription>
+                Define the approval steps and rules for this workflow
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Workflow Name</Label>
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g., Inspection Approval"
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                <div>
+                  <Label>Resource Type</Label>
+                  <Select
+                    value={formData.resource_type}
+                    onValueChange={(value) => setFormData({ ...formData, resource_type: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="inspection">Inspection</SelectItem>
+                      <SelectItem value="task">Task</SelectItem>
+                      <SelectItem value="checklist">Checklist</SelectItem>
+                      <SelectItem value="report">Report</SelectItem>
+                      <SelectItem value="user_role_change">User Role Change</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
-      {/* Create/Edit Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={(open) => {
-        setShowCreateDialog(open);
-        if (!open) {
-          setEditingTemplate(null);
-          resetForm();
-        }
-      }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingTemplate ? 'Edit Workflow Template' : 'Create Workflow Template'}
-            </DialogTitle>
-            <DialogDescription>
-              Define the approval steps and rules for this workflow
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Workflow Name</Label>
-                <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Inspection Approval"
+                <Label>Description</Label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Describe when this workflow should be used"
+                  rows={2}
                 />
               </div>
-              <div>
-                <Label>Resource Type</Label>
-                <Select
-                  value={formData.resource_type}
-                  onValueChange={(value) => setFormData({ ...formData, resource_type: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="inspection">Inspection</SelectItem>
-                    <SelectItem value="task">Task</SelectItem>
-                    <SelectItem value="checklist">Checklist</SelectItem>
-                    <SelectItem value="report">Report</SelectItem>
-                    <SelectItem value="user_role_change">User Role Change</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
 
-            <div>
-              <Label>Description</Label>
-              <Textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Describe when this workflow should be used"
-                rows={2}
-              />
-            </div>
+              <div className="border-t pt-4">
+                <div className="flex items-center justify-between mb-4">
+                  <Label className="text-base font-semibold">Approval Steps</Label>
+                  <Button type="button" size="sm" onClick={addStep}>
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Step
+                  </Button>
+                </div>
 
-            <div className="border-t pt-4">
-              <div className="flex items-center justify-between mb-4">
-                <Label className="text-base font-semibold">Approval Steps</Label>
-                <Button type="button" size="sm" onClick={addStep}>
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Step
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                {formData.steps.map((step: any, index: number) => (
-                  <Card key={index}>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm">Step {step.step_number}</CardTitle>
-                        {formData.steps.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeStep(index)}
-                          >
-                            <Trash2 className="h-4 w-4 text-red-600" />
-                          </Button>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <Label>Step Name</Label>
-                        <Input
-                          value={step.name}
-                          onChange={(e) => updateStep(index, 'name', e.target.value)}
-                          placeholder="e.g., Supervisor Review"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label>Approver Role</Label>
-                          <Select
-                            value={step.approver_role}
-                            onValueChange={(value) => updateStep(index, 'approver_role', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {roles && roles.length > 0 ? (
-                                roles.map((role: any) => (
-                                  <SelectItem key={role.code} value={role.code}>
-                                    {role.name}
-                                  </SelectItem>
-                                ))
-                              ) : (
-                                <SelectItem value="loading" disabled>Loading roles...</SelectItem>
-                              )}
-                            </SelectContent>
-                          </Select>
+                <div className="space-y-4">
+                  {formData.steps.map((step: any, index: number) => (
+                    <Card key={index}>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-sm">Step {step.step_number}</CardTitle>
+                          {formData.steps.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeStep(index)}
+                            >
+                              <Trash2 className="h-4 w-4 text-red-600" />
+                            </Button>
+                          )}
                         </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
                         <div>
-                          <Label>Context</Label>
-                          <Select
-                            value={step.approver_context}
-                            onValueChange={(value) => updateStep(index, 'approver_context', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="own">Own Items</SelectItem>
-                              <SelectItem value="team">Team</SelectItem>
-                              <SelectItem value="branch">Branch</SelectItem>
-                              <SelectItem value="region">Region</SelectItem>
-                              <SelectItem value="organization">Organization</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label>Approval Type</Label>
-                          <Select
-                            value={step.approval_type}
-                            onValueChange={(value) => updateStep(index, 'approval_type', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="any">Any One Approver</SelectItem>
-                              <SelectItem value="all">All Must Approve</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label>Timeout (hours)</Label>
+                          <Label>Step Name</Label>
                           <Input
-                            type="number"
-                            value={step.timeout_hours}
-                            onChange={(e) => updateStep(index, 'timeout_hours', parseInt(e.target.value))}
+                            value={step.name}
+                            onChange={(e) => updateStep(index, 'name', e.target.value)}
+                            placeholder="e.g., Supervisor Review"
                           />
                         </div>
-                      </div>
-                      <div>
-                        <Label>Escalate To (if timeout)</Label>
-                        <Select
-                          value={step.escalate_to_role || 'none'}
-                          onValueChange={(value) => updateStep(index, 'escalate_to_role', value === 'none' ? '' : value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="No escalation" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">No escalation</SelectItem>
-                            {roles && roles.length > 0 && roles.map((role: any) => (
-                              <SelectItem key={role.code} value={role.code}>
-                                {role.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label>Approver Role</Label>
+                            <Select
+                              value={step.approver_role}
+                              onValueChange={(value) => updateStep(index, 'approver_role', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {roles && roles.length > 0 ? (
+                                  roles.map((role: any) => (
+                                    <SelectItem key={role.code} value={role.code}>
+                                      {role.name}
+                                    </SelectItem>
+                                  ))
+                                ) : (
+                                  <SelectItem value="loading" disabled>Loading roles...</SelectItem>
+                                )}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label>Context</Label>
+                            <Select
+                              value={step.approver_context}
+                              onValueChange={(value) => updateStep(index, 'approver_context', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="own">Own Items</SelectItem>
+                                <SelectItem value="team">Team</SelectItem>
+                                <SelectItem value="branch">Branch</SelectItem>
+                                <SelectItem value="region">Region</SelectItem>
+                                <SelectItem value="organization">Organization</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label>Approval Type</Label>
+                            <Select
+                              value={step.approval_type}
+                              onValueChange={(value) => updateStep(index, 'approval_type', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="any">Any One Approver</SelectItem>
+                                <SelectItem value="all">All Must Approve</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label>Timeout (hours)</Label>
+                            <Input
+                              type="number"
+                              value={step.timeout_hours}
+                              onChange={(e) => updateStep(index, 'timeout_hours', parseInt(e.target.value))}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Escalate To (if timeout)</Label>
+                          <Select
+                            value={step.escalate_to_role || 'none'}
+                            onValueChange={(value) => updateStep(index, 'escalate_to_role', value === 'none' ? '' : value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="No escalation" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="none">No escalation</SelectItem>
+                              {roles && roles.length > 0 && roles.map((role: any) => (
+                                <SelectItem key={role.code} value={role.code}>
+                                  {role.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowCreateDialog(false);
-                setEditingTemplate(null);
-                resetForm();
-              }}
-            >
-              Cancel
-            </Button>
-            <Button onClick={editingTemplate ? handleUpdateTemplate : handleCreateTemplate}>
-              {editingTemplate ? 'Update Workflow' : 'Create Workflow'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowCreateDialog(false);
+                  setEditingTemplate(null);
+                  resetForm();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={editingTemplate ? handleUpdateTemplate : handleCreateTemplate}>
+                {editingTemplate ? 'Update Workflow' : 'Create Workflow'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </ModernPageWrapper>
   );
 };
 
