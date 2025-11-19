@@ -2,6 +2,9 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Email, To, Content
 import os
 from typing import Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 class EmailService:
     """Email service using SendGrid"""
@@ -22,7 +25,7 @@ class EmailService:
     ) -> bool:
         """Send a generic email using SendGrid"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -38,11 +41,11 @@ class EmailService:
             )
             
             response = self.client.send(message)
-            print(f"✅ Email sent successfully to {to_email} - Status: {response.status_code}")
+            logger.info(f"Email sent successfully to {to_email} - Status: {response.status_code}")
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send email to {to_email}: {str(e)}")
+            logger.error(f"Failed to send email to {to_email}: {str(e)}")
             return False
     
     def send_invitation_email(
@@ -55,7 +58,7 @@ class EmailService:
     ) -> bool:
         """Send invitation email"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -116,7 +119,7 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send email: {str(e)}")
+            logger.error(f"Failed to send email: {str(e)}")
             return False
     
     def send_invitation_reminder(
@@ -181,7 +184,7 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send reminder: {str(e)}")
+            logger.error(f"Failed to send reminder: {str(e)}")
             return False
 
     
@@ -193,7 +196,7 @@ class EmailService:
     ) -> bool:
         """Send email to user after registration (pending approval)"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -247,7 +250,7 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send registration pending email: {str(e)}")
+            logger.error(f"Failed to send registration pending email: {str(e)}")
             return False
     
     def send_registration_approved_email(
@@ -259,7 +262,7 @@ class EmailService:
     ) -> bool:
         """Send email to user when registration is approved"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -317,7 +320,7 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send approval email: {str(e)}")
+            logger.error(f"Failed to send approval email: {str(e)}")
             return False
     
     def send_registration_rejected_email(
@@ -329,7 +332,7 @@ class EmailService:
     ) -> bool:
         """Send email to user when registration is rejected"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -384,7 +387,7 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send rejection email: {str(e)}")
+            logger.error(f"Failed to send rejection email: {str(e)}")
             return False
 
     
@@ -397,7 +400,7 @@ class EmailService:
             # SendGrid doesn't have a dedicated ping endpoint, so we'll just check if client exists
             return True
         except Exception as e:
-            print(f"❌ SendGrid test failed: {str(e)}")
+            logger.error(f"SendGrid test failed: {str(e)}")
             return False
 
     
@@ -411,7 +414,7 @@ class EmailService:
     ) -> bool:
         """Send notification when workflow is started"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_emails}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_emails}")
             return False
         
         try:
@@ -467,7 +470,7 @@ class EmailService:
             return True
             
         except Exception as e:
-            print(f"❌ Failed to send workflow start email: {str(e)}")
+            logger.error(f"Failed to send workflow start email: {str(e)}")
             return False
     
     def send_workflow_approved_email(
@@ -481,7 +484,7 @@ class EmailService:
     ) -> bool:
         """Send notification when workflow is approved"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -533,7 +536,7 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send workflow approved email: {str(e)}")
+            logger.error(f"Failed to send workflow approved email: {str(e)}")
             return False
     
     def send_workflow_rejected_email(
@@ -548,7 +551,7 @@ class EmailService:
     ) -> bool:
         """Send notification when workflow is rejected"""
         if not self.client:
-            print(f"⚠️ SendGrid not configured. Email would be sent to {to_email}")
+            logger.warning(f"SendGrid not configured. Email would be sent to {to_email}")
             return False
         
         try:
@@ -602,6 +605,6 @@ class EmailService:
             return response.status_code in [200, 201, 202]
             
         except Exception as e:
-            print(f"❌ Failed to send workflow rejected email: {str(e)}")
+            logger.error(f"Failed to send workflow rejected email: {str(e)}")
             return False
 

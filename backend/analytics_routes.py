@@ -428,19 +428,51 @@ async def get_user_activity(
     # Sort and limit
     sorted_activity = sorted(user_activity.items(), key=lambda x: x[1]["actions"], reverse=True)[:limit]
     
+    result_data = []
+    for user_id, data in sorted_activity:
+        # Get tasks completed in period
+        tasks_completed = await db.tasks.count_documents({
+            "organization_id": user["organization_id"],
+            "assigned_to": user_id,
+            "status": "completed",
+            "updated_at": {"$gte": start_date, "$lte": end_date}
+        })
+        
+        # Get hours logged in period
+        pipeline = [
+            {"$match": {
+                "organization_id": user["organization_id"],
+                "user_id": user_id,
+                "started_at": {"$gte": start_date, "$lte": end_date}
+            }},
+            {"$group": {
+                "_id": None,
+                "total_minutes": {"$sum": "$duration_minutes"}
+            }}
+        ]
+        time_result = await db.time_entries.aggregate(pipeline).to_list(1)
+        total_minutes = time_result[0]["total_minutes"] if time_result else 0
+        hours_logged = round(total_minutes / 60, 2)
+        
+        # Get last activity
+        last_log = await db.audit_logs.find_one(
+            {"organization_id": user["organization_id"], "user_id": user_id},
+            sort=[("timestamp", -1)]
+        )
+        last_activity = last_log["timestamp"] if last_log else None
+        
+        result_data.append({
+            "user_id": user_id, 
+            "user_name": data["name"], 
+            "actions": data["actions"],
+            "tasks_completed": tasks_completed,
+            "hours_logged": hours_logged,
+            "last_activity": last_activity
+        })
+    
     return {
         "period": period,
-        "most_active_users": [
-            {
-                "user_id": user_id, 
-                "user_name": data["name"], 
-                "actions": data["actions"],
-                "tasks_completed": 0,  # TODO: Calculate from tasks collection
-                "hours_logged": 0.0,   # TODO: Calculate from time_entries collection
-                "last_activity": None  # TODO: Get from audit logs
-            }
-            for user_id, data in sorted_activity
-        ]
+        "most_active_users": result_data
     }
 
 
