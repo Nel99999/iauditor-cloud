@@ -4,23 +4,75 @@ import "@/App.css";
 import "@/design-system/tokens/base.css";
 // Import global modern overrides to modernize ALL existing components
 import "@/design-system/global-modern-overrides.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import RouteMiddleware from "@/routing/RouteMiddleware";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import LayoutNew from "@/components/LayoutNew";
+
+// Auth Pages
+import LoginPage from "@/components/LoginPage";
+import RegisterPage from "@/components/RegisterPage";
+import ForgotPasswordPage from "@/components/ForgotPasswordPage";
+import ResetPasswordPage from "@/components/ResetPasswordPage";
+import MFASetupPage from "@/components/MFASetupPage";
+
+// Core Pages
+import DashboardHome from "@/components/DashboardHome";
+import OrganizationPage from "@/components/OrganizationPage";
+import InspectionsPage from "@/components/InspectionsPage";
+import EnhancedTemplateBuilderPage from "@/components/EnhancedTemplateBuilderPage";
 import InspectionExecutionPage from "@/components/InspectionExecutionPage";
 import EnhancedInspectionExecutionPage from "@/components/EnhancedInspectionExecutionPage";
 import ChecklistsPage from "@/components/ChecklistsPage";
+import EnhancedChecklistBuilderPage from "@/components/EnhancedChecklistBuilderPage";
+import ChecklistExecutionPage from "@/components/ChecklistExecutionPage";
+import TasksPage from "@/components/TasksPage";
+import AssetsPage from "@/components/AssetsPage";
+import AssetFormPage from "@/components/AssetFormPage";
+import AssetDetailPage from "@/components/AssetDetailPage";
+import WorkOrdersPage from "@/components/WorkOrdersPage";
+import WorkOrderDetailPage from "@/components/WorkOrderDetailPage";
+import WorkOrderFormPage from "@/components/WorkOrderFormPage";
+import InventoryPage from "@/components/InventoryPage";
+import InventoryDetailPage from "@/components/InventoryDetailPage";
+import ProjectsPage from "@/components/ProjectsPage";
+import ProjectDetailPage from "@/components/ProjectDetailPage";
+import ProjectFormPage from "@/components/ProjectFormPage";
+import IncidentsPage from "@/components/IncidentsPage";
+import IncidentDetailPage from "@/components/IncidentDetailPage";
+import TrainingPage from "@/components/TrainingPage";
+import DashboardsPage from "@/components/DashboardsPage";
+import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import FinancialPage from "@/components/FinancialPage";
+import ReportsPage from "@/components/ReportsPage";
+import MyApprovalsPage from "@/components/MyApprovalsPage";
+import InvitationManagementPage from "@/components/InvitationManagementPage";
+import GroupsManagementPage from "@/components/GroupsManagementPage";
+import RoleManagementPage from "@/components/RoleManagementPage";
+import UserManagementPage from "@/components/UserManagementPage";
+import BulkImportPage from "@/components/BulkImportPage";
+import WebhooksPage from "@/components/WebhooksPage";
+import DeveloperAdminPanel from "@/components/DeveloperAdminPanel";
+import ModernSettingsPage from "@/components/ModernSettingsPage";
+import WorkflowDesigner from "@/components/WorkflowDesigner";
+import DelegationManager from "@/components/DelegationManager";
+import AuditViewer from "@/components/AuditViewer";
+import InspectionCalendar from "@/components/InspectionCalendar";
 
+// Feature Pages
 import AnnouncementsPage from "@/components/AnnouncementsPage";
 import EmergenciesPage from "@/components/EmergenciesPage";
 import TeamChatPage from "@/components/TeamChatPage";
 import ContractorsPage from "@/components/ContractorsPage";
 import HRPage from "@/components/HRPage";
-import WorkOrderDetailPage from "@/components/WorkOrderDetailPage";
-import ProjectDetailPage from "@/components/ProjectDetailPage";
-import InventoryDetailPage from "@/components/InventoryDetailPage";
-import IncidentDetailPage from "@/components/IncidentDetailPage";
-import WorkOrderFormPage from "@/components/WorkOrderFormPage";
-import ProjectFormPage from "@/components/ProjectFormPage";
+
+// Showcases & Demos
+import ComponentDemo from "@/components/ComponentDemo";
+import DesignSystemShowcase from "@/components/DesignSystemShowcase";
+import VisualPolishShowcase from "@/components/VisualPolishShowcase";
 import ThemeShowcase from "@/components/ThemeShowcase";
-import InspectionCalendar from "@/components/InspectionCalendar";
 
 // Placeholder components for future features
 
