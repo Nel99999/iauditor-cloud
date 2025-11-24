@@ -333,6 +333,7 @@ async def start_workflow_instance(
 
 
 @router.get("/instances")
+@router.get("")
 async def list_workflow_instances(
     request: Request,
     status_filter: Optional[str] = None,

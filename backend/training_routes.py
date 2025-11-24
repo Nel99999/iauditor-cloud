@@ -41,6 +41,7 @@ async def create_course(
 
 
 @router.get("/courses")
+@router.get("/programs")
 async def list_courses(
     request: Request,
     course_type: Optional[str] = None,

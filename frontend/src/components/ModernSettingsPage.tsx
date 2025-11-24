@@ -14,9 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  User, Shield, Key, Upload, Save, CheckCircle, Lock, 
-  AlertTriangle, Building2, Users, Activity, Clock, 
+import {
+  User, Shield, Key, Upload, Save, CheckCircle, Lock,
+  AlertTriangle, Building2, Users, Activity, Clock,
   Smartphone, Mail, Webhook, Download, Trash2, ExternalLink,
   Globe, Laptop, MapPin
 } from 'lucide-react';
@@ -96,7 +96,7 @@ const ModernSettingsPage = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       // Load profile data
       const profileRes = await axios.get(`${API}/users/me`);
       setProfileData({
@@ -165,7 +165,7 @@ const ModernSettingsPage = () => {
             axios.get(`${API}/webhooks`),
             axios.get(`${API}/gdpr/consent-status`)
           ]);
-          
+
           setApiSettings(emailRes.data || {});
           setTwilioSettings(twilioRes.data || {});
           setWebhookCount(webhooksRes.data?.webhooks?.length || 0);
@@ -184,21 +184,21 @@ const ModernSettingsPage = () => {
   const handlePhotoUpload = async (e: any) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     setLoading(true);
     try {
       const response = await axios.post(`${API}/users/profile/picture`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      
+
       toast({
         title: 'Success',
         description: 'Photo uploaded successfully!',
       });
-      
+
       // Reload page to show new photo
       window.location.reload();
     } catch (err: any) {
@@ -234,7 +234,7 @@ const ModernSettingsPage = () => {
 
   const handleChangePassword = async (e: any) => {
     e.preventDefault();
-    
+
     if (passwordData.new_password !== passwordData.confirm_password) {
       toast({
         title: 'Error',
@@ -250,12 +250,12 @@ const ModernSettingsPage = () => {
         current_password: passwordData.current_password,
         new_password: passwordData.new_password
       });
-      
+
       toast({
         title: 'Success',
         description: 'Password changed successfully!',
       });
-      
+
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
     } catch (err: any) {
       toast({
@@ -270,7 +270,7 @@ const ModernSettingsPage = () => {
 
   const handleRevokeSession = async (sessionId: string) => {
     if (!confirm('Revoke this session? You will be logged out on that device.')) return;
-    
+
     try {
       await axios.delete(`${API}/auth/sessions/${sessionId}`);
       toast({
@@ -412,7 +412,7 @@ const ModernSettingsPage = () => {
       a.href = url;
       a.download = `my-data-export-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
-      
+
       toast({
         title: 'Success',
         description: 'Data exported successfully!',
@@ -429,7 +429,7 @@ const ModernSettingsPage = () => {
   const handleDeleteAccount = async () => {
     const confirmation = prompt('Type DELETE to confirm account deletion:');
     if (confirmation !== 'DELETE') return;
-    
+
     try {
       await axios.delete(`${API}/gdpr/delete-account`);
       toast({
@@ -475,7 +475,7 @@ const ModernSettingsPage = () => {
 
         {/* TAB 1: MY PROFILE & ROLE */}
         <TabsContent value="profile" className="space-y-6">
-          
+
           {/* Personal Information */}
           <Card>
             <CardHeader>
@@ -484,15 +484,15 @@ const ModernSettingsPage = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleUpdateProfile} className="space-y-6">
-                
+
                 {/* Photo Upload */}
                 <div className="flex items-center gap-6">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
                     {user?.picture ? (
-                      <img 
-                        src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
-                        alt="Profile" 
-                        className="w-full h-full object-cover" 
+                      <img
+                        src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       user?.name?.charAt(0).toUpperCase()
@@ -516,11 +516,11 @@ const ModernSettingsPage = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">Full Name</Label>
-                    <Input 
-                      id="name" 
-                      value={profileData.name} 
-                      onChange={(e) => setProfileData({...profileData, name: e.target.value})} 
-                      required 
+                    <Input
+                      id="name"
+                      value={profileData.name}
+                      onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                      required
                     />
                   </div>
                   <div>
@@ -529,7 +529,7 @@ const ModernSettingsPage = () => {
                       international
                       defaultCountry="ZA"
                       value={profileData.phone}
-                      onChange={(value) => setProfileData({...profileData, phone: value || ''})}
+                      onChange={(value) => setProfileData({ ...profileData, phone: value || '' })}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
@@ -557,7 +557,7 @@ const ModernSettingsPage = () => {
               <CardDescription>Your position and responsibilities</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              
+
               {/* Role & Level */}
               <div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
                 <div>
@@ -654,14 +654,14 @@ const ModernSettingsPage = () => {
               <CardDescription>Customize how your navigation sidebar behaves</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              
+
               {/* Default Mode */}
               <div>
                 <Label htmlFor="default_mode">Default Sidebar Mode</Label>
                 <select
                   id="default_mode"
                   value={sidebarPrefs.default_mode}
-                  onChange={(e) => setSidebarPrefs({...sidebarPrefs, default_mode: e.target.value})}
+                  onChange={(e) => setSidebarPrefs({ ...sidebarPrefs, default_mode: e.target.value })}
                   className="w-full p-2 border rounded-md bg-background mt-2"
                 >
                   <option value="expanded">Expanded (280px) - Full width with icons and text</option>
@@ -678,9 +678,9 @@ const ModernSettingsPage = () => {
                     Automatically expand sidebar when you hover over it (Desktop only)
                   </p>
                 </div>
-                <Switch 
+                <Switch
                   checked={sidebarPrefs.hover_expand_enabled}
-                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, hover_expand_enabled: checked})}
+                  onCheckedChange={(checked) => setSidebarPrefs({ ...sidebarPrefs, hover_expand_enabled: checked })}
                 />
               </div>
 
@@ -693,22 +693,22 @@ const ModernSettingsPage = () => {
                       Automatically switch to mini mode after no interaction
                     </p>
                   </div>
-                  <Switch 
+                  <Switch
                     checked={sidebarPrefs.auto_collapse_enabled}
-                    onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, auto_collapse_enabled: checked})}
+                    onCheckedChange={(checked) => setSidebarPrefs({ ...sidebarPrefs, auto_collapse_enabled: checked })}
                   />
                 </div>
-                
+
                 {sidebarPrefs.auto_collapse_enabled && (
                   <div>
                     <Label htmlFor="inactivity_timeout">Inactivity Timeout (seconds)</Label>
-                    <Input 
+                    <Input
                       id="inactivity_timeout"
                       type="number"
                       min="5"
                       max="60"
                       value={sidebarPrefs.inactivity_timeout}
-                      onChange={(e) => setSidebarPrefs({...sidebarPrefs, inactivity_timeout: parseInt(e.target.value) || 10})}
+                      onChange={(e) => setSidebarPrefs({ ...sidebarPrefs, inactivity_timeout: parseInt(e.target.value) || 10 })}
                       className="mt-2"
                     />
                     <p className="text-xs text-muted-foreground mt-1">Between 5 and 60 seconds</p>
@@ -724,9 +724,9 @@ const ModernSettingsPage = () => {
                     Automatically adjust sidebar based on screen size and page type
                   </p>
                 </div>
-                <Switch 
+                <Switch
                   checked={sidebarPrefs.context_aware_enabled}
-                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, context_aware_enabled: checked})}
+                  onCheckedChange={(checked) => setSidebarPrefs({ ...sidebarPrefs, context_aware_enabled: checked })}
                 />
               </div>
 
@@ -738,9 +738,9 @@ const ModernSettingsPage = () => {
                     Automatically switch to mini mode after clicking a menu item
                   </p>
                 </div>
-                <Switch 
+                <Switch
                   checked={sidebarPrefs.collapse_after_navigation}
-                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, collapse_after_navigation: checked})}
+                  onCheckedChange={(checked) => setSidebarPrefs({ ...sidebarPrefs, collapse_after_navigation: checked })}
                 />
               </div>
 
@@ -752,9 +752,9 @@ const ModernSettingsPage = () => {
                     Click anywhere on main page to hide sidebar (switches to mini mode)
                   </p>
                 </div>
-                <Switch 
+                <Switch
                   checked={sidebarPrefs.click_outside_to_hide}
-                  onCheckedChange={(checked) => setSidebarPrefs({...sidebarPrefs, click_outside_to_hide: checked})}
+                  onCheckedChange={(checked) => setSidebarPrefs({ ...sidebarPrefs, click_outside_to_hide: checked })}
                 />
               </div>
 
@@ -778,7 +778,7 @@ const ModernSettingsPage = () => {
 
         {/* TAB 2: SECURITY & ACCESS */}
         <TabsContent value="security" className="space-y-6">
-          
+
           {/* Change Password */}
           <Card>
             <CardHeader>
@@ -789,32 +789,32 @@ const ModernSettingsPage = () => {
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
                   <Label htmlFor="current_password">Current Password</Label>
-                  <Input 
-                    id="current_password" 
-                    type="password" 
+                  <Input
+                    id="current_password"
+                    type="password"
                     value={passwordData.current_password}
-                    onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})}
-                    required 
+                    onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="new_password">New Password</Label>
-                  <Input 
-                    id="new_password" 
-                    type="password" 
+                  <Input
+                    id="new_password"
+                    type="password"
                     value={passwordData.new_password}
-                    onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})}
-                    required 
+                    onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="confirm_password">Confirm New Password</Label>
-                  <Input 
-                    id="confirm_password" 
-                    type="password" 
+                  <Input
+                    id="confirm_password"
+                    type="password"
                     value={passwordData.confirm_password}
-                    onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})}
-                    required 
+                    onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
+                    required
                   />
                 </div>
                 <Button type="submit" disabled={loading}>
@@ -860,12 +860,19 @@ const ModernSettingsPage = () => {
             </CardHeader>
             <CardContent>
               {activeSessions.length === 0 ? (
-                <Alert>
-                  <Clock className="h-4 w-4" />
-                  <AlertDescription>
-                    Current session only. Session management feature coming soon.
-                  </AlertDescription>
-                </Alert>
+                <div className="p-4 border rounded-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Laptop className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium text-sm">Current Session</p>
+                      <p className="text-xs text-muted-foreground">You are logged in on this device</p>
+                    </div>
+                    <Badge variant="default" className="ml-auto">Active</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Session tracking across multiple devices will be available in a future update.
+                  </p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {activeSessions.map((session, idx) => (
@@ -924,393 +931,395 @@ const ModernSettingsPage = () => {
         </TabsContent>
 
         {/* TAB 3: ADMIN & COMPLIANCE (Master/Developer Only) */}
-        {isDeveloperOrMaster() && (
-          <TabsContent value="admin" className="space-y-6">
-            
-            {/* SendGrid Email Configuration */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Email Configuration (SendGrid)</CardTitle>
-                <CardDescription>Configure email sending for notifications and alerts</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Alert className="bg-blue-50 border-blue-200">
-                  <Shield className="h-4 w-4 text-blue-600" />
-                  <AlertDescription className="text-blue-900">
-                    <strong>Master & Developer Only:</strong> Email configuration affects the entire organization.
-                  </AlertDescription>
-                </Alert>
+        {
+          isDeveloperOrMaster() && (
+            <TabsContent value="admin" className="space-y-6">
 
-                <div>
-                  <Label htmlFor="sendgrid_api_key">SendGrid API Key</Label>
-                  <Input 
-                    id="sendgrid_api_key"
-                    type="password" 
-                    placeholder={apiSettings.sendgrid_configured ? "API key configured" : "SG.xxxxx..."} 
-                    value={apiSettings.sendgrid_api_key} 
-                    onChange={(e) => setApiSettings({...apiSettings, sendgrid_api_key: e.target.value})} 
-                    className="font-mono" 
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="from_email">From Email</Label>
-                    <Input 
-                      id="from_email"
-                      type="email"
-                      placeholder="noreply@company.com" 
-                      value={apiSettings.sendgrid_from_email} 
-                      onChange={(e) => setApiSettings({...apiSettings, sendgrid_from_email: e.target.value})} 
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="from_name">From Name</Label>
-                    <Input 
-                      id="from_name"
-                      placeholder="Company Name" 
-                      value={apiSettings.sendgrid_from_name} 
-                      onChange={(e) => setApiSettings({...apiSettings, sendgrid_from_name: e.target.value})} 
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button onClick={handleSaveApiSettings} disabled={loading}>
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Configuration
-                  </Button>
-                  <Button variant="outline" onClick={handleTestEmail}>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Test Email
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Twilio SMS/WhatsApp Configuration */}
-            <Card>
-              <CardHeader>
-                <CardTitle>SMS & WhatsApp (Twilio)</CardTitle>
-                <CardDescription>Configure SMS and WhatsApp notifications</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Alert className="bg-blue-50 border-blue-200">
-                  <Shield className="h-4 w-4 text-blue-600" />
-                  <AlertDescription className="text-blue-900">
-                    <strong>Master & Developer Only:</strong> Twilio configuration affects the entire organization.
-                  </AlertDescription>
-                </Alert>
-
-                <div className="flex items-center gap-2 mb-4">
-                  <Badge variant={twilioSettings.twilio_configured ? 'default' : 'secondary'}>
-                    {twilioSettings.twilio_configured ? '✓ Configured' : 'Not Configured'}
-                  </Badge>
-                </div>
-
-                <div>
-                  <Label htmlFor="twilio_account_sid">Account SID</Label>
-                  <Input 
-                    id="twilio_account_sid"
-                    type="text" 
-                    placeholder={twilioSettings.twilio_configured ? twilioSettings.account_sid : "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"} 
-                    value={twilioSettings.account_sid} 
-                    onChange={(e) => setTwilioSettings({...twilioSettings, account_sid: e.target.value})} 
-                    className="font-mono" 
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="twilio_auth_token">Auth Token</Label>
-                  <Input 
-                    id="twilio_auth_token"
-                    type="password" 
-                    placeholder={twilioSettings.twilio_configured ? "Token configured" : "Your Twilio Auth Token"} 
-                    value={twilioSettings.auth_token} 
-                    onChange={(e) => setTwilioSettings({...twilioSettings, auth_token: e.target.value})} 
-                    className="font-mono" 
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="twilio_phone_number">SMS Phone Number</Label>
-                    <Input 
-                      id="twilio_phone_number"
-                      type="tel"
-                      placeholder="+1234567890" 
-                      value={twilioSettings.phone_number} 
-                      onChange={(e) => setTwilioSettings({...twilioSettings, phone_number: e.target.value})} 
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="twilio_whatsapp_number">WhatsApp Number (Optional)</Label>
-                    <Input 
-                      id="twilio_whatsapp_number"
-                      type="tel"
-                      placeholder="+1234567890" 
-                      value={twilioSettings.whatsapp_number} 
-                      onChange={(e) => setTwilioSettings({...twilioSettings, whatsapp_number: e.target.value})} 
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button onClick={handleSaveTwilioSettings} disabled={loading}>
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Configuration
-                  </Button>
-                  <Button variant="outline" onClick={handleTestTwilio} disabled={!twilioSettings.twilio_configured}>
-                    <Smartphone className="h-4 w-4 mr-2" />
-                    Test Connection
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Organization Sidebar Settings (Master & Developer Only) */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Organization Sidebar Defaults</CardTitle>
-                <CardDescription>Set default sidebar behavior for all users in your organization</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                
-                <Alert className="bg-blue-50 border-blue-200">
-                  <Shield className="h-4 w-4 text-blue-600" />
-                  <AlertDescription className="text-blue-900">
-                    <strong>Master & Developer Only:</strong> These settings apply to ALL users. Users can override with their own preferences if needed.
-                  </AlertDescription>
-                </Alert>
-
-                {/* Default Mode */}
-                <div>
-                  <Label htmlFor="org_default_mode">Organization Default Sidebar Mode</Label>
-                  <select
-                    id="org_default_mode"
-                    value={orgSidebarSettings.default_mode}
-                    onChange={(e) => setOrgSidebarSettings({...orgSidebarSettings, default_mode: e.target.value})}
-                    className="w-full p-2 border rounded-md bg-background mt-2"
-                  >
-                    <option value="expanded">Expanded (280px) - Full width with icons and text</option>
-                    <option value="collapsed">Collapsed (200px) - Compact layout</option>
-                    <option value="mini">Mini (80px) - Icons only</option>
-                  </select>
-                </div>
-
-                {/* Hover Expand */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Hover to Expand (Organization Default)</p>
-                    <p className="text-sm text-muted-foreground">
-                      Automatically expand sidebar when hovering in mini mode
-                    </p>
-                  </div>
-                  <Switch 
-                    checked={orgSidebarSettings.hover_expand_enabled}
-                    onCheckedChange={(checked) => setOrgSidebarSettings({...orgSidebarSettings, hover_expand_enabled: checked})}
-                  />
-                </div>
-
-                {/* Auto-Collapse on Inactivity */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium">Auto-Collapse on Inactivity (Organization Default)</p>
-                      <p className="text-sm text-muted-foreground">
-                        Automatically switch to mini mode after no interaction
-                      </p>
-                    </div>
-                    <Switch 
-                      checked={orgSidebarSettings.auto_collapse_enabled}
-                      onCheckedChange={(checked) => setOrgSidebarSettings({...orgSidebarSettings, auto_collapse_enabled: checked})}
-                    />
-                  </div>
-                  
-                  {orgSidebarSettings.auto_collapse_enabled && (
-                    <div>
-                      <Label htmlFor="org_inactivity_timeout">Inactivity Timeout (seconds)</Label>
-                      <Input 
-                        id="org_inactivity_timeout"
-                        type="number"
-                        min="5"
-                        max="60"
-                        value={orgSidebarSettings.inactivity_timeout}
-                        onChange={(e) => setOrgSidebarSettings({...orgSidebarSettings, inactivity_timeout: parseInt(e.target.value) || 10})}
-                        className="mt-2"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Context-Aware Mode */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Smart Context-Aware Mode (Organization Default)</p>
-                    <p className="text-sm text-muted-foreground">
-                      Automatically adjust sidebar based on screen size and page type
-                    </p>
-                  </div>
-                  <Switch 
-                    checked={orgSidebarSettings.context_aware_enabled}
-                    onCheckedChange={(checked) => setOrgSidebarSettings({...orgSidebarSettings, context_aware_enabled: checked})}
-                  />
-                </div>
-
-                {/* Collapse After Navigation */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Collapse After Navigation (Organization Default)</p>
-                    <p className="text-sm text-muted-foreground">
-                      Automatically switch to mini mode after clicking a menu item
-                    </p>
-                  </div>
-                  <Switch 
-                    checked={orgSidebarSettings.collapse_after_navigation}
-                    onCheckedChange={(checked) => setOrgSidebarSettings({...orgSidebarSettings, collapse_after_navigation: checked})}
-                  />
-                </div>
-
-                {/* Click Outside to Hide */}
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Click Outside to Hide (Organization Default)</p>
-                    <p className="text-sm text-muted-foreground">
-                      Click anywhere on main page to hide sidebar (switches to mini mode)
-                    </p>
-                  </div>
-                  <Switch 
-                    checked={orgSidebarSettings.click_outside_to_hide}
-                    onCheckedChange={(checked) => setOrgSidebarSettings({...orgSidebarSettings, click_outside_to_hide: checked})}
-                  />
-                </div>
-
-                {/* Save Button */}
-                <Button onClick={handleSaveOrgSidebarSettings} disabled={loading} className="w-full">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Organization Sidebar Settings
-                </Button>
-
-                {/* Info Alert */}
-                <Alert className="bg-green-50 border-green-200">
-                  <Shield className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-900">
-                    <strong>Note:</strong> These settings apply organization-wide. Users can still customize their own sidebar preferences if needed. Manual toggle button always works regardless of these settings.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-
-            {/* Webhooks Dashboard */}
-            <PermissionGuard 
-              anyPermissions={['webhook.manage.organization']}
-              minLevel={3}
-              fallback="hide"
-            >
+              {/* SendGrid Email Configuration */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Webhook Integrations</CardTitle>
-                  <CardDescription>Connect external services to system events</CardDescription>
+                  <CardTitle>Email Configuration (SendGrid)</CardTitle>
+                  <CardDescription>Configure email sending for notifications and alerts</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Webhook className="h-8 w-8 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Active Webhooks</p>
-                        <p className="text-sm text-muted-foreground">{webhookCount} configured</p>
-                      </div>
+                <CardContent className="space-y-4">
+                  <Alert className="bg-blue-50 border-blue-200">
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <AlertDescription className="text-blue-900">
+                      <strong>Master & Developer Only:</strong> Email configuration affects the entire organization.
+                    </AlertDescription>
+                  </Alert>
+
+                  <div>
+                    <Label htmlFor="sendgrid_api_key">SendGrid API Key</Label>
+                    <Input
+                      id="sendgrid_api_key"
+                      type="password"
+                      placeholder={apiSettings.sendgrid_configured ? "API key configured" : "SG.xxxxx..."}
+                      value={apiSettings.sendgrid_api_key}
+                      onChange={(e) => setApiSettings({ ...apiSettings, sendgrid_api_key: e.target.value })}
+                      className="font-mono"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="from_email">From Email</Label>
+                      <Input
+                        id="from_email"
+                        type="email"
+                        placeholder="noreply@company.com"
+                        value={apiSettings.sendgrid_from_email}
+                        onChange={(e) => setApiSettings({ ...apiSettings, sendgrid_from_email: e.target.value })}
+                      />
                     </div>
-                    <Button variant="outline" onClick={() => window.location.href = '/webhooks'}>
-                      Manage Webhooks
-                      <ExternalLink className="h-4 w-4 ml-2" />
+                    <div>
+                      <Label htmlFor="from_name">From Name</Label>
+                      <Input
+                        id="from_name"
+                        placeholder="Company Name"
+                        value={apiSettings.sendgrid_from_name}
+                        onChange={(e) => setApiSettings({ ...apiSettings, sendgrid_from_name: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button onClick={handleSaveApiSettings} disabled={loading}>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Configuration
+                    </Button>
+                    <Button variant="outline" onClick={handleTestEmail}>
+                      <Mail className="h-4 w-4 mr-2" />
+                      Send Test Email
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            </PermissionGuard>
 
-            {/* GDPR & Data Privacy */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Data & Privacy</CardTitle>
-                <CardDescription>Export your data or manage consents</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                
-                {/* Data Export */}
-                <div>
-                  <Label>Export Your Data</Label>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Download all your personal data in JSON format
-                  </p>
-                  <Button variant="outline" onClick={handleExportData}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Export My Data
-                  </Button>
-                </div>
+              {/* Twilio SMS/WhatsApp Configuration */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>SMS & WhatsApp (Twilio)</CardTitle>
+                  <CardDescription>Configure SMS and WhatsApp notifications</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Alert className="bg-blue-50 border-blue-200">
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <AlertDescription className="text-blue-900">
+                      <strong>Master & Developer Only:</strong> Twilio configuration affects the entire organization.
+                    </AlertDescription>
+                  </Alert>
 
-                <Separator />
+                  <div className="flex items-center gap-2 mb-4">
+                    <Badge variant={twilioSettings.twilio_configured ? 'default' : 'secondary'}>
+                      {twilioSettings.twilio_configured ? '✓ Configured' : 'Not Configured'}
+                    </Badge>
+                  </div>
 
-                {/* Consent Management */}
-                <div>
-                  <Label>Data Processing Consents</Label>
-                  <div className="space-y-3 mt-3">
-                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium text-sm">Analytics & Performance</p>
-                        <p className="text-xs text-muted-foreground">Help us improve the platform</p>
-                      </div>
-                      <Switch 
-                        checked={gdprConsents.analytics}
-                        onCheckedChange={async (checked) => {
-                          try {
-                            await axios.put(`${API}/gdpr/consent`, {
-                              ...gdprConsents,
-                              analytics: checked
-                            });
-                            setGdprConsents({...gdprConsents, analytics: checked});
-                            toast({ title: 'Consent updated' });
-                          } catch (err) {
-                            toast({ title: 'Error', description: 'Failed to update', variant: 'destructive' });
-                          }
-                        }}
+                  <div>
+                    <Label htmlFor="twilio_account_sid">Account SID</Label>
+                    <Input
+                      id="twilio_account_sid"
+                      type="text"
+                      placeholder={twilioSettings.twilio_configured ? twilioSettings.account_sid : "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+                      value={twilioSettings.account_sid}
+                      onChange={(e) => setTwilioSettings({ ...twilioSettings, account_sid: e.target.value })}
+                      className="font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="twilio_auth_token">Auth Token</Label>
+                    <Input
+                      id="twilio_auth_token"
+                      type="password"
+                      placeholder={twilioSettings.twilio_configured ? "Token configured" : "Your Twilio Auth Token"}
+                      value={twilioSettings.auth_token}
+                      onChange={(e) => setTwilioSettings({ ...twilioSettings, auth_token: e.target.value })}
+                      className="font-mono"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="twilio_phone_number">SMS Phone Number</Label>
+                      <Input
+                        id="twilio_phone_number"
+                        type="tel"
+                        placeholder="+1234567890"
+                        value={twilioSettings.phone_number}
+                        onChange={(e) => setTwilioSettings({ ...twilioSettings, phone_number: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="twilio_whatsapp_number">WhatsApp Number (Optional)</Label>
+                      <Input
+                        id="twilio_whatsapp_number"
+                        type="tel"
+                        placeholder="+1234567890"
+                        value={twilioSettings.whatsapp_number}
+                        onChange={(e) => setTwilioSettings({ ...twilioSettings, whatsapp_number: e.target.value })}
                       />
                     </div>
                   </div>
-                </div>
 
-                <Separator />
+                  <div className="flex gap-2">
+                    <Button onClick={handleSaveTwilioSettings} disabled={loading}>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Configuration
+                    </Button>
+                    <Button variant="outline" onClick={handleTestTwilio} disabled={!twilioSettings.twilio_configured}>
+                      <Smartphone className="h-4 w-4 mr-2" />
+                      Test Connection
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
 
-                {/* Danger Zone */}
-                <div className="border-red-200 bg-red-50 p-4 rounded-lg">
-                  <div className="flex items-start gap-3 mb-3">
-                    <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+              {/* Organization Sidebar Settings (Master & Developer Only) */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Organization Sidebar Defaults</CardTitle>
+                  <CardDescription>Set default sidebar behavior for all users in your organization</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+
+                  <Alert className="bg-blue-50 border-blue-200">
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <AlertDescription className="text-blue-900">
+                      <strong>Master & Developer Only:</strong> These settings apply to ALL users. Users can override with their own preferences if needed.
+                    </AlertDescription>
+                  </Alert>
+
+                  {/* Default Mode */}
+                  <div>
+                    <Label htmlFor="org_default_mode">Organization Default Sidebar Mode</Label>
+                    <select
+                      id="org_default_mode"
+                      value={orgSidebarSettings.default_mode}
+                      onChange={(e) => setOrgSidebarSettings({ ...orgSidebarSettings, default_mode: e.target.value })}
+                      className="w-full p-2 border rounded-md bg-background mt-2"
+                    >
+                      <option value="expanded">Expanded (280px) - Full width with icons and text</option>
+                      <option value="collapsed">Collapsed (200px) - Compact layout</option>
+                      <option value="mini">Mini (80px) - Icons only</option>
+                    </select>
+                  </div>
+
+                  {/* Hover Expand */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <p className="font-semibold text-red-900">Danger Zone</p>
-                      <p className="text-sm text-red-700">This action cannot be undone</p>
+                      <p className="font-medium">Hover to Expand (Organization Default)</p>
+                      <p className="text-sm text-muted-foreground">
+                        Automatically expand sidebar when hovering in mini mode
+                      </p>
+                    </div>
+                    <Switch
+                      checked={orgSidebarSettings.hover_expand_enabled}
+                      onCheckedChange={(checked) => setOrgSidebarSettings({ ...orgSidebarSettings, hover_expand_enabled: checked })}
+                    />
+                  </div>
+
+                  {/* Auto-Collapse on Inactivity */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Auto-Collapse on Inactivity (Organization Default)</p>
+                        <p className="text-sm text-muted-foreground">
+                          Automatically switch to mini mode after no interaction
+                        </p>
+                      </div>
+                      <Switch
+                        checked={orgSidebarSettings.auto_collapse_enabled}
+                        onCheckedChange={(checked) => setOrgSidebarSettings({ ...orgSidebarSettings, auto_collapse_enabled: checked })}
+                      />
+                    </div>
+
+                    {orgSidebarSettings.auto_collapse_enabled && (
+                      <div>
+                        <Label htmlFor="org_inactivity_timeout">Inactivity Timeout (seconds)</Label>
+                        <Input
+                          id="org_inactivity_timeout"
+                          type="number"
+                          min="5"
+                          max="60"
+                          value={orgSidebarSettings.inactivity_timeout}
+                          onChange={(e) => setOrgSidebarSettings({ ...orgSidebarSettings, inactivity_timeout: parseInt(e.target.value) || 10 })}
+                          className="mt-2"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Context-Aware Mode */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <p className="font-medium">Smart Context-Aware Mode (Organization Default)</p>
+                      <p className="text-sm text-muted-foreground">
+                        Automatically adjust sidebar based on screen size and page type
+                      </p>
+                    </div>
+                    <Switch
+                      checked={orgSidebarSettings.context_aware_enabled}
+                      onCheckedChange={(checked) => setOrgSidebarSettings({ ...orgSidebarSettings, context_aware_enabled: checked })}
+                    />
+                  </div>
+
+                  {/* Collapse After Navigation */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <p className="font-medium">Collapse After Navigation (Organization Default)</p>
+                      <p className="text-sm text-muted-foreground">
+                        Automatically switch to mini mode after clicking a menu item
+                      </p>
+                    </div>
+                    <Switch
+                      checked={orgSidebarSettings.collapse_after_navigation}
+                      onCheckedChange={(checked) => setOrgSidebarSettings({ ...orgSidebarSettings, collapse_after_navigation: checked })}
+                    />
+                  </div>
+
+                  {/* Click Outside to Hide */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <p className="font-medium">Click Outside to Hide (Organization Default)</p>
+                      <p className="text-sm text-muted-foreground">
+                        Click anywhere on main page to hide sidebar (switches to mini mode)
+                      </p>
+                    </div>
+                    <Switch
+                      checked={orgSidebarSettings.click_outside_to_hide}
+                      onCheckedChange={(checked) => setOrgSidebarSettings({ ...orgSidebarSettings, click_outside_to_hide: checked })}
+                    />
+                  </div>
+
+                  {/* Save Button */}
+                  <Button onClick={handleSaveOrgSidebarSettings} disabled={loading} className="w-full">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Organization Sidebar Settings
+                  </Button>
+
+                  {/* Info Alert */}
+                  <Alert className="bg-green-50 border-green-200">
+                    <Shield className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="text-green-900">
+                      <strong>Note:</strong> These settings apply organization-wide. Users can still customize their own sidebar preferences if needed. Manual toggle button always works regardless of these settings.
+                    </AlertDescription>
+                  </Alert>
+                </CardContent>
+              </Card>
+
+              {/* Webhooks Dashboard */}
+              <PermissionGuard
+                anyPermissions={['webhook.manage.organization']}
+                minLevel={3}
+                fallback="hide"
+              >
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Webhook Integrations</CardTitle>
+                    <CardDescription>Connect external services to system events</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Webhook className="h-8 w-8 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">Active Webhooks</p>
+                          <p className="text-sm text-muted-foreground">{webhookCount} configured</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" onClick={() => window.location.href = '/webhooks'}>
+                        Manage Webhooks
+                        <ExternalLink className="h-4 w-4 ml-2" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </PermissionGuard>
+
+              {/* GDPR & Data Privacy */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Data & Privacy</CardTitle>
+                  <CardDescription>Export your data or manage consents</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+
+                  {/* Data Export */}
+                  <div>
+                    <Label>Export Your Data</Label>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Download all your personal data in JSON format
+                    </p>
+                    <Button variant="outline" onClick={handleExportData}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export My Data
+                    </Button>
+                  </div>
+
+                  <Separator />
+
+                  {/* Consent Management */}
+                  <div>
+                    <Label>Data Processing Consents</Label>
+                    <div className="space-y-3 mt-3">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">Analytics & Performance</p>
+                          <p className="text-xs text-muted-foreground">Help us improve the platform</p>
+                        </div>
+                        <Switch
+                          checked={gdprConsents.analytics}
+                          onCheckedChange={async (checked) => {
+                            try {
+                              await axios.put(`${API}/gdpr/consent`, {
+                                ...gdprConsents,
+                                analytics: checked
+                              });
+                              setGdprConsents({ ...gdprConsents, analytics: checked });
+                              toast({ title: 'Consent updated' });
+                            } catch (err) {
+                              toast({ title: 'Error', description: 'Failed to update', variant: 'destructive' });
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <Button variant="destructive" onClick={handleDeleteAccount}>
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete My Account
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+
+                  <Separator />
+
+                  {/* Danger Zone */}
+                  <div className="border-red-200 bg-red-50 p-4 rounded-lg">
+                    <div className="flex items-start gap-3 mb-3">
+                      <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+                      <div>
+                        <p className="font-semibold text-red-900">Danger Zone</p>
+                        <p className="text-sm text-red-700">This action cannot be undone</p>
+                      </div>
+                    </div>
+                    <Button variant="destructive" onClick={handleDeleteAccount}>
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete My Account
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
 
 
 
-            {/* Organizational Entities Section */}
-            <div className="mt-8">
-              <OrganizationalEntitiesManager />
-            </div>
+              {/* Organizational Entities Section */}
+              <div className="mt-8">
+                <OrganizationalEntitiesManager />
+              </div>
 
-          </TabsContent>
-        )}
+            </TabsContent>
+          )
+        }
 
-      </Tabs>
-    </ModernPageWrapper>
+      </Tabs >
+    </ModernPageWrapper >
   );
 };
 

@@ -1297,25 +1297,6 @@ const EnhancedSettingsPage = () => {
         {/* Organization Tab */}
         {(isAdmin() || isDeveloper()) && (
           <TabsContent value="organization">
-            <Card>
-              <CardHeader>
-                <CardTitle>Organization Settings</CardTitle>
-                <CardDescription>Manage organization-wide settings</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Alert className="bg-amber-50 border-amber-200">
-                  <AlertTriangle className="h-4 w-4 text-amber-600" />
-                  <AlertDescription className="text-amber-800">
-                    Organization settings are coming soon. This section will include company logo upload, working hours configuration, holiday calendar, and default role settings.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        )}
-      </Tabs>
-    </div>
-  );
 };
 
 export default EnhancedSettingsPage;
