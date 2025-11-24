@@ -67,6 +67,7 @@ import InspectionCalendar from "@/components/InspectionCalendar";
 import AnnouncementsPage from "@/components/AnnouncementsPage";
 import EmergenciesPage from "@/components/EmergenciesPage";
 import TeamChatPage from "@/components/TeamChatPage";
+import IntegrationsPage from "@/components/IntegrationsPage";
 import ContractorsPage from "@/components/ContractorsPage";
 import HRPage from "@/components/HRPage";
 
@@ -405,6 +406,16 @@ function App() {
                     <ProtectedRoute>
                       <LayoutNew>
                         <TeamChatPage />
+                      </LayoutNew>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/integrations"
+                  element={
+                    <ProtectedRoute>
+                      <LayoutNew>
+                        <IntegrationsPage />
                       </LayoutNew>
                     </ProtectedRoute>
                   }
