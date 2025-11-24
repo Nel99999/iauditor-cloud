@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 import { AlertCircle } from 'lucide-react';
 
 const LoginPage = () => {
@@ -13,6 +14,7 @@ const LoginPage = () => {
   const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -21,14 +23,14 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
-    const result = await login(email, password);
-    
+    const result = await login(email, password, rememberMe);
+
     if (result.success) {
       navigate('/dashboard');
     } else {
       setError(result.error || 'Login failed');
     }
-    
+
     setLoading(false);
   };
 
@@ -84,6 +86,20 @@ const LoginPage = () => {
                 disabled={loading}
                 data-testid="login-password-input"
               />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="remember-me"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+              />
+              <label
+                htmlFor="remember-me"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Remember me for 30 days
+              </label>
             </div>
 
             <Button

@@ -10,8 +10,10 @@ from models import (
     User, UserCreate, UserLogin, Token, Session, Organization
 )
 from auth_utils import (
-    verify_password, get_password_hash, create_access_token, get_current_user
+    verify_password, get_password_hash, create_access_token, get_current_user,
+    validate_password_strength
 )
+from sanitization import sanitize_dict
 from email_service import EmailService
 from init_phase1_data import initialize_permissions, initialize_system_roles
 from auth_constants import (
@@ -24,6 +26,7 @@ from auth_constants import (
     MSG_ACCOUNT_DISABLED,
     SUBJECT_PROFILE_CREATION
 )
+from server import limiter
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -33,12 +36,12 @@ def get_db(request: Request) -> AsyncIOMotorDatabase:
 @router.post("/register", response_model=Token)
 async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Register a new user with email and password"""
-    # Validate password length
-    if len(user_data.password) < 6:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password must be at least 6 characters long",
-        )
+    # Validate password strength
+    validate_password_strength(user_data.password)
+    
+    # Sanitize input
+    user_dict_data = user_data.model_dump()
+    user_dict_data = sanitize_dict(user_dict_data, ['name', 'organization_name'])
     
     # Check if user already exists
     existing_user = await db.users.find_one({"email": user_data.email})
@@ -82,6 +85,8 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         is_active=False,  # Inactive until approved
         invited=False,  # Self-registration
         registration_ip=None,  # TODO: Get from request
+        email_verification_token=str(uuid.uuid4()),
+        email_verification_sent_at=datetime.now(timezone.utc),
     )
     
     user_dict = user.model_dump()
@@ -205,7 +210,8 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
 
 
 @router.post("/login", response_model=Token)
-async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_db)):
+@limiter.limit("5/minute")
+async def login(request: Request, response: Response, credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Login with email and password"""
     # Find user
     user = await db.users.find_one({"email": credentials.email}, {"_id": 0})
@@ -303,8 +309,40 @@ async def login(credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_d
         }}
     )
     
+    # Determine session expiration
+    if credentials.remember_me:
+        expires_delta = timedelta(days=30)
+        max_age = 30 * 24 * 60 * 60  # 30 days in seconds
+    else:
+        expires_delta = timedelta(hours=24)
+        max_age = 24 * 60 * 60  # 24 hours in seconds
+        
+    expires_at = datetime.now(timezone.utc) + expires_delta
+
+    # Create session in database
+    session_token = str(uuid.uuid4())
+    session = Session(
+        user_id=user["id"],
+        session_token=session_token,
+        expires_at=expires_at
+    )
+    await db.sessions.insert_one(session.model_dump())
+
     # Create access token
-    access_token = create_access_token(data={"sub": user["id"]})
+    access_token = create_access_token(
+        data={"sub": user["id"]},
+        expires_delta=expires_delta
+    )
+    
+    # Set session cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        max_age=max_age,
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
     
     # Return token and user data (without password hash)
     user.pop("password_hash", None)
@@ -421,6 +459,30 @@ async def google_oauth_callback(
     return {"user": user, "access_token": access_token, "token_type": "bearer"}
 
 
+@router.get("/verify-email")
+async def verify_email(token: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    """Verify email address"""
+    user = await db.users.find_one({"email_verification_token": token})
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid verification token"
+        )
+        
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$set": {
+                "email_verified": True,
+                "email_verification_token": None
+            }
+        }
+    )
+    
+    return {"message": "Email verified successfully"}
+
+
 # ==================== PASSWORD RESET ====================
 
 class PasswordResetRequest(BaseModel):
@@ -433,7 +495,9 @@ class PasswordResetConfirm(BaseModel):
 
 
 @router.post("/forgot-password")
+@limiter.limit("3/minute")
 async def forgot_password(
+    request: Request,
     reset_request: PasswordResetRequest,
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
@@ -565,12 +629,8 @@ async def reset_password(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Reset password using token"""
-    # Validate password length
-    if len(reset_data.new_password) < 6:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password must be at least 6 characters long"
-        )
+    # Validate password strength
+    validate_password_strength(reset_data.new_password)
     
     # Find user with this reset token
     user = await db.users.find_one({"password_reset_token": reset_data.token})
@@ -602,6 +662,20 @@ async def reset_password(
     # Hash new password
     new_password_hash = get_password_hash(reset_data.new_password)
     
+    # Check password history
+    password_history = user.get("password_history", [])
+    for old_hash in password_history:
+        if verify_password(reset_data.new_password, old_hash):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot reuse any of your last 5 passwords"
+            )
+            
+    # Update history (keep last 5)
+    password_history.append(new_password_hash)
+    if len(password_history) > 5:
+        password_history = password_history[-5:]
+    
     # Update user password and clear reset token
     await db.users.update_one(
         {"id": user["id"]},
@@ -612,7 +686,8 @@ async def reset_password(
                 "password_reset_token": None,
                 "password_reset_expires_at": None,
                 "failed_login_attempts": 0,  # Reset login attempts
-                "account_locked_until": None  # Unlock account if locked
+                "account_locked_until": None,  # Unlock account if locked
+                "password_history": password_history
             }
         }
     )
@@ -687,4 +762,3 @@ async def reset_password(
         traceback.print_exc()
     
     return {"message": "Password has been reset successfully. You can now login with your new password"}
-    

@@ -39,7 +39,7 @@ interface AuthContextType {
   userRole: Role | null;
   loading: boolean;
   register: (email: string, password: string, name: string, organizationName: string) => Promise<AuthResponse>;
-  login: (email: string, password: string) => Promise<AuthResponse>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthResponse>;
   loginWithGoogle: () => void;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
@@ -198,11 +198,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (email: string, password: string): Promise<AuthResponse> => {
+  const login = async (email: string, password: string, rememberMe: boolean = false): Promise<AuthResponse> => {
     try {
       const response = await axios.post<{ access_token: string; user: User }>(`${API}/auth/login`, {
         email,
         password,
+        remember_me: rememberMe,
       });
 
       const { access_token, user: userData } = response.data;

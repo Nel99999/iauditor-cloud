@@ -67,6 +67,7 @@ class UserLogin(BaseModel):
     """User login model"""
     email: EmailStr
     password: str
+    remember_me: bool = False
 
 
 class Session(BaseModel):
