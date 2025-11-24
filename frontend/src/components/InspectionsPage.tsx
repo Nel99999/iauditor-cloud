@@ -53,7 +53,7 @@ const InspectionsPage = () => {
         axios.get(`${API}/inspections/executions?limit=50`),
         axios.get(`${API}/inspections/stats`),
       ]);
-      
+
       setTemplates(templatesRes.data);
       setExecutions(executionsRes.data);
       setStats(statsRes.data);
@@ -68,7 +68,7 @@ const InspectionsPage = () => {
     if (!window.confirm('Are you sure you want to delete this template?')) {
       return;
     }
-    
+
     try {
       await axios.delete(`${API}/inspections/templates/${templateId}`);
       loadData();
@@ -110,313 +110,109 @@ const InspectionsPage = () => {
   }
 
   return (
-    <ModernPageWrapper 
-      title="Inspections" 
+    <ModernPageWrapper
+      title="Inspections"
       subtitle="Manage inspections and audits"
       actions={
-        <PermissionGuard 
+        <PermissionGuard
           anyPermissions={['inspection.create.organization', 'inspection.create.own']}
           tooltipMessage="No permission to create inspection templates"
         >
           <Button onClick={() => navigate('/inspections/templates/new')} data-testid="create-template-btn">
             <Plus className="h-4 w-4 mr-2" />
             New Template
-          </Button>
-        </PermissionGuard>
-      }
-    >
+            <Badge
+              variant={execution.passed ? 'default' : 'destructive'}
+              className="mt-1"
+            >
+              {execution.passed ? 'Passed' : 'Failed'}
+            </Badge>
+                        )}
+          </div>
+        </div>
+                  ))
+}
+                </div >
+              </CardContent >
+            </Card >
+          )}
+        </TabsContent >
+
+  {/* Analytics Tab */ }
+  < TabsContent value = "analytics" >
+  {
+    templates.length === 0 ? (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="text-center py-12 text-muted-foreground">
+            <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <h3 className="text-lg font-semibold mb-2">No templates available</h3>
+            <p className="text-sm">Create inspection templates to view analytics</p>
+          </div>
+        </CardContent>
+      </Card>
+    ) : (
       <div className="space-y-6">
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Select Template for Analytics</CardTitle>
+            <CardDescription>Choose a template to view detailed performance metrics</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.pending || 0}</div>
-            <p className="text-xs text-muted-foreground">In progress</p>
+            <Select
+              value={selectedTemplateForAnalytics?.id || ''}
+              onValueChange={(value) => {
+                const template = templates.find(t => t.id === value);
+                setSelectedTemplateForAnalytics(template);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a template..." />
+              </SelectTrigger>
+              <SelectContent>
+                {templates.map(template => (
+                  <SelectItem key={template.id} value={template.id}>
+                    {template.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed Today</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.completed_today || 0}</div>
-            <p className="text-xs text-muted-foreground">Today's count</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pass Rate</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.pass_rate || 0}%</div>
-            <p className="text-xs text-muted-foreground">Success rate</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Score</CardTitle>
-            <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.average_score ? `${stats.average_score}%` : 'N/A'}
-            </div>
-            <p className="text-xs text-muted-foreground">Average</p>
-          </CardContent>
-        </Card>
+        {selectedTemplateForAnalytics && (
+          <InspectionAnalyticsDashboard
+            templateId={selectedTemplateForAnalytics.id}
+            templateName={selectedTemplateForAnalytics.name}
+          />
+        )}
       </div>
+    )
+  }
+        </TabsContent >
 
-      {/* Tabs */}
-      <Tabs defaultValue="templates" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="templates">Templates ({templates.length})</TabsTrigger>
-          <TabsTrigger value="executions">Executions ({executions.length})</TabsTrigger>
-          <TabsTrigger value="analytics">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Analytics
-          </TabsTrigger>
-          <TabsTrigger value="calendar">
-            <CalendarIcon className="h-4 w-4 mr-2" />
-            Calendar
-          </TabsTrigger>
-        </TabsList>
+  {/* Calendar Tab */ }
+  < TabsContent value = "calendar" >
+    <InspectionCalendar />
+        </TabsContent >
+      </Tabs >
 
-        {/* Templates Tab */}
-        <TabsContent value="templates">
-          {templates.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center py-12">
-                  <ClipboardCheck className="h-12 w-12 mx-auto mb-4 text-slate-400" />
-                  <h3 className="text-lg font-semibold mb-2">No templates yet</h3>
-                  <p className="text-slate-600 mb-4">Create your first inspection template to get started</p>
-                  <Button onClick={() => navigate('/inspections/templates/new')}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Template
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {templates.map((template) => (
-                <Card key={template.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg">{template.name}</CardTitle>
-                        <CardDescription className="mt-1">
-                          {template.description || 'No description'}
-                        </CardDescription>
-                      </div>
-                      {template.category && (
-                        <Badge variant="outline" className="capitalize">
-                          {template.category}
-                        </Badge>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex gap-2 text-sm text-slate-600">
-                      <div>
-                        <span className="font-medium">{template.questions.length}</span> questions
-                      </div>
-                      {template.scoring_enabled && (
-                        <>
-                          <span>•</span>
-                          <div>
-                            Pass: <span className="font-medium">{template.pass_percentage}%</span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => handleStartInspection(template.id)}
-                        data-testid={`start-inspection-${template.id}`}
-                      >
-                        <Play className="h-4 w-4 mr-1" />
-                        Start
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedTemplateForAnalytics(template);
-                          setShowAnalyticsDialog(true);
-                        }}
-                        title="View Analytics"
-                      >
-                        <BarChart3 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => navigate(`/inspections/templates/${template.id}`)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => navigate(`/inspections/templates/${template.id}/edit`)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleDeleteTemplate(template.id)}
-                        className="text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Executions Tab */}
-        <TabsContent value="executions">
-          {executions.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center py-12">
-                  <ClipboardCheck className="h-12 w-12 mx-auto mb-4 text-slate-400" />
-                  <h3 className="text-lg font-semibold mb-2">No inspections yet</h3>
-                  <p className="text-slate-600 mb-4">Start an inspection from a template</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  {executions.map((execution: any) => (
-                    <div
-                      key={execution.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/inspections/executions/${execution.id}`)}
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-medium">{execution.template_name}</h4>
-                          {getStatusBadge(execution.status)}
-                        </div>
-                        <div className="text-sm text-slate-600 mt-1">
-                          Inspector: {execution.inspector_name} • {formatDate(execution.started_at)}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        {execution.score !== null && (
-                          <div className="text-lg font-bold">{execution.score}%</div>
-                        )}
-                        {execution.passed !== null && (
-                          <Badge
-                            variant={execution.passed ? 'default' : 'destructive'}
-                            className="mt-1"
-                          >
-                            {execution.passed ? 'Passed' : 'Failed'}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        {/* Analytics Tab */}
-        <TabsContent value="analytics">
-          {templates.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center py-12 text-muted-foreground">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-lg font-semibold mb-2">No templates available</h3>
-                  <p className="text-sm">Create inspection templates to view analytics</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Select Template for Analytics</CardTitle>
-                  <CardDescription>Choose a template to view detailed performance metrics</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Select 
-                    value={selectedTemplateForAnalytics?.id || ''}
-                    onValueChange={(value) => {
-                      const template = templates.find(t => t.id === value);
-                      setSelectedTemplateForAnalytics(template);
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a template..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {templates.map(template => (
-                        <SelectItem key={template.id} value={template.id}>
-                          {template.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </CardContent>
-              </Card>
-
-              {selectedTemplateForAnalytics && (
-                <InspectionAnalyticsDashboard 
-                  templateId={selectedTemplateForAnalytics.id}
-                  templateName={selectedTemplateForAnalytics.name}
-                />
-              )}
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Calendar Tab */}
-        <TabsContent value="calendar">
-          <InspectionCalendar />
-        </TabsContent>
-      </Tabs>
-
-      {/* Analytics Dialog */}
-      <Dialog open={showAnalyticsDialog} onOpenChange={setShowAnalyticsDialog}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Template Analytics</DialogTitle>
-          </DialogHeader>
-          {selectedTemplateForAnalytics && (
-            <InspectionAnalyticsDashboard 
-              templateId={selectedTemplateForAnalytics.id}
-              templateName={selectedTemplateForAnalytics.name}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-      </div>
-    </ModernPageWrapper>
+  {/* Analytics Dialog */ }
+  < Dialog open = { showAnalyticsDialog } onOpenChange = { setShowAnalyticsDialog } >
+    <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle>Template Analytics</DialogTitle>
+      </DialogHeader>
+      {selectedTemplateForAnalytics && (
+        <InspectionAnalyticsDashboard
+          templateId={selectedTemplateForAnalytics.id}
+          templateName={selectedTemplateForAnalytics.name}
+        />
+      )}
+    </DialogContent>
+      </Dialog >
+      </div >
+    </ModernPageWrapper >
   );
 };
 

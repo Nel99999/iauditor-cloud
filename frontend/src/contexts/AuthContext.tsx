@@ -76,23 +76,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Get all roles to find the user's role ID
       const rolesResponse = await axios.get<Role[]>(`${API}/roles`);
       const userRoleData = rolesResponse.data.find(r => r.code === userRole);
-      
+
       if (userRoleData) {
         // Get permissions for this role
         const permResponse = await axios.get<any[]>(`${API}/roles/${userRoleData.id}/permissions`);
-        
+
         // Get permission details
         const permissionsResponse = await axios.get<Permission[]>(`${API}/permissions`);
         const allPermissions = permissionsResponse.data;
-        
+
         // Map role_permissions to actual permission objects
         const userPerms = permResponse.data.map(rp => {
           return allPermissions.find(p => p.id === rp.permission_id);
         }).filter((p): p is Permission => Boolean(p));
-        
+
         setUserPermissions(userPerms);
         setUserRole(userRoleData);
-        
+
         console.log(`✅ Loaded ${userPerms.length} permissions for role: ${userRole}`);
       }
     } catch (error) {
@@ -104,25 +104,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Check for existing session on mount
   useEffect(() => {
     const initAuth = async () => {
-      // Check for session_id in URL fragment (Google OAuth callback)
-      const hash = window.location.hash;
-      const sessionIdMatch = hash.match(/session_id=([^&]+)/);
-      
-      if (sessionIdMatch) {
-        const sessionId = sessionIdMatch[1];
-        await handleGoogleCallback(sessionId);
-        // Clean URL
-        window.history.replaceState(null, '', window.location.pathname);
-        return;
-      }
-
       // Check for existing token
       if (token) {
         try {
           const response = await axios.get<User>(`${API}/auth/me`);
           const userData = response.data;
           setUser(userData);
-          
+
           // Load permissions for user's role
           if (userData.role) {
             await loadUserPermissions(userData.role, userData.id);
@@ -133,29 +121,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setToken(null);
         }
       }
-      
+
       setLoading(false);
     };
 
     initAuth();
   }, []);
 
-  const handleGoogleCallback = async (sessionId: string): Promise<void> => {
+  const handleGoogleCallback = async (credential: string): Promise<void> => {
     setLoading(true);
     try {
-      const response = await axios.post<{ user: User }>(`${API}/auth/google/callback`, null, {
-        params: { session_id: sessionId },
-        withCredentials: true,
+      // Send the Google ID token to the backend
+      const response = await axios.post<{ user: User, access_token: string }>(`${API}/auth/google/callback`, {
+        credential
       });
-      
-      const userData = response.data.user;
+
+      const { user: userData, access_token } = response.data;
+
+      localStorage.setItem('access_token', access_token);
+      setToken(access_token);
       setUser(userData);
-      
+
       // Load permissions
       if (userData.role) {
         await loadUserPermissions(userData.role, userData.id);
       }
-      
+
       setLoading(false);
     } catch (error) {
       console.error('Google OAuth error:', error);
@@ -176,28 +167,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         name,
         organization_name: organizationName,
       });
-      
+
       const { access_token, user: userData } = response.data;
-      
+
       // Check if user is pending approval (no token will be provided)
       if (userData.approval_status === 'pending' || !access_token) {
         // Don't set token or user in context - user needs approval first
-        return { 
+        return {
           success: true,
           user: userData  // Pass user data so RegisterPage can check approval_status
         };
       }
-      
+
       // Normal flow (user is approved)
       localStorage.setItem('access_token', access_token);
       setToken(access_token);
       setUser(userData);
-      
+
       // Load permissions
       if (userData.role) {
         await loadUserPermissions(userData.role, userData.id);
       }
-      
+
       return { success: true };
     } catch (error: any) {
       return {
@@ -213,17 +204,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
       });
-      
+
       const { access_token, user: userData } = response.data;
       localStorage.setItem('access_token', access_token);
       setToken(access_token);
       setUser(userData);
-      
+
       // Load permissions
       if (userData.role) {
         await loadUserPermissions(userData.role, userData.id);
       }
-      
+
       return { success: true };
     } catch (error: any) {
       return {
@@ -233,9 +224,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const loginWithGoogle = (): void => {
-    const redirectUrl = `${window.location.origin}/dashboard`;
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  const loginWithGoogle = async (): Promise<void> => {
+    // SIMULATION FOR DEVELOPMENT
+    // In a real app, you would use the Google Sign-In button which returns a credential
+    // Here we simulate receiving a valid credential
+    console.log("Initiating Dev Mode Google Login...");
+    const mockCredential = "mock_google_id_token_for_dev";
+    await handleGoogleCallback(mockCredential);
   };
 
   const logout = async (): Promise<void> => {

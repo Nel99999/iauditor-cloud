@@ -31,6 +31,8 @@ const RegisterPage = () => {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
+  const [success, setSuccess] = useState<boolean>(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -67,10 +69,7 @@ const RegisterPage = () => {
     if (result.success) {
       // Check if user is pending approval
       if (result.user?.approval_status === 'pending') {
-        // Show success message and redirect to login with info message
-        setError('');
-        alert('Registration successful! Your profile is pending Developer approval. You will receive an email once approved.');
-        navigate('/login');
+        setSuccess(true);
       } else {
         // Normal flow (shouldn't happen with new workflow, but keep for safety)
         navigate('/dashboard');
@@ -81,6 +80,42 @@ const RegisterPage = () => {
 
     setLoading(false);
   };
+
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">
+        <Card className="w-full max-w-md shadow-xl border-l-4 border-l-yellow-500">
+          <CardHeader className="space-y-1">
+            <div className="mx-auto bg-yellow-100 p-3 rounded-full w-fit mb-4">
+              <AlertCircle className="h-8 w-8 text-yellow-600" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-center">Registration Pending</CardTitle>
+            <CardDescription className="text-center text-base">
+              Your account has been created successfully!
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-center">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg text-sm text-left space-y-2">
+              <p><strong>What happens next?</strong></p>
+              <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                <li>A Developer will review your registration request.</li>
+                <li>This process typically takes 24-48 hours.</li>
+                <li>You will receive an email notification once approved.</li>
+              </ul>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Please check your email ({formData.email}) for a confirmation of this request.
+            </p>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button variant="outline" onClick={() => navigate('/login')} className="w-full">
+              Return to Login
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 p-4">

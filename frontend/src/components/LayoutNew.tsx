@@ -81,7 +81,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { hasPermission, hasAnyPermission, hasRoleLevel } = usePermissions();
-  
+
   // Sidebar state management
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [sidebarMode, setSidebarMode] = useState<'expanded' | 'collapsed' | 'mini'>(() => {
@@ -92,7 +92,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     }
     return 'expanded';
   });
-  
+
   // User preferences from backend
   const [sidebarPreferences, setSidebarPreferences] = useState({
     default_mode: 'collapsed',
@@ -103,7 +103,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     collapse_after_navigation: false,
     click_outside_to_hide: true  // ON by default for first-time users
   });
-  
+
   // Organization-level defaults
   const [orgSidebarDefaults, setOrgSidebarDefaults] = useState({
     default_mode: 'collapsed',
@@ -114,16 +114,16 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     collapse_after_navigation: false,
     click_outside_to_hide: true  // ON by default for first-time users
   });
-  
+
   // Hover state
   const [isHovering, setIsHovering] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [tempExpandedMode, setTempExpandedMode] = useState<'expanded' | 'collapsed' | 'mini' | null>(null);
-  
+
   // Inactivity timer
   const inactivityTimerRef = React.useRef<NodeJS.Timeout | null>(null);
   const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
-  
+
   // Accordion sections state - tracks which sections are expanded
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
     // Load from localStorage or default to Main, Organization, Operations open
@@ -135,7 +135,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     }
     return new Set(['Main', 'Organization', 'Operations']);
   });
-  
+
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [swipeProgress, setSwipeProgress] = useState<number>(0);
 
@@ -144,11 +144,11 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     const loadOrgDefaults = async () => {
       try {
         const response = await fetch(`${BACKEND_URL}/api/organization/sidebar-settings`);
-        
+
         if (response.ok) {
           const orgDefaults = await response.json();
           setOrgSidebarDefaults(orgDefaults);
-          
+
           // Apply org defaults immediately if no user prefs loaded yet
           if (!user) {
             setSidebarPreferences(orgDefaults);
@@ -172,7 +172,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
         console.log('Using system sidebar defaults');
       }
     };
-    
+
     loadOrgDefaults();
   }, []);
 
@@ -180,21 +180,21 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   useEffect(() => {
     const loadPreferences = async () => {
       if (!user) return;
-      
+
       try {
         const response = await fetch(`${BACKEND_URL}/api/users/sidebar-preferences`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-        
+
         if (response.ok) {
           const userPrefs = await response.json();
           setSidebarPreferences(userPrefs);
-          
+
           // Priority: localStorage manual toggle > user prefs > org defaults
           const manualMode = localStorage.getItem('sidebar-mode');
-          
+
           if (manualMode) {
             // User manually toggled, respect that
             setSidebarMode(manualMode as 'expanded' | 'collapsed' | 'mini');
@@ -218,12 +218,12 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
         console.log('Using organization sidebar defaults');
       }
     };
-    
+
     // Add delay to ensure auth is ready
     const timer = setTimeout(() => {
       loadPreferences();
     }, 500);
-    
+
     return () => clearTimeout(timer);
   }, [user]);
 
@@ -238,11 +238,11 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   // Click outside to hide (desktop only, if enabled)
   useEffect(() => {
     if (!sidebarPreferences.click_outside_to_hide || isTouchDevice) return;
-    
+
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.querySelector('.layout-sidebar');
       const target = event.target as Node;
-      
+
       // Only hide if:
       // 1. Click is outside sidebar
       // 2. Sidebar is not in mini mode already
@@ -255,12 +255,12 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
         }
       }
     };
-    
+
     // Add listener with delay to avoid immediate trigger
     const timer = setTimeout(() => {
       document.addEventListener('mousedown', handleClickOutside);
     }, 500);
-    
+
     return () => {
       clearTimeout(timer);
       document.removeEventListener('mousedown', handleClickOutside);
@@ -270,14 +270,14 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   // Apply context-aware mode based on screen size and route
   const applyContextAwareMode = (defaultMode: string) => {
     if (!sidebarPreferences.context_aware_enabled) return;
-    
+
     const screenWidth = window.innerWidth;
     const currentPath = location.pathname;
-    
+
     // Data-heavy pages that benefit from mini mode
     const dataHeavyRoutes = ['/dashboards', '/reports', '/analytics'];
     const isDataHeavy = dataHeavyRoutes.some(route => currentPath.startsWith(route));
-    
+
     // Screen size rules
     if (screenWidth < 1440) {
       setSidebarMode('mini');
@@ -298,20 +298,20 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   // Inactivity auto-collapse
   useEffect(() => {
     if (!sidebarPreferences.auto_collapse_enabled) return;
-    
+
     const checkInactivity = () => {
       const now = Date.now();
       const timeSinceLastInteraction = (now - lastInteractionTime) / 1000;
-      
+
       if (timeSinceLastInteraction >= sidebarPreferences.inactivity_timeout) {
         if (sidebarMode !== 'mini' && !isHovering) {
           setSidebarMode('mini');
         }
       }
     };
-    
+
     inactivityTimerRef.current = setInterval(checkInactivity, 1000);
-    
+
     return () => {
       if (inactivityTimerRef.current) {
         clearInterval(inactivityTimerRef.current);
@@ -327,9 +327,9 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   // Hover to expand (desktop only, not on touch devices)
   const handleMouseEnter = () => {
     if (isTouchDevice || !sidebarPreferences.hover_expand_enabled) return;
-    
+
     setIsHovering(true);
-    
+
     // If in mini mode, temporarily expand
     if (sidebarMode === 'mini') {
       setTempExpandedMode(sidebarMode);
@@ -339,9 +339,9 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
 
   const handleMouseLeave = () => {
     if (isTouchDevice || !sidebarPreferences.hover_expand_enabled) return;
-    
+
     setIsHovering(false);
-    
+
     // Return to previous mode if it was temporarily expanded
     if (tempExpandedMode) {
       setSidebarMode(tempExpandedMode);
@@ -378,7 +378,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
     // Clear any temporary expanded state from hover
     setTempExpandedMode(null);
     setIsHovering(false);
-    
+
     setSidebarMode(current => {
       if (current === 'expanded') return 'collapsed';
       if (current === 'collapsed') return 'mini';
@@ -390,12 +390,12 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   // Handle navigation click
   const handleNavigationClick = (path: string) => {
     navigate(path);
-    
+
     // Auto-collapse after navigation if enabled
     if (sidebarPreferences.collapse_after_navigation) {
       setSidebarMode('mini');
     }
-    
+
     handleUserInteraction();
   };
 
@@ -698,6 +698,28 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
    * Check if user can access a menu item
    */
   const canAccessMenuItem = (item: MenuItem): boolean => {
+    // FIELD WORKER MODE:
+    // If user is NOT admin/developer/manager, strictly limit menu items
+    const isFieldWorker = user && !['admin', 'developer', 'manager'].includes(user.role);
+
+    if (isFieldWorker) {
+      // Allowed paths for field workers
+      const allowedPaths = [
+        '/dashboard',
+        '/inspections',
+        '/tasks',
+        '/chat',
+        '/settings',
+        '/logout'
+      ];
+
+      // Check if path starts with any allowed path
+      const isAllowed = allowedPaths.some(path => item.path === path || item.path.startsWith(path + '/'));
+
+      if (!isAllowed) return false;
+    }
+
+    // Standard permission checks (keep existing logic for admins/managers)
     // Check permission
     if (item.permission) {
       const [resource, action, scope] = item.permission.split('.');
@@ -770,7 +792,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
           <motion.aside
             className={`layout-sidebar layout-sidebar--${sidebarMode}`}
             initial={{ x: -280 }}
-            animate={{ 
+            animate={{
               x: 0,
               width: sidebarMode === 'expanded' ? 280 : sidebarMode === 'collapsed' ? 200 : 80
             }}
@@ -816,7 +838,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                 {menuItems.map((section: any, sectionIndex: number) => {
                   const isExpanded = expandedSections.has(section.section);
                   const accessibleItems = section.items.filter(canAccessMenuItem);
-                  
+
                   return (
                     <div key={sectionIndex} className="nav-section">
                       {/* Section Header - Clickable to expand/collapse */}
@@ -844,7 +866,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                           </>
                         )}
                       </button>
-                      
+
                       {/* Section Items - Collapsible */}
                       <AnimatePresence>
                         {(isExpanded || sidebarMode === 'mini') && (
@@ -859,7 +881,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                               const Icon = item.icon;
                               const active = isActive(item.path);
                               const hasAccess = canAccessMenuItem(item);
-                              
+
                               // If no access, show greyed out with tooltip
                               if (!hasAccess) {
                                 return (
@@ -882,7 +904,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                                   </TooltipProvider>
                                 );
                               }
-                              
+
                               // Mini mode: Show icon only with tooltip
                               if (sidebarMode === 'mini') {
                                 return (
@@ -912,7 +934,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                                   </TooltipProvider>
                                 );
                               }
-                              
+
                               return (
                                 <motion.button
                                   key={item.path}
@@ -954,8 +976,8 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                       <TooltipTrigger asChild>
                         <div className="user-avatar-mini">
                           {user?.picture ? (
-                            <img 
-                              src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
+                            <img
+                              src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`}
                               alt={user?.name || 'User'}
                               className="w-full h-full object-cover rounded-full"
                             />
@@ -976,8 +998,8 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
                   <div className="user-profile">
                     <div className="user-avatar">
                       {user?.picture ? (
-                        <img 
-                          src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
+                        <img
+                          src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`}
                           alt={user?.name || 'User'}
                           className="w-full h-full object-cover rounded-full"
                           onError={(e) => {

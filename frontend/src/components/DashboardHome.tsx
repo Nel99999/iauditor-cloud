@@ -6,37 +6,49 @@ import { GlassCard, Button, Spinner } from '@/design-system/components';
 import { motion } from 'framer-motion';
 import {
   ClipboardCheck,
-  total_users?: number;
-  active_users?: number;
-  pending_invitations?: number;
-  recent_logins?: number;
-};
-tasks ?: {
-  active?: number;
-  total_tasks?: number;
-  todo?: number;
-  in_progress?: number;
-  completed?: number;
-  overdue?: number;
-  completion_rate?: number;
-};
-inspections ?: {
-  total?: number;
-  pending?: number;
-  completed_today?: number;
-  pass_rate?: number;
-  average_score?: number;
-};
-checklists ?: {
-  total_checklists?: number;
-  completed_today?: number;
-  pending_today?: number;
-  completion_rate?: number;
-};
-organization ?: {
-  total_units?: number;
-  total_levels?: number;
-};
+  CheckSquare,
+  Users,
+  TrendingUp,
+  BarChart3,
+  LucideIcon
+} from 'lucide-react';
+import MyWorkDashboard from './MyWorkDashboard';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+interface DashboardStats {
+  users?: {
+    total_users?: number;
+    active_users?: number;
+    pending_invitations?: number;
+    recent_logins?: number;
+  };
+  tasks?: {
+    active?: number;
+    total_tasks?: number;
+    todo?: number;
+    in_progress?: number;
+    completed?: number;
+    overdue?: number;
+    completion_rate?: number;
+  };
+  inspections?: {
+    total?: number;
+    pending?: number;
+    completed_today?: number;
+    pass_rate?: number;
+    average_score?: number;
+  };
+  checklists?: {
+    total_checklists?: number;
+    completed_today?: number;
+    pending_today?: number;
+    completion_rate?: number;
+  };
+  organization?: {
+    total_units?: number;
+    total_levels?: number;
+  };
 }
 
 interface QuickStat {
@@ -56,24 +68,75 @@ interface Activity {
   link?: string;
 }
 
+import SyncService from '../services/SyncService';
+import OfflineStorageService from '../services/OfflineStorageService';
+import { RefreshCw } from 'lucide-react';
+
 const DashboardHomeNew = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
+  const [pendingSyncCount, setPendingSyncCount] = useState<number>(0);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+
+  // If user is not an admin/developer/manager, show the simplified "My Work" dashboard
+  const isFieldWorker = user && !['admin', 'developer', 'manager'].includes(user.role);
 
   useEffect(() => {
-    loadStats();
-    loadRecentActivity();
-  }, []);
+    if (!isFieldWorker) {
+      loadStats();
+      loadRecentActivity();
+    } else {
+      setLoading(false);
+    }
+
+    // Check for pending offline items
+    checkPendingSync();
+
+    // Listen for online status to auto-sync or prompt
+    window.addEventListener('online', checkPendingSync);
+    return () => window.removeEventListener('online', checkPendingSync);
+  }, [isFieldWorker]);
+
+  const checkPendingSync = () => {
+    const inspections = OfflineStorageService.getOfflineInspections();
+    const pending = inspections.filter(i => !i.synced && i.status === 'completed').length;
+    setPendingSyncCount(pending);
+  };
+
+  const handleSync = async () => {
+    try {
+      setIsSyncing(true);
+      const result = await SyncService.syncPendingInspections();
+      if (result.synced > 0) {
+        alert(`Successfully synced ${result.synced} inspections!`);
+      } else if (result.errors > 0) {
+        alert(`Failed to sync ${result.errors} inspections. Please try again.`);
+      } else {
+        alert('All up to date!');
+      }
+      checkPendingSync();
+
+      // Refresh stats if online
+      if (!isFieldWorker && navigator.onLine) {
+        loadStats();
+        loadRecentActivity();
+      }
+    } catch (error) {
+      console.error("Sync failed:", error);
+      alert("Sync failed");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const loadStats = async (): Promise<void> => {
     try {
       const token = localStorage.getItem('access_token');
       const response = await axios.get<DashboardStats>(`${API}/dashboard/stats`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       setStats(response.data);
     } catch (err) {
@@ -87,12 +150,9 @@ const DashboardHomeNew = () => {
     try {
       const token = localStorage.getItem('access_token');
       const response = await axios.get(`${API}/users/me/recent-activity?limit=5`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      // Map backend activity to frontend format
       const activities = (response.data || []).map((item: any) => {
         let icon = ClipboardCheck;
         let link = '/';
@@ -120,10 +180,22 @@ const DashboardHomeNew = () => {
       setRecentActivity(activities);
     } catch (err) {
       console.error('Failed to load recent activity:', err);
-      // Set empty array if fails
       setRecentActivity([]);
     }
   };
+
+  if (isFieldWorker) {
+    return <MyWorkDashboard />;
+  }
+
+  if (loading) {
+    return (
+      <div className="dashboard-loading">
+        <Spinner size="xl" />
+        <p>Loading dashboard...</p>
+      </div>
+    );
+  }
 
   const quickStats: QuickStat[] = [
     {
@@ -160,17 +232,6 @@ const DashboardHomeNew = () => {
     },
   ];
 
-  const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
-
-  if (loading) {
-    return (
-      <div className="dashboard-loading">
-        <Spinner size="xl" />
-        <p>Loading dashboard...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="dashboard-home-new">
       {/* Animated Background */}
@@ -186,13 +247,25 @@ const DashboardHomeNew = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div>
-          <h1 className="dashboard-title">
-            Welcome back, {user?.name || 'User'}! 👋
-          </h1>
-          <p className="dashboard-subtitle">
-            Here's what's happening with your operations today
-          </p>
+        <div className="flex justify-between items-center w-full">
+          <div>
+            <h1 className="dashboard-title">
+              Welcome back, {user?.name || 'User'}! 👋
+            </h1>
+            <p className="dashboard-subtitle">
+              Here's what's happening with your operations today
+            </p>
+          </div>
+          {pendingSyncCount > 0 && (
+            <Button
+              onClick={handleSync}
+              disabled={isSyncing}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white animate-pulse"
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+              Sync {pendingSyncCount} Items
+            </Button>
+          )}
         </div>
       </motion.div>
 

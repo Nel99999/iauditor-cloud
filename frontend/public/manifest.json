@@ -1,89 +1,34 @@
 {
-    "short_name": "OpsPlatform",
-    "name": "Operations Management Platform",
+    "short_name": "iAuditor",
+    "name": "iAuditor - Operations Platform",
     "description": "Comprehensive operational management platform for inspections, tasks, checklists, and team collaboration",
     "icons": [
         {
-            "src": "/logo192.png",
+            "src": "favicon.ico",
+            "sizes": "64x64 32x32 24x24 16x16",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "logo192.png",
             "type": "image/png",
             "sizes": "192x192",
-            "purpose": "any"
+            "purpose": "any maskable"
         },
         {
-            "src": "/logo512.png",
+            "src": "logo512.png",
             "type": "image/png",
             "sizes": "512x512",
-            "purpose": "any"
-        },
-        {
-            "src": "/logo512.png",
-            "type": "image/png",
-            "sizes": "512x512",
-            "purpose": "maskable"
+            "purpose": "any maskable"
         }
     ],
-    "start_url": "/",
+    "start_url": ".",
     "display": "standalone",
     "theme_color": "#667eea",
     "background_color": "#ffffff",
     "orientation": "portrait-primary",
-    "scope": "/",
-    "shortcuts": [
-        {
-            "name": "New Inspection",
-            "short_name": "Inspection",
-            "description": "Create a new inspection",
-            "url": "/inspections?action=new",
-            "icons": [
-                {
-                    "src": "/icons/inspection-96.png",
-                    "sizes": "96x96"
-                }
-            ]
-        },
-        {
-            "name": "My Tasks",
-            "short_name": "Tasks",
-            "description": "View my assigned tasks",
-            "url": "/tasks",
-            "icons": [
-                {
-                    "src": "/icons/tasks-96.png",
-                    "sizes": "96x96"
-                }
-            ]
-        },
-        {
-            "name": "Dashboard",
-            "short_name": "Dashboard",
-            "description": "View analytics dashboard",
-            "url": "/dashboard",
-            "icons": [
-                {
-                    "src": "/icons/dashboard-96.png",
-                    "sizes": "96x96"
-                }
-            ]
-        }
-    ],
     "categories": [
-        "business",
         "productivity",
-        "utilities"
-    ],
-    "screenshots": [
-        {
-            "src": "/screenshots/dashboard-desktop.png",
-            "type": "image/png",
-            "sizes": "1280x720",
-            "form_factor": "wide"
-        },
-        {
-            "src": "/screenshots/dashboard-mobile.png",
-            "type": "image/png",
-            "sizes": "750x1334",
-            "form_factor": "narrow"
-        }
+        "business"
     ],
     "prefer_related_applications": false
 }

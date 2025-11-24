@@ -1,0 +1,92 @@
+/**
+ * Global Focus Styles
+ * Provides accessible focus indicators for keyboard navigation
+ */
+
+/* Base focus styles */
+*:focus {
+    outline: none;
+    /* Remove default outline */
+}
+
+*:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* High contrast for buttons and interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+    outline: 3px solid var(--color-brand-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+/* Focus within for containers */
+.glass-card:focus-within,
+.sidebar-card:focus-within,
+.bottom-sheet:focus-within {
+    box-shadow: 0 0 0 2px var(--color-brand-primary);
+}
+
+/* Input focus styles */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+    border-color: var(--color-brand-primary);
+}
+
+/* Card focus styles */
+[role="button"].card:focus-visible,
+.clickable-card:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 4px;
+    transform: translateY(-2px);
+    transition: all var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+/* Navigation focus styles */
+.nav-item:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: -2px;
+    background-color: color-mix(in oklch, var(--color-brand-primary) 15%, transparent);
+}
+
+/* Skip to content link */
+.skip-to-content:focus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    padding: var(--spacing-4);
+    background: var(--color-brand-primary);
+    color: var(--color-brand-primary-contrast);
+    text-decoration: none;
+    font-weight: var(--typography-weight-bold);
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    *:focus-visible {
+        outline-color: var(--color-brand-accent);
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    [role="button"]:focus-visible {
+        outline-color: var(--color-brand-accent);
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    *:focus-visible {
+        outline-width: 3px;
+        outline-offset: 3px;
+    }
+}

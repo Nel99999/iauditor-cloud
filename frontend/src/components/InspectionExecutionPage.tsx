@@ -11,7 +11,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CheckCircle, Camera, Save } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Camera, Save, Trash2, AlertTriangle, MapPin, WifiOff } from 'lucide-react';
+import OfflineStorageService, { OfflineInspection } from '../services/OfflineStorageService';
+import { v4 as uuidv4 } from 'uuid';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -20,14 +22,30 @@ const InspectionExecutionPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { templateId, executionId } = useParams();
-  
+
   const [template, setTemplate] = useState<any | null>(null);
   const [execution, setExecution] = useState<any | null>(null);
-  const [answers, setAnswers] = useState<{[key: string]: any}>({});
+  const [answers, setAnswers] = useState<{ [key: string]: any }>({});
   const [findings, setFindings] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
+  const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine);
+  const [location, setLocation] = useState<{ lat: number, lng: number } | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     if (executionId) {
@@ -37,25 +55,75 @@ const InspectionExecutionPage = () => {
     }
   }, [templateId, executionId]);
 
+  const captureLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setLocationError(null);
+      },
+      (error) => {
+        console.error("Error capturing location:", error);
+        setLocationError("Unable to retrieve your location");
+      }
+    );
+  };
+
   const startNewInspection = async () => {
     try {
       setLoading(true);
-      
-      // Load template first
-      const templateRes = await axios.get(`${API}/inspections/templates/${templateId}`);
-      setTemplate(templateRes.data);
-      
+
+      // Capture location immediately
+      captureLocation();
+
+      // Load template
+      let templateData;
+      if (navigator.onLine) {
+        const templateRes = await axios.get(`${API}/inspections/templates/${templateId}`);
+        templateData = templateRes.data;
+        // Cache it for future offline use
+        OfflineStorageService.saveTemplate(templateData);
+      } else {
+        // Try loading from offline cache
+        templateData = OfflineStorageService.getTemplate(templateId!);
+        if (!templateData) {
+          throw new Error("Template not found offline. Please go online to download it first.");
+        }
+      }
+      setTemplate(templateData);
+
       // Create new execution
-      const execRes = await axios.post(`${API}/inspections/executions`, {
-        template_id: templateId,
-        location: null, // Could get from browser geolocation
-      });
-      
-      setExecution(execRes.data);
-      
+      let executionData;
+      if (navigator.onLine) {
+        const execRes = await axios.post(`${API}/inspections/executions`, {
+          template_id: templateId,
+          location: location ? { lat: location.lat, lng: location.lng } : null,
+        });
+        executionData = execRes.data;
+      } else {
+        // Create local offline execution
+        executionData = {
+          id: uuidv4(), // Generate local ID
+          template_id: templateId,
+          status: 'in_progress',
+          created_at: new Date().toISOString(),
+          answers: [],
+          location: location ? { lat: location.lat, lng: location.lng } : null,
+        };
+      }
+
+      setExecution(executionData);
+
       // Initialize answers
       const initialAnswers = {};
-      templateRes.data.questions.forEach((q: any) => {
+      templateData.questions.forEach((q: any) => {
         initialAnswers[q.id] = {
           question_id: q.id,
           answer: q.question_type === 'yes_no' ? null : '',
@@ -66,7 +134,7 @@ const InspectionExecutionPage = () => {
       setAnswers(initialAnswers);
     } catch (err: unknown) {
       console.error('Failed to start inspection:', err);
-      alert('Failed to start inspection');
+      alert(err instanceof Error ? err.message : 'Failed to start inspection');
       navigate('/inspections');
     } finally {
       setLoading(false);
@@ -76,21 +144,46 @@ const InspectionExecutionPage = () => {
   const loadExecution = async () => {
     try {
       setLoading(true);
-      const [execRes, templateRes] = await Promise.all([
-        axios.get(`${API}/inspections/executions/${executionId}`),
-        axios.get(`${API}/inspections/templates/${templateId}`),
-      ]);
-      
-      setExecution(execRes.data);
-      setTemplate(templateRes.data);
-      
-      // Load existing answers
-      const loadedAnswers = {};
-      execRes.data.answers.forEach((ans: any) => {
-        loadedAnswers[ans.question_id] = ans;
-      });
-      setAnswers(loadedAnswers);
-      setNotes(execRes.data.notes || '');
+
+      if (navigator.onLine) {
+        const [execRes, templateRes] = await Promise.all([
+          axios.get(`${API}/inspections/executions/${executionId}`),
+          axios.get(`${API}/inspections/templates/${templateId}`),
+        ]);
+
+        setExecution(execRes.data);
+        setTemplate(templateRes.data);
+        if (execRes.data.location) {
+          setLocation(execRes.data.location);
+        }
+
+        // Load existing answers
+        const loadedAnswers = {};
+        execRes.data.answers.forEach((ans: any) => {
+          loadedAnswers[ans.question_id] = ans;
+        });
+        setAnswers(loadedAnswers);
+        setNotes(execRes.data.notes || '');
+      } else {
+        // Load from offline storage
+        const offlineInspection = OfflineStorageService.getOfflineInspection(executionId!);
+        if (offlineInspection) {
+          const templateData = OfflineStorageService.getTemplate(offlineInspection.template_id);
+          setExecution(offlineInspection);
+          setTemplate(templateData);
+
+          // Map array back to object
+          const loadedAnswers = {};
+          offlineInspection.answers.forEach((ans: any) => {
+            loadedAnswers[ans.question_id] = ans;
+          });
+          setAnswers(loadedAnswers);
+          setNotes(offlineInspection.notes || '');
+        } else {
+          throw new Error("Inspection not found offline.");
+        }
+      }
+
     } catch (err: unknown) {
       console.error('Failed to load execution:', err);
       alert('Failed to load inspection');
@@ -111,16 +204,21 @@ const InspectionExecutionPage = () => {
   };
 
   const handlePhotoUpload = async (questionId: string, file: File) => {
+    if (!navigator.onLine) {
+      alert("Photo upload is not yet supported offline.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('file', file);
-      
+
       const response = await axios.post(`${API}/inspections/upload-photo`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      
+
       const photoId = response.data.file_id;
-      
+
       setAnswers({
         ...answers,
         [questionId]: {
@@ -128,22 +226,65 @@ const InspectionExecutionPage = () => {
           photo_ids: [...((answers as any)[questionId].photo_ids || []), photoId],
         },
       });
-      
-      alert('Photo uploaded successfully!');
+
+      // alert('Photo uploaded successfully!'); // Removed alert for smoother flow
     } catch (err: unknown) {
       console.error('Photo upload failed:', err);
       alert('Failed to upload photo');
     }
   };
 
+  const handleDeletePhoto = (questionId: string, photoIdToDelete: string) => {
+    const currentIds = (answers as any)[questionId].photo_ids || [];
+    const newIds = currentIds.filter((id: string) => id !== photoIdToDelete);
+
+    setAnswers({
+      ...answers,
+      [questionId]: {
+        ...(answers as any)[questionId],
+        photo_ids: newIds,
+      },
+    });
+  };
+
+  const handleFlagFinding = (question: any) => {
+    const answer = answers[question.id]?.answer;
+    const findingText = `Q${question.order + 1}: ${question.question_text} - ${answer || 'No answer'}`;
+
+    setFindings(prev => prev ? `${prev}\n${findingText}` : findingText);
+
+    // Optional: Scroll to findings section
+    const findingsElement = document.getElementById('findings-section');
+    if (findingsElement) {
+      findingsElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleSaveProgress = async () => {
     try {
       setSaving(true);
-      await axios.put(`${API}/inspections/executions/${execution.id}`, {
-        answers: Object.values(answers),
-        notes,
-      });
-      alert('Progress saved!');
+
+      if (navigator.onLine) {
+        await axios.put(`${API}/inspections/executions/${execution.id}`, {
+          answers: Object.values(answers),
+          notes,
+        });
+      } else {
+        // Save offline
+        const offlineData: OfflineInspection = {
+          id: execution.id,
+          template_id: template.id,
+          answers: Object.values(answers),
+          status: 'in_progress',
+          created_at: execution.created_at,
+          updated_at: new Date().toISOString(),
+          synced: false,
+          notes,
+        };
+        OfflineStorageService.saveOfflineInspection(offlineData);
+      }
+
+      alert(navigator.onLine ? 'Progress saved!' : 'Progress saved to device (Offline)');
     } catch (err: unknown) {
       console.error('Failed to save:', err);
       alert('Failed to save progress');
@@ -165,13 +306,30 @@ const InspectionExecutionPage = () => {
 
     try {
       setSaving(true);
-      await axios.post(`${API}/inspections/executions/${execution.id}/complete`, {
-        answers: Object.values(answers),
-        findings: findings.split('\n').filter((f: any) => f.trim()),
-        notes,
-      });
-      
-      alert('Inspection completed!');
+
+      if (navigator.onLine) {
+        await axios.post(`${API}/inspections/executions/${execution.id}/complete`, {
+          answers: Object.values(answers),
+          findings: findings.split('\n').filter((f: any) => f.trim()),
+          notes,
+        });
+      } else {
+        // Complete offline
+        const offlineData: OfflineInspection = {
+          id: execution.id,
+          template_id: template.id,
+          answers: Object.values(answers),
+          status: 'completed',
+          created_at: execution.created_at,
+          updated_at: new Date().toISOString(),
+          synced: false,
+          notes,
+          findings: findings.split('\n').filter((f: any) => f.trim()),
+        };
+        OfflineStorageService.saveOfflineInspection(offlineData);
+      }
+
+      alert(navigator.onLine ? 'Inspection completed!' : 'Inspection completed offline! It will sync when you are back online.');
       navigate('/inspections');
     } catch (err: unknown) {
       console.error('Failed to complete:', err);
@@ -200,7 +358,18 @@ const InspectionExecutionPage = () => {
               <Badge variant="outline">Q{index + 1}</Badge>
               {question.required && <Badge variant="destructive">Required</Badge>}
             </div>
-            <Badge className="capitalize">{question.question_type.replace('_', ' ')}</Badge>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                onClick={() => handleFlagFinding(question)}
+                title="Flag as Finding"
+              >
+                <AlertTriangle className="h-4 w-4" />
+              </Button>
+              <Badge className="capitalize">{question.question_type.replace('_', ' ')}</Badge>
+            </div>
           </div>
           <CardTitle className="text-lg mt-2">{question.question_text}</CardTitle>
         </CardHeader>
@@ -263,19 +432,33 @@ const InspectionExecutionPage = () => {
               <Input
                 type="file"
                 accept="image/*"
+                disabled={isOffline}
                 onChange={(e: any) => {
                   if (e.target.files![0]) {
                     handlePhotoUpload(question.id, e.target.files![0]);
                   }
                 }}
               />
+              {isOffline && <p className="text-xs text-yellow-600">Photo upload unavailable offline</p>}
+
+              {/* Photo Previews */}
               {answer?.photo_ids?.length > 0 && (
-                <div className="flex gap-2">
+                <div className="grid grid-cols-3 gap-2 mt-2">
                   {answer.photo_ids.map((photoId: string) => (
-                    <Badge key={photoId} variant="secondary">
-                      <Camera className="h-3 w-3 mr-1" />
-                      Photo uploaded
-                    </Badge>
+                    <div key={photoId} className="relative group">
+                      <img
+                        src={`${API}/inspections/photos/${photoId}`}
+                        alt="Inspection Evidence"
+                        className="w-full h-24 object-cover rounded-md border"
+                      />
+                      <button
+                        onClick={() => handleDeletePhoto(question.id, photoId)}
+                        className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Delete Photo"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -319,11 +502,18 @@ const InspectionExecutionPage = () => {
           Back
         </Button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             {template.name}
+            {isOffline && <Badge variant="outline" className="text-yellow-600 border-yellow-600"><WifiOff className="h-3 w-3 mr-1" /> Offline Mode</Badge>}
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-slate-400 flex items-center gap-2">
             Inspector: {user?.name}
+            {location && (
+              <span className="flex items-center text-green-600 text-xs bg-green-50 px-2 py-1 rounded-full">
+                <MapPin className="h-3 w-3 mr-1" />
+                Location Captured
+              </span>
+            )}
           </p>
         </div>
         <Badge variant={execution.status === 'completed' ? 'default' : 'secondary'}>
@@ -348,7 +538,7 @@ const InspectionExecutionPage = () => {
       </div>
 
       {/* Findings & Notes */}
-      <Card>
+      <Card id="findings-section">
         <CardHeader>
           <CardTitle>Findings & Notes</CardTitle>
           <CardDescription>Document any issues or observations</CardDescription>

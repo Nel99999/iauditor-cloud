@@ -40,9 +40,19 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(40px, -40px) scale(1.1); }
-  66% { transform: translate(-30px, 30px) scale(0.9); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(40px, -40px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
 }
 
 /* Sidebar */
@@ -106,6 +116,8 @@
   align-items: center;
   gap: var(--spacing-3);
   padding: var(--spacing-3) var(--spacing-4);
+  min-height: 44px;
+  /* WCAG AAA touch target */
   border: none;
   background: none;
   color: var(--color-text-secondary);
@@ -184,11 +196,9 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  background: linear-gradient(
-    135deg,
-    var(--color-brand-primary),
-    var(--color-brand-accent)
-  );
+  background: linear-gradient(135deg,
+      var(--color-brand-primary),
+      var(--color-brand-accent));
   color: var(--color-brand-primary-contrast);
   font-weight: var(--typography-weight-bold);
   font-size: var(--typography-size-base);
@@ -296,11 +306,22 @@
 @media (max-width: 600px) {
   .layout-content {
     padding: var(--spacing-3);
-    padding-bottom: 80px; /* Space for bottom nav */
+    /* Safe area + bottom nav height */
+    padding-bottom: max(80px, calc(var(--safe-area-bottom) + 72px));
+    padding-left: max(var(--spacing-3), var(--safe-area-left));
+    padding-right: max(var(--spacing-3), var(--safe-area-right));
   }
 
   .layout-header {
     padding: var(--spacing-3);
+    padding-top: max(var(--spacing-3), var(--safe-area-top));
+  }
+
+  /* Ensure minimum touch target sizes */
+  button,
+  .nav-item {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
@@ -327,8 +348,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  /* WCAG AAA touch target */
+  height: 44px;
+  /* WCAG AAA touch target */
   border-radius: var(--radius-md);
   background: var(--color-glass-surface);
   border: 1px solid var(--color-glass-border);
@@ -422,11 +445,11 @@
   margin-left: 280px;
 }
 
-.layout-sidebar--collapsed ~ .layout-main.with-sidebar {
+.layout-sidebar--collapsed~.layout-main.with-sidebar {
   margin-left: 200px;
 }
 
-.layout-sidebar--mini ~ .layout-main.with-sidebar {
+.layout-sidebar--mini~.layout-main.with-sidebar {
   margin-left: 80px;
 }
 
@@ -437,17 +460,39 @@
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
+
   .layout-sidebar--expanded,
   .layout-sidebar--collapsed,
   .layout-sidebar--mini {
     width: 280px !important;
   }
-  
+
   .sidebar-toggle-btn {
     display: none;
   }
-  
+
   .layout-main.with-sidebar {
     margin-left: 0 !important;
+  }
+}
+
+/* ============================================
+   LANDSCAPE ORIENTATION OPTIMIZATION
+   ============================================ */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .layout-content {
+    padding-bottom: 60px;
+    /* Reduced for landscape */
+  }
+
+  /* Optimize header for landscape */
+  .layout-header {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  /* More compact navigation */
+  .nav-item {
+    min-height: 40px;
+    padding: var(--spacing-2) var(--spacing-3);
   }
 }

@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ModernPageWrapper } from '@/design-system/components';
-import { Send, MessageCircle, Plus } from 'lucide-react';
+import { Send, MessageCircle, Plus, Video, Mic, MicOff, VideoOff, PhoneOff } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -18,6 +19,9 @@ const TeamChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showVideoCall, setShowVideoCall] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -91,11 +95,10 @@ const TeamChatPage = () => {
                 {channels.map((channel) => (
                   <div
                     key={channel.id}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                      selectedChannel?.id === channel.id
+                    className={`p-3 rounded-lg cursor-pointer transition-colors ${selectedChannel?.id === channel.id
                         ? 'bg-primary text-primary-foreground'
                         : 'hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
+                      }`}
                     onClick={() => setSelectedChannel(channel)}
                   >
                     <div className="font-medium">{channel.name}</div>
@@ -109,10 +112,21 @@ const TeamChatPage = () => {
 
         <Card className="col-span-9 flex flex-col">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
-              {selectedChannel?.name || 'Select a channel'}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                {selectedChannel?.name || 'Select a channel'}
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowVideoCall(true)}
+                disabled={!selectedChannel}
+              >
+                <Video className="h-4 w-4 mr-2" />
+                Start Video Call
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
             <ScrollArea className="flex-1 pr-4 mb-4">
@@ -147,6 +161,93 @@ const TeamChatPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Video Call Dialog */}
+      <Dialog open={showVideoCall} onOpenChange={setShowVideoCall}>
+        <DialogContent className="max-w-4xl h-[600px] p-0">
+          <div className="h-full flex flex-col bg-slate-900 rounded-lg overflow-hidden">
+            <DialogHeader className="p-4 border-b border-slate-700">
+              <DialogTitle className="text-white flex items-center gap-2">
+                <Video className="h-5 w-5" />
+                Video Call - {selectedChannel?.name}
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="flex-1 relative bg-slate-800">
+              {/* Main Video Area */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-white">
+                  <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-slate-700 flex items-center justify-center">
+                    <Video className="h-16 w-16 text-slate-400" />
+                  </div>
+                  <p className="text-lg font-medium">Simulated Video Call</p>
+                  <p className="text-sm text-slate-400 mt-2">This is a demo interface</p>
+                  <p className="text-xs text-slate-500 mt-4">
+                    In production, this would integrate with WebRTC or a service like Twilio/Agora
+                  </p>
+                </div>
+              </div>
+
+              {/* Self View (Picture-in-Picture) */}
+              <div className="absolute bottom-4 right-4 w-48 h-36 bg-slate-700 rounded-lg border-2 border-slate-600 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-slate-600 flex items-center justify-center">
+                    <Video className="h-8 w-8 text-slate-400" />
+                  </div>
+                  <p className="text-xs text-slate-400">You</p>
+                </div>
+              </div>
+
+              {/* Participants Indicator */}
+              <div className="absolute top-4 left-4">
+                <Badge className="bg-slate-700/80 text-white border-slate-600">
+                  {selectedChannel?.member_ids.length || 0} participants
+                </Badge>
+              </div>
+            </div>
+
+            {/* Video Controls */}
+            <div className="p-6 bg-slate-900 border-t border-slate-700">
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className={`rounded-full w-14 h-14 ${isMuted ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600'}`}
+                  onClick={() => setIsMuted(!isMuted)}
+                >
+                  {isMuted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className={`rounded-full w-14 h-14 ${isVideoOff ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600'}`}
+                  onClick={() => setIsVideoOff(!isVideoOff)}
+                >
+                  {isVideoOff ? <VideoOff className="h-6 w-6" /> : <Video className="h-6 w-6" />}
+                </Button>
+
+                <Button
+                  variant="destructive"
+                  size="lg"
+                  className="rounded-full w-14 h-14"
+                  onClick={() => setShowVideoCall(false)}
+                >
+                  <PhoneOff className="h-6 w-6" />
+                </Button>
+              </div>
+
+              <div className="text-center mt-4">
+                <p className="text-xs text-slate-400">
+                  {isMuted && 'Microphone muted • '}
+                  {isVideoOff && 'Camera off • '}
+                  {!isMuted && !isVideoOff && 'Connected'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </ModernPageWrapper>
   );
 };

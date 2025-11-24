@@ -502,6 +502,18 @@ class WorkflowEngine:
 
 
     
+    # Centralized mapping of resource types to database collections
+    RESOURCE_COLLECTION_MAP = {
+        "inspection": "inspection_executions",
+        "task": "tasks",
+        "checklist": "checklist_executions",
+        "report": "reports",
+        "asset": "assets",
+        "work_order": "work_orders",
+        "incident": "incidents",
+        "project": "projects"
+    }
+
     async def _sync_resource_status(
         self,
         workflow: Dict[str, Any],
@@ -524,17 +536,9 @@ class WorkflowEngine:
         if not new_status:
             return
         
-        # Update resource based on type
-        collection_map = {
-            "inspection": "inspection_executions",
-            "task": "tasks",
-            "checklist": "checklist_executions",
-            "report": "reports"
-        }
-        
-        collection_name = collection_map.get(resource_type)
+        collection_name = self.RESOURCE_COLLECTION_MAP.get(resource_type)
         if not collection_name:
-            logger.warning(f"Unknown resource type: {resource_type}")
+            logger.warning(f"Unknown resource type: {resource_type} - cannot sync status")
             return
         
         collection = getattr(self.db, collection_name)
@@ -564,13 +568,7 @@ class WorkflowEngine:
         resource_id: str
     ) -> Optional[str]:
         """Get the organizational unit ID for a resource"""
-        collection_map = {
-            "inspection": "inspection_executions",
-            "task": "tasks",
-            "checklist": "checklist_executions"
-        }
-        
-        collection_name = collection_map.get(resource_type)
+        collection_name = self.RESOURCE_COLLECTION_MAP.get(resource_type)
         if not collection_name:
             return None
         
