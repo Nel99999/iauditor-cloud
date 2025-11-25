@@ -1,3 +1,25 @@
+from fastapi import APIRouter, HTTPException, status, Depends, Request
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from datetime import datetime, timedelta, timezone
+from typing import List, Optional
+from .org_models import (
+    OrganizationUnit,
+    OrganizationUnitCreate,
+    OrganizationUnitUpdate,
+    UserOrgAssignment,
+    UserOrgAssignmentCreate,
+    UserInvitation,
+    UserInvitationCreate,
+    OrganizationHierarchy,
+    PermissionCheck,
+)
+from .auth_utils import get_current_user
+from .sanitization import sanitize_dict
+
+router = APIRouter(prefix="/organizations", tags=["Organizations"])
+
+
+def get_db(request: Request) -> AsyncIOMotorDatabase:
     """Dependency to get database from request state"""
     return request.app.state.db
 
@@ -10,7 +32,7 @@ async def check_user_permission(
 ) -> bool:
     """Check if user has permission for a specific unit"""
     # Check if user has organization-level permission
-    from auth_utils import check_permission
+    from .auth_utils import check_permission
     has_org_permission = await check_permission(user, "organization", "update", "organization", db)
     if has_org_permission:
         return True
@@ -715,5 +737,3 @@ async def get_organization_stats(
         "open_work_orders": work_orders_count,
         "incidents_this_month": incidents_count
     }
-
-    return invitations

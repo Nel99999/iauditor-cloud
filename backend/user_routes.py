@@ -1,3 +1,19 @@
+from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from typing import List, Optional
+from datetime import datetime, timezone
+import uuid
+import os
+from .models import User, UserUpdate, UserInvite, NotificationSettings, ThemePreferences, RegionalPreferences, PrivacyPreferences, SecurityPreferences
+from .database import get_db
+from .auth_utils import get_current_user, get_password_hash
+from .sanitization import sanitize_dict
+from .auth_utils import validate_password_strength
+
+router = APIRouter(prefix="/api/users", tags=["users"])
+
+@router.put("/settings")
+async def update_settings(
     settings: NotificationSettings,
     request: Request,
     db: AsyncIOMotorDatabase = Depends(get_db)
