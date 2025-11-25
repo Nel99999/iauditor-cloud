@@ -41,7 +41,7 @@ import {
   GraduationCap,
   DollarSign,
   Megaphone,
-  AlertOctagon,
+
   MessageCircle,
   LucideIcon,
   ChevronLeft,
@@ -105,15 +105,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
   });
 
   // Organization-level defaults
-  const [orgSidebarDefaults, setOrgSidebarDefaults] = useState({
-    default_mode: 'collapsed',
-    hover_expand_enabled: false,
-    auto_collapse_enabled: false,
-    inactivity_timeout: 10,
-    context_aware_enabled: false,
-    collapse_after_navigation: false,
-    click_outside_to_hide: true  // ON by default for first-time users
-  });
+
 
   // Hover state
   const [isHovering, setIsHovering] = useState(false);
@@ -147,7 +139,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
 
         if (response.ok) {
           const orgDefaults = await response.json();
-          setOrgSidebarDefaults(orgDefaults);
+
 
           // Apply org defaults immediately if no user prefs loaded yet
           if (!user) {
@@ -837,7 +829,7 @@ const LayoutNew: React.FC<LayoutNewProps> = ({ children }) => {
               <nav className="sidebar-nav">
                 {menuItems.map((section: any, sectionIndex: number) => {
                   const isExpanded = expandedSections.has(section.section);
-                  const accessibleItems = section.items.filter(canAccessMenuItem);
+
 
                   return (
                     <div key={sectionIndex} className="nav-section">

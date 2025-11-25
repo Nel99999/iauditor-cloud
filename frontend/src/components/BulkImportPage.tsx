@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { ModernPageWrapper } from '@/design-system/components';
-import { Upload, Download, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Download, FileText, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
@@ -103,8 +103,8 @@ const BulkImportPage = () => {
   };
 
   return (
-    <ModernPageWrapper 
-      title="Bulk Import" 
+    <ModernPageWrapper
+      title="Bulk Import"
       subtitle="Import users and data in bulk"
     >
       <div className="space-y-6">

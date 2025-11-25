@@ -277,3 +277,6 @@ frontend/node_modules/.cache/default-development/3.pack_
 # Environment files
 *.env
 *.env.*
+
+# Trash
+frontend/node_modules_trash_6436/

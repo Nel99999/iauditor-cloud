@@ -1,3 +1,4 @@
+/// <reference lib="webworker" />
 /**
  * Service Worker for OpsPlatform PWA
  * Implements offline-first caching strategy using Workbox
@@ -19,7 +20,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 // App Shell - Cache First
 const fileExtensionRegexp = /\.(js|css|png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot)$/;
 registerRoute(
-    ({ request, url }: { request: Request; url: URL }) => {
+    ({ url }: { url: URL }) => {
         // Skip API requests
         if (url.pathname.startsWith('/api')) {
             return false;
@@ -70,7 +71,7 @@ registerRoute(
 
 // Navigate fallback - Serve app shell for navigation requests
 const handler = createHandlerBoundToURL('/index.html');
-const navigationRoute = new RegExp('^(?!.*\\.(?:js|css|png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot)$).*$');
+
 registerRoute(
     ({ request, url }) => {
         return request.mode === 'navigate' && !url.pathname.startsWith('/api');

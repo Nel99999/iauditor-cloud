@@ -1,13 +1,17 @@
 # Fix bcrypt compatibility issue - must be first import
 import fix_bcrypt
 
-from fastapi import FastAPI, APIRouter
+from pathlib import Path
 from dotenv import load_dotenv
+
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
+
+from fastapi import FastAPI, APIRouter
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
@@ -68,9 +72,6 @@ from announcement_routes import router as announcement_router
 from module_analytics_routes import router as module_analytics_router
 from dashboard_enhanced_extended_routes import router as dashboard_extended_router
 
-
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
 
 # Create the main app
 app = FastAPI(title="Operational Management Platform API")

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { GlassCard, Button, Spinner } from '@/design-system/components';
@@ -7,7 +7,7 @@ import {
     CheckSquare,
     ClipboardCheck,
     Clock,
-    AlertCircle,
+
     ArrowRight,
     Calendar
 } from 'lucide-react';
@@ -140,7 +140,7 @@ const MyWorkDashboard = () => {
                                             </div>
                                         </div>
                                         <div className={`h-3 w-3 rounded-full ${task.priority === 'urgent' ? 'bg-red-500' :
-                                                task.priority === 'high' ? 'bg-orange-500' : 'bg-green-500'
+                                            task.priority === 'high' ? 'bg-orange-500' : 'bg-green-500'
                                             }`} />
                                     </div>
                                 </GlassCard>
@@ -149,7 +149,7 @@ const MyWorkDashboard = () => {
                             <GlassCard className="text-center py-8">
                                 <CheckSquare className="h-12 w-12 mx-auto text-slate-300 mb-3" />
                                 <p className="text-muted-foreground">No pending tasks! 🎉</p>
-                                <Button variant="outline" size="sm" className="mt-4" onClick={() => navigate('/tasks')}>
+                                <Button variant="secondary" size="sm" className="mt-4" onClick={() => navigate('/tasks')}>
                                     Create Task
                                 </Button>
                             </GlassCard>

@@ -26,7 +26,7 @@ from auth_constants import (
     MSG_ACCOUNT_DISABLED,
     SUBJECT_PROFILE_CREATION
 )
-from server import limiter
+from rate_limiter import limiter
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 

@@ -91,14 +91,14 @@ class OfflineStorage {
         key: OpsPlatformDB[T]['key']
     ): Promise<OpsPlatformDB[T]['value'] | undefined> {
         const db = await this.dbPromise;
-        return db.get(storeName, key);
+        return db.get(storeName as any, key);
     }
 
     async getAll<T extends keyof OpsPlatformDB>(
         storeName: T
     ): Promise<Array<OpsPlatformDB[T]['value']>> {
         const db = await this.dbPromise;
-        return db.getAll(storeName);
+        return db.getAll(storeName as any);
     }
 
     async put<T extends keyof OpsPlatformDB>(
@@ -106,7 +106,7 @@ class OfflineStorage {
         value: OpsPlatformDB[T]['value']
     ): Promise<OpsPlatformDB[T]['key']> {
         const db = await this.dbPromise;
-        return db.put(storeName, value);
+        return db.put(storeName as any, value);
     }
 
     async delete<T extends keyof OpsPlatformDB>(
@@ -114,12 +114,12 @@ class OfflineStorage {
         key: OpsPlatformDB[T]['key']
     ): Promise<void> {
         const db = await this.dbPromise;
-        return db.delete(storeName, key);
+        return db.delete(storeName as any, key);
     }
 
     async clear<T extends keyof OpsPlatformDB>(storeName: T): Promise<void> {
         const db = await this.dbPromise;
-        return db.clear(storeName);
+        return db.clear(storeName as any);
     }
 
     // Sync Queue Management
@@ -177,7 +177,7 @@ class OfflineStorage {
         items: Array<OpsPlatformDB[T]['value']>
     ): Promise<void> {
         const db = await this.dbPromise;
-        const tx = db.transaction(storeName, 'readwrite');
+        const tx = db.transaction(storeName as any, 'readwrite');
         await Promise.all([
             ...items.map(item => tx.store.put(item)),
             tx.done
@@ -191,7 +191,7 @@ class OfflineStorage {
         query?: IDBKeyRange | IDBValidKey
     ): Promise<Array<OpsPlatformDB[T]['value']>> {
         const db = await this.dbPromise;
-        return db.getAllFromIndex(storeName as any, indexName, query);
+        return (db as any).getAllFromIndex(storeName, indexName, query);
     }
 
     // Cleanup old data
@@ -199,7 +199,7 @@ class OfflineStorage {
         const db = await this.dbPromise;
         const cutoffTime = Date.now() - maxAge;
 
-        const tx = db.transaction(storeName, 'readwrite');
+        const tx = db.transaction(storeName as any, 'readwrite');
         let cursor = await tx.store.openCursor();
 
         while (cursor) {

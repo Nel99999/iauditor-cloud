@@ -1,16 +1,25 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { usePermissions } from '@/hooks/usePermissions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Shield, Eye, EyeOff, Search, Copy, CheckCircle, Lock, Key, Database, RefreshCw,
   Activity, Cpu, HardDrive, Server, Mail, Code, Terminal, Zap, BarChart3,
-  Webhook, Users as UsersIcon, Clock, Download, Play, AlertCircle, CheckCircle2, X
+  Webhook, Users as UsersIcon, Clock, Play, AlertCircle, CheckCircle2, X
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -36,7 +45,7 @@ const DeveloperAdminPanelFull = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showPasswords, setShowPasswords] = useState<any>({});
   const [showAllPasswords, setShowAllPasswords] = useState<boolean>(false);
@@ -74,7 +83,7 @@ const DeveloperAdminPanelFull = () => {
 
   const loadData = async () => {
     try {
-      setLoading(true);
+
       const [usersRes, rolesRes, permsRes] = await Promise.all([
         axios.get(`${API}/users`),
         axios.get(`${API}/roles`),
@@ -83,10 +92,10 @@ const DeveloperAdminPanelFull = () => {
       setUsers(usersRes.data);
       setRoles(rolesRes.data);
       setPermissions(permsRes.data);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Failed to load data:', err);
     } finally {
-      setLoading(false);
+
     }
   };
 
@@ -95,7 +104,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/health`);
       setSystemHealth(res.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load system health:', err);
     }
   };
@@ -105,7 +114,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/environment`);
       setEnvironmentInfo(res.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load environment info:', err);
     }
   };
@@ -120,7 +129,7 @@ const DeveloperAdminPanelFull = () => {
         body: apiTestMethod !== 'GET' ? JSON.parse(apiTestBody) : {}
       });
       setApiTestResult(res.data);
-    } catch (err) {
+    } catch (err: any) {
       setApiTestResult({ error: err.message });
     }
   };
@@ -141,7 +150,7 @@ const DeveloperAdminPanelFull = () => {
         }
       });
       setEmailTestResult(res.data);
-    } catch (err) {
+    } catch (err: any) {
       setEmailTestResult({ error: err.message });
     }
   };
@@ -151,7 +160,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/logs/backend?lines=100`);
       setBackendLogs(res.data.logs || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load backend logs:', err);
     }
   };
@@ -160,7 +169,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/logs/frontend?lines=100`);
       setFrontendLogs(res.data.logs || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load frontend logs:', err);
     }
   };
@@ -170,7 +179,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/database/collections`);
       setDbCollections(res.data.collections || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load collections:', err);
     }
   };
@@ -184,7 +193,7 @@ const DeveloperAdminPanelFull = () => {
         limit: 50
       });
       setDbResult(res.data);
-    } catch (err) {
+    } catch (err: any) {
       setDbResult({ error: err.message });
     }
   };
@@ -194,7 +203,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/webhooks`);
       setWebhooks(res.data.webhooks || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load webhooks:', err);
     }
   };
@@ -204,7 +213,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/metrics/performance`);
       setPerformanceMetrics(res.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load performance metrics:', err);
     }
   };
@@ -214,7 +223,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.get(`${API}/developer/sessions/active`);
       setActiveSessions(res.data.sessions || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load sessions:', err);
     }
   };
@@ -224,7 +233,7 @@ const DeveloperAdminPanelFull = () => {
       await axios.delete(`${API}/developer/sessions/${sessionId}`);
       loadActiveSessions();
       alert('Session deleted successfully');
-    } catch (err) {
+    } catch (err: any) {
       alert('Failed to delete session: ' + err.message);
     }
   };
@@ -234,7 +243,7 @@ const DeveloperAdminPanelFull = () => {
     try {
       await axios.post(`${API}/developer/actions/clear-cache`);
       alert('Cache cleared successfully');
-    } catch (err) {
+    } catch (err: any) {
       alert('Failed to clear cache: ' + err.message);
     }
   };
@@ -243,14 +252,14 @@ const DeveloperAdminPanelFull = () => {
     try {
       const res = await axios.post(`${API}/developer/actions/impersonate`, { user_id: userId });
       alert(`Impersonation token generated!\n\nToken: ${res.data.token}\n\nExpires in: ${res.data.expires_in_minutes} minutes`);
-    } catch (err) {
+    } catch (err: any) {
       alert('Failed to impersonate user: ' + err.message);
     }
   };
 
   // Utility functions
   const togglePasswordVisibility = (userId: any) => {
-    setShowPasswords(prev => ({
+    setShowPasswords((prev: any) => ({
       ...prev,
       [userId]: !prev[userId]
     }));
@@ -281,7 +290,7 @@ const DeveloperAdminPanelFull = () => {
       document.execCommand('copy');
       setCopiedId(text);
       setTimeout(() => setCopiedId(null), 2000);
-    } catch (err: unknown) {
+    } catch (err: any) {
       alert('Copy failed. Text: ' + text);
     }
 
@@ -300,7 +309,7 @@ const DeveloperAdminPanelFull = () => {
       setResetUser(null);
       setNewPassword('Test123!');
       loadData();
-    } catch (err: unknown) {
+    } catch (err: any) {
       alert((err as any).response?.data?.detail || 'Failed to reset password');
     }
   };
@@ -318,7 +327,7 @@ const DeveloperAdminPanelFull = () => {
       operator: '#64748b',
       viewer: '#bef264'
     };
-    const color = roleColors[roleCode] || '#64748b';
+    const color = (roleColors as any)[roleCode] || '#64748b';
     const textColor = roleCode === 'viewer' ? 'black' : 'white';
     return { backgroundColor: color, color: textColor };
   };
@@ -549,8 +558,8 @@ const DeveloperAdminPanelFull = () => {
                             <Badge
                               variant="outline"
                               className={`text-xs ${pwStatus.color === 'green' ? 'border-green-500 text-green-700' :
-                                  pwStatus.color === 'amber' ? 'border-amber-500 text-amber-700' :
-                                    'border-red-500 text-red-700'
+                                pwStatus.color === 'amber' ? 'border-amber-500 text-amber-700' :
+                                  'border-red-500 text-red-700'
                                 }`}
                             >
                               {pwStatus.text}
@@ -678,7 +687,7 @@ const DeveloperAdminPanelFull = () => {
                   <div key={resource} className="border rounded-lg p-4">
                     <h3 className="font-semibold text-lg mb-2 capitalize">{resource}</h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {perms.map((perm: any) => (
+                      {(perms as any[]).map((perm: any) => (
                         <div key={perm.id} className="text-sm">
                           <code className="bg-slate-100 px-2 py-1 rounded">
                             {perm.action}.{perm.scope}

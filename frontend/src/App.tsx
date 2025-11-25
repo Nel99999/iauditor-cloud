@@ -1,4 +1,4 @@
-import React from "react";
+
 import "@/App.css";
 // Import Design System tokens FIRST
 import "@/design-system/tokens/base.css";

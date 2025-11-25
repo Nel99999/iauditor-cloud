@@ -1,3 +1,18 @@
+from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from typing import List, Optional
+from datetime import datetime, timezone
+import uuid
+import os
+from models import User, UserUpdate, UserInvite, NotificationSettings, ThemePreferences, RegionalPreferences, PrivacyPreferences, SecurityPreferences
+from database import get_db
+from auth_utils import get_current_user, get_password_hash
+from sanitization import sanitize_dict
+from auth_utils import validate_password_strength
+
+router = APIRouter(prefix="/api/users", tags=["users"])
+
+@router.put("/settings")
 async def update_settings(
     settings: NotificationSettings,
     request: Request,
@@ -63,117 +78,6 @@ async def upload_profile_picture(
         raise HTTPException(status_code=400, detail="File size must be less than 2MB")
     
     # Store in GridFS
-    import gridfs
-    import pymongo
-    import os
-    
-    # Get MongoDB connection using environment variable
-    mongo_url = os.environ.get('MONGO_URL')
-    sync_client = pymongo.MongoClient(mongo_url)
-    sync_db = sync_client[os.environ.get('DB_NAME')]
-    fs = gridfs.GridFS(sync_db)
-    
-    # Delete old profile picture if exists
-    user = await db.users.find_one({"id": current_user["id"]})
-    if user and user.get("picture_file_id"):
-        try:
-            from bson import ObjectId
-            fs.delete(ObjectId(user["picture_file_id"]))
-        except Exception as e:
-            print(f"Failed to delete old picture: {e}")
-    
-    # Store new picture
-    file_id = fs.put(
-        content,
-        filename=file.filename,
-        content_type=file.content_type,
-        user_id=current_user["id"]
-    )
-    
-    picture_url = f"/api/users/profile/picture/{str(file_id)}"
-    
-    await db.users.update_one(
-        {"id": current_user["id"]},
-        {"$set": {
-            "picture": picture_url,
-            "picture_file_id": str(file_id),
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }}
-    )
-    
-    return {"message": "Profile picture uploaded successfully", "picture_url": picture_url}
-
-
-# Get profile picture
-@router.get("/profile/picture/{file_id}")
-async def get_profile_picture(file_id: str):
-    """Retrieve user profile picture"""
-    import gridfs
-    import pymongo
-    from bson import ObjectId
-    from fastapi.responses import Response
-    import os
-    
-    try:
-        # Get GridFS file
-        mongo_url = os.environ.get('MONGO_URL')
-        sync_client = pymongo.MongoClient(mongo_url)
-        sync_db = sync_client[os.environ.get('DB_NAME')]
-        fs = gridfs.GridFS(sync_db)
-        
-        grid_out = fs.get(ObjectId(file_id))
-        content = grid_out.read()
-        content_type = grid_out.content_type or "image/jpeg"
-        
-        return Response(content=content, media_type=content_type)
-    except Exception as e:
-        raise HTTPException(status_code=404, detail="Picture not found")
-
-
-# List all users in organization
-@router.get("")
-async def list_users(request: Request, db: AsyncIOMotorDatabase = Depends(get_db)):
-    """Get all users in the organization (Admin level and above only)"""
-    user = await get_current_user(request, db)
-    
-    # SECURITY: Check permission to list users (Admin level and above only)
-    from permission_routes import check_permission
-    
-    has_permission = await check_permission(
-        db, 
-        user["id"], 
-        "user", 
-        "read", 
-        "organization"
-    )
-    
-    if not has_permission:
-        raise HTTPException(
-            status_code=403, 
-            detail="You don't have permission to list users. This requires Admin level access or higher."
-        )
-    
-    # Get users from same organization (exclude deleted users)
-    users = await db.users.find(
-        {
-            "organization_id": user["organization_id"],
-            "$or": [
-                {"status": {"$exists": False}},
-                {"status": {"$ne": "deleted"}}
-            ]
-        }
-    ).to_list(length=None)
-    
-    # Remove sensitive data and format last_login
-    for u in users:
-        u.pop("password", None)
-        u.pop("password_hash", None)
-        u.pop("_id", None)
-        # Keep actual last_login timestamp from database
-        if "last_login" not in u or not u["last_login"]:
-            u["last_login"] = None
-    
-    return users
 
 
 # Invite user to organization

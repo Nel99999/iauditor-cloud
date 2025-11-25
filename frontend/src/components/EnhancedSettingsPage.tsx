@@ -30,13 +30,13 @@ const EnhancedSettingsPage = () => {
   const { isAdmin, isDeveloper, isDeveloperOrMaster } = usePermissions();
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  
+
   // Profile
   const [profileData, setProfileData] = useState({ name: '', phone: '', bio: '' });
-  
+
   // Security
   const [passwordData, setPasswordData] = useState({ current_password: '', new_password: '', confirm_password: '' });
-  
+
   // Regional
   const [regionalPrefs, setRegionalPrefs] = useState({
     language: 'en',
@@ -45,20 +45,20 @@ const EnhancedSettingsPage = () => {
     time_format: '12h',
     currency: 'USD'
   });
-  
+
   // Privacy
   const [privacyPrefs, setPrivacyPrefs] = useState({
     profile_visibility: 'organization',
     show_activity_status: true,
     show_last_seen: true
   });
-  
+
   // Security Prefs
   const [securityPrefs, setSecurityPrefs] = useState({
     two_factor_enabled: false,
     session_timeout: 3600
   });
-  
+
   // Notifications
   const [notificationPrefs, setNotificationPrefs] = useState({
     emailNotifications: true,
@@ -66,7 +66,7 @@ const EnhancedSettingsPage = () => {
     weeklyReports: true,
     marketingEmails: false
   });
-  
+
   // GDPR
   const [gdprConsents, setGdprConsents] = useState({
     marketing: false,
@@ -75,7 +75,7 @@ const EnhancedSettingsPage = () => {
   });
   const [exportingData, setExportingData] = useState<boolean>(false);
   const [deletingAccount, setDeletingAccount] = useState<boolean>(false);
-  
+
   // API Settings
   const [apiSettings, setApiSettings] = useState({
     sendgrid_api_key: '',
@@ -85,7 +85,7 @@ const EnhancedSettingsPage = () => {
   });
   const [testingEmail, setTestingEmail] = useState<boolean>(false);
   const [emailTestResult, setEmailTestResult] = useState<any | null>(null);
-  
+
   // Twilio Settings
   const [twilioSettings, setTwilioSettings] = useState({
     account_sid: '',
@@ -96,7 +96,7 @@ const EnhancedSettingsPage = () => {
   });
   const [testingTwilio, setTestingTwilio] = useState<boolean>(false);
   const [twilioTestResult, setTwilioTestResult] = useState<any | null>(null);
-  
+
   // Test SMS/WhatsApp
   const [testSMSPhone, setTestSMSPhone] = useState<string>('');
   const [testWhatsAppPhone, setTestWhatsAppPhone] = useState<string>('');
@@ -121,7 +121,7 @@ const EnhancedSettingsPage = () => {
         isDeveloperOrMaster() ? axios.get(`${API}/settings/email`) : Promise.resolve({ data: {} }),
         isDeveloperOrMaster() ? axios.get(`${API}/sms/settings`) : Promise.resolve({ data: {} })
       ]);
-      
+
       setRegionalPrefs(regional.data);
       setPrivacyPrefs(privacy.data);
       setSecurityPrefs(security.data);
@@ -181,10 +181,10 @@ const EnhancedSettingsPage = () => {
   const handlePhotoUpload = async (e: any) => {
     const file = e.target.files![0];
     if (!file) return;
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     setLoading(true);
     try {
       const response = await axios.post(`${API}/users/profile/picture`, formData, {
@@ -252,7 +252,7 @@ const EnhancedSettingsPage = () => {
   const handleSaveApiSettings = async () => {
     setLoading(true);
     try {
-      await axios.post(`${API}/settings/email`, { 
+      await axios.post(`${API}/settings/email`, {
         sendgrid_api_key: apiSettings.sendgrid_api_key,
         sendgrid_from_email: apiSettings.sendgrid_from_email,
         sendgrid_from_name: apiSettings.sendgrid_from_name
@@ -302,15 +302,15 @@ const EnhancedSettingsPage = () => {
     setTwilioTestResult(null);
     try {
       const response = await axios.post(`${API}/sms/test-connection`);
-      setTwilioTestResult({ 
-        success: true, 
+      setTwilioTestResult({
+        success: true,
         message: `Connected to ${response.data.data.friendly_name}`,
         account_sid: response.data.data.account_sid
       });
     } catch (err: unknown) {
-      setTwilioTestResult({ 
-        success: false, 
-        message: (err as any).response?.data?.detail || 'Connection failed' 
+      setTwilioTestResult({
+        success: false,
+        message: (err as any).response?.data?.detail || 'Connection failed'
       });
     } finally {
       setTestingTwilio(false);
@@ -329,14 +329,14 @@ const EnhancedSettingsPage = () => {
         to_number: testSMSPhone,
         message: 'This is a test SMS from your Operational Management Platform. Your Twilio SMS integration is working correctly!'
       });
-      setSmsTestResult({ 
-        success: true, 
-        message: `SMS sent successfully! Message SID: ${response.data.message_sid}` 
+      setSmsTestResult({
+        success: true,
+        message: `SMS sent successfully! Message SID: ${response.data.message_sid}`
       });
     } catch (err: unknown) {
-      setSmsTestResult({ 
-        success: false, 
-        message: (err as any).response?.data?.detail || 'Failed to send SMS' 
+      setSmsTestResult({
+        success: false,
+        message: (err as any).response?.data?.detail || 'Failed to send SMS'
       });
     } finally {
       setSendingSMS(false);
@@ -355,14 +355,14 @@ const EnhancedSettingsPage = () => {
         to_number: testWhatsAppPhone,
         message: 'This is a test WhatsApp message from your Operational Management Platform. Your Twilio WhatsApp integration is working correctly!'
       });
-      setWhatsappTestResult({ 
-        success: true, 
-        message: `WhatsApp message sent successfully! Message SID: ${response.data.message_sid}` 
+      setWhatsappTestResult({
+        success: true,
+        message: `WhatsApp message sent successfully! Message SID: ${response.data.message_sid}`
       });
     } catch (err: unknown) {
-      setWhatsappTestResult({ 
-        success: false, 
-        message: (err as any).response?.data?.detail || 'Failed to send WhatsApp message' 
+      setWhatsappTestResult({
+        success: false,
+        message: (err as any).response?.data?.detail || 'Failed to send WhatsApp message'
       });
     } finally {
       setSendingWhatsApp(false);
@@ -455,10 +455,10 @@ const EnhancedSettingsPage = () => {
                   <div className="relative">
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
                       {user?.picture ? (
-                        <img 
-                          src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`} 
-                          alt="Profile" 
-                          className="w-full h-full object-cover" 
+                        <img
+                          src={user.picture.startsWith('http') ? user.picture : `${BACKEND_URL}${user.picture}`}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
                         user?.name?.charAt(0).toUpperCase()
@@ -482,17 +482,17 @@ const EnhancedSettingsPage = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" value={profileData.name} onChange={(e) => setProfileData({...profileData, name: e.target.value})} required />
+                    <Input id="name" value={profileData.name} onChange={(e) => setProfileData({ ...profileData, name: e.target.value })} required />
                   </div>
                   <div>
                     <Label htmlFor="phone">Phone Number</Label>
-                    <PhoneInput value={profileData?.phone || ""} onChange={(value) => setProfileData({...profileData, phone: value})} defaultCountry="US" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                    <PhoneInput value={profileData?.phone || ""} onChange={(value) => setProfileData({ ...profileData, phone: value })} defaultCountry="US" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="bio">Bio</Label>
-                  <textarea id="bio" value={profileData.bio} onChange={(e) => setProfileData({...profileData, bio: e.target.value})} className="w-full h-24 px-3 py-2 border rounded-md" placeholder="Tell us about yourself..." />
+                  <textarea id="bio" value={profileData.bio} onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })} className="w-full h-24 px-3 py-2 border rounded-md" placeholder="Tell us about yourself..." />
                 </div>
 
                 <Button type="submit" disabled={loading}>
@@ -577,7 +577,7 @@ const EnhancedSettingsPage = () => {
             <CardContent className="space-y-6">
               <div>
                 <Label>Language</Label>
-                <Select value={regionalPrefs.language} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, language: value})}>
+                <Select value={regionalPrefs.language} onValueChange={(value) => setRegionalPrefs({ ...regionalPrefs, language: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -593,7 +593,7 @@ const EnhancedSettingsPage = () => {
 
               <div>
                 <Label>Timezone</Label>
-                <Select value={regionalPrefs.timezone} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, timezone: value})}>
+                <Select value={regionalPrefs.timezone} onValueChange={(value) => setRegionalPrefs({ ...regionalPrefs, timezone: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -608,7 +608,7 @@ const EnhancedSettingsPage = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Date Format</Label>
-                  <Select value={regionalPrefs.date_format} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, date_format: value})}>
+                  <Select value={regionalPrefs.date_format} onValueChange={(value) => setRegionalPrefs({ ...regionalPrefs, date_format: value })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -621,7 +621,7 @@ const EnhancedSettingsPage = () => {
                 </div>
                 <div>
                   <Label>Time Format</Label>
-                  <Select value={regionalPrefs.time_format} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, time_format: value})}>
+                  <Select value={regionalPrefs.time_format} onValueChange={(value) => setRegionalPrefs({ ...regionalPrefs, time_format: value })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -635,7 +635,7 @@ const EnhancedSettingsPage = () => {
 
               <div>
                 <Label>Currency</Label>
-                <Select value={regionalPrefs.currency} onValueChange={(value) => setRegionalPrefs({...regionalPrefs, currency: value})}>
+                <Select value={regionalPrefs.currency} onValueChange={(value) => setRegionalPrefs({ ...regionalPrefs, currency: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -667,15 +667,15 @@ const EnhancedSettingsPage = () => {
                 <form onSubmit={handlePasswordChange} className="space-y-4">
                   <div>
                     <Label htmlFor="current">Current Password</Label>
-                    <Input id="current" type="password" value={passwordData.current_password} onChange={(e) => setPasswordData({...passwordData, current_password: e.target.value})} required />
+                    <Input id="current" type="password" value={passwordData.current_password} onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })} required />
                   </div>
                   <div>
                     <Label htmlFor="new">New Password</Label>
-                    <Input id="new" type="password" value={passwordData.new_password} onChange={(e) => setPasswordData({...passwordData, new_password: e.target.value})} required />
+                    <Input id="new" type="password" value={passwordData.new_password} onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })} required />
                   </div>
                   <div>
                     <Label htmlFor="confirm">Confirm New Password</Label>
-                    <Input id="confirm" type="password" value={passwordData.confirm_password} onChange={(e) => setPasswordData({...passwordData, confirm_password: e.target.value})} required />
+                    <Input id="confirm" type="password" value={passwordData.confirm_password} onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })} required />
                   </div>
                   <Button type="submit" disabled={loading}>
                     {loading ? 'Updating...' : 'Update Password'}
@@ -695,7 +695,7 @@ const EnhancedSettingsPage = () => {
                     <Label className="text-base">Two-Factor Authentication (2FA)</Label>
                     <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
                   </div>
-                  <Switch checked={securityPrefs.two_factor_enabled} onCheckedChange={(checked) => setSecurityPrefs({...securityPrefs, two_factor_enabled: checked})} />
+                  <Switch checked={securityPrefs.two_factor_enabled} onCheckedChange={(checked) => setSecurityPrefs({ ...securityPrefs, two_factor_enabled: checked })} />
                 </div>
 
                 <Separator />
@@ -703,7 +703,7 @@ const EnhancedSettingsPage = () => {
                 <div>
                   <Label>Session Timeout</Label>
                   <p className="text-sm text-muted-foreground mb-2">Automatically log out after inactivity</p>
-                  <Select value={securityPrefs.session_timeout.toString()} onValueChange={(value) => setSecurityPrefs({...securityPrefs, session_timeout: parseInt(value)})}>
+                  <Select value={securityPrefs.session_timeout.toString()} onValueChange={(value) => setSecurityPrefs({ ...securityPrefs, session_timeout: parseInt(value) })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -737,7 +737,7 @@ const EnhancedSettingsPage = () => {
               <div>
                 <Label>Profile Visibility</Label>
                 <p className="text-sm text-muted-foreground mb-2">Who can see your profile</p>
-                <Select value={privacyPrefs.profile_visibility} onValueChange={(value) => setPrivacyPrefs({...privacyPrefs, profile_visibility: value})}>
+                <Select value={privacyPrefs.profile_visibility} onValueChange={(value) => setPrivacyPrefs({ ...privacyPrefs, profile_visibility: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -756,7 +756,7 @@ const EnhancedSettingsPage = () => {
                   <Label className="text-base">Show Activity Status</Label>
                   <p className="text-sm text-muted-foreground">Let others see when you're online</p>
                 </div>
-                <Switch checked={privacyPrefs.show_activity_status} onCheckedChange={(checked) => setPrivacyPrefs({...privacyPrefs, show_activity_status: checked})} />
+                <Switch checked={privacyPrefs.show_activity_status} onCheckedChange={(checked) => setPrivacyPrefs({ ...privacyPrefs, show_activity_status: checked })} />
               </div>
 
               <div className="flex items-center justify-between">
@@ -764,7 +764,7 @@ const EnhancedSettingsPage = () => {
                   <Label className="text-base">Show Last Seen</Label>
                   <p className="text-sm text-muted-foreground">Display when you were last active</p>
                 </div>
-                <Switch checked={privacyPrefs.show_last_seen} onCheckedChange={(checked) => setPrivacyPrefs({...privacyPrefs, show_last_seen: checked})} />
+                <Switch checked={privacyPrefs.show_last_seen} onCheckedChange={(checked) => setPrivacyPrefs({ ...privacyPrefs, show_last_seen: checked })} />
               </div>
 
               <Button onClick={handleSavePrivacy} disabled={loading}>
@@ -788,7 +788,7 @@ const EnhancedSettingsPage = () => {
                   <Label className="text-base">Email Notifications</Label>
                   <p className="text-sm text-muted-foreground">Receive notifications via email</p>
                 </div>
-                <Switch checked={notificationPrefs.emailNotifications} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, emailNotifications: checked})} />
+                <Switch checked={notificationPrefs.emailNotifications} onCheckedChange={(checked) => setNotificationPrefs({ ...notificationPrefs, emailNotifications: checked })} />
               </div>
 
               <div className="flex items-center justify-between">
@@ -796,7 +796,7 @@ const EnhancedSettingsPage = () => {
                   <Label className="text-base">Push Notifications</Label>
                   <p className="text-sm text-muted-foreground">Get browser push notifications</p>
                 </div>
-                <Switch checked={notificationPrefs.pushNotifications} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, pushNotifications: checked})} />
+                <Switch checked={notificationPrefs.pushNotifications} onCheckedChange={(checked) => setNotificationPrefs({ ...notificationPrefs, pushNotifications: checked })} />
               </div>
 
               <div className="flex items-center justify-between">
@@ -804,7 +804,7 @@ const EnhancedSettingsPage = () => {
                   <Label className="text-base">Weekly Reports</Label>
                   <p className="text-sm text-muted-foreground">Receive weekly summary emails</p>
                 </div>
-                <Switch checked={notificationPrefs.weeklyReports} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, weeklyReports: checked})} />
+                <Switch checked={notificationPrefs.weeklyReports} onCheckedChange={(checked) => setNotificationPrefs({ ...notificationPrefs, weeklyReports: checked })} />
               </div>
 
               <div className="flex items-center justify-between">
@@ -812,7 +812,7 @@ const EnhancedSettingsPage = () => {
                   <Label className="text-base">Marketing Emails</Label>
                   <p className="text-sm text-muted-foreground">Receive product updates and tips</p>
                 </div>
-                <Switch checked={notificationPrefs.marketingEmails} onCheckedChange={(checked) => setNotificationPrefs({...notificationPrefs, marketingEmails: checked})} />
+                <Switch checked={notificationPrefs.marketingEmails} onCheckedChange={(checked) => setNotificationPrefs({ ...notificationPrefs, marketingEmails: checked })} />
               </div>
 
               <Button onClick={handleSaveNotifications} disabled={loading}>
@@ -839,7 +839,7 @@ const EnhancedSettingsPage = () => {
                     <a href="https://app.sendgrid.com/settings/api_keys" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">SendGrid Dashboard</a>
                   </p>
                   <div className="flex gap-2">
-                    <Input type="password" placeholder={apiSettings.sendgrid_configured ? "API key configured" : "SG.xxxxx..."} value={apiSettings.sendgrid_api_key} onChange={(e) => setApiSettings({...apiSettings, sendgrid_api_key: e.target.value})} className="font-mono" />
+                    <Input type="password" placeholder={apiSettings.sendgrid_configured ? "API key configured" : "SG.xxxxx..."} value={apiSettings.sendgrid_api_key} onChange={(e) => setApiSettings({ ...apiSettings, sendgrid_api_key: e.target.value })} className="font-mono" />
                     {apiSettings.sendgrid_configured && (
                       <Badge variant="outline" className="flex items-center gap-1">
                         <CheckCircle className="h-3 w-3 text-green-600" />Configured
@@ -854,11 +854,11 @@ const EnhancedSettingsPage = () => {
                     Email address to use as sender for all outgoing emails. Must be verified in{' '}
                     <a href="https://app.sendgrid.com/settings/sender_auth/senders" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">SendGrid Sender Authentication</a>
                   </p>
-                  <Input 
-                    type="email" 
-                    placeholder="noreply@yourdomain.com" 
-                    value={apiSettings.sendgrid_from_email || ''} 
-                    onChange={(e) => setApiSettings({...apiSettings, sendgrid_from_email: e.target.value})} 
+                  <Input
+                    type="email"
+                    placeholder="noreply@yourdomain.com"
+                    value={apiSettings.sendgrid_from_email || ''}
+                    onChange={(e) => setApiSettings({ ...apiSettings, sendgrid_from_email: e.target.value })}
                   />
                 </div>
 
@@ -867,11 +867,11 @@ const EnhancedSettingsPage = () => {
                   <p className="text-xs text-muted-foreground mb-2">
                     Display name for the sender (e.g., "Operations Platform")
                   </p>
-                  <Input 
-                    type="text" 
-                    placeholder="Operations Platform" 
-                    value={apiSettings.sendgrid_from_name || ''} 
-                    onChange={(e) => setApiSettings({...apiSettings, sendgrid_from_name: e.target.value})} 
+                  <Input
+                    type="text"
+                    placeholder="Operations Platform"
+                    value={apiSettings.sendgrid_from_name || ''}
+                    onChange={(e) => setApiSettings({ ...apiSettings, sendgrid_from_name: e.target.value })}
                   />
                 </div>
 
@@ -921,22 +921,22 @@ const EnhancedSettingsPage = () => {
                   <div>
                     <Label>Account SID</Label>
                     <p className="text-xs text-muted-foreground mb-2">Your Twilio Account SID</p>
-                    <Input 
-                      type="text" 
-                      placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
-                      value={twilioSettings.account_sid} 
-                      onChange={(e) => setTwilioSettings({...twilioSettings, account_sid: e.target.value})} 
+                    <Input
+                      type="text"
+                      placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                      value={twilioSettings.account_sid}
+                      onChange={(e) => setTwilioSettings({ ...twilioSettings, account_sid: e.target.value })}
                       className="font-mono text-sm"
                     />
                   </div>
                   <div>
                     <Label>Auth Token</Label>
                     <p className="text-xs text-muted-foreground mb-2">Your Twilio Auth Token</p>
-                    <Input 
-                      type="password" 
-                      placeholder={twilioSettings.twilio_configured ? "Token configured" : "Your auth token"} 
-                      value={twilioSettings.auth_token} 
-                      onChange={(e) => setTwilioSettings({...twilioSettings, auth_token: e.target.value})} 
+                    <Input
+                      type="password"
+                      placeholder={twilioSettings.twilio_configured ? "Token configured" : "Your auth token"}
+                      value={twilioSettings.auth_token}
+                      onChange={(e) => setTwilioSettings({ ...twilioSettings, auth_token: e.target.value })}
                       className="font-mono text-sm"
                     />
                   </div>
@@ -946,22 +946,22 @@ const EnhancedSettingsPage = () => {
                   <div>
                     <Label>Phone Number (SMS)</Label>
                     <p className="text-xs text-muted-foreground mb-2">Your Twilio phone number for SMS</p>
-                    <Input 
-                      type="text" 
-                      placeholder="+1234567890" 
-                      value={twilioSettings.phone_number} 
-                      onChange={(e) => setTwilioSettings({...twilioSettings, phone_number: e.target.value})} 
+                    <Input
+                      type="text"
+                      placeholder="+1234567890"
+                      value={twilioSettings.phone_number}
+                      onChange={(e) => setTwilioSettings({ ...twilioSettings, phone_number: e.target.value })}
                       className="font-mono"
                     />
                   </div>
                   <div>
                     <Label>WhatsApp Number (Optional)</Label>
                     <p className="text-xs text-muted-foreground mb-2">Twilio WhatsApp sandbox number</p>
-                    <Input 
-                      type="text" 
-                      placeholder="+14155238886" 
-                      value={twilioSettings.whatsapp_number} 
-                      onChange={(e) => setTwilioSettings({...twilioSettings, whatsapp_number: e.target.value})} 
+                    <Input
+                      type="text"
+                      placeholder="+14155238886"
+                      value={twilioSettings.whatsapp_number}
+                      onChange={(e) => setTwilioSettings({ ...twilioSettings, whatsapp_number: e.target.value })}
                       className="font-mono"
                     />
                   </div>
@@ -1002,21 +1002,21 @@ const EnhancedSettingsPage = () => {
                 {twilioSettings.twilio_configured && (
                   <div className="border-t pt-6 space-y-6">
                     <h3 className="font-semibold text-lg">Test Messaging</h3>
-                    
+
                     {/* Test SMS */}
                     <div className="space-y-3">
                       <Label className="text-base">Test SMS</Label>
                       <p className="text-xs text-muted-foreground">Send a test SMS to verify your configuration</p>
                       <div className="flex gap-2">
-                        <Input 
-                          type="tel" 
-                          placeholder="+1234567890 (with country code)" 
-                          value={testSMSPhone} 
-                          onChange={(e) => setTestSMSPhone(e.target.value)} 
+                        <Input
+                          type="tel"
+                          placeholder="+1234567890 (with country code)"
+                          value={testSMSPhone}
+                          onChange={(e) => setTestSMSPhone(e.target.value)}
                           className="flex-1"
                         />
-                        <Button 
-                          onClick={handleTestSMS} 
+                        <Button
+                          onClick={handleTestSMS}
                           disabled={sendingSMS || !testSMSPhone}
                           variant="outline"
                         >
@@ -1040,15 +1040,15 @@ const EnhancedSettingsPage = () => {
                         <Label className="text-base">Test WhatsApp</Label>
                         <p className="text-xs text-muted-foreground">Send a test WhatsApp message (Note: Recipient must join your sandbox first)</p>
                         <div className="flex gap-2">
-                          <Input 
-                            type="tel" 
-                            placeholder="whatsapp:+1234567890 (with country code)" 
-                            value={testWhatsAppPhone} 
-                            onChange={(e) => setTestWhatsAppPhone(e.target.value)} 
+                          <Input
+                            type="tel"
+                            placeholder="whatsapp:+1234567890 (with country code)"
+                            value={testWhatsAppPhone}
+                            onChange={(e) => setTestWhatsAppPhone(e.target.value)}
                             className="flex-1"
                           />
-                          <Button 
-                            onClick={handleTestWhatsApp} 
+                          <Button
+                            onClick={handleTestWhatsApp}
                             disabled={sendingWhatsApp || !testWhatsAppPhone}
                             variant="outline"
                           >
@@ -1066,7 +1066,7 @@ const EnhancedSettingsPage = () => {
                         )}
                         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                           <p className="text-xs text-amber-800">
-                            <strong>WhatsApp Sandbox Note:</strong> For testing, recipients must first send a join code to your WhatsApp sandbox number. 
+                            <strong>WhatsApp Sandbox Note:</strong> For testing, recipients must first send a join code to your WhatsApp sandbox number.
                             Find your join code in Twilio Console → Messaging → Try it out → Send a WhatsApp message.
                           </p>
                         </div>
@@ -1106,15 +1106,15 @@ const EnhancedSettingsPage = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Request a complete export of all your personal data stored in the system. This includes your profile, tasks, time entries, audit logs, and more.
                 </p>
-                
-                <Button 
+
+                <Button
                   onClick={async () => {
                     try {
                       setExportingData(true);
                       const response = await axios.get(`${API}/gdpr/export-data`, {
                         headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
                       });
-                      
+
                       // Create and download JSON file
                       const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' });
                       const url = URL.createObjectURL(blob);
@@ -1122,7 +1122,7 @@ const EnhancedSettingsPage = () => {
                       a.href = url;
                       a.download = `my-data-export-${new Date().toISOString().split('T')[0]}.json`;
                       a.click();
-                      
+
                       setMessage({ type: 'success', text: 'Data exported successfully!' });
                     } catch (err: unknown) {
                       setMessage({ type: 'error', text: (err as any).response?.data?.detail || 'Failed to export data' });
@@ -1242,7 +1242,7 @@ const EnhancedSettingsPage = () => {
                     <strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted, except for audit logs which are retained for compliance purposes.
                   </AlertDescription>
                 </Alert>
-                
+
                 <div className="space-y-2">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     When you delete your account:
@@ -1254,26 +1254,221 @@ const EnhancedSettingsPage = () => {
                     <li>Audit logs will be retained (anonymized) for compliance</li>
                   </ul>
                 </div>
-                
-                <Button 
+
+                <Button
                   variant="destructive"
                   onClick={async () => {
                     if (!window.confirm('Are you absolutely sure? This action cannot be undone. Type DELETE to confirm.')) {
                       return;
                     }
-                    
+
                     const confirmation = prompt('Type DELETE to confirm account deletion:');
                     if (confirmation !== 'DELETE') {
                       alert('Account deletion cancelled.');
                       return;
                     }
-                    
+
                     try {
                       setDeletingAccount(true);
                       await axios.delete(`${API}/gdpr/delete-account`, {
                         headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
                       });
-                      
+
+                      alert('Your account has been deleted. You will now be logged out.');
+                      // Logout user
+                      localStorage.removeItem('token');
+                      localStorage.removeItem('access_token');
+                      window.location.href = '/login';
+                    } catch (err: unknown) {
+                      setMessage({ type: 'error', text: (err as any).response?.data?.detail || 'Failed to delete account' });
+                    } finally {
+                      setDeletingAccount(false);
+                    }
+                  }}
+                  disabled={deletingAccount}
+                >
+                  {deletingAccount ? 'Deleting...' : 'Delete My Account'}
+                </Button>
+              </CardContent>
+            </Card>
+            {/* Data Export */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Export</CardTitle>
+                <CardDescription>Download all your personal data</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Request a complete export of all your personal data stored in the system. This includes your profile, tasks, time entries, audit logs, and more.
+                </p>
+
+                <Button
+                  onClick={async () => {
+                    try {
+                      setExportingData(true);
+                      const response = await axios.get(`${API}/gdpr/export-data`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                      });
+
+                      // Create and download JSON file
+                      const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `my-data-export-${new Date().toISOString().split('T')[0]}.json`;
+                      a.click();
+
+                      setMessage({ type: 'success', text: 'Data exported successfully!' });
+                    } catch (err: unknown) {
+                      setMessage({ type: 'error', text: (err as any).response?.data?.detail || 'Failed to export data' });
+                    } finally {
+                      setExportingData(false);
+                    }
+                  }}
+                  disabled={exportingData}
+                >
+                  {exportingData ? 'Exporting...' : 'Export My Data'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Consent Management */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Consent Management</CardTitle>
+                <CardDescription>Manage your data processing consents</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Marketing Communications</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Receive product updates and promotional emails
+                      </p>
+                    </div>
+                    <Switch
+                      checked={gdprConsents.marketing}
+                      onCheckedChange={async (checked) => {
+                        try {
+                          await axios.post(`${API}/gdpr/consents`, {
+                            marketing: checked,
+                            analytics: gdprConsents.analytics,
+                            third_party: gdprConsents.third_party
+                          }, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                          });
+                          setGdprConsents({ ...gdprConsents, marketing: checked });
+                          setMessage({ type: 'success', text: 'Consent updated' });
+                        } catch (err: unknown) {
+                          setMessage({ type: 'error', text: 'Failed to update consent' });
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Analytics & Performance</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Help us improve by sharing usage analytics
+                      </p>
+                    </div>
+                    <Switch
+                      checked={gdprConsents.analytics}
+                      onCheckedChange={async (checked) => {
+                        try {
+                          await axios.post(`${API}/gdpr/consents`, {
+                            marketing: gdprConsents.marketing,
+                            analytics: checked,
+                            third_party: gdprConsents.third_party
+                          }, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                          });
+                          setGdprConsents({ ...gdprConsents, analytics: checked });
+                          setMessage({ type: 'success', text: 'Consent updated' });
+                        } catch (err: unknown) {
+                          setMessage({ type: 'error', text: 'Failed to update consent' });
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div>
+                      <p className="font-medium text-sm">Third-Party Integrations</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Share data with integrated third-party services
+                      </p>
+                    </div>
+                    <Switch
+                      checked={gdprConsents.third_party}
+                      onCheckedChange={async (checked) => {
+                        try {
+                          await axios.post(`${API}/gdpr/consents`, {
+                            marketing: gdprConsents.marketing,
+                            analytics: gdprConsents.analytics,
+                            third_party: checked
+                          }, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                          });
+                          setGdprConsents({ ...gdprConsents, third_party: checked });
+                          setMessage({ type: 'success', text: 'Consent updated' });
+                        } catch (err: unknown) {
+                          setMessage({ type: 'error', text: 'Failed to update consent' });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Delete Account */}
+            <Card className="border-red-200 dark:border-red-800">
+              <CardHeader>
+                <CardTitle className="text-red-600 dark:text-red-400">Delete Account</CardTitle>
+                <CardDescription>Permanently delete your account and all associated data</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Alert className="bg-red-50 border-red-200">
+                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <AlertDescription className="text-red-800">
+                    <strong>Warning:</strong> This action cannot be undone. All your data will be permanently deleted, except for audit logs which are retained for compliance purposes.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    When you delete your account:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>Your profile and personal data will be deleted</li>
+                    <li>Your tasks and time entries will be anonymized</li>
+                    <li>You will lose access to all organization resources</li>
+                    <li>Audit logs will be retained (anonymized) for compliance</li>
+                  </ul>
+                </div>
+
+                <Button
+                  variant="destructive"
+                  onClick={async () => {
+                    if (!window.confirm('Are you absolutely sure? This action cannot be undone. Type DELETE to confirm.')) {
+                      return;
+                    }
+
+                    const confirmation = prompt('Type DELETE to confirm account deletion:');
+                    if (confirmation !== 'DELETE') {
+                      alert('Account deletion cancelled.');
+                      return;
+                    }
+
+                    try {
+                      setDeletingAccount(true);
+                      await axios.delete(`${API}/gdpr/delete-account`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token') || localStorage.getItem('access_token')}` }
+                      });
+
                       alert('Your account has been deleted. You will now be logged out.');
                       // Logout user
                       localStorage.removeItem('token');
@@ -1297,6 +1492,20 @@ const EnhancedSettingsPage = () => {
         {/* Organization Tab */}
         {(isAdmin() || isDeveloper()) && (
           <TabsContent value="organization">
+            <Card>
+              <CardHeader>
+                <CardTitle>Organization Settings</CardTitle>
+                <CardDescription>Manage your organization settings.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>Organization settings coming soon.</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+      </Tabs>
+    </div>
+  );
 };
 
 export default EnhancedSettingsPage;

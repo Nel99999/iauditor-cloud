@@ -11,8 +11,8 @@ const API = `${BACKEND_URL}/api`;
 const HRPage = () => {
   const [employees, setEmployees] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
+
 
   useEffect(() => {
     loadData();
@@ -31,7 +31,7 @@ const HRPage = () => {
     } catch (err) {
       console.error('Failed to load HR data:', err);
     } finally {
-      setLoading(false);
+
     }
   };
 

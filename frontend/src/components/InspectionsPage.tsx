@@ -121,98 +121,123 @@ const InspectionsPage = () => {
           <Button onClick={() => navigate('/inspections/templates/new')} data-testid="create-template-btn">
             <Plus className="h-4 w-4 mr-2" />
             New Template
-            <Badge
-              variant={execution.passed ? 'default' : 'destructive'}
-              className="mt-1"
-            >
-              {execution.passed ? 'Passed' : 'Failed'}
-            </Badge>
-                        )}
-          </div>
-        </div>
-                  ))
-}
-                </div >
-              </CardContent >
-            </Card >
+          </Button>
+        </PermissionGuard>
+      }
+    >
+      <Tabs defaultValue="list" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="list">Inspections</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="calendar">Calendar</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="list">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Inspections</CardTitle>
+              <CardDescription>View and manage recent inspection executions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {executions.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No inspections found
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {executions.map((execution) => (
+                    <div key={execution.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <div className="font-medium">{execution.template_name || 'Untitled Inspection'}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {formatDate(execution.created_at)} • {execution.performed_by_name || 'Unknown User'}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={execution.passed ? 'default' : 'destructive'}>
+                          {execution.passed ? 'Passed' : 'Failed'}
+                        </Badge>
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/inspections/executions/${execution.id}`)}>
+                          View
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          {templates.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center py-12 text-muted-foreground">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-semibold mb-2">No templates available</h3>
+                  <p className="text-sm">Create inspection templates to view analytics</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Select Template for Analytics</CardTitle>
+                  <CardDescription>Choose a template to view detailed performance metrics</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Select
+                    value={selectedTemplateForAnalytics?.id || ''}
+                    onValueChange={(value) => {
+                      const template = templates.find(t => t.id === value);
+                      setSelectedTemplateForAnalytics(template);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a template..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map(template => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+              {selectedTemplateForAnalytics && (
+                <InspectionAnalyticsDashboard
+                  templateId={selectedTemplateForAnalytics.id}
+                  templateName={selectedTemplateForAnalytics.name}
+                />
+              )}
+            </div>
           )}
-        </TabsContent >
+        </TabsContent>
 
-  {/* Analytics Tab */ }
-  < TabsContent value = "analytics" >
-  {
-    templates.length === 0 ? (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center py-12 text-muted-foreground">
-            <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <h3 className="text-lg font-semibold mb-2">No templates available</h3>
-            <p className="text-sm">Create inspection templates to view analytics</p>
-          </div>
-        </CardContent>
-      </Card>
-    ) : (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Select Template for Analytics</CardTitle>
-            <CardDescription>Choose a template to view detailed performance metrics</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Select
-              value={selectedTemplateForAnalytics?.id || ''}
-              onValueChange={(value) => {
-                const template = templates.find(t => t.id === value);
-                setSelectedTemplateForAnalytics(template);
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a template..." />
-              </SelectTrigger>
-              <SelectContent>
-                {templates.map(template => (
-                  <SelectItem key={template.id} value={template.id}>
-                    {template.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
+        <TabsContent value="calendar">
+          <InspectionCalendar />
+        </TabsContent>
+      </Tabs>
 
-        {selectedTemplateForAnalytics && (
-          <InspectionAnalyticsDashboard
-            templateId={selectedTemplateForAnalytics.id}
-            templateName={selectedTemplateForAnalytics.name}
-          />
-        )}
-      </div>
-    )
-  }
-        </TabsContent >
-
-  {/* Calendar Tab */ }
-  < TabsContent value = "calendar" >
-    <InspectionCalendar />
-        </TabsContent >
-      </Tabs >
-
-  {/* Analytics Dialog */ }
-  < Dialog open = { showAnalyticsDialog } onOpenChange = { setShowAnalyticsDialog } >
-    <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-      <DialogHeader>
-        <DialogTitle>Template Analytics</DialogTitle>
-      </DialogHeader>
-      {selectedTemplateForAnalytics && (
-        <InspectionAnalyticsDashboard
-          templateId={selectedTemplateForAnalytics.id}
-          templateName={selectedTemplateForAnalytics.name}
-        />
-      )}
-    </DialogContent>
-      </Dialog >
-      </div >
-    </ModernPageWrapper >
+      <Dialog open={showAnalyticsDialog} onOpenChange={setShowAnalyticsDialog}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Template Analytics</DialogTitle>
+          </DialogHeader>
+          {selectedTemplateForAnalytics && (
+            <InspectionAnalyticsDashboard
+              templateId={selectedTemplateForAnalytics.id}
+              templateName={selectedTemplateForAnalytics.name}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </ModernPageWrapper>
   );
 };
 
