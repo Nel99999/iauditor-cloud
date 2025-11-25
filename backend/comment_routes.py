@@ -3,8 +3,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
 from typing import Optional
 
-from comment_models import Comment, CommentCreate, CommentUpdate
-from auth_utils import get_current_user
+from .comment_models import Comment, CommentCreate, CommentUpdate
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/comments", tags=["Comments"])
 

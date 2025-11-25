@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, timezone
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import uuid
 import logging
 

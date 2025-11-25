@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel
 from datetime import datetime, timezone
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 from typing import Optional
 
 router = APIRouter(prefix="/users", tags=["user-approval"])
@@ -38,7 +38,7 @@ async def get_pending_approvals(
     current_user = await get_current_user(request, db)
     
     # Check permission
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],
@@ -81,7 +81,7 @@ async def approve_user(
     current_user = await get_current_user(request, db)
     
     # Check permission
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],
@@ -151,7 +151,7 @@ async def approve_user(
     
     # Send approval email to user
     try:
-        from email_service import EmailService
+        from .email_service import EmailService
         import os
         
         # Get organization's email settings
@@ -282,7 +282,7 @@ async def reject_user(
     current_user = await get_current_user(request, db)
     
     # Check permission
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],
@@ -352,7 +352,7 @@ async def reject_user(
     
     # Send rejection email to user
     try:
-        from email_service import EmailService
+        from .email_service import EmailService
         import os
         
         # Get organization's email settings

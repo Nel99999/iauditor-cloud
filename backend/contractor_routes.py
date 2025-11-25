@@ -5,8 +5,8 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import uuid
 
-from contractor_models import Contractor
-from auth_utils import get_current_user
+from .contractor_models import Contractor
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/contractors", tags=["Contractors"])
 

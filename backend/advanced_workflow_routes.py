@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List, Dict, Any
 import logging

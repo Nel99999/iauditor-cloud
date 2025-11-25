@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 from typing import List
 import json
 
-from chat_models import Channel, Message
-from auth_utils import get_current_user
+from .chat_models import Channel, Message
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
