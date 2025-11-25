@@ -1,29 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request, UploadFile, File
 from fastapi.responses import StreamingResponse
-from motor.motor_asyncio import AsyncIOMotorDatabase, AsyncIOMotorGridFSBucket
-from datetime import datetime, timedelta, timezone
-from typing import List, Optional
-import gridfs
-from bson import ObjectId
-import uuid
-from inspection_models import (
-    InspectionTemplate,
-    InspectionTemplateCreate,
-    InspectionTemplateUpdate,
-    InspectionExecution,
-    InspectionExecutionCreate,
-    InspectionExecutionUpdate,
-    InspectionExecutionComplete,
-    InspectionQuestion,
-    InspectionStats,
-)
-from auth_utils import get_current_user
-from pdf_generator_service import InspectionPDFGenerator
-import io
-
-router = APIRouter(prefix="/inspections", tags=["Inspections"])
-
-
 def get_db(request: Request) -> AsyncIOMotorDatabase:
     """Dependency to get database from request state"""
     return request.app.state.db
@@ -105,7 +81,7 @@ async def create_inspection_template(
     user = await get_current_user(request, db)
     
     # SECURITY: Check permission before allowing creation
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "inspection", "create", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create inspection templates")
@@ -528,7 +504,7 @@ async def complete_inspection(
     
     # Auto-start workflow if required
     if requires_approval and workflow_template_id:
-        from workflow_engine import WorkflowEngine
+        from .workflow_engine import WorkflowEngine
         engine = WorkflowEngine(db)
         
         try:
@@ -679,7 +655,7 @@ async def set_inspection_schedule(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Set recurring schedule for an inspection template"""
-    from inspection_models import InspectionSchedule
+    from .inspection_models import InspectionSchedule
     
     user = await get_current_user(request, db)
     

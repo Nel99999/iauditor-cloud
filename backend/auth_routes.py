@@ -6,17 +6,17 @@ from datetime import datetime, timedelta, timezone
 import uuid
 import os
 
-from models import (
+from .models import (
     User, UserCreate, UserLogin, Token, Session, Organization
 )
-from auth_utils import (
+from .auth_utils import (
     verify_password, get_password_hash, create_access_token, get_current_user,
     validate_password_strength
 )
-from sanitization import sanitize_dict
-from email_service import EmailService
-from init_phase1_data import initialize_permissions, initialize_system_roles
-from auth_constants import (
+from .sanitization import sanitize_dict
+from .email_service import EmailService
+from .init_phase1_data import initialize_permissions, initialize_system_roles
+from .auth_constants import (
     MSG_REGISTRATION_PENDING,
     MSG_ACCOUNT_LOCKED,
     MSG_ACCOUNT_LOCKED_TOO_MANY_ATTEMPTS,
@@ -26,7 +26,7 @@ from auth_constants import (
     MSG_ACCOUNT_DISABLED,
     SUBJECT_PROFILE_CREATION
 )
-from rate_limiter import limiter
+from .rate_limiter import limiter
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -108,7 +108,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     
     # Send "Registration Pending" email to user
     try:
-        from email_service import EmailService
+        from .email_service import EmailService
         
         # Get organization email settings (may not exist yet for new org)
         org_settings = await db.organization_settings.find_one(
@@ -529,7 +529,7 @@ async def forgot_password(
     
     # Send email with reset link
     try:
-        from email_service import EmailService
+        from .email_service import EmailService
         import os
         
         # Get frontend URL from environment or construct from backend URL
@@ -694,7 +694,7 @@ async def reset_password(
     
     # Send confirmation email
     try:
-        from email_service import EmailService
+        from .email_service import EmailService
         
         org_settings = await db.organization_settings.find_one(
             {"organization_id": user.get("organization_id")}
