@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from permission_models import (
+from .permission_models import (
     UserDeactivation, UserDeactivationCreate, UserReactivation
 )
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 from datetime import datetime, timezone
 from typing import Optional
 

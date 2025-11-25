@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/dashboards", tags=["Dashboards"])
 

@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Optional
 from datetime import datetime, timezone
-from group_models import UserGroup, GroupCreate, GroupUpdate, GroupMemberAdd, GroupStats
-from auth_utils import get_current_user
+from .group_models import UserGroup, GroupCreate, GroupUpdate, GroupMemberAdd, GroupStats
+from .auth_utils import get_current_user
 import uuid
 
 router = APIRouter(prefix="/groups", tags=["User Groups"])

@@ -5,8 +5,8 @@ from pydantic import BaseModel
 from typing import Optional
 import uuid
 
-from financial_models import FinancialTransaction
-from auth_utils import get_current_user
+from .financial_models import FinancialTransaction
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/financial", tags=["Financial"])
 

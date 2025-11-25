@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List
 from datetime import datetime, timezone
-from mention_models import Mention, MentionCreate
-from auth_utils import get_current_user
+from .mention_models import Mention, MentionCreate
+from .auth_utils import get_current_user
 import uuid
 import re
 

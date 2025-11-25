@@ -15,7 +15,7 @@ import subprocess
 from pydantic import BaseModel
 
 # Import auth dependencies
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/developer", tags=["Developer"])
 
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 async def get_current_developer(request: Request, db = Depends(get_db)):
     """Get current user and ensure they have developer role"""
-    from auth_utils import get_current_user
+    from .auth_utils import get_current_user
     
     current_user = await get_current_user(request, db)
     
@@ -293,7 +293,7 @@ async def test_email(
 ):
     """Send test email using SendGrid"""
     try:
-        from email_service import EmailService
+        from .email_service import EmailService
         
         # Get settings from database
         settings = await db.settings.find_one({}) or {}

@@ -1,7 +1,7 @@
 """
 Email Retry Service - Wrapper for reliable email delivery with retry logic
 """
-from email_service import EmailService
+from .email_service import EmailService
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any

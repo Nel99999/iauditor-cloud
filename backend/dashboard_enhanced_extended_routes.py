@@ -4,7 +4,7 @@ Provides operations and safety dashboard endpoints
 """
 from fastapi import APIRouter, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 from datetime import datetime, timedelta, timezone
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboards Extended"])

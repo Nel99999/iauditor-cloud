@@ -3,8 +3,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
 import uuid
 
-from hr_models import Employee, Announcement
-from auth_utils import get_current_user
+from .hr_models import Employee, Announcement
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/hr", tags=["HR"])
 

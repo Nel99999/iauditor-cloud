@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import Dict
 from datetime import datetime, timezone
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import json
 import io
 import zipfile
