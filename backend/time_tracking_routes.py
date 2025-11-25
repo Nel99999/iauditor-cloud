@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Optional
 from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import uuid
 
 router = APIRouter(prefix="/time-tracking", tags=["Time Tracking"])

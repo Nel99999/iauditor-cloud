@@ -5,7 +5,7 @@ Master/Developer only: Set organization-wide sidebar defaults
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import logging
 
 logger = logging.getLogger(__name__)

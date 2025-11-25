@@ -4,7 +4,7 @@ Provides analytics endpoints for Inspections, Checklists, and Tasks
 """
 from fastapi import APIRouter, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 from datetime import datetime, timedelta, timezone
 
 router = APIRouter(tags=["Module Analytics"])
