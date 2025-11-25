@@ -4,8 +4,8 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional
 import uuid
 
-from workorder_models import WorkOrder, WorkOrderCreate, WorkOrderUpdate, WorkOrderStats
-from auth_utils import get_current_user
+from .workorder_models import WorkOrder, WorkOrderCreate, WorkOrderUpdate, WorkOrderStats
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/work-orders", tags=["Work Orders"])
 
@@ -31,7 +31,7 @@ async def create_work_order(
     user = await get_current_user(request, db)
     
     # SECURITY: Check permission before allowing creation
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "workorder", "create", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create work orders")

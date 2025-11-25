@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 from typing import Optional
 import uuid
 
-from project_models import Project, Milestone, ProjectCreate, ProjectUpdate, ProjectStats
-from auth_utils import get_current_user
+from .project_models import Project, Milestone, ProjectCreate, ProjectUpdate, ProjectStats
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
 
@@ -29,7 +29,7 @@ async def create_project(
     """Create project"""
     user = await get_current_user(request, db)
     # SECURITY: Check permission before allowing creation
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "project", "create", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create projects")

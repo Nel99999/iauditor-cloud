@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 from typing import Optional
 import uuid
 
-from inventory_models import InventoryItem, InventoryItemCreate, InventoryItemUpdate, InventoryStats
-from auth_utils import get_current_user
+from .inventory_models import InventoryItem, InventoryItemCreate, InventoryItemUpdate, InventoryStats
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/inventory", tags=["Inventory"])
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Optional
 from datetime import datetime, timezone, timedelta
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import uuid
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])

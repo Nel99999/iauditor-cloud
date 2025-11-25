@@ -1,28 +1,3 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Request
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from datetime import datetime, timedelta, timezone, date
-from typing import List, Optional
-from collections import Counter
-import uuid
-from checklist_models import (
-    ChecklistTemplate,
-    ChecklistTemplateCreate,
-    ChecklistTemplateUpdate,
-    ChecklistExecution,
-    ChecklistExecutionUpdate,
-    ChecklistExecutionComplete,
-    ChecklistItem,
-    ChecklistItemCompletion,
-    ChecklistStats,
-    ChecklistSchedule,
-    ChecklistAnalytics,
-)
-from auth_utils import get_current_user
-
-router = APIRouter(prefix="/checklists", tags=["Checklists"])
-
-
-def get_db(request: Request) -> AsyncIOMotorDatabase:
     """Dependency to get database from request state"""
     return request.app.state.db
 
@@ -116,7 +91,7 @@ async def create_checklist_template(
     user = await get_current_user(request, db)
     
     # SECURITY: Check permission before allowing creation
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "checklist", "create", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create checklists")
@@ -570,7 +545,7 @@ async def complete_checklist(
     
     # Auto-start workflow if required
     if requires_approval and workflow_template_id:
-        from workflow_engine import WorkflowEngine
+        from .workflow_engine import WorkflowEngine
         engine = WorkflowEngine(db)
         
         try:

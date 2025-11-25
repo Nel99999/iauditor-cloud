@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
 

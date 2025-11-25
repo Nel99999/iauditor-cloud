@@ -12,8 +12,8 @@ import qrcode
 from io import BytesIO
 from fastapi.responses import StreamingResponse
 
-from asset_models import Asset, AssetCreate, AssetUpdate, AssetStats, AssetHistory
-from auth_utils import get_current_user
+from .asset_models import Asset, AssetCreate, AssetUpdate, AssetStats, AssetHistory
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/assets", tags=["Assets"])
 
@@ -32,7 +32,7 @@ async def create_asset(
     user = await get_current_user(request, db)
     
     # SECURITY: Check permission before allowing creation
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "asset", "create", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create assets")
