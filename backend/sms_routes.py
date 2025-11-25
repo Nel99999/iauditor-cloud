@@ -5,8 +5,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from auth_utils import get_current_user
-from sms_service import SMSService
+from .auth_utils import get_current_user
+from .sms_service import SMSService
 import logging
 
 logger = logging.getLogger(__name__)

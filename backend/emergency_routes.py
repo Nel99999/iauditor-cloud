@@ -5,8 +5,8 @@ from pydantic import BaseModel
 from typing import Optional, List
 import uuid
 
-from emergency_models import Emergency
-from auth_utils import get_current_user
+from .emergency_models import Emergency
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/emergencies", tags=["Emergencies"])
 

@@ -4,8 +4,8 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional
 import uuid
 
-from training_models import TrainingCourse, EmployeeTraining, TrainingCourseCreate, TrainingStats
-from auth_utils import get_current_user
+from .training_models import TrainingCourse, EmployeeTraining, TrainingCourseCreate, TrainingStats
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/training", tags=["Training"])
 

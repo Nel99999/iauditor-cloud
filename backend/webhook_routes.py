@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request, Backgrou
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List
 from datetime import datetime, timezone, timedelta
-from webhook_models import Webhook, WebhookCreate, WebhookUpdate, WebhookDelivery, WEBHOOK_EVENTS
-from auth_utils import get_current_user
+from .webhook_models import Webhook, WebhookCreate, WebhookUpdate, WebhookDelivery, WEBHOOK_EVENTS
+from .auth_utils import get_current_user
 import uuid
 import secrets
 import hmac
