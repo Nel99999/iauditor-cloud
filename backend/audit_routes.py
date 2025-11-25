@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from workflow_models import AuditLog, AuditLogCreate
-from auth_utils import get_current_user
+from .workflow_models import AuditLog, AuditLogCreate
+from .auth_utils import get_current_user
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 import logging

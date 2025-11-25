@@ -7,7 +7,7 @@ import pyotp
 import qrcode
 import io
 import base64
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import secrets
 import uuid
 

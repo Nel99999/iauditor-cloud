@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request, UploadFi
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Dict
 from datetime import datetime, timezone, timedelta
-from auth_utils import get_current_user, get_password_hash
+from .auth_utils import get_current_user, get_password_hash
 import csv
 import io
 import uuid
@@ -63,7 +63,7 @@ async def validate_bulk_import(
     user = await get_current_user(request, db)
     
     # Check permission (not hardcoded role)
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         user["id"],
@@ -183,7 +183,7 @@ async def import_users(
     user = await get_current_user(request, db)
     
     # Check permission (not hardcoded role)
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         user["id"],

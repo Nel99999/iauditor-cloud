@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from permission_models import (
+from .permission_models import (
     UserInvitation, UserInvitationCreate, UserInvitationAccept
 )
-from auth_utils import get_current_user
-from email_service import EmailService
+from .auth_utils import get_current_user
+from .email_service import EmailService
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 import uuid
@@ -37,7 +37,7 @@ async def create_invitation(
     current_user = await get_current_user(request, db)
     
     # Check if user has permission to invite
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],
@@ -169,7 +169,7 @@ async def get_pending_invitations(
     current_user = await get_current_user(request, db)
     
     # Check permission
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],
@@ -307,7 +307,7 @@ async def accept_invitation(
     )
     
     # Create JWT token for immediate login
-    from auth_utils import create_access_token
+    from .auth_utils import create_access_token
     access_token = create_access_token(data={"sub": user_dict["id"]})
     
     user_dict.pop("password_hash", None)
@@ -330,7 +330,7 @@ async def resend_invitation(
     current_user = await get_current_user(request, db)
     
     # Check permission
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],
@@ -412,7 +412,7 @@ async def cancel_invitation(
     current_user = await get_current_user(request, db)
     
     # Check permission
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db,
         current_user["id"],

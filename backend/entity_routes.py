@@ -12,14 +12,14 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone
 from typing import List, Optional
-from org_models import (
+from .org_models import (
     OrganizationalEntity,
     OrganizationalEntityCreate,
     OrganizationalEntityUpdate,
     CustomFieldDefinition,
     CustomFieldDefinitionCreate,
 )
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 import uuid
 
 router = APIRouter(prefix="/entities", tags=["Organizational Entities"])
@@ -223,7 +223,7 @@ async def create_entity(
     user = await get_current_user(request, db)
     
     # RBAC: Only Master and Developer can create entities
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db, user["id"], "organization", "create", "organization"
     )
@@ -285,7 +285,7 @@ async def update_entity(
         )
     
     # RBAC: Only Master and Developer can update entities
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db, user["id"], "organization", "update", "organization"
     )
@@ -361,7 +361,7 @@ async def delete_entity(
         )
     
     # RBAC: Only Master and Developer can delete entities
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(
         db, user["id"], "organization", "delete", "organization"
     )

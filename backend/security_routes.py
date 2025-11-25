@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 import secrets
 import uuid
 import re
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 
 router = APIRouter(prefix="/security", tags=["Security"])
 
@@ -476,7 +476,7 @@ async def unlock_account(
     admin_user = await get_current_user(request, db)
     
     # Check if admin has permission using database-driven RBAC
-    from auth_utils import check_permission
+    from .auth_utils import check_permission
     has_permission = await check_permission(admin_user, "user", "update", "organization", db)
     
     if not has_permission:
