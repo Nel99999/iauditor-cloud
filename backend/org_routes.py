@@ -10,7 +10,7 @@ async def check_user_permission(
 ) -> bool:
     """Check if user has permission for a specific unit"""
     # Check if user has organization-level permission
-    from .auth_utils import check_permission
+    from auth_utils import check_permission
     has_org_permission = await check_permission(user, "organization", "update", "organization", db)
     if has_org_permission:
         return True
