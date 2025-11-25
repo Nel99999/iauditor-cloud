@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from datetime import datetime, timezone, timedelta
 from typing import Optional
-from task_models import Task, TaskCreate, TaskUpdate, TaskComment, TaskStats
-from auth_utils import get_current_user
-from sanitization import sanitize_dict
+from .task_models import Task, TaskCreate, TaskUpdate, TaskComment, TaskStats
+from .auth_utils import get_current_user
+from .sanitization import sanitize_dict
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -51,7 +51,7 @@ async def create_task(
     user = await get_current_user(request, db)
     
     # SECURITY: Check permission before allowing creation
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "task", "create", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to create tasks")
@@ -141,7 +141,7 @@ async def create_task_template(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Create recurring task template"""
-    from task_models import TaskTemplate
+    from .task_models import TaskTemplate
     user = await get_current_user(request, db)
     
     template = TaskTemplate(
@@ -226,7 +226,7 @@ async def get_task_analytics(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Get task analytics"""
-    from task_models import TaskAnalytics
+    from .task_models import TaskAnalytics
     user = await get_current_user(request, db)
     
     tasks = await db.tasks.find(
@@ -332,7 +332,7 @@ async def update_task(
             update_data["status"] = "pending_approval"
             
             # Auto-start workflow
-            from workflow_engine import WorkflowEngine
+            from .workflow_engine import WorkflowEngine
             engine = WorkflowEngine(db)
             
             try:
@@ -470,7 +470,7 @@ async def log_time_entry(
     db: AsyncIOMotorDatabase = Depends(get_db)
 ):
     """Log work hours for task"""
-    from task_models import LaborEntry
+    from .task_models import LaborEntry
     user = await get_current_user(request, db)
     
     # Verify task exists

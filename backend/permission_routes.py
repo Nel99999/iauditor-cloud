@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from permission_models import (
+from .permission_models import (
     Permission, PermissionCreate,
     RolePermission, RolePermissionCreate,
     UserFunctionOverride, UserFunctionOverrideCreate,
     ExtendedRole, ExtendedRoleCreate
 )
-from auth_utils import get_current_user
+from .auth_utils import get_current_user
 from datetime import datetime, timezone
 from typing import Optional
 import hashlib
