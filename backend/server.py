@@ -1,5 +1,5 @@
 # Fix bcrypt compatibility issue - must be first import
-import fix_bcrypt
+from . import fix_bcrypt
 
 from pathlib import Path
 from dotenv import load_dotenv
