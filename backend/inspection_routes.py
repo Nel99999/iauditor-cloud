@@ -1,5 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request, UploadFile, File
 from fastapi.responses import StreamingResponse
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from typing import List, Optional
+from .auth_utils import get_current_user
+from .inspection_models import InspectionTemplateCreate, InspectionQuestion
 def get_db(request: Request) -> AsyncIOMotorDatabase:
     """Dependency to get database from request state"""
     return request.app.state.db
