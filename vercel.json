@@ -3,6 +3,18 @@
     "builds": [
         {
             "src": "frontend/package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "build"
+            }
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "https://iauditor-cloud.onrender.com/api/$1"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
