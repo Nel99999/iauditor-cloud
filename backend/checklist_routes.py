@@ -1,3 +1,13 @@
+from fastapi import APIRouter, HTTPException, status, Depends, Request
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from typing import List, Optional
+from .auth_utils import get_current_user
+from .checklist_models import Checklist, ChecklistCreate, ChecklistUpdate, ChecklistItem, ChecklistItemCreate
+from datetime import datetime, timezone
+
+router = APIRouter(prefix="/checklists", tags=["Checklists"])
+
+def get_db(request: Request) -> AsyncIOMotorDatabase:
     """Dependency to get database from request state"""
     return request.app.state.db
 

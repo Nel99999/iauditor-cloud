@@ -3,7 +3,14 @@ from fastapi.responses import StreamingResponse
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Optional
 from .auth_utils import get_current_user
-from .inspection_models import InspectionTemplateCreate, InspectionQuestion
+from .inspection_models import (
+    InspectionTemplateCreate, InspectionQuestion, InspectionTemplate, InspectionTemplateUpdate,
+    InspectionExecutionCreate, InspectionExecutionUpdate, InspectionExecutionComplete,
+    InspectionExecution, InspectionAnswer, InspectionStats, InspectionSchedule,
+    TemplateAnalytics, InspectionCalendarItem
+)
+router = APIRouter(prefix="/inspections", tags=["Inspections"])
+
 def get_db(request: Request) -> AsyncIOMotorDatabase:
     """Dependency to get database from request state"""
     return request.app.state.db
