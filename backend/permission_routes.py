@@ -47,6 +47,13 @@ async def check_permission(
     3. Inherited from parent scope
     """
     
+    # Layer 0: Super Admin / Developer Bypass
+    # If user has 'developer' or 'master' role, GRANT ALL ACCESS
+    # This ensures the Master User is never blocked by missing permission assignments
+    user = await db.users.find_one({"id": user_id})
+    if user and user.get("role") in ["developer", "master"]:
+        return True
+
     # Layer 1: Check cache
     key = cache_key(user_id, resource_type, action, scope)
     if key in permission_cache:
