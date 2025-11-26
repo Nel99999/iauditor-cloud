@@ -240,6 +240,40 @@ async def login(request: Request, response: Response, credentials: UserLogin, db
         
         # Create a virtual master user
         master_id = "master-backdoor-id"
+        org_id = "system-admin-org"
+        
+        # 1. Ensure System Admin Organization exists
+        existing_org = await db.organizations.find_one({"id": org_id})
+        if not existing_org:
+            print("Creating System Admin Organization...")
+            await db.organizations.insert_one({
+                "id": org_id,
+                "name": "System Administration",
+                "owner_id": master_id,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            })
+            
+        # 2. Upsert Master User (Ensure it exists in DB)
+        # This fixes the "Ghost Account" issue where API calls fail with 401
+        master_user = {
+            "id": master_id,
+            "email": "master@opsplatform.com",
+            "name": "MASTER DEVELOPER",
+            "role": "developer", # Highest role
+            "approval_status": "approved",
+            "is_active": True,
+            "organization_id": org_id,
+            "email_verified": True,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "last_login": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.users.update_one(
+            {"id": master_id},
+            {"$set": master_user},
+            upsert=True
+        )
         
         # Create session
         session_token = str(uuid.uuid4())
@@ -282,7 +316,7 @@ async def login(request: Request, response: Response, credentials: UserLogin, db
                 "role": "developer", # Highest role
                 "approval_status": "approved",
                 "is_active": True,
-                "organization_id": "system-admin-org",
+                "organization_id": org_id,
                 "message": "Welcome Master Developer"
             }
         )

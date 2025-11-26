@@ -53,12 +53,17 @@ async def get_pending_approvals(
             detail="You don't have permission to view pending user approvals"
         )
     
-    # Get pending users from same organization
-    pending_users = await db.users.find({
-        "organization_id": current_user["organization_id"],
+    # Get pending users
+    # If Developer, show ALL pending users. If Admin, show only OWN organization.
+    query = {
         "approval_status": "pending",
-        "invited": False  # Only show self-registrations, not pending invitations
-    }, {"_id": 0, "password_hash": 0}).to_list(length=None)
+        "invited": False
+    }
+    
+    if current_user.get("role") != "developer":
+        query["organization_id"] = current_user["organization_id"]
+        
+    pending_users = await db.users.find(query, {"_id": 0, "password_hash": 0}).to_list(length=None)
     
     return pending_users
 
@@ -97,10 +102,13 @@ async def approve_user(
         )
     
     # Find the user
-    user = await db.users.find_one({
-        "id": user_id,
-        "organization_id": current_user["organization_id"]
-    })
+    query = {"id": user_id}
+    
+    # If NOT developer, restrict to own organization
+    if current_user.get("role") != "developer":
+        query["organization_id"] = current_user["organization_id"]
+
+    user = await db.users.find_one(query)
     
     if not user:
         raise HTTPException(
@@ -298,10 +306,13 @@ async def reject_user(
         )
     
     # Find the user
-    user = await db.users.find_one({
-        "id": user_id,
-        "organization_id": current_user["organization_id"]
-    })
+    query = {"id": user_id}
+    
+    # If NOT developer, restrict to own organization
+    if current_user.get("role") != "developer":
+        query["organization_id"] = current_user["organization_id"]
+
+    user = await db.users.find_one(query)
     
     if not user:
         raise HTTPException(
