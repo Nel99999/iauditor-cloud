@@ -1,5 +1,6 @@
 
 from fastapi import APIRouter, HTTPException, status, Depends, Request
+import uuid
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Optional
 from .auth_utils import get_current_user
