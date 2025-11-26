@@ -1,4 +1,13 @@
 
+from fastapi import APIRouter, HTTPException, status, Depends, Request
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from typing import List, Optional
+from .auth_utils import get_current_user
+from .role_models import Role, RoleCreate, RoleUpdate, ExtendedRole, ExtendedRoleCreate
+from datetime import datetime, timezone
+
+router = APIRouter(prefix="/roles", tags=["Roles"])
+
 def get_db(request: Request) -> AsyncIOMotorDatabase:
     return request.app.state.db
 
