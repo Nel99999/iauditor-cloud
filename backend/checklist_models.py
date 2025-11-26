@@ -220,3 +220,7 @@ class ChecklistStats(BaseModel):
     pending_today: int
     completion_rate: float
     overdue: int
+
+
+# Alias for backward compatibility or simpler import
+Checklist = ChecklistTemplate
