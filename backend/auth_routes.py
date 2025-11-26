@@ -70,19 +70,19 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
     # Initialize system roles for the new organization
     await initialize_system_roles(db, organization_id)
     
-    # NEW WORKFLOW: All self-registrations require Developer approval
-    # Only invited users are auto-approved
+    # Auto-approve the organization creator
+    # The user creating the organization should be the Admin and Active immediately
     
-    # Create user with PENDING status
+    # Create user with APPROVED status
     user = User(
         email=user_data.email,
         name=user_data.name,
         password_hash=get_password_hash(user_data.password),
         auth_provider="local",
         organization_id=organization_id,
-        role="viewer",  # Default role, can be changed by Developer upon approval
-        approval_status="pending",  # Requires Developer approval
-        is_active=False,  # Inactive until approved
+        role="admin",  # Organization creator is Admin
+        approval_status="approved",  # Auto-approved
+        is_active=True,  # Active immediately
         invited=False,  # Self-registration
         registration_ip=None,  # TODO: Get from request
         email_verification_token=str(uuid.uuid4()),
@@ -195,16 +195,36 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
         import traceback
         traceback.print_exc()
     
-    # Return response WITHOUT token (user cannot login until approved)
-    # Return a special response indicating pending status
+    # Return response WITH token (auto-approved)
+    # Create session and token for immediate login
+    
+    # Create session in database
+    session_token = str(uuid.uuid4())
+    expires_delta = timedelta(hours=24)
+    expires_at = datetime.now(timezone.utc) + expires_delta
+    
+    session = Session(
+        user_id=user.id,
+        session_token=session_token,
+        expires_at=expires_at
+    )
+    await db.sessions.insert_one(session.model_dump())
+    
+    # Create access token
+    access_token = create_access_token(
+        data={"sub": user.id},
+        expires_delta=expires_delta
+    )
+    
     return Token(
-        access_token="",  # No token until approved
+        access_token=access_token,
         user={
             "id": user.id,
             "email": user.email,
             "name": user.name,
-            "approval_status": "pending",
-            "message": MSG_REGISTRATION_PENDING
+            "approval_status": "approved",
+            "role": "admin",
+            "message": "Registration successful"
         }
     )
 
