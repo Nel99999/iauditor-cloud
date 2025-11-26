@@ -4,7 +4,7 @@ Background Task Scheduler for Workflow Escalations and Maintenance
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from workflow_engine import WorkflowEngine
+from .workflow_engine import WorkflowEngine
 from datetime import datetime, timezone, timedelta
 import logging
 
@@ -33,7 +33,7 @@ async def check_workflow_escalations(db: AsyncIOMotorDatabase):
                             approver_emails.append(approver["email"])
                     
                     if approver_emails:
-                        from email_service import EmailService
+                        from .email_service import EmailService
                         email_service = EmailService()
                         
                         # Reuse workflow start email for escalations
@@ -80,7 +80,7 @@ async def send_workflow_reminders(db: AsyncIOMotorDatabase):
         }).to_list(100)
         
         if workflows:
-            from email_service import EmailService
+            from .email_service import EmailService
             email_service = EmailService()
             
             for workflow in workflows:

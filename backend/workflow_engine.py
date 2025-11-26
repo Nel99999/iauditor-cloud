@@ -15,7 +15,7 @@ class WorkflowEngine:
     
     def __init__(self, db: AsyncIOMotorDatabase):
         self.db = db
-        from email_service import EmailService
+        from .email_service import EmailService
         import os
         self.email_service = EmailService()
         self.frontend_url = os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:3000').replace('/api', '')
