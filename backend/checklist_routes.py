@@ -2,7 +2,11 @@ from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from typing import List, Optional
 from .auth_utils import get_current_user
-from .checklist_models import Checklist, ChecklistCreate, ChecklistUpdate, ChecklistItem, ChecklistItemCreate
+from .checklist_models import (
+    ChecklistTemplate, ChecklistTemplateCreate, ChecklistTemplateUpdate,
+    ChecklistItem, ChecklistItemCreate,
+    ChecklistExecution, ChecklistExecutionCreate, ChecklistExecutionUpdate, ChecklistExecutionComplete
+)
 from datetime import datetime, timezone
 
 router = APIRouter(prefix="/checklists", tags=["Checklists"])
@@ -69,7 +73,7 @@ async def get_checklist_templates(
     """
     user = await get_current_user(request, db)
     # SECURITY: Check permission before allowing read access
-    from permission_routes import check_permission
+    from .permission_routes import check_permission
     has_permission = await check_permission(db, user["id"], "checklist", "read", "organization")
     if not has_permission:
         raise HTTPException(status_code=403, detail="You don't have permission to view checklists")

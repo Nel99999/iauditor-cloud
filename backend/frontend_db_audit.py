@@ -72,15 +72,15 @@ async def comprehensive_data_audit():
         
         # Compare
         print('Field: Total Users')
-        print(f'  Frontend (via API):  {frontend_data.get(\"users\", {}).get(\"total_users\", \"N/A\")}')
+        print(f"  Frontend (via API):  {frontend_data.get('users', {}).get('total_users', 'N/A')}")
         print(f'  Database:            {db_users}')
-        print(f'  Status: {\"✅ MATCH\" if frontend_data.get(\"users\", {}).get(\"total_users\") == db_users else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if frontend_data.get('users', {}).get('total_users') == db_users else '❌ MISMATCH'}")
         print()
         
         print('Field: Active Users')
-        print(f'  Frontend (via API):  {frontend_data.get(\"users\", {}).get(\"active_users\", \"N/A\")}')
+        print(f"  Frontend (via API):  {frontend_data.get('users', {}).get('active_users', 'N/A')}")
         print(f'  Database:            {db_active_users}')
-        print(f'  Status: {\"✅ MATCH\" if frontend_data.get(\"users\", {}).get(\"active_users\") == db_active_users else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if frontend_data.get('users', {}).get('active_users') == db_active_users else '❌ MISMATCH'}")
         print()
         
         print('Field: Tasks (Todo + In Progress)')
@@ -89,14 +89,14 @@ async def comprehensive_data_audit():
         api_inprogress = api_tasks.get("in_progress", 0)
         print(f'  Frontend (via API):  Todo: {api_todo}, In Progress: {api_inprogress}')
         print(f'  Database:            Todo: {db_tasks_todo}, In Progress: {db_tasks_inprogress}')
-        print(f'  Status: {\"✅ MATCH\" if (api_todo == db_tasks_todo and api_inprogress == db_tasks_inprogress) else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if (api_todo == db_tasks_todo and api_inprogress == db_tasks_inprogress) else '❌ MISMATCH'}")
         print()
         
         print('Field: Inspections')
         api_inspections = frontend_data.get("inspections", {}).get("total_inspections", 0)
         print(f'  Frontend (via API):  {api_inspections}')
         print(f'  Database:            {db_inspections}')
-        print(f'  Status: {\"✅ MATCH\" if api_inspections == db_inspections else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if api_inspections == db_inspections else '❌ MISMATCH'}")
         print()
     
     # =================================================================
@@ -119,7 +119,7 @@ async def comprehensive_data_audit():
         print(f'User Count:')
         print(f'  Frontend (via API):  {len(api_users)} users')
         print(f'  Database:            {len(db_users_list)} users')
-        print(f'  Status: {\"✅ MATCH\" if len(api_users) == len(db_users_list) else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if len(api_users) == len(db_users_list) else '❌ MISMATCH'}")
         print()
         
         # Check user fields
@@ -134,7 +134,7 @@ async def comprehensive_data_audit():
                 api_val = sample_api.get(field, 'MISSING')
                 db_val = sample_db.get(field, 'MISSING')
                 match = api_val == db_val
-                print(f'  {field:20} API: {str(api_val):30} | DB: {str(db_val):30} | {\"✅\" if match else \"❌\"}')
+                print(f"  {field:20} API: {str(api_val):30} | DB: {str(db_val):30} | {'✅' if match else '❌'}")
             print()
     
     # =================================================================
@@ -157,7 +157,7 @@ async def comprehensive_data_audit():
         print(f'Task Count:')
         print(f'  Frontend (via API):  {len(api_tasks_list)} tasks')
         print(f'  Database:            {len(db_tasks_list)} tasks')
-        print(f'  Status: {\"✅ MATCH\" if len(api_tasks_list) == len(db_tasks_list) else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if len(api_tasks_list) == len(db_tasks_list) else '❌ MISMATCH'}")
         print()
         
         # Task status distribution
@@ -171,9 +171,9 @@ async def comprehensive_data_audit():
             db_done = len([t for t in db_tasks_list if t.get('status') == 'completed'])
             
             print('Task Status Distribution:')
-            print(f'  Todo:         API: {api_todo:3} | DB: {db_todo:3} | {\"✅\" if api_todo == db_todo else \"❌\"}')
-            print(f'  In Progress:  API: {api_progress:3} | DB: {db_progress:3} | {\"✅\" if api_progress == db_progress else \"❌\"}')
-            print(f'  Completed:    API: {api_done:3} | DB: {db_done:3} | {\"✅\" if api_done == db_done else \"❌\"}')
+            print(f"  Todo:         API: {api_todo:3} | DB: {db_todo:3} | {'✅' if api_todo == db_todo else '❌'}")
+            print(f"  In Progress:  API: {api_progress:3} | DB: {db_progress:3} | {'✅' if api_progress == db_progress else '❌'}")
+            print(f"  Completed:    API: {api_done:3} | DB: {db_done:3} | {'✅' if api_done == db_done else '❌'}")
             print()
     
     # =================================================================
@@ -217,7 +217,7 @@ async def comprehensive_data_audit():
     if len(db_org_units) > 0:
         print(f'\n  Unit Structure:')
         for i, unit in enumerate(db_org_units[:5], 1):
-            print(f'    {i}. {unit.get(\"name\", \"N/A\")} (Level: {unit.get(\"level\", \"N/A\")})')
+            print(f"    {i}. {unit.get('name', 'N/A')} (Level: {unit.get('level', 'N/A')})")
     else:
         print('  No organization units in database')
     print()
@@ -240,7 +240,7 @@ async def comprehensive_data_audit():
         print(f'Permissions:')
         print(f'  Frontend (via API):  {len(api_perms)} permissions')
         print(f'  Database:            {db_perms} permissions')
-        print(f'  Status: {\"✅ MATCH\" if len(api_perms) == db_perms else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if len(api_perms) == db_perms else '❌ MISMATCH'}")
         print()
         
         # Check approval permissions
@@ -248,10 +248,10 @@ async def comprehensive_data_audit():
         print(f'Approval Permissions (user.invite/approve/reject):')
         print(f'  Frontend (via API):  {len(approval_perms_api)} permissions')
         print(f'  Expected:            3 permissions')
-        print(f'  Status: {\"✅ MATCH\" if len(approval_perms_api) == 3 else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if len(approval_perms_api) == 3 else '❌ MISMATCH'}")
         
         for perm in approval_perms_api:
-            print(f'    - {perm.get(\"resource_type\")}.{perm.get(\"action\")}.{perm.get(\"scope\")}')
+            print(f"    - {perm.get('resource_type')}.{perm.get('action')}.{perm.get('scope')}")
         print()
     
     # Get roles from API
@@ -264,7 +264,7 @@ async def comprehensive_data_audit():
         print(f'Roles:')
         print(f'  Frontend (via API):  {len(api_roles)} roles')
         print(f'  Database:            {db_roles} roles')
-        print(f'  Status: {\"✅ MATCH\" if len(api_roles) == db_roles else \"❌ MISMATCH\"}')
+        print(f"  Status: {'✅ MATCH' if len(api_roles) == db_roles else '❌ MISMATCH'}")
         print()
     
     # =================================================================
@@ -306,23 +306,23 @@ async def comprehensive_data_audit():
     
     # Tasks without valid organization
     tasks_no_org = await db.tasks.count_documents({'organization_id': None})
-    print(f'Tasks without organization: {tasks_no_org} {\"✅\" if tasks_no_org == 0 else \"⚠️\"}')
+    print(f"Tasks without organization: {tasks_no_org} {'✅' if tasks_no_org == 0 else '⚠️'}")
     
     # Users without organization
     users_no_org = await db.users.count_documents({'organization_id': None})
-    print(f'Users without organization: {users_no_org} {\"✅\" if users_no_org == 0 else \"⚠️\"}')
+    print(f"Users without organization: {users_no_org} {'✅' if users_no_org == 0 else '⚠️'}")
     
     # Check approval status distribution
     approved = await db.users.count_documents({'approval_status': 'approved'})
     pending = await db.users.count_documents({'approval_status': 'pending'})
     rejected = await db.users.count_documents({'approval_status': 'rejected'})
-    no_status = await db.users.count_documents({'approval_status': {'\$exists': False}})
+    no_status = await db.users.count_documents({'approval_status': {'$exists': False}})
     
     print(f'\nUser Approval Status Distribution:')
-    print(f'  Approved:  {approved:>5} {\"✅\" if approved > 0 else \"⚠️\"}')
+    print(f"  Approved:  {approved:>5} {'✅' if approved > 0 else '⚠️'}")
     print(f'  Pending:   {pending:>5}')
     print(f'  Rejected:  {rejected:>5}')
-    print(f'  No Status: {no_status:>5} {\"✅\" if no_status == 0 else \"❌ MIGRATION INCOMPLETE\"}')
+    print(f"  No Status: {no_status:>5} {'✅' if no_status == 0 else '❌ MIGRATION INCOMPLETE'}")
     print()
     
     # =================================================================

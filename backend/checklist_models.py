@@ -193,6 +193,14 @@ class ChecklistAnalytics(BaseModel):
     completion_trend: List[Dict[str, Any]] = []
 
 
+class ChecklistExecutionCreate(BaseModel):
+    """Create checklist execution"""
+    template_id: str
+    date: Optional[str] = None
+    unit_id: Optional[str] = None
+    assigned_to: Optional[str] = None
+
+
 class ChecklistExecutionUpdate(BaseModel):
     """Update checklist execution"""
     items: Optional[List[ChecklistItemCompletion]] = None
