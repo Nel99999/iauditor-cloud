@@ -11,7 +11,10 @@ try {
 }
 catch {
     Write-Host "SendGrid Test Failed: $_"
-    Write-Host "Response: $($_.Exception.Response.GetResponseStream() | ForEach-Object{ $_.ReadToEnd() })"
+    if ($_.Exception.Response) {
+        $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+        Write-Host "Response: $($reader.ReadToEnd())"
+    }
 }
 
 Write-Host "`nChecking Pending Approvals..."
@@ -21,4 +24,8 @@ try {
 }
 catch {
     Write-Host "Pending Approvals Check Failed: $_"
+    if ($_.Exception.Response) {
+        $reader = New-Object System.IO.StreamReader($_.Exception.Response.GetResponseStream())
+        Write-Host "Response: $($reader.ReadToEnd())"
+    }
 }
