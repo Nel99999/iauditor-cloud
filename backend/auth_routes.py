@@ -141,31 +141,35 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
                     .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
                     .content {{ background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }}
                     .footer {{ text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }}
-                    .info-box {{ background: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; }}
+                    .info-box {{ background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>✅ Profile Creation Request Received!</h1>
+                        <h1>🚀 Welcome Aboard!</h1>
                     </div>
                     <div class="content">
                         <p>Hi {user_data.name},</p>
-                        <p>Thank you for creating your profile with <strong>{user_data.organization_name}</strong>!</p>
+                        <p>Welcome to <strong>{user_data.organization_name}</strong> on the Operations Platform!</p>
                         
                         <div class="info-box">
-                            <strong>ℹ️ Account Status:</strong> Your profile is currently <strong>pending approval</strong>. 
-                            A Developer will review your registration and you'll receive an email once your account is approved.
+                            <strong>✅ Account Ready:</strong> Your account has been created and is ready to use.
                         </div>
                         
-                        <p>This review process typically takes 24-48 hours. You'll receive an email notification once your profile is approved and you can start using the platform.</p>
+                        <p>You have been assigned the <strong>Admin</strong> role for your new organization.</p>
                         
-                        <p><strong>What happens next?</strong></p>
+                        <p><strong>Get Started:</strong></p>
                         <ul>
-                            <li>A Developer will review your profile creation request</li>
-                            <li>You'll receive an approval email with login instructions</li>
-                            <li>You can then access your account and start using the platform</li>
+                            <li>Invite your team members</li>
+                            <li>Create your first inspection template</li>
+                            <li>Set up your organization profile</li>
                         </ul>
+                        
+                        <div style="text-align: center;">
+                            <a href="https://iauditor-cloud.vercel.app/dashboard" class="button">Go to Dashboard</a>
+                        </div>
                         
                         <p>If you have any questions, please contact support.</p>
                     </div>
@@ -179,7 +183,7 @@ async def register(user_data: UserCreate, db: AsyncIOMotorDatabase = Depends(get
             
             success = email_service.send_email(
                 to_email=user_data.email,
-                subject=SUBJECT_PROFILE_CREATION,
+                subject="Welcome to Operations Platform! 🚀",
                 html_content=html_content
             )
             
@@ -506,8 +510,7 @@ async def google_oauth_callback(
 ):
     """
     Handle Google OAuth callback.
-    NOTE: This is a placeholder implementation. 
-    For production, you must verify the Google ID Token using google-auth library.
+    Verifies the Google ID Token using google-auth library.
     """
     # Get token from body
     body = await request.json()
@@ -519,14 +522,51 @@ async def google_oauth_callback(
             detail="Missing Google token",
         )
     
-    # SIMULATION FOR DEVELOPMENT
-    # In production: verify_google_token(token)
-    # Here we simulate extracting user data from the token
-    
-    # Mock user data (in production this comes from the decoded token)
-    email = "demo.user@gmail.com"
-    name = "Demo Google User"
-    picture = "https://lh3.googleusercontent.com/a/default-user=s96-c"
+    try:
+        from google.oauth2 import id_token
+        from google.auth.transport import requests
+        
+        # Get Client ID from environment
+        google_client_id = os.environ.get("GOOGLE_CLIENT_ID")
+        
+        # Verify the token
+        # If GOOGLE_CLIENT_ID is not set, this might fail or be insecure if we don't check audience.
+        # We enforce it.
+        if not google_client_id:
+             # Fallback for local dev if absolutely needed, but for commercial we should fail
+             # However, to avoid breaking the user's current flow if they haven't set it yet:
+             print("⚠️ GOOGLE_CLIENT_ID not set in environment. Token verification might be skipped or fail.")
+             # For now, we will try to verify without audience check if ID is missing (NOT RECOMMENDED for prod)
+             # But better to raise error
+             raise ValueError("Server configuration error: GOOGLE_CLIENT_ID not set")
+
+        id_info = id_token.verify_oauth2_token(
+            token, 
+            requests.Request(), 
+            google_client_id
+        )
+
+        # ID token is valid. Get the user's Google Account ID from the decoded token.
+        email = id_info.get("email")
+        name = id_info.get("name")
+        picture = id_info.get("picture")
+        
+        if not email:
+             raise ValueError("Email not found in token")
+
+    except ValueError as e:
+        # Invalid token
+        print(f"❌ Google Token Verification Failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid Google token: {str(e)}",
+        )
+    except Exception as e:
+        print(f"❌ Google Auth Error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Authentication failed",
+        )
     
     # Check if user exists
     user = await db.users.find_one({"email": email}, {"_id": 0})
@@ -538,15 +578,35 @@ async def google_oauth_callback(
             name=name,
             picture=picture,
             auth_provider="google",
-            role="viewer",
-            approval_status="approved", # Auto-approve social logins? Or pending?
-            is_active=True
+            role="viewer", # Default role
+            approval_status="approved", # Auto-approve social logins
+            is_active=True,
+            email_verified=True # Google verified it
         )
         user_dict = new_user.model_dump()
         user_dict["created_at"] = user_dict["created_at"].isoformat()
         user_dict["updated_at"] = user_dict["updated_at"].isoformat()
+        
+        # Create default organization for the user if needed?
+        # Or should they be invited?
+        # For now, we follow the registration flow: create a personal org
+        org = Organization(
+            name=f"{name}'s Organization",
+            owner_id=new_user.id
+        )
+        org_dict = org.model_dump()
+        org_dict["created_at"] = org_dict["created_at"].isoformat()
+        org_dict["updated_at"] = org_dict["updated_at"].isoformat()
+        await db.organizations.insert_one(org_dict)
+        
+        user_dict["organization_id"] = org.id
+        user_dict["role"] = "admin" # They own their personal org
+        
         await db.users.insert_one(user_dict)
         user = user_dict
+        
+        # Initialize system roles for the new organization
+        await initialize_system_roles(db, org.id)
     
     # Create session
     session_token = str(uuid.uuid4())

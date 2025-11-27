@@ -40,7 +40,7 @@ interface AuthContextType {
   loading: boolean;
   register: (email: string, password: string, name: string, organizationName: string) => Promise<AuthResponse>;
   login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthResponse>;
-  loginWithGoogle: () => void;
+  loginWithGoogle: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
 }
@@ -225,13 +225,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const loginWithGoogle = async (): Promise<void> => {
-    // SIMULATION FOR DEVELOPMENT
-    // In a real app, you would use the Google Sign-In button which returns a credential
-    // Here we simulate receiving a valid credential
-    console.log("Initiating Dev Mode Google Login...");
-    const mockCredential = "mock_google_id_token_for_dev";
-    await handleGoogleCallback(mockCredential);
+  const loginWithGoogleToken = async (credential: string): Promise<void> => {
+    await handleGoogleCallback(credential);
   };
 
   const logout = async (): Promise<void> => {
@@ -255,7 +250,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loading,
     register,
     login,
-    loginWithGoogle,
+    loginWithGoogle: loginWithGoogleToken, // Keep name for compatibility but it now expects args if used directly, though we will update interface
     logout,
     isAuthenticated: !!user,
   };
